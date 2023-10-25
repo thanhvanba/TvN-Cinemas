@@ -28,8 +28,6 @@ function ShowTimes() {
 
   },[pathname]);
 
-
-
   return (
     <div className="w-full pt-32 pb-10">
       <div className="content-page">

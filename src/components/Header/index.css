@@ -1,6 +1,11 @@
 .header {
     color: #fafafa;
     border-top: 8px solid rgb(0, 188, 212);
+    position: fixed;
+    top : 0;
+    left: 0; 
+    right: 0; 
+    z-index: 999;
 }
 
 

@@ -4,12 +4,41 @@ import slider2 from "../../images/slider-1.jpg"
 import slider3 from "../../images/slider-2.jpg"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import "./index.css"
+import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const IMAGES = [
   slider1, slider2, slider3
 ]
 
 const Home = () => {
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const [currentTab, setCurrentTab] = useState('1');
+  const changeTab = (pathname) => {
+    navigate(pathname)
+  }
+
+  const handleCheckPathname = (pathname) => {
+    switch (pathname) {
+      case "/phim/dangchieu":
+        setCurrentTab("1")
+        break;
+      case "/phim/sapchieu":
+        setCurrentTab("2")
+        break;
+      case "/dacbiet":
+        setCurrentTab("3")
+        break;
+      default:
+        setCurrentTab("1")
+    }
+  }
+
+  useEffect(() => {
+    handleCheckPathname(pathname)
+
+  }, [pathname]);
   return (
     <div className="w-full">
       {/* slider */}
@@ -49,14 +78,14 @@ const Home = () => {
       <div className="content-page">
         <div className="sub-tab">
           <ul className="relative inline-block">
-            <li className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full z-30 text-slate-100">
-              <a href="" className="active1 p-2 leading-[3.5rem]">Phim đang chiếu</a>
+            <li onClick={() => changeTab("/phim/dangchieu")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full z-30 text-slate-100">
+              <a href="" className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim đang chiếu</a>
             </li>
-            <li className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 z-20 text-slate-100">
-              <a href="" className="p-2 leading-[3.5rem]">Phim sắp chiếu</a>
+            <li onClick={() => changeTab("/phim/sapchieu")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 z-20 text-slate-100">
+              <a href="" className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim sắp chiếu</a>
             </li>
-            <li className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full z-10 text-slate-100">
-              <a href="" className="p-2 leading-[3.5rem]">Suất chiếu đặc biệt</a>
+            <li onClick={() => changeTab("/dacbiet")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full z-10 text-slate-100">
+              <a href="" className={`${currentTab === '3' ? "active1" : ""} p-2 leading-[3.5rem]`}>Suất chiếu đặc biệt</a>
             </li>
           </ul>
         </div>
@@ -69,7 +98,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>
@@ -83,7 +112,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>
@@ -97,7 +126,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>
@@ -110,7 +139,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>
@@ -123,7 +152,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>
@@ -136,7 +165,7 @@ const Home = () => {
                   className="product-over h-auto w-full table-cell" />
                 <a href="#" className="mt-2">
                   <div className=" w-full h-full absolute top-0 left-0">
-                    
+
                   </div>
                 </a>
               </div>

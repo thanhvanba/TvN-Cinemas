@@ -1,16 +1,53 @@
 import { Link } from 'react-router-dom'
 import './index.css'
 import bg from "../../images/bg-cinema-10.png"
+import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+    const { pathname } = useLocation()
+    const navigate = useNavigate()
+    const [currentTab, setCurrentTab] = useState('1');
+    const changeTab = (pathname) => {
+        navigate(pathname)
+    }
+
+    const handleCheckPathname = (pathname) => {
+        switch (pathname) {
+            case "/thanhvien":
+                setCurrentTab("1")
+                break;
+            case "/quydinh":
+                setCurrentTab("2")
+                break;
+            default:
+                setCurrentTab("1")
+        }
+    }
+
+    useEffect(() => {
+        handleCheckPathname(pathname)
+
+    }, [pathname]);
     return (
-        <div style={{ background: `url(${bg}) center/cover no-repeat` }}>
+        <div style={{ background: `url(${bg})`, "background-attachment": "fixed" }}>
             <div className='mx-auto max-w-6xl pt-32'>
-                <div className='flex justify-center'>
+                <div className="sub-tab">
+                    <ul className="relative inline-block">
+                        <li onClick={() => changeTab("/thanhvien")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100">
+                            <a href="" className={`${currentTab === '1' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}>Thành viên</a>
+
+                        </li>
+                        <li onClick={() => changeTab("/quydinh")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100">
+                            <a href="" className={`${currentTab === '2' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}>Quy định</a>
+                        </li>
+                    </ul>
+                </div>
+                {/* <div className='flex justify-center'>
                     <h1 className='m-4 text-3xl font-bold uppercase text-white hover:text-cyan-500 active'>Thành viên</h1>
                     <h1 className='m-4 text-3xl font-bold uppercase text-white hover:text-cyan-500'>FAQ</h1>
                     <h1 className='m-4 text-3xl font-bold uppercase text-white hover:text-cyan-500'>Quy định</h1>
-                </div>
+                </div> */}
                 <div className='grid grid-cols-2'>
                     <div className='m-8'>
                         <h2 className="text-white font-bold uppercase text-center mb-6">Đăng Nhập</h2>

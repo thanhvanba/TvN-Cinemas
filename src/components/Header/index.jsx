@@ -1,5 +1,6 @@
-import { Fragment, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Fragment, useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import ApiService from '../../ApiService'
 import './index.css'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
@@ -30,10 +31,47 @@ const callsToAction = [
 ]
 
 const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const handleSubmit = async (e) => {
-    useNavigate('/signup')
+  const loginApi = ApiService();
+  const [credentialId, useUserName] = useState('')
+  const [password, usePassword] = useState('')
+  const [currentTab, setCurrentTab] = useState('1');
+
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const changeTab = (pathname) => {
+    navigate(pathname)
   }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let logobj = { credentialId, password };
+    loginApi(logobj)
+  }
+  const handleCheckPathname = (pathname) => {
+    switch (pathname) {
+      case "/home":
+        setCurrentTab("1")
+        break;
+      case "/showtimes":
+        setCurrentTab("2")
+        break;
+      case "/rap":
+        setCurrentTab("3")
+        break;
+      case "/khuyenmai":
+        setCurrentTab("4")
+        break;
+      case "/lienhe":
+        setCurrentTab("5")
+        break;
+      default:
+        setCurrentTab("1")
+    }
+  }
+
+  useEffect(() => {
+    handleCheckPathname(pathname)
+  }, [pathname]);
+
   return (
     <header className="header">
       <div className='top-menu'>
@@ -41,9 +79,9 @@ const Header = () => {
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
-              <a href="#" className="-m-1.5 p-1.5">
+              <a onClick={() => { changeTab('/home') }} href="" className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
-                <img className="h-16 w-auto" src={logo} alt="" />
+                <img className="h-[80px] w-auto" src={logo} alt="" />
               </a>
             </div>
             {/* Thanh điều hướng */}
@@ -62,8 +100,8 @@ const Header = () => {
                 <ul className="hidden lg:flex">
                   <li className='px-4 py-8 relative'>
                     <Popover>
-                      <Popover.Button className="flex">
-                        <a href="#" className="text-lg font-bold uppercase option-style active">
+                      <Popover.Button onClick={() => changeTab( "/home")} className="flex">
+                        <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                           Phim
                         </a>
                         <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
@@ -114,23 +152,23 @@ const Header = () => {
                       </Transition>
                     </Popover>
                   </li>
-                  <li className='px-4 py-8 relative'>
-                    <a href="#" className="text-lg font-bold uppercase option-style">
+                  <li onClick={() => changeTab( "/showtimes")} className='px-4 py-8 relative'>
+                    <a href="#" className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
                   </li>
-                  <li className='px-4 py-8 relative'>
-                    <a href="#" className="text-lg font-bold uppercase option-style">
+                  <li onClick={() => changeTab( "/rap")} className='px-4 py-8 relative'>
+                    <a href="#" className={`${currentTab === '3' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Hệ thống rạp
                     </a>
                   </li>
-                  <li className='px-4 py-8 relative'>
-                    <a href="#" className="text-lg font-bold uppercase option-style">
+                  <li onClick={() => changeTab( "/khuyenmai")} className='px-4 py-8 relative'>
+                    <a href="#" className={`${currentTab === '4' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Khuyến mãi
                     </a>
                   </li>
-                  <li className='px-4 py-8 relative'>
-                    <a href="#" className="text-lg font-bold uppercase option-style">
+                  <li onClick={() => changeTab( "/lienhe")} className='px-4 py-8 relative'>
+                    <a href="#" className={`${currentTab === '5' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Liên hệ
                     </a>
                   </li>
@@ -171,27 +209,27 @@ const Header = () => {
                 <div className="px-6 py-4 backdrop-blur-sm relative">
                   <form action="">
                     <div className="relative my-2">
-                      <input type="email" className="block w-72 py-2.5 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
-                      <label htmlFor="" className="absolute text-sm text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
+                      <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
+                      <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
                       >
                         Email
                       </label>
                     </div>
                     <div className="relative my-2">
-                      <input type="password" className="block w-72 py-2.5 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
-                      <label htmlFor="" className="absolute text-sm text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
+                      <input type="password" onChange={e => usePassword(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
+                      <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
                       >
                         Password
                       </label>
                     </div>
                     <div className="flex justify-between mt-4 items-center">
-                      <button className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                      <button onClick={handleSubmit} className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
                       >
                         Đăng nhập
                       </button>
                       <a href="#">Quên mật khẩu</a>
                     </div>
-                    <button onClick={handleSubmit()} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                    <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
                     >
                       Đăng ký thành viên
                     </button>
