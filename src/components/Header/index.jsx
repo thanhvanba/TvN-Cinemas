@@ -31,7 +31,7 @@ const callsToAction = [
 ]
 
 const Header = () => {
-  const loginApi = ApiService();
+  const {loginApi} = ApiService();
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('1');
@@ -98,7 +98,7 @@ const Header = () => {
               </div> */}
               <Popover.Group className="hidden lg:flex lg:gap-x-12">
                 <ul className="hidden lg:flex">
-                  <li className='px-4 py-8 relative'>
+                  {/* <li className='px-4 py-8 relative'>
                     <Popover>
                       <Popover.Button onClick={() => changeTab( "/home")} className="flex">
                         <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
@@ -151,6 +151,11 @@ const Header = () => {
                         </Popover.Panel>
                       </Transition>
                     </Popover>
+                  </li> */}
+                  <li onClick={() => changeTab( "/home")} className='px-4 py-8 relative'>
+                    <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                      Phim
+                    </a>
                   </li>
                   <li onClick={() => changeTab( "/showtimes")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
@@ -179,6 +184,7 @@ const Header = () => {
 
           {/* Tìm kiếm, mua vé, đăng nhập */}
           <Popover className="flex flex-auto items-center justify-end">
+            {/* Tim kiem */}
             <div className='relative mr-2'>
               <div>
                 <input className='h-10 rounded-2xl px-4 text-black' type="text" placeholder='Tìm kiếm' />
@@ -187,7 +193,7 @@ const Header = () => {
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
               </a>
             </div>
-            <button className="my-4 ml-1 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
+            <button onClick={() => changeTab("/showtimes")} className="my-4 ml-1 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
             >
               Mua Vé
             </button>
@@ -212,7 +218,7 @@ const Header = () => {
                       <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
                       <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
                       >
-                        Email
+                        User Name
                       </label>
                     </div>
                     <div className="relative my-2">

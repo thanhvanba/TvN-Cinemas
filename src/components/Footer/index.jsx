@@ -41,7 +41,7 @@ function Footer() {
                         </ul>
                         <h2 className='uppercase font-bold text-xl text-cyan-300'>HOTLINE :</h2>
                         <p className='pt-2 pl-2 text-4xl text-end text-slate-200'>
-                            
+
                             +84 345 046 656
                         </p>
                         <div className='border-t border-t-slate-200 mt-6'>
@@ -65,6 +65,9 @@ function Footer() {
                 </div>
             </div>
             <div className='bg-gray-950 text-slate-200 text-center py-8'>
+                <p className='text-3xl text-cyan-500 font-bold pb-4 mb-4'>
+                    Trải nghiệm điện ảnh tuyệt vời cùng T&N Cinemas - Nơi Hòa Quyện Giấc Mơ!
+                </p>
                 <p className='flex justify-center'>
                     <img src={dtb} alt="" />
                 </p>

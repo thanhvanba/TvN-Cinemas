@@ -1,8 +1,15 @@
 import React from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDownIcon, MapPinIcon} from "@heroicons/react/24/outline"
 import "./index.css"
 
 const Movie = () => {
+    const navigate = useNavigate()
+
+    const changeTab = (pathname) => {
+        navigate(pathname)
+    }
+
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
@@ -128,7 +135,7 @@ const Movie = () => {
                                 <div className='block relative'>
                                     <div className='relative pl-28 pt-4'>
                                         <ul className='grid grid-cols-5 gap-4'>
-                                            <li className='inline-block'>
+                                            <li onClick={() => changeTab("/order")} className='inline-block'>
                                                 <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
                                             </li>
                                             <li className='inline-block'>

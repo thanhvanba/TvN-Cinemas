@@ -12,8 +12,6 @@ const OrderMovie = () => {
     const numRows = 8;
 
     const [currentStep, useCurrentStep] = useState('1');
-    const [quantity, useQuantity] = useState(0);
-    const [totalPrice, useTotalPrice] = useState(0);
     const { pathname } = useLocation()
 
     const steps = [
@@ -88,16 +86,46 @@ const OrderMovie = () => {
         handleCheckPathname(pathname)
     }, [pathname]);
 
-    const decreaseQuantity = () => {
-        const newQuantity = quantity - 1
-        useQuantity(newQuantity)
-        useTotalPrice(newQuantity * pricePerItem)
+    // component number spiner
+    const NumberSpinner = () => {
+        const [quantity, useQuantity] = useState(0);
+        const [totalPrice, useTotalPrice] = useState(0);
+
+        const decreaseQuantity = (id) => {
+            const newQuantity = quantity - 1
+            useQuantity(newQuantity)
+            useTotalPrice(newQuantity * pricePerItem)
+        }
+        const increaseQuantity = (id) => {
+            const newQuantity = quantity + 1
+            useQuantity(newQuantity)
+            useTotalPrice(newQuantity * pricePerItem)
+        }
+        return (
+            <div className='w-2/5'>
+                <div className='p-4 flex items-center'>
+                    <div className='flex w-1/2 justify-center'>
+                        <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'>
+                            <MinusSmallIcon />
+                        </a>
+                        <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none'
+                            min={"0"}
+                            type="text"
+                            value={quantity}
+                        />
+                        <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'>
+                            <PlusSmallIcon />
+                        </a>
+                    </div>
+                    <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
+                        <span>{formatPrice(totalPrice)} <sup>đ</sup></span>
+
+                    </div>
+                </div>
+            </div>
+        )
     }
-    const increaseQuantity = () => {
-        const newQuantity = quantity + 1
-        useQuantity(newQuantity)
-        useTotalPrice(newQuantity * pricePerItem)
-    }
+
     return (
         <div className='pt-32 bg-gray-900 h-auto          pb-64'>
             {/* Thanh navbar */}
@@ -207,19 +235,7 @@ const OrderMovie = () => {
                                             <span className='text-cyan-600'> {formatPrice(pricePerItem)} <sup>đ</sup> </span>
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -227,45 +243,9 @@ const OrderMovie = () => {
                                         <div className='text-xl p-2 text-slate-600'>
                                             Giá :
                                             <span className='text-cyan-600'> {formatPrice(pricePerItem)} <sup>đ</sup> </span>
-
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='flex items-center'>
-                                    <div className='p-4 w-3/5'>
-                                        <h3 className='text-3xl py-2'>Aquafina</h3>
-                                        <div className='text-xl p-2 text-slate-600'>
-                                            Giá :
-                                            <span className='text-cyan-600'> {formatPrice(pricePerItem)} <sup>đ</sup> </span>
-
-                                        </div>
-                                    </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                             </li>
                             {/* bắp rang */}
@@ -280,19 +260,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -303,19 +271,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -326,19 +282,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                             </li>
                             {/* nước ngọt */}
@@ -353,19 +297,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -376,19 +308,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -399,19 +319,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                             </li>
                             {/* khác */}
@@ -426,19 +334,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -449,19 +345,7 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                                 <div className='flex items-center'>
                                     <div className='p-4 w-3/5'>
@@ -472,27 +356,17 @@ const OrderMovie = () => {
 
                                         </div>
                                     </div>
-                                    <div className='w-2/5'>
-                                        <div className='p-4 flex items-center'>
-                                            <div className='flex w-1/2 justify-center'>
-                                                <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><MinusSmallIcon /></a>
-                                                <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none' min={"0"} type="text" value={quantity} />
-                                                <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'><PlusSmallIcon /></a>
-                                            </div>
-                                            <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                                                <span>{formatPrice(totalPrice)}</span>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <NumberSpinner />
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
+                {/* trang thanh toán */}
                 <div style={{ display: currentStep === '3' ? 'block' : 'none' }}>
                     <div className='text-slate-200'>thanh toan</div>
                 </div>
+                {/* trang thông tin ve */}
                 <div style={{ display: currentStep === '4' ? 'block' : 'none' }}>
                     <div className='text-slate-200'>ve</div>
                 </div>

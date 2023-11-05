@@ -79,98 +79,121 @@ const Home = () => {
         <div className="sub-tab">
           <ul className="relative inline-block">
             <li onClick={() => changeTab("/phim/dangchieu")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full z-30 text-slate-100">
-              <a href="" className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim đang chiếu</a>
+              <a className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim đang chiếu</a>
             </li>
             <li onClick={() => changeTab("/phim/sapchieu")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 z-20 text-slate-100">
-              <a href="" className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim sắp chiếu</a>
+              <a className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Phim sắp chiếu</a>
             </li>
             <li onClick={() => changeTab("/dacbiet")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full z-10 text-slate-100">
-              <a href="" className={`${currentTab === '3' ? "active1" : ""} p-2 leading-[3.5rem]`}>Suất chiếu đặc biệt</a>
+              <a className={`${currentTab === '3' ? "active1" : ""} p-2 leading-[3.5rem]`}>Suất chiếu đặc biệt</a>
             </li>
           </ul>
         </div>
 
         <div className="tab-movie">
-          <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-            <div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/10/11/dat-rung-sneak-4_1697007647619.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
+          {/* load phim dang chieu */}
+          <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
+            <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/10/11/dat-rung-sneak-4_1697007647619.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
 
-                  </div>
-                </a>
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Đất rừng phương nam
+                </div>
               </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Đất rừng phương nam
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/9/21/500x750_1695282600306.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
+
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Giao lộ 8675s
+                </div>
+              </div>
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/10/12/400-blows-500_1697081173581.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
+
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Đất rừng phương nam
+                </div>
+              </div>
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/10/3/500x750_1696307210165.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
+
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Đất rừng phương nam
+                </div>
+              </div>
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/9/27/500x750_1695787578707.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
+
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Đất rừng phương nam
+                </div>
+              </div>
+              <div onClick={() => changeTab("/movie")} className="mb-4">
+                <div className="product-item table relative">
+                  <img src="https://cdn.galaxycine.vn/media/2023/9/21/cheon-500_1695281331881.jpg" alt=""
+                    className="product-over h-auto w-full table-cell" />
+                  {/* <a href="" className="mt-2">
+                    <div className=" w-full h-full absolute top-0 left-0">
+
+                    </div>
+                  </a> */}
+                </div>
+                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                  Đất rừng phương nam
+                </div>
               </div>
             </div>
-            <div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/9/21/500x750_1695282600306.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
+          </div>
+          {/* load phim sap chieu */}
+          <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
+            <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
+              <div className="text-slate-200">
+                sap chieu
+              </div>
 
-                  </div>
-                </a>
-              </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Giao lộ 8675s
-              </div>
             </div>
-            <div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/10/12/400-blows-500_1697081173581.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
-
-                  </div>
-                </a>
-              </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Đất rừng phương nam
-              </div>
-            </div><div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/10/3/500x750_1696307210165.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
-
-                  </div>
-                </a>
-              </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Đất rừng phương nam
-              </div>
-            </div><div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/9/27/500x750_1695787578707.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
-
-                  </div>
-                </a>
-              </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Đất rừng phương nam
-              </div>
-            </div><div className="mb-4">
-              <div className="product-item table relative">
-                <img src="https://cdn.galaxycine.vn/media/2023/9/21/cheon-500_1695281331881.jpg" alt=""
-                  className="product-over h-auto w-full table-cell" />
-                <a href="#" className="mt-2">
-                  <div className=" w-full h-full absolute top-0 left-0">
-
-                  </div>
-                </a>
-              </div>
-              <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                Đất rừng phương nam
+          </div>
+          {/* load suat chieu dac biet */}
+          <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
+            <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
+              <div className="text-slate-200">
+                dac biet
               </div>
             </div>
           </div>

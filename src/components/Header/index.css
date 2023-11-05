@@ -23,12 +23,12 @@
 
 .top-menu-container:before {
     content: "";
-    border-top: 100px solid rgb(0, 0, 0, .18);
+    border-top: 100px solid rgba(0, 0, 0, 0.18);
     border-left: 100px solid transparent;
     border-right: 100px solid transparent;
     position: absolute;
-    width: 117%;
-    left: -8.5%;
+    width: 129%;
+    left: -14.5%;
     top: 0;
     z-index: -1;
 }
@@ -38,11 +38,11 @@
     border-top: 90px solid rgba(0, 0, 0, .45);
     border-left: 90px solid transparent;
     border-right: 90px solid transparent;
-    -webkit-filter: drop-shadow(0px -14px 13px rgba(0, 188, 182, 0.8));
-    filter: drop-shadow(0px -14px 13px rgba(0, 188, 182, 0.8));
+    -webkit-filter: drop-shadow(0px -14px 13px rgba(0, 188, 182, 0.5));
+    filter: drop-shadow(0px -14px 13px rgba(0, 188, 182, 0.5));
     position: absolute;
-    width: 110%;
-    left: -5%;
+    width: 122%;
+    left: -11%;
     top: 0;
     z-index: -1;
 }

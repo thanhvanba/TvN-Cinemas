@@ -2,16 +2,16 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { MapPinIcon } from "@heroicons/react/24/outline"
 import { useLocation, useNavigate } from 'react-router-dom';
-function ShowTimes() {
-  const {pathname} = useLocation()
+const ShowTimes = () => {
+  const { pathname } = useLocation()
   const navigate = useNavigate()
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
     navigate(pathname)
   }
 
-  const handleCheckPathname = (pathname)=>{
-    switch(pathname) {
+  const handleCheckPathname = (pathname) => {
+    switch (pathname) {
       case "/showtimes/lichchieuphim":
         setCurrentTab("1")
         break;
@@ -26,7 +26,7 @@ function ShowTimes() {
   useEffect(() => {
     handleCheckPathname(pathname)
 
-  },[pathname]);
+  }, [pathname]);
 
   return (
     <div className="w-full pt-32 pb-10">
@@ -34,12 +34,12 @@ function ShowTimes() {
         {/* tab */}
         <div className="sub-tab">
           <ul className="relative inline-block">
-            <li onClick={() => changeTab( "/showtimes/lichchieuphim")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100">
-              <a href="" className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
+            <li onClick={() => changeTab("/showtimes/lichchieuphim")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100">
+              <a href="#" className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
 
             </li>
             <li onClick={() => changeTab("/showtimes/phimtheorap")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100">
-              <a href="" className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
+              <a href="#" className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
             </li>
           </ul>
         </div>

@@ -10,30 +10,88 @@ const ApiService = () => {
     const loginApi = async (params) => {
         try {
             console.log(params)
-            const response = await axios.post('http://localhost:8080/api/v1/auth/login', params);
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/auth/login",
+                params
+            );
             console.log("ok")
 
             // Giả sử phản hồi đăng nhập thành công chứa một mã token
             // const token = response.data.token;  
-            if (response.data.success){
+            console.log(response.data)
+            if (response.data.success) {
                 console.log("kjsd")
                 alert(response.data.message)
                 changeTab('/home');
-                
+
             }
             else {
+                alert(response.data.message)
                 console.log("kjsd")
-                alert("Không thành công")}
-            
+                alert("Không thành công")
+            }
+
 
         } catch (error) {
-            // Xử lý lỗi đăng nhập ở đây
-            console.error('Lỗi đăng nhập:', error);
+            // alert(error.data.message)
+            console.log("kjsd")
+            alert(error.response.data.message);
         }
     };
-    return (
-        loginApi
-    )
+    const registerApi = async (params) => {
+        try {
+            console.log(params)
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/auth/register",
+                params
+            );
+            console.log(response.data)
+            if (response.data.success) {
+                alert(response.data.message)
+                changeTab('/signup/verify');
+            }
+        } catch (error) {
+            //alert('Đăng ký không thành công');
+            alert(error.response.data.message);
+        }
+    }
+    const verifyApi = async (params) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/auth/verifyOTP",
+                params
+            );
+            if (response.data.success){
+                alert(response.data.message)
+                changeTab("/signup");
+            }
+        }
+        catch (err){
+            alert(err.response.data.message)
+        }
+    }
+    const sendOtpApi = async (params) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/auth/sendOTP",
+                params
+            );
+            if (response.data.success){
+                console.log("đã vào")
+                alert(response.data.message)
+                changeTab("/signup/verify");
+            }
+        }
+        catch (err){
+            alert(err.response.data.message)
+        }
+    }
+    return {
+        loginApi,
+        registerApi,
+        verifyApi,
+        sendOtpApi
+    }
 }
 
 export default ApiService
