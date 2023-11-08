@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import './index.css'
 import bg from "../../images/bg-cinema-10.png"
-import ApiService from '../../ApiService'
+import ApiService from '../../service/ApiService'
 import { useState, useEffect, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "../../images/logo.png";
 
 const Signup = () => {
@@ -46,12 +46,11 @@ const Signup = () => {
 
     useEffect(() => {
         handleCheckPathname(pathname)
-
     }, [pathname]);
 
     const handleRegister = (e) => {
         e.preventDefault();
-        const params = account;
+        const params = account;       
         registerApi(params)
     }
     const handleLogin = (e) => {
@@ -61,16 +60,19 @@ const Signup = () => {
     }
     const handleVerify = (e) => {
         e.preventDefault();
+        document.getElementById('formRegister').reset();
         const otpValue = otp.join("");
-        const email = account.email
-        let otpObj = {email, otpValue}
+        console.log("🚀 ~ file: index.jsx:65 ~ handleVerify ~ otpValue:", otpValue)
+        const email = account.email 
+        let otpObj = { email, otpValue }
+        console.log("🚀 ~ file: index.jsx:68 ~ handleVerify ~ email:", email)
         verifyApi(otpObj)
-        
     }
-    const handleSendOtp = (e) =>{
+    const handleSendOtp = (e) => {
         e.preventDefault();
-        email = account.email
-        sendOtpApi(email)
+        const email = account.email
+        console.log("🚀 ~ file: index.jsx:75 ~ handleSendOtp ~ email:", email)
+        sendOtpApi({email})
     }
 
     const handleInputChange = (e, index) => {
@@ -102,13 +104,13 @@ const Signup = () => {
             // Focus vào ô trước đó
             inputRefs[index - 1].current.focus();
             const prevInput = inputRefs[index - 1].current;
-            prevInput.selectionStart= prevInput.value.length;
+            prevInput.selectionStart = prevInput.value.length;
         } else if (e.key === "ArrowRight" && index < 5) {
             e.preventDefault();
             // Focus vào ô tiếp theo
             inputRefs[index + 1].current.focus();
             const nextInput = inputRefs[index + 1].current;
-            nextInput.selectionStart  = nextInput.value.length;
+            nextInput.selectionStart = nextInput.value.length;
         }
     }
 
@@ -199,10 +201,10 @@ const Signup = () => {
                         <div className='m-8'>
                             <h2 className="text-white font-bold text-center uppercase mb-6">Đăng ký</h2>
                             <div className="border border-slate-400 rounded-md p-8 shadow-lg  relative">
-                                <form onSubmit={handleRegister} action="">
+                                <form id='formRegister' onSubmit={handleRegister} action="">
                                     <div className="relative my-4">
                                         <input
-                                            value={account.fullName}
+                                            // value={account.fullName}
                                             onChange={e => setAccount({ ...account, fullName: e.target.value })}
                                             type="text"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
@@ -217,7 +219,7 @@ const Signup = () => {
                                     </div>
                                     <div className="relative my-4">
                                         <input
-                                            value={account.email}
+                                            // value={account.email}
                                             onChange={e => { setAccount({ ...account, email: e.target.value }); }}
                                             type="email"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
@@ -232,7 +234,7 @@ const Signup = () => {
                                     </div>
                                     <div className="relative my-4">
                                         <input
-                                            value={account.phone}
+                                            // value={account.phone}
                                             onChange={e => setAccount({ ...account, phone: e.target.value })}
                                             type="text"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
@@ -247,7 +249,7 @@ const Signup = () => {
                                     </div>
                                     <div className="relative my-4">
                                         <input
-                                            value={account.userName}
+                                            // value={account.userName}
                                             onChange={e => setAccount({ ...account, userName: e.target.value })} type="text"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
                                             placeholder=""
@@ -261,7 +263,7 @@ const Signup = () => {
                                     </div>
                                     <div className="relative my-4">
                                         <input
-                                            value={account.password}
+                                            // value={account.password}
                                             onChange={e => setAccount({ ...account, password: e.target.value })}
                                             type="password"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
@@ -276,7 +278,7 @@ const Signup = () => {
                                     </div>
                                     <div className="relative my-4">
                                         <input
-                                            value={account.confirmPassword}
+                                            // value={account.confirmPassword}
                                             onChange={e => setAccount({ ...account, confirmPassword: e.target.value })}
                                             type="password"
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
@@ -319,7 +321,7 @@ const Signup = () => {
                                 <p className='font-medium pb-4'>
                                     Mã xác thực của bạn đã được gửi qua email
                                     <br />
-                                    <span>{account.email} ***@gmail.com</span>
+                                    <span>{account.email || "***@gmail.com" }</span>
                                 </p>
                                 <p className='p-4'>Nhập mã OTP</p>
                             </div>
@@ -339,7 +341,7 @@ const Signup = () => {
                                     ))}
                                     <div className='flex justify-between px-8'>
                                         <p>Bạn chưa nhận được mã ?</p>
-                                        <a onClick={handleSendOtp} className='underline text-cyan-500 font-semibold' href="#">Gửi lại mã OTP</a>
+                                        <a onClick={handleSendOtp} className='underline text-cyan-500 font-semibold' href="">Gửi lại mã OTP</a>
                                     </div>
 
                                 </div>

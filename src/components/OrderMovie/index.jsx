@@ -5,6 +5,7 @@ import { ArmchairIcon, PopcornIcon, CreditCardIcon, InboxIcon } from 'lucide-rea
 import screen from "../../images/screen.webp"
 import { XMarkIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
 import "./index.css"
+import formatPrice from "../../utils/ConvertStringFollowFormat"
 
 const OrderMovie = () => {
     const pricePerItem = 15000
@@ -36,10 +37,6 @@ const OrderMovie = () => {
             url: '/order/ve'
         },
     ];
-
-    const formatPrice = (price) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    };
 
     // Hàm tạo danh sách ghế ngồi
     const createSeatData = (rows, seatsPerRow) => {

@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import ApiService from '../../ApiService'
+import ApiService from '../../service/ApiService'
 import './index.css'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
@@ -31,7 +31,7 @@ const callsToAction = [
 ]
 
 const Header = () => {
-  const {loginApi} = ApiService();
+  const { loginApi } = ApiService();
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('1');
@@ -152,27 +152,27 @@ const Header = () => {
                       </Transition>
                     </Popover>
                   </li> */}
-                  <li onClick={() => changeTab( "/home")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/home")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Phim
                     </a>
                   </li>
-                  <li onClick={() => changeTab( "/showtimes")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
                   </li>
-                  <li onClick={() => changeTab( "/rap")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/rap")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '3' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Hệ thống rạp
                     </a>
                   </li>
-                  <li onClick={() => changeTab( "/khuyenmai")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/khuyenmai")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '4' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Khuyến mãi
                     </a>
                   </li>
-                  <li onClick={() => changeTab( "/lienhe")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/lienhe")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '5' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Liên hệ
                     </a>
@@ -193,7 +193,10 @@ const Header = () => {
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
               </a>
             </div>
-            <button onClick={() => changeTab("/showtimes")} className="my-4 ml-1 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
+            <button
+              onClick={() => changeTab("/showtimes")}
+              className="my-4 ml-1 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+              type='submit'
             >
               Mua Vé
             </button>

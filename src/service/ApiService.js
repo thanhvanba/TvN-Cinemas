@@ -59,30 +59,38 @@ const ApiService = () => {
         try {
             const response = await axios.post(
                 "http://localhost:8080/api/v1/auth/verifyOTP",
-                params
+                {email: params.email, otp: params.otpValue}
             );
             if (response.data.success){
+                console.log("verify pass")
                 alert(response.data.message)
                 changeTab("/signup");
             }
         }
         catch (err){
+            console.log("🚀 ~ file: ApiService.js:71 ~ verifyApi ~ err:", err)
+            console.log("verify fail")
+            
             alert(err.response.data.message)
         }
     }
     const sendOtpApi = async (params) => {
         try {
+            
+            console.log("🚀 ~ file: ApiService.js:82 ~ sendOtpApi ~ params:", params)
             const response = await axios.post(
                 "http://localhost:8080/api/v1/auth/sendOTP",
                 params
             );
+            console.log("🚀 ~ file: ApiService.js:82 ~ sendOtpApi ~ params:", params)
             if (response.data.success){
-                console.log("đã vào")
+                console.log("send pass")
                 alert(response.data.message)
                 changeTab("/signup/verify");
             }
         }
         catch (err){
+            console.log("send fail")
             alert(err.response.data.message)
         }
     }
