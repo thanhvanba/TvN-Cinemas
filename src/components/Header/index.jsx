@@ -1,6 +1,8 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../service/ApiService'
+import { UserContext } from '../../context/UserContext'
+
 import './index.css'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
@@ -14,7 +16,10 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import logo from "../../images/logo.png"
 
 
@@ -31,21 +36,38 @@ const callsToAction = [
 ]
 
 const Header = () => {
-  const { loginApi } = ApiService();
+  const { loginApi, logoutApi } = ApiService();
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('1');
+
+  const [loading, setLoading] = useState(false)
+  const [isShowPassword, setIsShowPassword] = useState(false)
+
+  const { user } = useContext(UserContext);
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const changeTab = (pathname) => {
     navigate(pathname)
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let logobj = { credentialId, password };
-    loginApi(logobj)
+
+    setLoading(true)
+      let logobj = { credentialId, password };
+      await loginApi(logobj)
+      setLoading(false)
+
   }
+
+  const handleLogoutApi = async (e) => {
+    e.preventDefault();
+    setLoading(true)
+    await logoutApi()
+    setLoading(false)
+  }
+
   const handleCheckPathname = (pathname) => {
     switch (pathname) {
       case "/home":
@@ -183,7 +205,7 @@ const Header = () => {
           </div>
 
           {/* Tìm kiếm, mua vé, đăng nhập */}
-          <Popover className="flex flex-auto items-center justify-end">
+          <Popover className="flex items-center justify-center">
             {/* Tim kiem */}
             <div className='relative mr-2'>
               <div>
@@ -193,59 +215,97 @@ const Header = () => {
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
               </a>
             </div>
-            <button
-              onClick={() => changeTab("/showtimes")}
-              className="my-4 ml-1 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
-              type='submit'
-            >
-              Mua Vé
-            </button>
-            <Popover.Button className="my-4 p-4 border-slate-400 border text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
-            >
-              Đăng Nhập
-            </Popover.Button>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
-            >
-              <Popover.Panel
-                className="absolute top-full right-6 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
-                <div className="px-6 py-4 backdrop-blur-sm relative">
-                  <form action="">
-                    <div className="relative my-2">
-                      <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
-                      <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
-                      >
-                        User Name
-                      </label>
-                    </div>
-                    <div className="relative my-2">
-                      <input type="password" onChange={e => usePassword(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
-                      <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
-                      >
-                        Password
-                      </label>
-                    </div>
-                    <div className="flex justify-between mt-4 items-center">
-                      <button onClick={handleSubmit} className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
-                      >
-                        Đăng nhập
-                      </button>
-                      <a href="#">Quên mật khẩu</a>
-                    </div>
-                    <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
-                    >
-                      Đăng ký thành viên
-                    </button>
-                  </form>
+            {
+              user && user.auth === false
+                ? <div>
+                  <button
+                    onClick={() => changeTab("/showtimes")}
+                    className="my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                    type='submit'
+                  >
+                    Mua Vé
+                  </button>
+                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                  >
+                    Đăng Nhập
+                  </Popover.Button>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <Popover.Panel
+                      className="absolute top-full right-6 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
+                      <div className="px-6 py-4 backdrop-blur-sm relative">
+                        <form action="">
+                          <div className="relative my-2">
+                            <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
+                            <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
+                            >
+                              User Name
+                            </label>
+                          </div>
+                          <div className="relative my-2">
+                            <input
+                              type={isShowPassword === true ? "text" : "password"}
+                              onChange={e => usePassword(e.target.value)}
+                              className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
+                              placeholder=""
+                            />
+                            <div onClick={() => setIsShowPassword(!isShowPassword)}>
+                              {
+                                isShowPassword === false ?
+                                  <EyeSlashIcon
+                                    className='h-6 w-6 text-white absolute right-0 top-5'
+                                  />
+                                  : <EyeIcon
+                                    className='h-6 w-6 text-white absolute right-0 top-5'
+                                  />
+                              }
+                            </div>
+                            <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
+                            >
+                              Password
+                            </label>
+                          </div>
+                          <div className="flex justify-between mt-4 items-center">
+                            <button onClick={handleSubmit} className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                            >
+                              {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                              &nbsp;Đăng nhập
+                            </button>
+                            <a href="#">Quên mật khẩu</a>
+                          </div>
+                          <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                          >
+                            Đăng ký thành viên
+                          </button>
+                        </form>
+                      </div>
+                    </Popover.Panel>
+                  </Transition>
                 </div>
-              </Popover.Panel>
-            </Transition>
+                : <div>
+                  <span
+                    className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
+                  >
+                    {user.credentialId}
+                  </span>
+                  <button
+                    onClick={handleLogoutApi}
+                    className="ml-2 p-2 text-sm font-bold uppercase rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                    type='submit'
+                  >
+                    {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                    &nbsp;Đăng xuất
+                  </button>
+                </div>
+            }
+
           </Popover>
 
           {/* <a href="" className='px-4 py-8 '>

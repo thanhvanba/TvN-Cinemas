@@ -4,7 +4,7 @@ import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent'
 import TruncatedContentShowModal from '../../../utils/TruncatedContentShowModal'
 
-const ListCinemas = () => {
+const ListCinema = () => {
     const listCinema = [
         {
             header: { stt: "STT", name: "Rạp", location: "Địa chỉ", revenue: "Doanh Thu", status: "status", desc: "Mô tả", map: "Vị trí", action: "ACtions" },
@@ -25,12 +25,12 @@ const ListCinemas = () => {
         <div>
             <div className='px-4'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>List Cinemas</h2>
+                    <h2 className='text-3xl'>List Cinema</h2>
                     <button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
                         type='submit'
                     >
-                        Add Cinemas
+                        Add Cinema
                     </button>
                 </div>
             </div>
@@ -100,4 +100,4 @@ const ListCinemas = () => {
     )
 }
 
-export default ListCinemas
+export default ListCinema

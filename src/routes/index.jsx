@@ -9,6 +9,106 @@ import OrderMovie from '../components/OrderMovie'
 import Header from '../components/Header'
 import Admin from '../page/admin'
 
+// const routers = [
+//   {
+//     path: '/',
+//     element: <Home />
+//   },
+//   {
+//     path: '/home',
+//     element: <Home />
+//   },
+//   {
+//     path: '/home',
+//     element: <Header />
+//   },
+//   {
+//     path: '/phim/dangchieu',
+//     element: <Home />
+//   },
+//   {
+//     path: '/phim/sapchieu',
+//     element: <Home />
+//   },
+//   {
+//     path: '/dacbiet',
+//     element: <Home />
+//   },
+//   {
+//     path: '/signup',
+//     element: < Signup />
+//   },
+//   {
+//     path: '/signup/verify',
+//     element: < Signup />
+//   },
+
+//   {
+//     path: '/thanhvien',
+//     element: < Signup />
+//   },
+//   {
+//     path: '/quydinh',
+//     element: < Signup />
+//   },
+//   {
+//     path: '/movie',
+//     element: < Movie />
+//   },
+//   {
+//     path: '/showtimes',
+//     element: < ShowTimes />
+//   },
+//   {
+//     path: '/showtimes/lichchieuphim',
+//     element: < ShowTimes />
+//   },
+//   {
+//     path: '/showtimes/phimtheorap',
+//     element: < ShowTimes />
+//   },
+//   {
+//     path: '/order',
+//     element: < OrderMovie />
+//   },
+//   {
+//     path: '/order/chonghe',
+//     element: < OrderMovie />
+//   },
+//   {
+//     path: '/order/bapnuoc',
+//     element: < OrderMovie />
+//   },
+//   {
+//     path: '/order/ve',
+//     element: < OrderMovie />
+//   },
+//   {
+//     path: '/admin/dashboard',
+//     element: < Admin />
+//   },
+//   {
+//     path: '/admin/list-user',
+//     element: < Admin />
+//   },
+//   {
+//     path: '/admin/list-showtime',
+//     element: < Admin />
+//   },
+//   {
+//     path: '/admin/list-movie',
+//     element: < Admin />
+//   },
+//   {
+//     path: '/admin/list-cinemas',
+//     element: < Admin />
+//   },
+//   {
+//     path: '/admin/list-review"',
+//     element: < Admin />
+//   }
+// ];
+
 const Router = () => {
     return (
       <Routes>

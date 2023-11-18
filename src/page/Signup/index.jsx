@@ -5,9 +5,15 @@ import ApiService from '../../service/ApiService'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "../../images/logo.png";
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import useLoadingState from '../../hook/UseLoadingState'
 
 const Signup = () => {
     const { registerApi, loginApi, verifyApi, sendOtpApi } = ApiService();
+    const { loading, setLoading } = useLoadingState(false);
+
     const [account, setAccount] = useState({
         fullName: "",
         email: "",
@@ -16,10 +22,16 @@ const Signup = () => {
         password: "",
         confirmPassword: ""
     })
+
     const [credentialId, setUserName] = useState('')
     const [password, setPassword] = useState('')
+
     const [otp, setOTP] = useState(["", "", "", "", "", ""]);
     const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
+
+    //const [loading, setLoading] = useState(false)
+    const [isShowPassword, setIsShowPassword] = useState(false)
+
     const { pathname } = useLocation()
     const navigate = useNavigate()
     const [currentTab, setCurrentTab] = useState('1');
@@ -48,31 +60,42 @@ const Signup = () => {
         handleCheckPathname(pathname)
     }, [pathname]);
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-        const params = account;       
-        registerApi(params)
-    }
-    const handleLogin = (e) => {
+        setLoading('register', true);
+        console.log(loading)
+        const params = account;
+        await registerApi(params);
+        setLoading('register', false);
+    };
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading('login', true)
         let logobj = { credentialId, password };
-        loginApi(logobj)
+        await loginApi(logobj)
+        setLoading('login', false)
     }
-    const handleVerify = (e) => {
+    const handleVerify = async (e) => {
         e.preventDefault();
+        console.log(loading)
+        setLoading('verify', true)
+        console.log(loading)
         document.getElementById('formRegister').reset();
         const otpValue = otp.join("");
-        console.log("🚀 ~ file: index.jsx:65 ~ handleVerify ~ otpValue:", otpValue)
-        const email = account.email 
+        const email = account.email
         let otpObj = { email, otpValue }
-        console.log("🚀 ~ file: index.jsx:68 ~ handleVerify ~ email:", email)
-        verifyApi(otpObj)
+        await verifyApi(otpObj)
+        setLoading('verify', false)
     }
-    const handleSendOtp = (e) => {
+    const handleSendOtp = async (e) => {
         e.preventDefault();
+        setLoading('sendotp', true)
+        console.log(loading)
         const email = account.email
         console.log("🚀 ~ file: index.jsx:75 ~ handleSendOtp ~ email:", email)
-        sendOtpApi({email})
+        await sendOtpApi({ email })
+        setLoading('sendotp', false)
+        console.log(loading)
     }
 
     const handleInputChange = (e, index) => {
@@ -170,10 +193,22 @@ const Signup = () => {
                                     <div className="relative my-4">
                                         <input
                                             onChange={e => setPassword(e.target.value)}
-                                            type="password"
+                                            type={isShowPassword === true ? "text" : "password"}
                                             className="block w-full py-2.5 px-0 text-lg text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
                                             placeholder=""
                                         />
+                                        <div onClick={() => setIsShowPassword(!isShowPassword)}>
+                                            {
+                                                isShowPassword === false ?
+                                                    <EyeSlashIcon
+                                                        className='h-5 w-5 text-white absolute right-0 top-5'
+                                                    />
+                                                    : <EyeIcon
+                                                        className='h-5 w-5 text-white absolute right-0 top-5'
+                                                    />
+                                            }
+                                        </div>
+
                                         <label
                                             htmlFor=""
                                             className="absolute text-lg text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
@@ -192,7 +227,8 @@ const Signup = () => {
                                         className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                         type='submit'
                                     >
-                                        Login
+                                        {loading['login'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                        &nbsp;Đăng nhập
                                     </button>
                                 </form>
                             </div>
@@ -295,7 +331,8 @@ const Signup = () => {
                                         className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                         type='submit'
                                     >
-                                        SignUp
+                                        {loading['register'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                        &nbsp; Đăng ký
                                     </button>
                                 </form>
                             </div>
@@ -321,7 +358,7 @@ const Signup = () => {
                                 <p className='font-medium pb-4'>
                                     Mã xác thực của bạn đã được gửi qua email
                                     <br />
-                                    <span>{account.email || "***@gmail.com" }</span>
+                                    <span>{account.email || "***@gmail.com"}</span>
                                 </p>
                                 <p className='p-4'>Nhập mã OTP</p>
                             </div>
@@ -341,7 +378,10 @@ const Signup = () => {
                                     ))}
                                     <div className='flex justify-between px-8'>
                                         <p>Bạn chưa nhận được mã ?</p>
-                                        <a onClick={handleSendOtp} className='underline text-cyan-500 font-semibold' href="">Gửi lại mã OTP</a>
+                                        <a onClick={handleSendOtp} className='underline text-cyan-500 font-semibold' href="">
+                                            {loading['sendotp'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                            &nbsp;Gửi lại mã OTP
+                                        </a>
                                     </div>
 
                                 </div>
@@ -349,7 +389,8 @@ const Signup = () => {
                                     className="w-11/12 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                     type='submit'
                                 >
-                                    Xác nhận
+                                    {loading['verify'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                    &nbsp;Xác nhận
                                 </button>
                             </form>
                         </div>

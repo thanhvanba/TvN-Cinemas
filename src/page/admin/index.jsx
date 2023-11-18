@@ -8,7 +8,7 @@ import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, Buil
 import './index.css'
 import Dashboard from './Dashboard/dashboard'
 import ListUser from './ListUser'
-import ListCinemas from './ListCinemas'
+import ListCinema from './ListCinema'
 import ListMovie from './ListMovie';
 import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
@@ -126,7 +126,7 @@ const Admin = () => {
           <ListMovie />
         </div>
         <div style={{ display: currentTab === '5' ? 'block' : 'none' }} >
-          <ListCinemas />
+          <ListCinema />
         </div>
         <div style={{ display: currentTab === '6' ? 'block' : 'none' }}>
           <ListReview />

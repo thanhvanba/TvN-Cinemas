@@ -17,7 +17,7 @@ function TruncatedContent({ content, maxLength }) {
             ) : (
                 <p>{content}</p>
             )}
-            <button className='font-light text-base' onClick={toggleTruncate}>
+            <button className='font-light' onClick={toggleTruncate}>
                 {isTruncated ? 'Xem thêm' : 'Thu gọn'}
             </button>
         </div>
