@@ -7,7 +7,7 @@ import { UserContext } from '../context/UserContext'
 
 const ApiService = () => {
     const navigate = useNavigate()
-    const { login, logout } = useContext(UserContext);
+    const { register, login, logout } = useContext(UserContext);
     const changeTab = (pathname) => {
         navigate(pathname)
     }
@@ -40,6 +40,7 @@ const ApiService = () => {
             console.log(response.data)
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
+                register(data.email, data.fullName, data.phone)
                 changeTab('/signup/verify');
             }
         } catch (error) {

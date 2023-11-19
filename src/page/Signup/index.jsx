@@ -10,8 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useLoadingState from '../../hook/UseLoadingState'
 
+import { useContext } from 'react'
+import {UserContext} from '../../context/UserContext'
+
 const Signup = () => {
     const { registerApi, loginApi, verifyApi, sendOtpApi } = ApiService();
+
+    const { info } = useContext(UserContext);
+
     const { loading, setLoading } = useLoadingState(false);
 
     const [account, setAccount] = useState({
@@ -39,7 +45,6 @@ const Signup = () => {
     const changeTab = (pathname) => {
         navigate(pathname)
     }
-
     const handleCheckPathname = (pathname) => {
         switch (pathname) {
             case "/thanhvien":
@@ -55,7 +60,6 @@ const Signup = () => {
                 setCurrentTab("1")
         }
     }
-
     useEffect(() => {
         handleCheckPathname(pathname)
     }, [pathname]);
@@ -77,27 +81,28 @@ const Signup = () => {
     }
     const handleVerify = async (e) => {
         e.preventDefault();
+        setOTP(["", "", "", "", "", ""])
         console.log(loading)
         setLoading('verify', true)
         console.log(loading)
         document.getElementById('formRegister').reset();
         const otpValue = otp.join("");
-        const email = account.email
+        const email = info.email
         let otpObj = { email, otpValue }
         await verifyApi(otpObj)
         setLoading('verify', false)
     }
     const handleSendOtp = async (e) => {
         e.preventDefault();
+        setOTP(["", "", "", "", "", ""])
         setLoading('sendotp', true)
         console.log(loading)
-        const email = account.email
+        const email = info.email
         console.log("🚀 ~ file: index.jsx:75 ~ handleSendOtp ~ email:", email)
         await sendOtpApi({ email })
         setLoading('sendotp', false)
         console.log(loading)
     }
-
     const handleInputChange = (e, index) => {
         const value = e.target.value;
         const newOTP = [...otp];
@@ -226,6 +231,7 @@ const Signup = () => {
                                     <button
                                         className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                         type='submit'
+                                        disabled={loading['login']}
                                     >
                                         {loading['login'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                         &nbsp;Đăng nhập
@@ -330,6 +336,7 @@ const Signup = () => {
                                     <button
                                         className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                         type='submit'
+                                        disabled={loading['register']}
                                     >
                                         {loading['register'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                         &nbsp; Đăng ký
@@ -358,7 +365,7 @@ const Signup = () => {
                                 <p className='font-medium pb-4'>
                                     Mã xác thực của bạn đã được gửi qua email
                                     <br />
-                                    <span>{account.email || "***@gmail.com"}</span>
+                                    <span>{info.email || "***@gmail.com"}</span>
                                 </p>
                                 <p className='p-4'>Nhập mã OTP</p>
                             </div>
@@ -378,7 +385,11 @@ const Signup = () => {
                                     ))}
                                     <div className='flex justify-between px-8'>
                                         <p>Bạn chưa nhận được mã ?</p>
-                                        <a onClick={handleSendOtp} className='underline text-cyan-500 font-semibold' href="">
+                                        <a
+                                            onClick={handleSendOtp}
+                                            className='underline text-cyan-500 font-semibold'
+                                            disabled={loading['sendotp']}
+                                        >
                                             {loading['sendotp'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                             &nbsp;Gửi lại mã OTP
                                         </a>
@@ -388,6 +399,7 @@ const Signup = () => {
                                 <button
                                     className="w-11/12 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                     type='submit'
+                                    disabled={loading['verify']}
                                 >
                                     {loading['verify'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                     &nbsp;Xác nhận
