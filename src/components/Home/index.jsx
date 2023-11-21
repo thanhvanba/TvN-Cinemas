@@ -6,12 +6,14 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import "./index.css"
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
+import MovieService from "../../service/MovieService"
 
 const IMAGES = [
   slider1, slider2, slider3
 ]
 
 const Home = () => {
+  const { getAllMovieApi, ComingSoonMovieApi, SpecialMovieApi } = MovieService()
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [currentTab, setCurrentTab] = useState('1');
@@ -19,26 +21,47 @@ const Home = () => {
     navigate(pathname)
   }
 
-  const handleCheckPathname = (pathname) => {
+  const [allMovie, setAllMovie] = useState([])
+
+  const handleCheckPathname = async (pathname) => {
+    let res;
     switch (pathname) {
       case "/phim/dangchieu":
-        setCurrentTab("1")
+        {
+          res = await getAllMovieApi()
+          setCurrentTab("1")
+        }
         break;
       case "/phim/sapchieu":
-        setCurrentTab("2")
+        {
+          res = await ComingSoonMovieApi()
+          setCurrentTab("2")
+        }
         break;
       case "/dacbiet":
-        setCurrentTab("3")
+        {
+          res = await SpecialMovieApi()
+          setCurrentTab("3")
+        }
         break;
       default:
-        setCurrentTab("1")
+        {
+          res = await getAllMovieApi()
+          setCurrentTab("1")
+        }
+    }
+    
+  
+    if (res && res.data && res.data.result) {
+      setAllMovie(res.data.result)
     }
   }
-
   useEffect(() => {
     handleCheckPathname(pathname)
-
+    console.log("🚀 ~ file: index.jsx:94 ~ useEffect ~ pathname:", pathname)
+    console.log(allMovie)
   }, [pathname]);
+  
   return (
     <div className="w-full">
       {/* slider */}
@@ -94,15 +117,31 @@ const Home = () => {
           {/* load phim dang chieu */}
           <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-              <div onClick={() => changeTab("/movie")} className="mb-4">
+              {
+                allMovie && allMovie.length > 0 &&
+                allMovie.map((movie, index) => {
+                  return (
+
+                    <div div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab("/movie")} className="mb-4">
+                      <div className="product-item table relative">
+                        <img
+                          src={movie.poster}
+                          alt=""
+                          className="product-over h-[462px] w-full table-cell"
+                        />
+                      </div>
+                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                        {movie.title}
+                      </div>
+                    </div>
+                  )
+                })
+              }
+              {/* <div onClick={() => changeTab("/movie")} className="mb-4">
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/10/11/dat-rung-sneak-4_1697007647619.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+                
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Đất rừng phương nam
@@ -112,11 +151,7 @@ const Home = () => {
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/9/21/500x750_1695282600306.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+                 
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Giao lộ 8675s
@@ -126,11 +161,7 @@ const Home = () => {
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/10/12/400-blows-500_1697081173581.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+                 
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Đất rừng phương nam
@@ -140,11 +171,7 @@ const Home = () => {
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/10/3/500x750_1696307210165.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+               
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Đất rừng phương nam
@@ -154,11 +181,7 @@ const Home = () => {
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/9/27/500x750_1695787578707.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+                 
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Đất rừng phương nam
@@ -168,38 +191,61 @@ const Home = () => {
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/9/21/cheon-500_1695281331881.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
-                  {/* <a href="" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a> */}
+               
                 </div>
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Đất rừng phương nam
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* load phim sap chieu */}
           <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-              <div className="text-slate-200">
-                sap chieu
-              </div>
-
+              {
+                allMovie && allMovie.length > 0 &&
+                allMovie.map((movie) => (
+                  <div onClick={() => changeTab("/movie")} className="mb-4">
+                    <div className="product-item table relative">
+                      <img
+                        src={movie.poster}
+                        alt=""
+                        className="product-over h-[462px] w-full table-cell"
+                      />
+                    </div>
+                    <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                      {movie.title}
+                    </div>
+                  </div>
+                ))
+              }
             </div>
           </div>
           {/* load suat chieu dac biet */}
           <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-              <div className="text-slate-200">
-                dac biet
-              </div>
+              {
+                allMovie && allMovie.length > 0 &&
+                allMovie.map((movie) => (
+                  <div onClick={() => changeTab("/movie")} className="mb-4">
+                    <div className="product-item table relative">
+                      <img
+                        src={movie.poster}
+                        alt=""
+                        className="product-over h-[462px] w-full table-cell"
+                      />
+                    </div>
+                    <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
+                      {movie.title}
+                    </div>
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

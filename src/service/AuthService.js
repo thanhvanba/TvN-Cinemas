@@ -5,7 +5,7 @@ import toastNotify from "../utils/UseToastForNotify"
 import { useContext } from 'react'
 import { UserContext } from '../context/UserContext'
 
-const ApiService = () => {
+const AuthService = () => {
     const navigate = useNavigate()
     const { register, login, logout } = useContext(UserContext);
     const changeTab = (pathname) => {
@@ -57,6 +57,9 @@ const ApiService = () => {
             if (response.data.success) {
                 console.log("verify pass")
                 toastNotify(response.data.message, "success")
+                localStorage.removeItem("email")
+                localStorage.removeItem("fullname")
+                localStorage.removeItem("phone")
                 changeTab("/signup");
             }
         }
@@ -124,4 +127,4 @@ const ApiService = () => {
     }
 }
 
-export default ApiService
+export default AuthService

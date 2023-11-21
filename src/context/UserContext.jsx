@@ -10,7 +10,7 @@ const UserProvider = ({ children }) => {
   const [info, setUserInfo] = React.useState({ email: '', fullname: '', phone: '' });
 
   const register = (email, fullname, phone) => {
-    setUserInfo((info) => ({
+    setUserInfo(() => ({
       email: email,
       fullname: fullname,
       phone: phone
@@ -22,7 +22,7 @@ const UserProvider = ({ children }) => {
   };
 
   const login = (credentialId, token, refreshToken) => {
-    setUser((user) => ({
+    setUser(() => ({
       credentialId: credentialId,
       auth: true,
     }));
@@ -36,7 +36,7 @@ const UserProvider = ({ children }) => {
     localStorage.removeItem("token")
     localStorage.removeItem("refreshToken")
     localStorage.removeItem("username")
-    setUser((user) => ({
+    setUser(() => ({
       credentialId: '',
       auth: false,
     }));

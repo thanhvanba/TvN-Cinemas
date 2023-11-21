@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './index.css'
 import bg from "../../images/bg-cinema-10.png"
-import ApiService from '../../service/ApiService'
+import AuthService from '../../service/AuthService'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "../../images/logo.png";
@@ -14,7 +14,7 @@ import { useContext } from 'react'
 import {UserContext} from '../../context/UserContext'
 
 const Signup = () => {
-    const { registerApi, loginApi, verifyApi, sendOtpApi } = ApiService();
+    const { registerApi, loginApi, verifyApi, sendOtpApi } = AuthService();
 
     const { info } = useContext(UserContext);
 

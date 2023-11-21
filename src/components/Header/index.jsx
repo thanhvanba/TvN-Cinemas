@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import ApiService from '../../service/ApiService'
+import AuthService from '../../service/AuthService'
 import { UserContext } from '../../context/UserContext'
 
 import './index.css'
@@ -36,7 +36,7 @@ const callsToAction = [
 ]
 
 const Header = () => {
-  const { loginApi, logoutApi } = ApiService();
+  const { loginApi, logoutApi } = AuthService();
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('1');
@@ -55,9 +55,9 @@ const Header = () => {
     e.preventDefault();
 
     setLoading(true)
-      let logobj = { credentialId, password };
-      await loginApi(logobj)
-      setLoading(false)
+    let logobj = { credentialId, password };
+    await loginApi(logobj)
+    setLoading(false)
 
   }
 

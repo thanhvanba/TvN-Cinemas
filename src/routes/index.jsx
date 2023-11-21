@@ -6,7 +6,6 @@ import Signup from '../page/Signup'
 import Movie from '../components/Movie'
 import ShowTimes from '../components/ShowTimes'
 import OrderMovie from '../components/OrderMovie'
-import Header from '../components/Header'
 import Admin from '../page/admin'
 
 // const routers = [
@@ -113,8 +112,6 @@ const Router = () => {
     return (
       <Routes>
         <Route path='/' element={<Home />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/home' element={<Header   />} />
           <Route path='/phim/dangchieu' element={<Home />} />
           <Route path='/phim/sapchieu' element={<Home />} />
           <Route path='/dacbiet' element={<Home />} />

@@ -8,19 +8,21 @@ function App() {
   const { user, info, login, register } = useContext(UserContext);
   console.log(">>> user", user, ">>> info", info)
 
-  useEffect(()=>{
-    if(localStorage.getItem("token")){
-      login(localStorage.getItem("username"), localStorage.getItem("token"), localStorage.getItem("refreshToken"))
-    }
-  }, []);
+  // useEffect(()=>{
+  //   if(localStorage.getItem("token")){
+  //     console.log("🚀 ~ file: App.jsx:13 ~ useEffect ~ token:", token)
+  //     login(localStorage.getItem("username"), localStorage.getItem("token"), localStorage.getItem("refreshToken"))
+  //   }
+  // }, []);
 
-  useEffect(()=>{
-    if(localStorage.getItem("email")){
-      register(localStorage.getItem("email"), localStorage.getItem("fullname"), localStorage.getItem("phone"))
-    }
-  }, []);
+  // useEffect(()=>{
+  //   if(localStorage.getItem("email")){
+  //     console.log("🚀 ~ file: App.jsx:20 ~ useEffect ~ email:", email)
+  //     register(localStorage.getItem("email"), localStorage.getItem("fullname"), localStorage.getItem("phone"))
+  //   }
+  // }, []);
   return (
-    <div style={{"background": "url(../src/images/movie-details-bg.jpg)", "background-attachment": "fixed"}}>
+    <div style={{"background": "url(../src/images/movie-details-bg.jpg)", "backgroundAttachment": "fixed"}}>
         <Router/>
     </div>
   )
