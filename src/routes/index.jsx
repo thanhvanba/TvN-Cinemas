@@ -119,7 +119,7 @@ const Router = () => {
           <Route path='/signup/verify' element={<Signup />} />
           <Route path='/thanhvien' element={<Signup />} />
           <Route path='/quydinh' element={<Signup />} />
-          <Route path='/movie' element={<Movie />} />
+          <Route path='/movie/:id' element={<Movie />} />
           <Route path='/showtimes' element={<ShowTimes/>} />
           <Route path='/showtimes/lichchieuphim' element={<ShowTimes/>} />
           <Route path='/showtimes/phimtheorap' element={<ShowTimes/>} />

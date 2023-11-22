@@ -101,7 +101,7 @@ const Header = () => {
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
-              <a onClick={() => { changeTab('/home') }} href="" className="-m-1.5 p-1.5">
+              <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
                 <img className="h-[80px] w-auto" src={logo} alt="" />
               </a>
@@ -174,7 +174,7 @@ const Header = () => {
                       </Transition>
                     </Popover>
                   </li> */}
-                  <li onClick={() => changeTab("/home")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/")} className='px-4 py-8 relative'>
                     <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Phim
                     </a>

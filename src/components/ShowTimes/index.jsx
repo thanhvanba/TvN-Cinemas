@@ -2,32 +2,70 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { MapPinIcon } from "@heroicons/react/24/outline"
 import { useLocation, useNavigate } from 'react-router-dom';
+import MovieService from "../../service/MovieService"
+import CinemaService from '../../service/CinemaService';
+
 const ShowTimes = () => {
+  const { SpecialMovieApi, NowPlayingMovieApi } = MovieService()
+  const { GetAllCinemaApi } = CinemaService()
+
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [currentTab, setCurrentTab] = useState('1');
+  console.log("🚀 ~ file: index.jsx:15 ~ ShowTimes ~ currentTab:", currentTab)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
 
-  const handleCheckPathname = (pathname) => {
+  const [allShowMovie, setAllShowMovie] = useState([])
+  const [allCinema, setAllCinema] = useState([])
+
+  const handleCheckPathname = async (pathname) => {
     switch (pathname) {
       case "/showtimes/lichchieuphim":
-        setCurrentTab("1")
+        {
+          let resNowPlayMovie = await NowPlayingMovieApi()
+          let resSpecialMovie = await SpecialMovieApi()
+          if (resNowPlayMovie && resSpecialMovie &&
+            resNowPlayMovie.data && resSpecialMovie.data &&
+            resNowPlayMovie.data.result && resSpecialMovie.data.result
+          ) {
+            let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
+            setAllShowMovie(movie)
+          }
+          setCurrentTab("1")
+        }
         break;
       case "/showtimes/phimtheorap":
-        setCurrentTab("2")
+        {
+          let res = await GetAllCinemaApi()
+          if (res && res.data && res.data.result && res.data.result.content) {
+            setAllCinema(res.data.result.content)
+          }
+          setCurrentTab("2")
+        }
         break;
       default:
-        setCurrentTab("1")
+        {
+          let resNowPlayMovie = await NowPlayingMovieApi()
+          let resSpecialMovie = await SpecialMovieApi()
+          if (resNowPlayMovie && resSpecialMovie &&
+            resNowPlayMovie.data && resSpecialMovie.data &&
+            resNowPlayMovie.data.result && resSpecialMovie.data.result
+          ) {
+            let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
+            setAllShowMovie(movie)
+          }
+          setCurrentTab("1")
+        }
     }
   }
 
   useEffect(() => {
     handleCheckPathname(pathname)
-
+    console.log(allCinema)
   }, [pathname]);
-
+  console.log(allCinema)
   return (
     <div className="w-full pt-32 pb-10">
       <div className="content-page">
@@ -35,11 +73,11 @@ const ShowTimes = () => {
         <div className="sub-tab">
           <ul className="relative inline-block">
             <li onClick={() => changeTab("/showtimes/lichchieuphim")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100">
-              <a href="#" className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
+              <a className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
 
             </li>
             <li onClick={() => changeTab("/showtimes/phimtheorap")} className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100">
-              <a href="#" className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
+              <a className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
             </li>
           </ul>
         </div>
@@ -49,7 +87,20 @@ const ShowTimes = () => {
           {/* load ds phim đang chiếu ở đây */}
           <div className="tab-movie max-w-screen-xl mx-auto">
             <div className="grid grid-cols-7 gap-4">
-              <div className="mb-4">
+              {
+                allShowMovie.map((item, index) => (
+                  <div key={`movie-${index}`} className="mb-4">
+                    <div className="product-item table border-2 border-slate-600 h-[92%]">
+                      <img src={item.poster} alt=""
+                        className="product-over h-full w-full table-cell" />
+                    </div>
+                    <div className="text-slate-200 mt-2 text-left uppercase font-bold text-sm h-[8%]">
+                      {item.title}
+                    </div>
+                  </div>
+                ))
+              }
+              {/* <div className="mb-4">
                 <div className="product-item table relative">
                   <img src="https://cdn.galaxycine.vn/media/2023/10/11/dat-rung-sneak-4_1697007647619.jpg" alt=""
                     className="product-over h-auto w-full table-cell" />
@@ -76,77 +127,7 @@ const ShowTimes = () => {
                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
                   Giao lộ 8675s
                 </div>
-              </div>
-              <div className="mb-4">
-                <div className="product-item table relative">
-                  <img src="https://cdn.galaxycine.vn/media/2023/10/12/400-blows-500_1697081173581.jpg" alt=""
-                    className="product-over h-auto w-full table-cell" />
-                  <a href="#" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a>
-                </div>
-                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                  Đất rừng phương nam
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="product-item table relative">
-                  <img src="https://cdn.galaxycine.vn/media/2023/10/3/500x750_1696307210165.jpg" alt=""
-                    className="product-over h-auto w-full table-cell" />
-                  <a href="#" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a>
-                </div>
-                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                  Đất rừng phương nam
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="product-item table relative">
-                  <img src="https://cdn.galaxycine.vn/media/2023/9/27/500x750_1695787578707.jpg" alt=""
-                    className="product-over h-auto w-full table-cell" />
-                  <a href="#" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a>
-                </div>
-                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                  Đất rừng phương nam
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="product-item table relative">
-                  <img src="https://cdn.galaxycine.vn/media/2023/9/21/cheon-500_1695281331881.jpg" alt=""
-                    className="product-over h-auto w-full table-cell" />
-                  <a href="#" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a>
-                </div>
-                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                  Đất rừng phương nam
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="product-item table relative">
-                  <img src="https://cdn.galaxycine.vn/media/2023/10/11/dat-rung-sneak-4_1697007647619.jpg" alt=""
-                    className="product-over h-auto w-full table-cell" />
-                  <a href="#" className="mt-2">
-                    <div className=" w-full h-full absolute top-0 left-0">
-
-                    </div>
-                  </a>
-                </div>
-                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold">
-                  Đất rừng phương nam
-                </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -533,72 +514,21 @@ const ShowTimes = () => {
           <div className='max-w-screen-xl mx-auto'>
             {/*ds rạp */}
             <div className='grid grid-cols-4 gap-8 mb-16 mx-4'>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
-              <div className='bg-slate-700 w-72'>
-                <div className='p-6'>
-                  <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                  <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                </div>
-                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                >
-                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                  <a href="" className='pr-8'>Xem vị trí</a>
-                </button>
-              </div>
+              {
+                allCinema.map((item, index) => (
+                  <div key={`cinema-${index}`} className='bg-slate-700 w-72 flex flex-col justify-between'>
+                    <div className='p-6'>
+                      <h4 className='uppercase font-bold text-lg text-slate-200'>{item.cinemaName}</h4>
+                      <p className='text-slate-500'>{item.location}</p>
+                    </div>
+                    <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                    >
+                      <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                      <a href="" className='pr-8'>Xem vị trí</a>
+                    </button>
+                  </div>
+                ))
+              }
             </div>
 
             {/* ngày */}

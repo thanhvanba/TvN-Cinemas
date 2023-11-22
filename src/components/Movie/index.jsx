@@ -1,55 +1,70 @@
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDownIcon, MapPinIcon} from "@heroicons/react/24/outline"
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import "./index.css"
 
+import MovieService from '../../service/MovieService';
+
 const Movie = () => {
+    const { GetOneMovie } = MovieService()
     const navigate = useNavigate()
+
+    const { id } = useParams();
+    const [movie, setMovie] = useState({})
 
     const changeTab = (pathname) => {
         navigate(pathname)
+    }
+
+    const hadleGetOneMovie = async (movieId) => {
+        let res = await GetOneMovie(movieId)
+        if (res && res.data && res.data.result) {
+            setMovie(res.data.result)
+        }
     }
 
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
                 {/* chi tiết phim */}
-                <div className='flex'>
+                <div onClick={hadleGetOneMovie(id)} className='flex'>
                     {/* product image */}
                     <div className='w-1/3 px-4'>
-                        <a href="">
-                            <img src="http://booking.bhdstar.vn/CDN/media/entity/get/FilmPosterGraphic/HO00002699?referenceScheme=HeadOffice&allowPlaceHolder=true&height=500" alt="" />
-                        </a>
+                        <img
+                            className='w-full h-5/6'
+                            src={movie.poster}
+                        />
                     </div>
                     {/* product detail */}
                     <div className='w-2/3 px-4'>
                         {/* name */}
                         <div>
                             <h3 className='uppercase text-2xl text-slate-200'>
-                                Đất rừng phương nam
+                                {movie.title}
                             </h3>
                         </div>
                         {/* dec */}
                         <div className='pt-4 text-slate-500'>
-                            An-một cậu bé chẳng may mất mẹ trên đường đi tìm cha.Cùng với An, khán giả sẽ trải nghiệm sự trù phú của thiên nhiên và nét đẹp văn hoá đặc sắc của vùng đất Nam Kì Lục Tỉnh, sự hào hiệp của những người nông dân bám đất bám rừng và tinh thần yêu nước
+                            {movie.desc}
                         </div>
                         {/* info */}
                         <ul className='pt-6 pb-4 text-slate-200'>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Đạo diễn</span>
-                                <span>Nguyễn Quang Dũng</span>
+                                <span>{movie.director}</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Diễn viên</span>
-                                <span>Hồng Ánh</span>
+                                <span>{movie.actor}</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Thể loại</span>
-                                <span>Documentary</span>
+                                <span>{movie.genres}</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Khởi chiếu</span>
-                                <span>2023-10-20</span>
+                                <span>{movie.releaseDate}</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Thời lượng</span>
@@ -64,7 +79,7 @@ const Movie = () => {
                         <div>
                             <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
                             >
-                                <a href="">Xem trailer</a>
+                                <a href={movie.trailerLink}>Xem trailer</a>
                             </button>
                             <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
                             >

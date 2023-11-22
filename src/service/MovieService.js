@@ -7,7 +7,7 @@ import { UserContext } from '../context/UserContext'
 
 const MovieService = () => {
     const { register, login, logout } = useContext(UserContext);
-    const getAllMovieApi = async () => {
+    const GetAllMovieApi = async () => {
         return await axios.get(
             "http://localhost:8080/api/v1/movies"
         );
@@ -31,8 +31,14 @@ const MovieService = () => {
         );
     };
 
+    const GetOneMovie = async (movieId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/movies/${movieId}`
+        );
+    };
+
     return {
-        getAllMovieApi, ComingSoonMovieApi, NowPlayingMovieApi, SpecialMovieApi
+        GetAllMovieApi, ComingSoonMovieApi, NowPlayingMovieApi, SpecialMovieApi, GetOneMovie
     }
 }
 

@@ -23,7 +23,7 @@ const AuthService = () => {
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
                 login(data.credentialId, token, refreshToken)
-                changeTab('/home');
+                changeTab('/');
             }
         } catch (error) {
             // alert(error.data.message)
