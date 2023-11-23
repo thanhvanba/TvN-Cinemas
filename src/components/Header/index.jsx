@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AuthService from '../../service/AuthService'
-import { UserContext } from '../../context/UserContext'
+import { LoginContext } from '../../context/LoginContext'
 
 import './index.css'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
@@ -44,7 +44,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
 
-  const { user } = useContext(UserContext);
+  const { user } = useContext(LoginContext);
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -70,7 +70,7 @@ const Header = () => {
 
   const handleCheckPathname = (pathname) => {
     switch (pathname) {
-      case "/home":
+      case "/":
         setCurrentTab("1")
         break;
       case "/showtimes":
@@ -122,7 +122,7 @@ const Header = () => {
                 <ul className="hidden lg:flex">
                   {/* <li className='px-4 py-8 relative'>
                     <Popover>
-                      <Popover.Button onClick={() => changeTab( "/home")} className="flex">
+                      <Popover.Button onClick={() => changeTab( "/")} className="flex">
                         <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                           Phim
                         </a>

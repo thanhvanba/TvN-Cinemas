@@ -46,7 +46,7 @@ const Home = () => {
         break;
       default:
         {
-          res = await GetAllMovieApi()
+          res = await NowPlayingMovieApi()
           setCurrentTab("1")
         }
     }
@@ -58,8 +58,6 @@ const Home = () => {
   }
   useEffect(() => {
     handleCheckPathname(pathname)
-    console.log("🚀 ~ file: index.jsx:94 ~ useEffect ~ pathname:", pathname)
-    console.log(allMovie)
   }, [pathname]);
 
   return (

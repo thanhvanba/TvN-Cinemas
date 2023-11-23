@@ -1,12 +1,8 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toastNotify from "../utils/UseToastForNotify"
-import { useContext } from 'react'
-import { UserContext } from '../context/UserContext'
 
 const MovieService = () => {
-    const { register, login, logout } = useContext(UserContext);
     const GetAllMovieApi = async () => {
         return await axios.get(
             "http://localhost:8080/api/v1/movies"

@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toastNotify from "../utils/UseToastForNotify"
 import { useContext } from 'react'
-import { UserContext } from '../context/UserContext'
+import { RegisterContext } from '../context/RegisterContext'
+import { LoginContext } from '../context/LoginContext'
+import { jwtDecode   } from 'jwt-decode'
 
 const AuthService = () => {
     const navigate = useNavigate()
-    const { register, login, logout } = useContext(UserContext);
+    const { register } = useContext(RegisterContext);
+    const { login, logout } = useContext(LoginContext);
     const changeTab = (pathname) => {
         navigate(pathname)
     }
@@ -18,11 +21,11 @@ const AuthService = () => {
                 data
             );
             const token = response.data.result.accessToken;
+            const decode = jwtDecode (token);
             const refreshToken = response.data.result.refreshToken;
-            console.log(response.data)
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                login(data.credentialId, token, refreshToken)
+                login(data.credentialId, token, refreshToken, decode.role)
                 changeTab('/');
             }
         } catch (error) {
@@ -110,7 +113,7 @@ const AuthService = () => {
                 console.log("🚀 ~ file: ApiService.js:105 ~ logoutApi ~ response.data.message:", response.data.message)
 
                 logout()
-                changeTab("/home");
+                changeTab("/");
             }
         }
         catch (err) {

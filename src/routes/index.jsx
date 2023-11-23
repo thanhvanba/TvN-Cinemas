@@ -109,33 +109,33 @@ import Admin from '../page/admin'
 // ];
 
 const Router = () => {
-    return (
-      <Routes>
-        <Route path='/' element={<Home />} />
-          <Route path='/phim/dangchieu' element={<Home />} />
-          <Route path='/phim/sapchieu' element={<Home />} />
-          <Route path='/dacbiet' element={<Home />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/signup/verify' element={<Signup />} />
-          <Route path='/thanhvien' element={<Signup />} />
-          <Route path='/quydinh' element={<Signup />} />
-          <Route path='/movie/:id' element={<Movie />} />
-          <Route path='/showtimes' element={<ShowTimes/>} />
-          <Route path='/showtimes/lichchieuphim' element={<ShowTimes/>} />
-          <Route path='/showtimes/phimtheorap' element={<ShowTimes/>} />
-          <Route path='/order' element={<OrderMovie/>} />
-          <Route path='/order/chonghe' element={<OrderMovie/>} />
-          <Route path='/order/bapnuoc' element={<OrderMovie/>} />
-          <Route path='/order/xacnhan' element={<OrderMovie/>} />
-          <Route path='/order/ve' element={<OrderMovie/>} />
-          <Route path= '/admin/dashboard' element={<Admin/>} />
-          <Route path= '/admin/list-user' element={<Admin/>} />
-          <Route path= '/admin/list-showtime' element={<Admin/>} />
-          <Route path= '/admin/list-movie' element={<Admin/>} />
-          <Route path= '/admin/list-cinemas' element={<Admin/>} />
-          <Route path= '/admin/list-review"' element={<Admin/>} />
-      </Routes>
-    
+  return (
+    <Routes>
+      <Route path='/' element={<Home />} />
+      <Route path='/phim/dangchieu' element={<Home />} />
+      <Route path='/phim/sapchieu' element={<Home />} />
+      <Route path='/dacbiet' element={<Home />} />
+      <Route path='/signup' element={<Signup />} />
+      <Route path='/signup/verify' element={<Signup />} />
+      <Route path='/thanhvien' element={<Signup />} />
+      <Route path='/quydinh' element={<Signup />} />
+      <Route path='/movie/:id' element={<Movie />} />
+      <Route path='/showtimes' element={<ShowTimes />} />
+      <Route path='/showtimes/lichchieuphim' element={<ShowTimes />} />
+      <Route path='/showtimes/phimtheorap' element={<ShowTimes />} />
+      <Route path='/order' element={<OrderMovie />} />
+      <Route path='/order/chonghe' element={<OrderMovie />} />
+      <Route path='/order/bapnuoc' element={<OrderMovie />} />
+      <Route path='/order/xacnhan' element={<OrderMovie />} />
+      <Route path='/order/ve' element={<OrderMovie />} />
+      <Route path='/admin/dashboard' element={<Admin />} />
+      <Route path='/admin/list-user' element={<Admin />} />
+      <Route path='/admin/list-showtime' element={<Admin />} />
+      <Route path='/admin/list-movie' element={<Admin />} />
+      <Route path='/admin/list-cinemas' element={<Admin />} />
+      <Route path='/admin/list-review"' element={<Admin />} />
+    </Routes>
+
   )
 }
 

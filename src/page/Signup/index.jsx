@@ -11,12 +11,12 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useLoadingState from '../../hook/UseLoadingState'
 
 import { useContext } from 'react'
-import {UserContext} from '../../context/UserContext'
+import {RegisterContext} from '../../context/RegisterContext'
 
 const Signup = () => {
     const { registerApi, loginApi, verifyApi, sendOtpApi } = AuthService();
 
-    const { info } = useContext(UserContext);
+    const { info } = useContext(RegisterContext);
 
     const { loading, setLoading } = useLoadingState(false);
 
@@ -145,10 +145,7 @@ const Signup = () => {
     return (
         <div style={{ background: `url(${bg})`, "background-attachment": "fixed" }}>
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
-                <div
-                    className="sub-tab"
-                    style={{ display: currentTab != '3' ? 'block' : 'none' }}
-                >
+                <div className="sub-tab" style={{ display: currentTab != '3' ? 'block' : 'none' }}>
                     <ul className="relative inline-block">
                         <li
                             onClick={() => changeTab("/thanhvien")}

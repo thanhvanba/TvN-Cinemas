@@ -64,7 +64,7 @@ const Admin = () => {
 
         {/* logo */}
         <div className='flex items-center justify-center px-8 p-3 border-b-2' >
-          <a onClick={() => { changeTab('/home') }} href="" className="-m-1.5 p-1.5">
+          <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img className="h-14 w-auto" src={logo} alt="" />
           </a>

@@ -6,24 +6,19 @@ import Header from './components/Header'
 import Footer from './components/Footer/index.jsx'
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { UserProvider } from './context/UserContext.jsx'
+import { RegisterProvider } from './context/RegisterContext.jsx'
+import { LoginProvider } from './context/LoginContext.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <UserProvider>
-      <BrowserRouter>
-        {localStorage.getItem("login") != "admin" ? (
-          <>
-            <Header />
-            <App />
-            <Footer />
-          </>
-        ) : (
-          <Admin />)
-        }
-        <ToastContainer />
-      </BrowserRouter>
-    </UserProvider>
+    <RegisterProvider>
+      <LoginProvider>
+        <BrowserRouter>
+          <App />
+          <ToastContainer />
+        </BrowserRouter>
+      </LoginProvider>
+    </RegisterProvider>
   </React.StrictMode>,
 )
