@@ -1,14 +1,27 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useState, useEffect } from 'react';
 import { UsersIcon, FilmIcon, Square3Stack3DIcon, BuildingLibraryIcon, ArrowPathIcon, TrophyIcon, FireIcon, StarIcon } from '@heroicons/react/24/outline'
 import format from "../../../utils/ConvertStringFollowFormat"
+
+import AdminService from '../../../service/AdminService';
+import MovieService from '../../../service/MovieService';
+import CinemaService from '../../../service/CinemaService';
 
 const Dashboard = () => {
   const navigate = useNavigate()
   const changeTab = (pathname) => {
     navigate(pathname)
   }
+
+  const { } = AdminService
+  const { GetAllMovieApi } = MovieService()
+  const [statistical, setStatistical] = useState({
+    totalIncome: "",
+    qMovie: "",
+    qCinema: "",
+    qUser: ""
+})
   const Statistical = [
     { title: "Thống kê tổng doanh thu", quantity: "399900000", icon: Square3Stack3DIcon },
     { title: "Phim trong tháng", quantity: "160", icon: FilmIcon },
@@ -70,7 +83,15 @@ const Dashboard = () => {
     }
   ]
 
+  const handleRenderApi = async() => {
+    let res = await GetAllMovieApi()
+    if(res && res.data && res.data.result){
 
+    }
+  }
+  useEffect(() => {
+
+  }, []);
   return (
     <div>
       <div className='px-4'>

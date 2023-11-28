@@ -31,20 +31,17 @@ function App() {
   }, []);
   return (
     <div>
-      {user.role === "VIEWER" && (
-        <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
-          <Header />
-          <Router />
-          <Footer />
-        </div>
-      )}
-      {(user.role === "ADMIN" || user.role === "MANAGER") && <Admin />}
-      {!(user.role === "VIEWER" || user.role === "ADMIN" || user.role === "MANAGER") &&
-        <>
-          <Header />
-          <Signup />
-          <Footer />
-        </>}
+      {
+        (user.role === "ADMIN" || user.role === "MANAGER")
+          ?
+          <Admin />
+          :
+          <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
+            <Header />
+            <Router />
+            <Footer />
+          </div>
+      }
     </div>
   )
 }

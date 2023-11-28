@@ -3,7 +3,7 @@ import axios from 'axios'
 import toastNotify from "../utils/UseToastForNotify"
 
 const CinemaService = (page) => {
-    const GetAllCinemaApi = async () => {
+    const getAllCinemaApi = async () => {
         let params = { index: page, size: 8 }
         return await axios.get(
             "http://localhost:8080/api/v1/cinemas",
@@ -13,7 +13,7 @@ const CinemaService = (page) => {
         );
     };
     return {
-        GetAllCinemaApi
+        getAllCinemaApi
     }
 }
 

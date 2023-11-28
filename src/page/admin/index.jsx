@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import logo from "../../images/logo.png"
@@ -12,6 +12,10 @@ import ListCinema from './ListCinema'
 import ListMovie from './ListMovie';
 import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
+import AddItem from './AddItem';
+
+import AuthService from '../../service/AuthService'
+import { LoginContext } from '../../context/LoginContext'
 
 const Admin = () => {
   const { pathname } = useLocation()
@@ -48,11 +52,21 @@ const Admin = () => {
       case "/admin/list-review":
         setCurrentTab("6")
         break;
+      case "/admin/add-item":
+        setCurrentTab("7")
+        break
       default:
         setCurrentTab("1")
     }
   }
 
+  const { logoutApi } = AuthService();
+  const { user } = useContext(LoginContext);
+
+  const handleLogoutApi = async (e) => {
+    e.preventDefault();
+    await logoutApi()
+  }
   useEffect(() => {
     handleCheckPathname(pathname)
 
@@ -80,11 +94,11 @@ const Admin = () => {
             <p>
               <span>Xin chào</span>
               <br />
-              <span className='text-lg text-cyan-600 font-bold'>Thành Văn</span>
+              <span className='text-lg text-cyan-600 font-bold'>{user.credentialId}</span>
             </p>
           </div>
           {/* logout */}
-          <button className='ml-auto bg-slate-200 h-10 w-10 rounded-xl flex justify-center items-center'>
+          <button onClick={handleLogoutApi} className='ml-auto bg-slate-200 h-10 w-10 rounded-xl flex justify-center items-center'>
             <ArrowRightOnRectangleIcon className="h-6 w-6 text-emerald-600" />
           </button>
         </div >
@@ -130,6 +144,9 @@ const Admin = () => {
         </div>
         <div style={{ display: currentTab === '6' ? 'block' : 'none' }}>
           <ListReview />
+        </div>
+        <div style={{ display: currentTab === '7' ? 'block' : 'none' }}>
+          <AddItem />
         </div>
       </div >
     </div>

@@ -1,13 +1,13 @@
 import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import "./index.css"
 
 import MovieService from '../../service/MovieService';
 
 const Movie = () => {
-    const { GetOneMovie } = MovieService()
+    const { GetOneMovieApi } = MovieService()
     const navigate = useNavigate()
 
     const { id } = useParams();
@@ -18,17 +18,19 @@ const Movie = () => {
     }
 
     const hadleGetOneMovie = async (movieId) => {
-        let res = await GetOneMovie(movieId)
+        let res = await GetOneMovieApi(movieId)
         if (res && res.data && res.data.result) {
             setMovie(res.data.result)
         }
     }
-
+    useEffect(() => {
+        hadleGetOneMovie(id)
+    }, [id]);
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
                 {/* chi tiết phim */}
-                <div onClick={hadleGetOneMovie(id)} className='flex'>
+                <div className='flex'>
                     {/* product image */}
                     <div className='w-1/3 px-4'>
                         <img

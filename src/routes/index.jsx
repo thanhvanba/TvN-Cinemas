@@ -7,6 +7,7 @@ import Movie from '../components/Movie'
 import ShowTimes from '../components/ShowTimes'
 import OrderMovie from '../components/OrderMovie'
 import Admin from '../page/admin'
+import AddItem from '../page/admin/AddItem'
 
 // const routers = [
 //   {
@@ -128,12 +129,14 @@ const Router = () => {
       <Route path='/order/bapnuoc' element={<OrderMovie />} />
       <Route path='/order/xacnhan' element={<OrderMovie />} />
       <Route path='/order/ve' element={<OrderMovie />} />
+      <Route path='/admin' element={<Admin />} />
       <Route path='/admin/dashboard' element={<Admin />} />
       <Route path='/admin/list-user' element={<Admin />} />
       <Route path='/admin/list-showtime' element={<Admin />} />
       <Route path='/admin/list-movie' element={<Admin />} />
       <Route path='/admin/list-cinemas' element={<Admin />} />
-      <Route path='/admin/list-review"' element={<Admin />} />
+      <Route path='/admin/list-review' element={<Admin />} />
+      <Route path='/admin/add-item/:item' element={<Admin />} />
     </Routes>
 
   )

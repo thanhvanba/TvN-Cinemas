@@ -27,14 +27,14 @@ const MovieService = () => {
         );
     };
 
-    const GetOneMovie = async (movieId) => {
+    const GetOneMovieApi = async (movieId) => {
         return await axios.get(
             `http://localhost:8080/api/v1/movies/${movieId}`
         );
     };
 
     return {
-        GetAllMovieApi, ComingSoonMovieApi, NowPlayingMovieApi, SpecialMovieApi, GetOneMovie
+        GetAllMovieApi, ComingSoonMovieApi, NowPlayingMovieApi, SpecialMovieApi, GetOneMovieApi
     }
 }
 

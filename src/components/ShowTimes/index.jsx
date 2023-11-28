@@ -7,7 +7,7 @@ import CinemaService from '../../service/CinemaService';
 
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi } = MovieService()
-  const { GetAllCinemaApi } = CinemaService()
+  const { getAllCinemaApi } = CinemaService()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ const ShowTimes = () => {
         break;
       case "/showtimes/phimtheorap":
         {
-          let res = await GetAllCinemaApi()
+          let res = await getAllCinemaApi()
           if (res && res.data && res.data.result && res.data.result.content) {
             setAllCinema(res.data.result.content)
           }
