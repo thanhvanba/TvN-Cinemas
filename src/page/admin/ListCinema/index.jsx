@@ -5,38 +5,37 @@ import { MapPinIcon, PowerIcon, PencilSquareIcon } from '@heroicons/react/24/out
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import "./index.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import AdminService from '../../../service/AdminService'
+import CinemaService from '../../../service/CinemaService'
 
 const ListCinema = () => {
     const [loading, setLoading] = useState(false)
-    const { addCinemaApi } = AdminService()
+    const [allCinema, setAllCinema] = useState([])
+    const { getAllCinemaApi } = CinemaService()
 
     const navigate = useNavigate()
 
     const changeTab = (pathname) => {
         navigate(pathname)
     }
-    const listCinema = [
-        {
-            header: { stt: "STT", name: "Rạp", location: "Địa chỉ", revenue: "Doanh Thu", status: "status", desc: "Mô tả", map: "Vị trí", action: "ACtions" },
-            cinema: [
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Inactive", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Inactive", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } },
-                { stt: "1", name: "TN Cinema Star", location: "Tầng 4, Vincom Plaza Lê Văn Việt, 50 Lê Văn Việt, P.Hiệp Phú, Quận 9", revenue: "20000", status: "Active", desc: "Rạp chiếu phim TN Cinema Star nằm ở trung tâm thành phố với kiến trúc hiện đại và biểu trưng ánh sáng neon. Phòng chiếu rộng rãi với ghế thoải mái, âm thanh sống động và hình ảnh sắc nét. Quầy bán vé và quầy bar đa dạng thức ăn và đồ uống. Star Cinema là điểm đến giải trí và thư giãn lý tưởng cho người yêu điện ảnh.", map: "Link map", action: { aChange: PowerIcon, aEdit: PencilSquareIcon } }
-            ]
+
+    const listCinema = {
+        header: { stt: "STT", name: "Rạp", location: "Địa chỉ", revenue: "Doanh Thu", status: "status", desc: "Mô tả", map: "Vị trí", action: "ACtions" },
+        cinema: allCinema,
+        action: { aChange: PowerIcon, aEdit: PencilSquareIcon }
+    }
+
+    const handleGetAllCinema = async () => {
+        let res = await getAllCinemaApi()
+        if (res && res.data && res.data.result && res.data.result.content) {
+            setAllCinema(res.data.result.content)
         }
-    ]
+    }
+
+    useEffect(() => {
+        handleGetAllCinema()
+    }, []);
     return (
         <div>
             <div className='px-4'>
@@ -72,59 +71,60 @@ const ListCinema = () => {
                 <div className='px-3'>
                     <div className=''>
                         {
-                            listCinema.map((cinema) => (
-                                <table className='mt-6 w-full'>
-                                    <thead className=''>
-                                        <tr>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.stt}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.name}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.location}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.revenue}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.status}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.desc}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.map}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{cinema.header.action}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            cinema.cinema.map((item) => (
-                                                <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'>{item.stt}</td>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'>{item.name}</td>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.location} maxLength={30} /></td>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'>{format(item.revenue)}</td>
-                                                    <td className={`${item.status === "Active" ? "text-green-600" : "text-red-600"} text-start text-sm font-medium px-5 py-4`}>{item.status}</td>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.desc} maxLength={70} /></td>
-                                                    <td className='text-start text-sm font-medium px-5 py-4'>
-                                                        <div className='bg-slate-300 w-48 rounded-xl'>
-                                                            <div className='p-4'>
-                                                                <h4 className='uppercase font-bold text-sm'>{item.name}</h4>
-                                                                <p className='text-xs text-slate-600'><TruncatedContent content={item.location} maxLength={20} /></p>
-                                                            </div>
-                                                            <button className="relative w-full rounded-b-xl border-slate-400 border p-3 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                                                            >
-                                                                <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                                                <a href={item.map} className='pr-8 text-xs'>Xem vị trí</a>
-                                                            </button>
+                            <table className='mt-6 w-full'>
+                                <thead className=''>
+                                    <tr>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.stt}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.name}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.location}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.revenue}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.status}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.desc}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.map}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listCinema.header.action}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        listCinema.cinema.map((item, index) => (
+                                            <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                                <td className='text-start text-sm font-medium px-5 py-4'>{index + 1}</td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'>{item.cinemaName}</td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.location} maxLength={30} /></td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'>{format(100000000)}</td>
+                                                <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start text-sm font-medium px-5 py-4`}>{item.status ? 'Active' : 'Inactive'}</td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.desc} maxLength={70} /></td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'>
+                                                    <div className='bg-slate-300 w-48 rounded-xl'>
+                                                        <div className='p-4'>
+                                                            <h4 className='uppercase font-bold text-sm'>{item.cinemaName}</h4>
+                                                            <p className='text-xs text-slate-600'><TruncatedContent content={item.location} maxLength={20} /></p>
                                                         </div>
-                                                    </td>
-                                                    <td className='text-start font-medium px-5 py-4'>
-                                                        <div className='flex items-center'>
-                                                            <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                                <item.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                            </button>
-                                                            <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                                                <item.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            ))
+                                                        <button
+                                                            className="relative w-full rounded-b-xl border-slate-400 border p-3 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                                                            type='button'
+                                                            onClick={() => window.open(item.urlLocation, '_blank')}
+                                                        >
+                                                            <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                                                            <a href={item.urlLocation} className='pr-8 text-xs'>Xem vị trí</a>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td className='text-start font-medium px-5 py-4'>
+                                                    <div className='flex items-center'>
+                                                        <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                                            <listCinema.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                        </button>
+                                                        <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                            <listCinema.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
                         }
                     </div>
                 </div>

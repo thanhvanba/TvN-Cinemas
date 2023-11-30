@@ -9,13 +9,11 @@ function classNames(...classes) {
 }
 
 const SelectMenu = ({ onSelectChange, items }) => {
-    console.log("🚀 ~ file: SelectMenu.jsx:12 ~ SelectMenu ~ nameList:", items)
 
     const [selected, setSelected] = useState('')
 
     const handleSelectChange = (value) => {
         setSelected(value);
-        console.log("🚀 ~ file: SelectMenu.jsx:18 ~ handleSelectChange ~ value:", value)
 
         // Gọi hàm callback để truyền giá trị ra lại component cha
         onSelectChange(value);

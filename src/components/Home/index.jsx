@@ -118,8 +118,7 @@ const Home = () => {
               {
                 allMovie && allMovie.length > 0 &&
                 allMovie.map((movie, index) => {
-                  return (
-                    <div div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
+                    <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
                       <div className="product-item table border-2 border-slate-600 h-[92%]">
                         <img
                           src={movie.poster}
@@ -131,7 +130,6 @@ const Home = () => {
                         {movie.title}
                       </div>
                     </div>
-                  )
                 })
               }
             </div>
@@ -141,8 +139,8 @@ const Home = () => {
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
               {
                 allMovie && allMovie.length > 0 &&
-                allMovie.map((movie) => (
-                  <div onClick={() => changeTab("/movie")} className="mb-4">
+                allMovie.map((movie, index) => (
+                  <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
                     <div className="product-item table border-2 border-slate-600 h-[92%]">
                       <img
                         src={movie.poster}
@@ -163,8 +161,8 @@ const Home = () => {
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
               {
                 allMovie && allMovie.length > 0 &&
-                allMovie.map((movie) => (
-                  <div onClick={() => changeTab("/movie")} className="mb-4">
+                allMovie.map((movie, index) => (
+                  <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
                     <div className="product-item table border-2 border-slate-600 h-[92%]">
                       <img
                         src={movie.poster}

@@ -99,7 +99,8 @@ const Dashboard = () => {
           <h2 className='text-3xl'>Drashboard</h2>
           <button
             className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-            type='submit'
+            onClick={() => changeTab("/admin/add-item/showtime")}
+            type='button'
           >
             Add showtime
           </button>

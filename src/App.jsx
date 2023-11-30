@@ -4,7 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer/index.jsx'
 import Signup from './page/Signup/index.jsx'
 
-import Router from './routes'
+import { AdminRouter, MainRouter } from './routes'
 import { useContext, useEffect } from "react"
 import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
@@ -34,11 +34,11 @@ function App() {
       {
         (user.role === "ADMIN" || user.role === "MANAGER")
           ?
-          <Admin />
+          <AdminRouter />
           :
           <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
             <Header />
-            <Router />
+            <MainRouter />
             <Footer />
           </div>
       }

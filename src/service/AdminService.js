@@ -185,7 +185,7 @@ const AdminService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
-                "http://localhost:8080/api/v1/manager/movies/movie",
+                "http://localhost:8080/api/v1/admin/movies/movie",
                 data,
                 {
                     headers: {
@@ -221,6 +221,26 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const addShowtimeApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/manager/showtimes/showtime",
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -231,7 +251,8 @@ const AdminService = () => {
         deleteMovieApi,
         updateMovieApi,
         addMovieApi,
-        addRoomApi
+        addRoomApi,
+        addShowtimeApi
     }
 }
 

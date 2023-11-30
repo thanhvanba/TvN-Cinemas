@@ -2,8 +2,14 @@ import React from 'react'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import TruncatedContent from '../../../utils/TruncatedContent'
 import FormatDataTime from '../../../utils/FormatDataTime'
+import { useNavigate } from 'react-router-dom'
 
 const ListShowtime = () => {
+  const navigate = useNavigate()
+  const changeTab = (pathname) => {
+    navigate(pathname)
+  }
+
   const listShowtime = [
     {
       header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
@@ -70,7 +76,8 @@ const ListShowtime = () => {
           <h2 className='text-3xl'>List Showtime</h2>
           <button
             className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-            type='submit'
+            onClick={() => changeTab("/admin/add-item/showtime")}
+            type='button'
           >
             Add Showtime
           </button>
