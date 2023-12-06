@@ -1,74 +1,93 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import TruncatedContent from '../../../utils/TruncatedContent'
 import FormatDataTime from '../../../utils/FormatDataTime'
 import { useNavigate } from 'react-router-dom'
+import AdminService from '../../../service/AdminService'
 
 const ListShowtime = () => {
+  const { getAllShowtimeApi } = AdminService()
   const navigate = useNavigate()
   const changeTab = (pathname) => {
     navigate(pathname)
   }
+  const [loading, setLoading] = useState(false);
+  const [allShowtime, setAllShowtime] = useState([]);
 
-  const listShowtime = [
-    {
-      header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
-      showtime: [
-        {
-          stt: "1",
-          movieInfo: {
-            poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
-            title: "Avengers: End Game",
-            director: "Anthony Russo, Joe Russo",
-            actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
-          },
-          time: "2023-10-20T17:18:59.774+00:00",
-          room: "D01",
-          status: "Visible",
-          action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
-        },
-        {
-          stt: "1",
-          movieInfo: {
-            poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
-            title: "Avengers: End Game",
-            director: "Anthony Russo, Joe Russo",
-            actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
-          },
-          time: "2023-10-20T17:18:59.774+00:00",
-          room: "D01",
-          status: "Visible",
-          action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
-        },
-        {
-          stt: "1",
-          movieInfo: {
-            poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
-            title: "Avengers: End Game",
-            director: "Anthony Russo, Joe Russo",
-            actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
-          },
-          time: "2023-10-20T17:18:59.774+00:00",
-          room: "D01",
-          status: "Visible",
-          action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
-        },
-        {
-          stt: "1",
-          movieInfo: {
-            poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
-            title: "Avengers: End Game",
-            director: "Anthony Russo, Joe Russo",
-            actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
-          },
-          time: "2023-10-20T17:18:59.774+00:00",
-          room: "D01",
-          status: "Visible",
-          action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
-        }
-      ]
+
+
+  const listShowtime = {
+    header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
+    showtime: allShowtime,
+    action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+    // [
+    //   {
+    //     stt: "1",
+    //     movieInfo: {
+    //       poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
+    //       title: "Avengers: End Game",
+    //       director: "Anthony Russo, Joe Russo",
+    //       actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
+    //     },
+    //     time: "2023-10-20T17:18:59.774+00:00",
+    //     room: "D01",
+    //     status: "Visible",
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+    //   },
+    //   {
+    //     stt: "1",
+    //     movieInfo: {
+    //       poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
+    //       title: "Avengers: End Game",
+    //       director: "Anthony Russo, Joe Russo",
+    //       actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
+    //     },
+    //     time: "2023-10-20T17:18:59.774+00:00",
+    //     room: "D01",
+    //     status: "Visible",
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+    //   },
+    //   {
+    //     stt: "1",
+    //     movieInfo: {
+    //       poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
+    //       title: "Avengers: End Game",
+    //       director: "Anthony Russo, Joe Russo",
+    //       actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
+    //     },
+    //     time: "2023-10-20T17:18:59.774+00:00",
+    //     room: "D01",
+    //     status: "Visible",
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+    //   },
+    //   {
+    //     stt: "1",
+    //     movieInfo: {
+    //       poster: "https://upload.wikimedia.org/wikipedia/vi/2/2d/Avengers_Endgame_bia_teaser.jpg",
+    //       title: "Avengers: End Game",
+    //       director: "Anthony Russo, Joe Russo",
+    //       actor: "Scarlett Johansson, Jeremy Renner, Chris Hemsworth, Chris Evans, Mark Ruffalo, Paul Rudd, Robert Downey Jr."
+    //     },
+    //     time: "2023-10-20T17:18:59.774+00:00",
+    //     room: "D01",
+    //     status: "Visible",
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+    //   }
+    // ]
+  }
+
+  const handleGetItem = async () => {
+    let res = await getAllShowtimeApi()
+
+    if (res && res.data && res.data.result && res.data.result.content) {
+      setAllShowtime(res.data.result.content)
     }
-  ]
+  }
+
+  useEffect(() => {
+    handleGetItem()
+  }, []);
   return (
     <div>
       <div className='px-4'>
@@ -87,57 +106,55 @@ const ListShowtime = () => {
           <div className='px-3'>
             <div className=''>
               {
-                listShowtime.map((showtime) => (
-                  <table className='mt-6 w-full'>
-                    <thead className=''>
-                      <tr>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.stt}</th>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.movieInfo}</th>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.time}</th>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.room}</th>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.status}</th>
-                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{showtime.header.action}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        showtime.showtime.map((item) => (
-                          <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                            <td className='text-start font-medium px-5 py-4'>{item.stt}</td>
-                            <td className='text-start font-medium px-5 py-4'>
-                              <div className='flex items-center'>
-                                <div div className='pr-2' >
-                                  <img className="h-16 w-16 text-emerald-600" src="item.movieInfo.poster" alt="" />
-                                </div >
-                                <div>
-                                  <h3>{item.movieInfo.title}</h3>
-                                  <p className='font-normal text-xs'><TruncatedContent content={"Actor: " + item.movieInfo.actor} maxLength={20} /></p>
-                                  <span className='font-normal text-xs'><TruncatedContent content={"Director: " + item.movieInfo.director} maxLength={20} /></span>
-                                </div>
+                <table className='mt-6 w-full'>
+                  <thead className=''>
+                    <tr>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.stt}</th>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.time}</th>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.room}</th>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.status}</th>
+                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.action}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      listShowtime.showtime.map((item, index) => (
+                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                          <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                          <td className='text-start font-medium px-5 py-4'>
+                            <div className='flex items-center'>
+                            <div div className='pr-2' >
+                                <img className="h-20 w-16 text-emerald-600" src={item.movie.poster} alt="" />
+                              </div >
+                              <div>
+                                <h3>{item.movie.title}</h3>
+                                <p className='font-normal text-xs'><TruncatedContent content={"Actor: " + item.movie.actor} maxLength={20} /></p>
+                                <span className='font-normal text-xs'><TruncatedContent content={"Director: " + item.movie.director} maxLength={20} /></span>
                               </div>
-                            </td>
-                            <td className='text-start font-medium px-5 py-4'>{(item.time)}</td>
-                            <td className='text-start font-medium px-5 py-4'>{item.room}</td>
-                            <td className={`${item.status === "Visible" ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{item.status}</td>
-                            <td className='text-start font-medium px-5 py-4'>
-                              <div className='flex items-center'>
-                                <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                  <item.action.aChange className='h-4 w-4 text-emerald-600' />
-                                </button>
-                                <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                  <item.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                </a>
-                                <button className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                  <item.action.aDelete className='h-4 w-4 text-red-600' />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-                ))
+                            </div>
+                          </td>
+                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.timeStart)} - {FormatDataTime(item.timeEnd)} </td>
+                          <td className='text-start font-medium px-5 py-4'>{item.room.roomName}</td>
+                          <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{item.status ? "Visible" : "Hidden"}</td>
+                          <td className='text-start font-medium px-5 py-4'>
+                            <div className='flex items-center'>
+                              <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                <listShowtime.action.aChange className='h-4 w-4 text-emerald-600' />
+                              </button>
+                              <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                <listShowtime.action.aEdit className='h-4 w-4 text-cyan-600' />
+                              </a>
+                              <button className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
               }
             </div>
           </div>

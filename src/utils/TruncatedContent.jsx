@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function TruncatedContent({ content, maxLength }) {
+const TruncatedContent = ({ content, maxLength }) => {
     if (!content) {
         return null; // Hoặc bạn có thể trả về chuỗi trống hoặc thông báo lỗi khác nếu thích
     }
@@ -11,14 +11,14 @@ function TruncatedContent({ content, maxLength }) {
     };
 
     return (
-        <div>
+        <div className='flex'>
             {isTruncated ? (
-                <p>{content.slice(0, maxLength)} <br />...</p>
+                <p>{content.slice(0, maxLength)} </p>
             ) : (
                 <p>{content}</p>
             )}
-            <button className='font-light' onClick={toggleTruncate}>
-                {isTruncated ? 'Xem thêm' : 'Thu gọn'}
+            <button onClick={toggleTruncate}>
+                {isTruncated ? '...' : '<<'}
             </button>
         </div>
     );

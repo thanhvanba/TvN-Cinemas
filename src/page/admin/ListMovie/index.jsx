@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import TruncatedContent from '../../../utils/TruncatedContent'
 import MovieService from '../../../service/MovieService'
+import FormatDataTime from '../../../utils/FormatDataTime'
 
 const ListMovie = () => {
   const { GetAllMovieApi } = MovieService();
@@ -63,7 +64,7 @@ const ListMovie = () => {
                   </thead>
                   <tbody>
                     {
-                      listMovie.movie.map((item, index) => (
+                      listMovie.movie.map((item, index) => (  
                         <tr className='border-b-8 border-slate-50 bg-slate-100'>
                           <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
                           <td className='text-start font-medium px-5 py-4'>
@@ -79,7 +80,7 @@ const ListMovie = () => {
                           <td className='text-start font-medium px-5 py-4'>{item.rating}</td>
                           <td className='text-start font-medium px-5 py-4'>{item.genres}</td>
                           <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-start font-medium px-5 py-4`}>{item.delete ? "Hidden" : "Visible"}</td>
-                          <td className='text-start font-medium px-5 py-4'>{item.releaseDate}</td>
+                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.releaseDate)}</td>
                           <td className='text-start font-medium px-5 py-4'>
                             <div className='flex items-center'>
                               <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>

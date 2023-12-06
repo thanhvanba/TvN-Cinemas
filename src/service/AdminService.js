@@ -18,7 +18,7 @@ const AdminService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
-                "http://localhost:8080/api/v1/admin/manager",
+                "http://localhost:8080/api/v1/admin/managers",
                 data,
                 {
                     headers: {
@@ -140,7 +140,7 @@ const AdminService = () => {
         }
     };
 
-    const deleteMovieApi = async () => {
+    const deleteMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.delete(
@@ -241,6 +241,58 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getAllUserApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            "http://localhost:8080/api/v1/admin/users",
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
+    const getAllShowtimeApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            "http://localhost:8080/api/v1/admin/showtimes",
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
+    const getAllRoomApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            "http://localhost:8080/api/v1/admin/rooms",
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
+    const deleteUserApi = async (userId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `http://localhost:8080/api/v1/admin/users/${userId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -252,7 +304,11 @@ const AdminService = () => {
         updateMovieApi,
         addMovieApi,
         addRoomApi,
-        addShowtimeApi
+        addShowtimeApi,
+        getAllUserApi,
+        getAllShowtimeApi,
+        getAllRoomApi,
+        deleteUserApi
     }
 }
 

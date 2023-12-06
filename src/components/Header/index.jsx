@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AuthService from '../../service/AuthService'
+import UserService from '../../service/UserService'
 import { LoginContext } from '../../context/LoginContext'
 
 import './index.css'
@@ -37,9 +38,11 @@ const callsToAction = [
 
 const Header = () => {
   const { loginApi, logoutApi } = AuthService();
+  const { forgotPasswordApi } = UserService()
+
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
-  const [currentTab, setCurrentTab] = useState('1');
+  const [currentTab, setCurrentTab] = useState('');
 
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
@@ -68,9 +71,18 @@ const Header = () => {
     setLoading(false)
   }
 
+  // const handleForgotPassword = async () => {
+  //   setLoading(true)
+  //   let logobj = { credentialId, password };
+  //   await loginApi(logobj)
+  //   setLoading(false)
+  // }
   const handleCheckPathname = (pathname) => {
     switch (pathname) {
       case "/":
+        setCurrentTab("0")
+        break;
+      case "/phim":
         setCurrentTab("1")
         break;
       case "/showtimes":
@@ -86,14 +98,13 @@ const Header = () => {
         setCurrentTab("5")
         break;
       default:
-        setCurrentTab("1")
+        setCurrentTab("0")
     }
   }
 
   useEffect(() => {
     handleCheckPathname(pathname)
   }, [pathname]);
-
   return (
     <header className="header">
       <div className='top-menu'>
@@ -174,28 +185,28 @@ const Header = () => {
                       </Transition>
                     </Popover>
                   </li> */}
-                  <li onClick={() => changeTab("/")} className='px-4 py-8 relative'>
-                    <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                  <li onClick={() => changeTab("/phim")} className='px-4 py-8 relative'>
+                    <a className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Phim
                     </a>
                   </li>
                   <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative'>
-                    <a href="#" className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
                   </li>
                   <li onClick={() => changeTab("/rap")} className='px-4 py-8 relative'>
-                    <a href="#" className={`${currentTab === '3' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '3' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Hệ thống rạp
                     </a>
                   </li>
                   <li onClick={() => changeTab("/khuyenmai")} className='px-4 py-8 relative'>
-                    <a href="#" className={`${currentTab === '4' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '4' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Khuyến mãi
                     </a>
                   </li>
                   <li onClick={() => changeTab("/lienhe")} className='px-4 py-8 relative'>
-                    <a href="#" className={`${currentTab === '5' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '5' ? "active" : ""} text-lg font-bold uppercase option-style`}>
                       Liên hệ
                     </a>
                   </li>
@@ -278,7 +289,7 @@ const Header = () => {
                               {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                               &nbsp;Đăng nhập
                             </button>
-                            <a href="#">Quên mật khẩu</a>
+                            <span>Quên mật khẩu</span>
                           </div>
                           <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
                           >
@@ -292,6 +303,7 @@ const Header = () => {
                 : <div>
                   <span
                     className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
+                    onClick={() => { changeTab('/user/info') }}
                   >
                     {user.credentialId}
                   </span>
@@ -398,11 +410,6 @@ const Header = () => {
           </Dialog> */}
         </div>
       </div>
-
-
-
-
-
     </header >
   )
 }

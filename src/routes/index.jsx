@@ -140,8 +140,7 @@ import Movie from '../components/Movie';
 import ShowTimes from '../components/ShowTimes';
 import OrderMovie from '../components/OrderMovie';
 import Admin from '../page/admin';
-import AddItem from '../page/admin/AddItem';
-import AddMovie from '../page/admin/AddMovie';
+import Info from '../page/Info'
 
 const MainRouter = () => (
   <Routes>
@@ -151,9 +150,10 @@ const MainRouter = () => (
     <Route path='/dacbiet' element={<Home />} />
     <Route path='/signup' element={<Signup />} />
     <Route path='/signup/verify' element={<Signup />} />
+    <Route path='/forgot-password/verify' element={<Signup />} />
     <Route path='/thanhvien' element={<Signup />} />
     <Route path='/quydinh' element={<Signup />} />
-    <Route path='/movie/=id' element={<Movie />} />
+    <Route path='/movie/:id' element={<Movie />} />
     <Route path='/showtimes' element={<ShowTimes />} />
     <Route path='/showtimes/lichchieuphim' element={<ShowTimes />} />
     <Route path='/showtimes/phimtheorap' element={<ShowTimes />} />
@@ -162,6 +162,7 @@ const MainRouter = () => (
     <Route path='/order/bapnuoc' element={<OrderMovie />} />
     <Route path='/order/xacnhan' element={<OrderMovie />} />
     <Route path='/order/ve' element={<OrderMovie />} />
+    <Route path="/user/info" element={<Info />} />
   </Routes>
 );
 
@@ -169,9 +170,10 @@ const AdminRouter = () => (
   <Routes>
     <Route path="/" element={<Admin />} />
     <Route path="/admin/:item" element={<Admin />} />
-    <Route path="/admin/add-item" element={<Admin />} />
+    <Route path="/admin/add-item/:item" element={<Admin />} />
     <Route path="/admin/add-item/movie" element={<Admin />} />
     <Route path="/admin/add-item/showtime" element={<Admin />} />
+    <Route path="/admin/info" element={<Admin />} />
   </Routes>
 );
 

@@ -43,22 +43,22 @@ const ListCinema = () => {
                     <h2 className='text-3xl'>List Cinema</h2>
                     <div className='flex items-center'>
                         <button
-                            className="my-4 px-6 border-slate-400 border p-3 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                            onClick={() => changeTab("/admin/add-item")}
+                            className="border-slate-400 border p-3 m-1 text-sm font-bold uppercase rounded-2xl text-emerald-800"
+                            onClick={() => changeTab("/admin/add-item/room")}
                             type='submit'
                         >
                             <HomeIcon />
                         </button>
                         <button
-                            className="my-4 px-6 border-slate-400 border p-3 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                            onClick={() => changeTab("/admin/add-item")}
+                            className="border-slate-400 border p-3 m-1 text-sm font-bold uppercase rounded-2xl text-emerald-800"
+                            onClick={() => changeTab("/admin/add-item/food")}
                             type='submit'
                         >
                             <PopcornIcon />
                         </button>
                         <button
-                            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                            onClick={() => changeTab("/admin/add-item")}
+                            className="border-slate-400 border py-3 px-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                            onClick={() => changeTab("/admin/add-item/cinema")}
                             type='submit'
                         >
                             Add Cinema

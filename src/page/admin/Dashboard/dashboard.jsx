@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { UsersIcon, FilmIcon, Square3Stack3DIcon, BuildingLibraryIcon, ArrowPathIcon, TrophyIcon, FireIcon, StarIcon } from '@heroicons/react/24/outline'
 import format from "../../../utils/ConvertStringFollowFormat"
+import TruncatedContent from '../../../utils/TruncatedContent';
 
 import AdminService from '../../../service/AdminService';
 import MovieService from '../../../service/MovieService';
@@ -14,66 +15,69 @@ const Dashboard = () => {
     navigate(pathname)
   }
 
-  const { } = AdminService
   const { GetAllMovieApi } = MovieService()
+  const { getAllCinemaApi } = CinemaService()
+  const { getAllUserApi, getAllShowtimeApi } = AdminService()
+
+  const [allMovie, setAllMovie] = useState([])
+  const [allCinema, setAllCinema] = useState([])
+  const [allUser, setAllUser] = useState([])
+
+
   const [statistical, setStatistical] = useState({
-    totalIncome: "",
-    qMovie: "",
+    qRevenue: "",
+    qMovieOfMonth: "",
     qCinema: "",
     qUser: ""
-})
-  const Statistical = [
-    { title: "Thống kê tổng doanh thu", quantity: "399900000", icon: Square3Stack3DIcon },
-    { title: "Phim trong tháng", quantity: "160", icon: FilmIcon },
-    { title: "Hệ thống rạp", quantity: "10", icon: BuildingLibraryIcon },
-    { title: "Thống kê số lượng người dùng", quantity: "3999", icon: UsersIcon }
+  })
+
+  const listStatistical = [
+    { title: "Thống kê tổng doanh thu", quantity: statistical.qRevenue || "0", icon: Square3Stack3DIcon },
+    { title: "Phim trong tháng", quantity: statistical.qMovieOfMonth || "0", icon: FilmIcon },
+    { title: "Hệ thống rạp", quantity: statistical.qCinema || "0", icon: BuildingLibraryIcon },
+    { title: "Thống kê số lượng người dùng", quantity: statistical.qUser || "0", icon: UsersIcon }
   ]
+
   const listTable = [
     {
       title: "Cinema ratings",
       icon: TrophyIcon,
       header: { stth: "STT", cinemah: "Rạp", addessh: "Địa chỉ", revenueh: "Doanh thu" },
       path: "/admin/list-cinemas",
-      cinemaRatings: [
-        { Stt: 1, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 2, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 3, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 4, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 5, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" }
-      ]
+      listUser: [],
+      listCinema: allCinema,
+      listMovie: [],
+      listReview: []
     },
     {
       title: "Hot movies",
       icon: FireIcon,
       header: { stth: "STT", cinemah: "Tên phim", addessh: "Số lượng suất chiếu", revenueh: "rating" },
       path: "/admin/list-movie",
-      cinemaRatings: [
-        { Stt: 1, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 2, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 3, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 4, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 5, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" }
-      ]
+      listUser: [],
+      listCinema: [],
+      listReview: [],
+      listMovie: allMovie
     },
     {
       title: "Lastest Users",
       icon: UsersIcon,
-      header: { stth: "STT", cinemah: "Họ tên", addessh: "Email", revenueh: "User Name" },
+      header: { stth: "STT", cinemah: "Họ tên", addessh: "User Name", revenueh: "Role" },
       path: "/admin/list-user",
-      cinemaRatings: [
-        { Stt: 1, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 2, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 3, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 4, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 5, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" }
-      ]
+      listUser: allUser,
+      listCinema: [],
+      listMovie: [],
+      listReview: []
     },
     {
       title: "Lastest Review",
       icon: StarIcon,
       header: { stth: "STT", cinemah: "Phim", addessh: "Người dùng", revenueh: "Raiting" },
       path: "/admin/list-review",
-      cinemaRatings: [
+      listUser: [],
+      listCinema: [],
+      listMovie: [],
+      listReview: [
         { Stt: 1, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
         { Stt: 2, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
         { Stt: 3, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
@@ -83,20 +87,48 @@ const Dashboard = () => {
     }
   ]
 
-  const handleRenderApi = async() => {
-    let res = await GetAllMovieApi()
-    if(res && res.data && res.data.result){
+  const HandleGetAllItem = async () => {
+    let resMovie = await GetAllMovieApi()
+    let resCinema = await getAllCinemaApi()
+    let resUser = await getAllUserApi()
 
+    let resShowtime = await getAllShowtimeApi()
+
+    const currentMonth = new Date().getMonth() + 1; // Tháng hiện tại (1-12)
+    const totalMovies = resShowtime.data.result.content.filter((showtime) => {
+      const startMonth = new Date(showtime.timeStart).getMonth() + 1;
+      const endMonth = new Date(showtime.timeEnd).getMonth() + 1;
+      return startMonth <= currentMonth && endMonth >= currentMonth;
+    }).length;
+    console.log("🚀 ~ file: dashboard.jsx:101 ~ totalMovies ~ totalMovies:", totalMovies)
+
+
+    setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
+    // setStatistical({...statistical})
+
+    if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
+      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 4);
+      setAllMovie(topFourMovies)
+    }
+    if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
+      const topCinemas = [...resCinema.data.result.content].sort((a, b) => b.DOANH_THU - a.DOANH_THU).slice(0, 5);
+      setAllCinema(topCinemas)
+    }
+    if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+      const lastFourUsers = resUser.data.result.content.slice().reverse().slice(0, 5);
+      setAllUser(lastFourUsers)
     }
   }
-  useEffect(() => {
 
+  useEffect(() => {
+    HandleGetAllItem()
   }, []);
+
   return (
     <div>
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-          <h2 className='text-3xl'>Drashboard</h2>
+          <h2 className='text-3xl'>Dashboard</h2>
           <button
             className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
             onClick={() => changeTab("/admin/add-item/showtime")}
@@ -105,10 +137,11 @@ const Dashboard = () => {
             Add showtime
           </button>
         </div>
+        
         <div>
           <div className='grid grid-cols-4'>
             {
-              Statistical.map((item) => (
+              listStatistical.map((item) => (
                 <div className='px-3'>
                   <div className='mt-6 p-5 relative border-2 rounded-lg bg-slate-100'>
                     <span className='text-xs'>{item.title}</span>
@@ -118,8 +151,9 @@ const Dashboard = () => {
                 </div>
               ))
             }
+
             {
-              listTable.map((table) => (
+              listTable.map((table, index) => (
                 <div className='px-3 col-span-2'>
                   <div className='mt-6 border-2 rounded-lg bg-slate-100'>
                     <div className='p-5 flex justify-between border-b-2'>
@@ -144,17 +178,56 @@ const Dashboard = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {
-                              table.cinemaRatings.map((item) => (
-                                <tr>
-                                  <td className='text-start font-medium px-5 pt-4 pb-1'>{item.Stt}</td>
-                                  <td className='text-start font-medium px-5 pt-4 pb-1'>{item.cinema}</td>
-                                  <td className='text-start font-medium px-5 pt-4 pb-1'>{item.address}</td>
-                                  <td className='text-start font-medium px-5 pt-4 pb-1'>{format(item.revenue)}</td>
+
+                            {index == 0 &&
+                              // Rendering table.listMovie
+                              table.listCinema.map((item, index) => (
+                                <tr key={`movie-${index}`}>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format("3000000")}</td>
+                                </tr>
+                              ))
+                            }
+
+                            {index == 1 &&
+                              // Rendering table.cinemaRatings
+                              table.listMovie.map((item, index) => (
+                                <tr key={`rating-${index}`}>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.isDelete}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.rating}</td>
+                                </tr>
+                              ))
+                            }
+
+                            {index == 2 &&
+                              // Rendering table.cinemaRatings
+                              table.listUser.map((item, index) => (
+                                <tr key={`rating-${index}`}>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
+                                </tr>
+                              ))
+                            }
+
+                            {index == 3 &&
+                              // Rendering table.cinemaRatings
+                              table.listReview.map((item, index) => (
+                                <tr key={`rating-${index}`}>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.cinema}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.address}</td>
+                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(item.revenue)}</td>
                                 </tr>
                               ))
                             }
                           </tbody>
+
                         </table>
                       </div>
                     </div>

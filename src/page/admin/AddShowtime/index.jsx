@@ -24,7 +24,7 @@ const AddShowtime = () => {
     const [selectDate, setSelectDate] = useState(null);
     const [schedule, setSchedule] = useState([]);
 
-    const { addShowtimeApi } = AdminService()
+    const { addShowtimeApi, getAllRoomApi } = AdminService()
 
     const [showtime, setShowtime] = useState({
         roomId: "",
@@ -34,17 +34,22 @@ const AddShowtime = () => {
         isSpecial: "",
         listTimeShow: [],
     })
-    console.log("🚀 ~ file: index.jsx:37 ~ AddShowtime ~ showtime:", showtime)
 
     const [allMovie, setAllMovie] = useState([])
+    const [allRoom, setAllRoom] = useState([])
     const { GetAllMovieApi } = MovieService()
-    const handleGetAllMovie = async () => {
-        let res = await GetAllMovieApi()
-        if (res && res.data && res.data.result && res.data.result.content) {
-            setAllMovie(res.data.result.content)
+    const handleGetAllMItem = async () => {
+        let resMovie = await GetAllMovieApi()
+        let resRoom = await getAllRoomApi()
+        if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
+            setAllMovie(resMovie.data.result.content)
+        }
+        if (resRoom && resRoom.data && resRoom.data.result && resRoom.data.result.content) {
+            setAllRoom(resRoom.data.result.content)
         }
     }
-    const nameMovie = allMovie.map(item => item.title)
+    const listNameMovie = allMovie.map(item => item.title)
+    const listNameRoom = allRoom.map(item => item.roomName)
 
     // const [allRoom, setAllRoom] = useState([])
     // const { getAllRoomApi } = RoomService()
@@ -61,7 +66,7 @@ const AddShowtime = () => {
         const selectedId = movie.movieId
         setShowtime({ ...showtime, movieId: selectedId })
 
-        // const movie = allMovie.find(movie => movie.title === selectedValue)
+        // const room = allMovie.find(movie => movie.title === selectedValue)
         // const selectedId = room.roomId
         // setShowtime({ ...showtime, roomId: selectedId })
 
@@ -119,9 +124,8 @@ const AddShowtime = () => {
     };
 
     useEffect(() => {
-        handleGetAllMovie()
+        handleGetAllMItem()
     }, []);
-    console.log(schedule)
     return (
         <div>
             <div className='px-4'>
@@ -140,7 +144,7 @@ const AddShowtime = () => {
                                     >
                                         Movie
                                     </label>
-                                    <SelectMenu onSelectChange={handleSelectChange} items={nameMovie} />
+                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} />
                                 </div>
                                 <div className="relative my-4">
                                     <label
@@ -149,7 +153,7 @@ const AddShowtime = () => {
                                     >
                                         Room
                                     </label>
-                                    <SelectMenu onSelectChange={handleSelectChange} />
+                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom}/>
                                 </div>
                                 <div className='flex justify-between'>
                                     <div className="relative my-4 w-full">

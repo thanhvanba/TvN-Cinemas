@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -12,10 +12,27 @@ import AdminService from '../../../service/AdminService'
 import CinemaService from '../../../service/CinemaService';
 import './index.css'
 const AddItem = () => {
-
+    const { item } = useParams()
+    
     const [loading, setLoading] = useState(false);
+    const [tabIndex, setTabIndex] = useState(0);
+
+    const navigate = useNavigate()
+    const changeTab = (pathname) => {
+        navigate(pathname)
+      }
 
     const { addCinemaApi, addFoodApi, addRoomApi } = AdminService()
+
+    const handleTabChange = () => {
+        if (item === "cinema") {
+            setTabIndex(0);
+        } else if (item === "food") {
+            setTabIndex(1);
+        } else if (item === "room") {
+            setTabIndex(2);
+        }
+    };
 
     const [cinema, setCinema] = useState({
         cinemaName: "",
@@ -67,7 +84,8 @@ const AddItem = () => {
     }
     useEffect(() => {
         handleGetCinema()
-    }, []);
+        handleTabChange()
+    }, [item]);
     const nameCinema = allCinema.map(item => item.cinemaName)
 
     const handleSelectChange = (selectedValue) => {
@@ -84,11 +102,11 @@ const AddItem = () => {
                 <div className='h-20 flex justify-between items-center border-b-2'>
                     <h2 className='text-3xl'>Manager Cinema</h2>
                 </div>
-                <Tabs>
+                <Tabs selectedIndex={tabIndex}>
                     <TabList className='py-6 border-b-2'>
-                        <Tab id="add-cinema-tab">Add Cinema</Tab>
-                        <Tab id="add-food-tab">Add Food</Tab>
-                        <Tab id="add-room-tab">Add Room</Tab>
+                        <Tab onClick={() => changeTab(`/admin/add-item/cinema`)} id="add-cinema-tab">Add Cinema</Tab>
+                        <Tab onClick={() => changeTab(`/admin/add-item/food`)} id="add-food-tab">Add Food</Tab>
+                        <Tab onClick={() => changeTab(`/admin/add-item/room`)} id="add-room-tab">Add Room</Tab>
                     </TabList>
 
                     <TabPanel>
@@ -145,7 +163,7 @@ const AddItem = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Url
+                                            Location URL
                                         </label>
                                         <input
                                             // value={account.userName}

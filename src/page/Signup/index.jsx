@@ -11,7 +11,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useLoadingState from '../../hook/UseLoadingState'
 
 import { useContext } from 'react'
-import {RegisterContext} from '../../context/RegisterContext'
+import { RegisterContext } from '../../context/RegisterContext'
 
 const Signup = () => {
     const { registerApi, loginApi, verifyApi, sendOtpApi } = AuthService();
@@ -54,6 +54,7 @@ const Signup = () => {
                 setCurrentTab("2")
                 break;
             case "/signup/verify":
+            case "/forgot-password/verify":
                 setCurrentTab("3")
                 break;
             default:
@@ -98,7 +99,6 @@ const Signup = () => {
         setLoading('sendotp', true)
         console.log(loading)
         const email = info.email
-        console.log("🚀 ~ file: index.jsx:75 ~ handleSendOtp ~ email:", email)
         await sendOtpApi({ email })
         setLoading('sendotp', false)
         console.log(loading)
