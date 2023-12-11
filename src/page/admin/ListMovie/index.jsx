@@ -80,7 +80,7 @@ const ListMovie = () => {
                           <td className='text-start font-medium px-5 py-4'>{item.rating}</td>
                           <td className='text-start font-medium px-5 py-4'>{item.genres}</td>
                           <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-start font-medium px-5 py-4`}>{item.delete ? "Hidden" : "Visible"}</td>
-                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.releaseDate)}</td>
+                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.releaseDate).date}</td>
                           <td className='text-start font-medium px-5 py-4'>
                             <div className='flex items-center'>
                               <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>

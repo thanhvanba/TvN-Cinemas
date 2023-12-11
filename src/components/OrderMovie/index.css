@@ -1,3 +1,30 @@
-.grid-cols-14{
+.grid-cols-14 {
     grid-template-columns: repeat(14, minmax(0, 1fr));
+}
+
+.NORMAL {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
+.booked {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
+.VIP {
+    --tw-bg-opacity: 1;
+    background-color: rgb(249 115 22 / var(--tw-bg-opacity));
+}
+
+.COUPLE {
+    --tw-bg-opacity: 1;
+    background-color: rgb(190 24 93 / var(--tw-bg-opacity));
+}
+
+.select {
+    --tw-bg-opacity: 1;
+    background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+    border: 2px solid #00e608;
+    color: #333;
 }

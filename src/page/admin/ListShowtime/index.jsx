@@ -134,7 +134,7 @@ const ListShowtime = () => {
                               </div>
                             </div>
                           </td>
-                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.timeStart)} - {FormatDataTime(item.timeEnd)} </td>
+                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.timeStart).date} - {FormatDataTime(item.timeEnd).date} </td>
                           <td className='text-start font-medium px-5 py-4'>{item.room.roomName}</td>
                           <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{item.status ? "Visible" : "Hidden"}</td>
                           <td className='text-start font-medium px-5 py-4'>

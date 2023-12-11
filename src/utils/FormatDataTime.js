@@ -1,9 +1,29 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { format, isValid, parseISO } from 'date-fns';
 
 const FormatDataTime = (originalDateTimeString) => {
-  // Định dạng ngày giờ và trả về chuỗi
-  return format(new Date(originalDateTimeString), 'dd/MM/yyyy');
+  if (!originalDateTimeString) {
+    return { date: null, time: null };
+  }
+
+  // Chuyển đổi thành đối tượng Date
+  const dateObject = parseISO(originalDateTimeString);
+
+  // Kiểm tra nếu giá trị Date là hợp lệ
+  if (!isValid(dateObject)) {
+    return { date: null, time: null };
+  }
+
+  // Định dạng ngày và giờ
+  const formattedDate = format(dateObject, 'dd/MM/yyyy');
+  const formattedDay = format(dateObject, 'dd/MM')
+  const formattedTime = format(dateObject, 'HH:mm:ss');
+
+  // Xác định ngày thứ mấy
+  const dayOfWeek = dateObject.getDay();
+
+  // Trả về đối tượng chứa giá trị ngày, giờ và ngày thứ mấy
+  return { day: formattedDay, date: formattedDate, time: formattedTime, dayOfWeek };
 };
 
 export default FormatDataTime;

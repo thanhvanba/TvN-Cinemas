@@ -13,14 +13,14 @@ import CinemaService from '../../../service/CinemaService';
 import './index.css'
 const AddItem = () => {
     const { item } = useParams()
-    
+
     const [loading, setLoading] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
 
     const navigate = useNavigate()
     const changeTab = (pathname) => {
         navigate(pathname)
-      }
+    }
 
     const { addCinemaApi, addFoodApi, addRoomApi } = AdminService()
 
@@ -225,7 +225,9 @@ const AddItem = () => {
                                         >
                                             Food type
                                         </label>
-                                        <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} />
+                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} />
+                                        </div>
                                     </div>
                                     <div className='flex justify-end'>
                                         <button
@@ -252,7 +254,9 @@ const AddItem = () => {
                                         >
                                             Cinemas
                                         </label>
-                                        <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} />
+                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                            <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} />
+                                        </div>
                                     </div>
                                     <div className="relative my-4">
                                         <label

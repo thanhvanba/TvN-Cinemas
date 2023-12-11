@@ -51,25 +51,10 @@ const AddShowtime = () => {
     const listNameMovie = allMovie.map(item => item.title)
     const listNameRoom = allRoom.map(item => item.roomName)
 
-    // const [allRoom, setAllRoom] = useState([])
-    // const { getAllRoomApi } = RoomService()
-
-    // const handleGetAllRoom = async () => {
-    //     let res = await getAllRoomApi()
-    //     if (res && res.data && res.data.result && res.data.result.content) {
-    //         setAllRoom(res.data.result.content)
-    //     }
-    // }
-
     const handleSelectChange = (selectedValue) => {
         const movie = allMovie.find(movie => movie.title === selectedValue)
         const selectedId = movie.movieId
         setShowtime({ ...showtime, movieId: selectedId })
-
-        // const room = allMovie.find(movie => movie.title === selectedValue)
-        // const selectedId = room.roomId
-        // setShowtime({ ...showtime, roomId: selectedId })
-
     };
     const [isChecked, setIsChecked] = useState(false);
 
@@ -144,7 +129,9 @@ const AddShowtime = () => {
                                     >
                                         Movie
                                     </label>
+                                    <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} />
+                                    </div>
                                 </div>
                                 <div className="relative my-4">
                                     <label
@@ -153,7 +140,9 @@ const AddShowtime = () => {
                                     >
                                         Room
                                     </label>
+                                    <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom}/>
+                                    </div>
                                 </div>
                                 <div className='flex justify-between'>
                                     <div className="relative my-4 w-full">

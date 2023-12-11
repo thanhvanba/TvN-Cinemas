@@ -73,7 +73,7 @@ const ListUser = () => {
         try {
             let res = await deleteUserApi(userId);
             console.log("🚀 ~ file: index.jsx:74 ~ handleDeleteUser ~ res:", res)
-            if (res && res.data && res.data.success){
+            if (res && res.data && res.data.success) {
                 console.log("Vào đây")
                 await getAllUserApi()
             } else {
@@ -170,7 +170,9 @@ const ListUser = () => {
                                         >
                                             Cinemas
                                         </label>
-                                        <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} />
+                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                            <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} />
+                                        </div>
                                     </div>
                                     <div className="relative my-4">
                                         <label
@@ -253,14 +255,14 @@ const ListUser = () => {
                                                     </td>
                                                     <td className='text-start font-medium px-5 py-4'>{item.userName}</td>
                                                     <td className='text-start font-medium px-5 py-4'>{item.role.roleName}</td>
-                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete? "Approved" : "Banned"}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt)}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt)}</td>
+                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Approved" : "Banned"}</td>
+                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt).date}</td>
+                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt).date}</td>
                                                     <td className='text-start font-medium px-5 py-4'>
                                                         <div className='flex items-center'>
                                                             <button
                                                                 className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                onClick={()=>handleDeleteUser(item.userId)}
+                                                                onClick={() => handleDeleteUser(item.userId)}
                                                             >
                                                                 <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
                                                             </button>

@@ -117,20 +117,20 @@ const Home = () => {
             <div className="grid grid-cols-4 gap-4 max-w-screen-xl mx-auto">
               {
                 allMovie && allMovie.length > 0 &&
-                allMovie.map((movie, index) => {
-                    <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                      <div className="product-item table border-2 border-slate-600 h-[92%]">
-                        <img
-                          src={movie.poster}
-                          alt=""
-                          className="product-over h-full w-full table-cell"
-                        />
-                      </div>
-                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                        {movie.title}
-                      </div>
+                allMovie.map((movie, index) => (
+                  <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
+                    <div className="product-item table border-2 border-slate-600 h-[92%]">
+                      <img
+                        src={movie.poster}
+                        alt=""
+                        className="product-over h-[462px] w-full table-cell"
+                      />
                     </div>
-                })
+                    <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
+                      {movie.title}
+                    </div>
+                  </div>
+                ))
               }
             </div>
           </div>

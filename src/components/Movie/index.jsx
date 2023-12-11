@@ -1,31 +1,134 @@
 import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { format, addDays } from 'date-fns';
 import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
+import SelectMenu from '../SelectMenu/SelectMenu';
+import FormatDataTime from '../../utils/FormatDataTime'
+import getSrcYoutube from '../../utils/GetSrcYoutube'
+import TruncatedContent from '../../utils/TruncatedContent';
 import "./index.css"
 
 import MovieService from '../../service/MovieService';
+import CinemaService from '../../service/CinemaService';
+import UserService from '../../service/UserService';
 
 const Movie = () => {
     const { GetOneMovieApi } = MovieService()
+    const { getAllCinemaApi } = CinemaService()
+    const { getShowtimeByMovieApi, getAllShowtimeApi } = UserService()
     const navigate = useNavigate()
 
-    const { id } = useParams();
-    const [movie, setMovie] = useState({})
 
-    const changeTab = (pathname) => {
-        navigate(pathname)
+    const { id } = useParams();
+    const [dateList, setDateList] = useState([]);
+    const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
+    console.log("🚀 ~ file: index.jsx:26 ~ Movie ~ selectedDateTime:", selectedDateTime)
+    const [movie, setMovie] = useState({})
+    const [allCinema, setAllCinema] = useState([])
+    const [allShowtime, setAllShowtime] = useState([])
+    const [foundShowtime, setFoundShowtime] = useState({
+        showTimeId: null,
+        room: {
+            roomId: null,
+            cinema: {
+                cinemaId: null,
+                location: null,
+                cinemaName: null,
+                desc: null,
+                status: null,
+                urlLocation: null
+            },
+            roomName: null
+        },
+        movie: {
+            movieId: null,
+            title: null,
+            director: null,
+            genres: null,
+            actor: null,
+            releaseDate: null,
+            desc: null,
+            poster: null,
+            trailerLink: null,
+            duration: null,
+            reviews: null,
+            rating: null,
+            delete: null
+        },
+        timeStart: null,
+        timeEnd: null,
+        status: null,
+        listTimeShow: [
+        ],
+        seats: null,
+        special: null
+    })
+    const [showTrailer, setShowTrailer] = useState(false);
+
+    const openTrailer = () => {
+        setShowTrailer(true);
+    };
+
+    const closeTrailer = () => {
+        setShowTrailer(false);
+    };
+
+    const ListDayShowtime = () => {
+        const currentDate = new Date();
+
+        // Tạo danh sách 6 ngày liên tiếp
+        const sixDayList = Array.from({ length: 6 }, (_, index) => {
+            const date = addDays(currentDate, index);
+            return date.toISOString();
+        });
+
+        // Cập nhật state với danh sách ngày
+        setDateList(sixDayList);
+        setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
+    }
+    const hadleGetItem = async (movieId) => {
+        let resMovie = await GetOneMovieApi(movieId)
+        let resCinema = await getAllCinemaApi()
+        let resShowtime = await getAllShowtimeApi()
+        if (resMovie && resMovie.data && resMovie.data.result) {
+            setMovie(resMovie.data.result)
+        }
+        if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
+            setAllCinema(resCinema.data.result.content)
+        }
+        if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result.content) {
+            setAllShowtime(resShowtime.data.result.content)
+        }
     }
 
-    const hadleGetOneMovie = async (movieId) => {
-        let res = await GetOneMovieApi(movieId)
-        if (res && res.data && res.data.result) {
-            setMovie(res.data.result)
+    const FoundShowtime = (cinemaId) => {
+        const foundShowtime = allShowtime.find(
+            item =>
+                item.room.cinema.cinemaId === cinemaId &&
+                item.movie.movieId === id
+        );
+        if (foundShowtime) {
+            setFoundShowtime(foundShowtime);
+            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
+        } else {
+            setFoundShowtime(foundShowtime);
+            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
+            console.log("No showtimes found for the selected cinema and movie.");
         }
     }
     useEffect(() => {
-        hadleGetOneMovie(id)
+        hadleGetItem(id)
+        ListDayShowtime()
     }, [id]);
+
+    const listNameCinema = allCinema.map(item => item.cinemaName)
+    const handleSelectChange = (selectedValue) => {
+        const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
+        const selectedId = cinema.cinemaId
+        FoundShowtime(selectedId)
+    };
+    console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
@@ -66,11 +169,11 @@ const Movie = () => {
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Khởi chiếu</span>
-                                <span>{movie.releaseDate}</span>
+                                <span>{FormatDataTime(movie.releaseDate).date}</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Thời lượng</span>
-                                <span>110 phút</span>
+                                <span>{movie.duration} phút</span>
                             </li>
                             <li className='relative pl-28 pb-5'>
                                 <span className='absolute top-0 left-0'>Ngôn ngữ</span>
@@ -79,13 +182,38 @@ const Movie = () => {
                         </ul>
                         {/* button */}
                         <div>
-                            <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
+                            <button
+                                className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                                type="button"
+                                onClick={openTrailer}
                             >
-                                <a href={movie.trailerLink}>Xem trailer</a>
+                                Xem trailer
                             </button>
+
+                            {/* Hiển thị video khi showTrailer là true */}
+                            {showTrailer && (
+                                <div className="fixed z-50 top-1/4 left-1/4 w-1/2 h-1/2 bg-black bg-opacity-75 flex items-center justify-center">
+                                    <div className="relative w-full h-0 pb-[56.25%]">
+                                        <iframe
+                                            title={`${movie.title} Trailer`}
+                                            className="absolute top-0 left-0 w-full h-full"
+                                            src={getSrcYoutube(movie.trailerLink)}
+                                            frameBorder="0"
+                                            allowFullScreen
+                                        ></iframe>
+                                        {/* Nút đóng ở góc phải trên của iframe */}
+                                        <button
+                                            className="absolute -top-7 -right-3 text-white cursor-pointer"
+                                            onClick={closeTrailer}
+                                        >
+                                            <span role="img" aria-label="Close" className="text-2xl">×</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                             <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
                             >
-                                <a href="">Mua vé ngay</a>
+                                <a>Mua vé ngay</a>
                             </button>
                         </div>
                     </div>
@@ -100,109 +228,82 @@ const Movie = () => {
                     <div >
                         {/* chọn rạp */}
                         <div className='flex justify-center'>
-                            <div className="relative option-style2  inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200 h-12 w-96">
-                                <h3 className="flex uppercase pl-5 pr-8 py-3">Chọn rạp</h3>
-                                <span className="absolute right-5 top-4"><ChevronDownIcon className="h-5 w-5 text-gray-200" /></span>
-                            </div>
-                        </div>
-                        {/* ngày chiếu */}
-                        <div className='grid grid-cols-6'>
-                            <a href="" className='active2 option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-                                14/10 <br />
-                                <span>Th 7</span>
-                            </a>
-                        </div>
+                            <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
 
-                        {/* ds các cụ thể thời gian chiếu */}
-                        <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                            <div className='relative pl-60 pb-8 mb-8'>
-                                {/* vị trí */}
-                                <div className='absolute top-0 left-0 bg-slate-700 w-60'>
-                                    <div className='p-6'>
-                                        <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                                        <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
-                                    </div>
-                                    <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                                    >
-                                        <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                        <a href="" className='pr-8'>Xem vị trí</a>
-                                    </button>
-                                </div>
-                                {/* thời gian */}
-                                <div className='block relative'>
-                                    <div className='relative pl-28 pt-4'>
-                                        <ul className='grid grid-cols-5 gap-4'>
-                                            <li onClick={() => changeTab("/order")} className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                            <li className='inline-block'>
-                                                <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} />
                             </div>
                         </div>
+                        {
+                            foundShowtime &&
+                            <div>
+                                {/* ngày chiếu */}
+                                <div className='grid grid-cols-6'>
+                                    {dateList.map((date, index) => (
+                                        <a
+                                            key={index}
+                                            className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
+                                                }`}
+                                            onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
+                                        >
+                                            {FormatDataTime(date).day} <br />
+                                            <span>
+                                                {FormatDataTime(date).dayOfWeek === 0
+                                                    ? 'CN'
+                                                    : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
+                                            </span>
+                                        </a>
+                                    ))}
+
+                                </div>
+                                {/* ds các cụ thể thời gian chiếu */}
+                                <div className='relative max-w-5xl mx-auto text-left pt-5'>
+                                    <div className='relative pl-60 pb-8 mb-8'>
+                                        {/* vị trí */}
+                                        <div className='absolute top-0 left-0 bg-slate-700 w-60'>
+                                            <div className='p-6'>
+                                                <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
+                                                <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
+                                            </div>
+                                            <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                                            >
+                                                <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                                                <a className='pr-8'>Xem vị trí</a>
+                                            </button>
+                                        </div>
+                                        {/* thời gian */}
+                                        <div className='block relative'>
+                                            <div className='relative pl-28 pt-4'>
+                                                <ul className='grid grid-cols-5 gap-4'>
+                                                    {
+                                                        foundShowtime.listTimeShow
+                                                            .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
+                                                            ?.time.map((time, index) => (
+                                                                <li key={index} onClick={() => {
+                                                                    setSelectedDateTime(prevState => ({ ...prevState, time: time }));
+                                                                    const updatedDateTime = { ...selectedDateTime, time: time };
+                                                                    navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                }
+                                                                } className='inline-block'>
+                                                                    <a
+                                                                        className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
+                                                                    >
+                                                                        {time}
+                                                                    </a>
+                                                                </li>
+                                                            ))
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

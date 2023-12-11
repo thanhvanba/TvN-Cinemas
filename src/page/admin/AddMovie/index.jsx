@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import AdminService from '../../../service/AdminService'
 import CinemaService from '../../../service/CinemaService';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 
 const AddMovie = () => {
     const [loading, setLoading] = useState(false);
@@ -123,19 +126,20 @@ const AddMovie = () => {
                                     </div>
                                 </div>
                                 <div className='flex justify-between my-4'>
-                                    <div className="w-full pr-2">
-                                        <input
-                                            onChange={e => setMovie({ ...movie, releaseDate: e.target.value })}
-                                            type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                    <div className="w-full pr-2  bg-slate-100 rounded-md">
+                                        <DatePicker
+                                            selected={movie.releaseDate}
+                                            onChange={date => setMovie({ ...movie, releaseDate: date })}
+                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md"
                                             placeholder="Release Date"
+                                            dateFormat="yyyy-MM-dd" // Định dạng ngày
                                         />
                                     </div>
                                     <div className="w-full pl-2">
                                         <input
                                             onChange={e => setMovie({ ...movie, trailerLink: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md"
                                             placeholder="Trailer Link"
                                         />
                                     </div>

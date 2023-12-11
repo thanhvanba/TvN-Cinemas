@@ -115,12 +115,81 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getAllShowtimeApi = async () => {
+        return await axios.get(
+            "http://localhost:8080/api/v1/showtimes"
+        );
+    };
+    const getOneShowtimeApi = async (showtimeId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/showtimes/${showtimeId}`
+        );
+    };
+    const getShowtimeByMovieApi = async (movieId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/movies/${movieId}/show-times`
+        );
+    };
+    const getFoodApi = async (type) => {
+        const params = { type: type }
+        return await axios.get(
+            "http://localhost:8080/api/v1/foods",
+            {
+                params: params
+            },
+        );
+    }
+    const getSeatBookedApi = async (showtimeId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `http://localhost:8080/api/v1/viewer/seats/booked/${showtimeId}`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+
+        );
+    }
+    const selectSeatApi = async (data, showtimeId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.post(
+            `http://localhost:8080/api/v1/viewer/checkSeat/${showtimeId}`,
+            data,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+
+        );
+    }
+    const bookingTicketApi = async (data) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.post(
+            `http://localhost:8080/api/v1/viewer/book`,
+            data,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+
+        );
+    }
     return {
         getUserInfoApi,
         updateUserApi,
         changePasswordApi,
         forgotPasswordApi,
-        verifyApi
+        verifyApi,
+        getAllShowtimeApi,
+        getOneShowtimeApi,
+        getShowtimeByMovieApi,
+        getFoodApi,
+        getSeatBookedApi,
+        selectSeatApi,
+        bookingTicketApi
     }
 }
 

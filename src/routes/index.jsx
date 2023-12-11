@@ -157,11 +157,11 @@ const MainRouter = () => (
     <Route path='/showtimes' element={<ShowTimes />} />
     <Route path='/showtimes/lichchieuphim' element={<ShowTimes />} />
     <Route path='/showtimes/phimtheorap' element={<ShowTimes />} />
-    <Route path='/order' element={<OrderMovie />} />
-    <Route path='/order/chonghe' element={<OrderMovie />} />
-    <Route path='/order/bapnuoc' element={<OrderMovie />} />
-    <Route path='/order/xacnhan' element={<OrderMovie />} />
-    <Route path='/order/ve' element={<OrderMovie />} />
+    <Route path='/:showtimeId/order' element={<OrderMovie />} />
+    <Route path='/:showtimeId/order/chonghe' element={<OrderMovie />} />
+    <Route path='/:showtimeId/order/bapnuoc' element={<OrderMovie />} />
+    <Route path='/:showtimeId/order/xacnhan' element={<OrderMovie />} />
+    <Route path='/:showtimeId/order/ve' element={<OrderMovie />} />
     <Route path="/user/info" element={<Info />} />
   </Routes>
 );
