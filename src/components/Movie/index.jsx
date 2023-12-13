@@ -234,7 +234,7 @@ const Movie = () => {
                             </div>
                         </div>
                         {
-                            foundShowtime &&
+                            foundShowtime && foundShowtime.showTimeId &&
                             <div>
                                 {/* ngày chiếu */}
                                 <div className='grid grid-cols-6'>
@@ -257,17 +257,19 @@ const Movie = () => {
                                 </div>
                                 {/* ds các cụ thể thời gian chiếu */}
                                 <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                                    <div className='relative pl-60 pb-8 mb-8'>
+                                    <div className='relative pl-60 pb-8 mb-8 h-36'>
                                         {/* vị trí */}
                                         <div className='absolute top-0 left-0 bg-slate-700 w-60'>
                                             <div className='p-6'>
                                                 <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
                                                 <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
                                             </div>
-                                            <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                                            <button
+                                                className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                                                onClick={() => window.open(foundShowtime.room.cinema.urlLocation, '_blank')}
                                             >
-                                                <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                                <a className='pr-8'>Xem vị trí</a>
+                                                <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                                                <a href={foundShowtime.room.cinema.urlLocation} className='pr-8'>Xem vị trí</a>
                                             </button>
                                         </div>
                                         {/* thời gian */}

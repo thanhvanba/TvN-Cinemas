@@ -522,9 +522,10 @@ const ShowTimes = () => {
                       <p className='text-slate-500'>{item.location}</p>
                     </div>
                     <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                      onClick={() => window.open(item.urlLocation, '_blank')}
                     >
-                      <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                      <a href="" className='pr-8'>Xem vị trí</a>
+                      <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                      <a className='pr-8'>Xem vị trí</a>
                     </button>
                   </div>
                 ))

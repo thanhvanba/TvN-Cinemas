@@ -139,23 +139,40 @@ const UserService = () => {
             },
         );
     }
-    const getSeatBookedApi = async (showtimeId) => {
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
-            `http://localhost:8080/api/v1/viewer/seats/booked/${showtimeId}`,
+    const getSeatBookedApi = async (data) => {
+        return await axios.post(
+            `http://localhost:8080/api/v1/viewer/seats/booked`,
+            data,
             {
-                headers: {
-                    "Authorization": bearerToken,
-                }
-            },
+               
+                // headers: {
+                //     "Authorization": bearerToken,
+                // },
+            }
 
         );
     }
     const selectSeatApi = async (data, showtimeId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.post(
-            `http://localhost:8080/api/v1/viewer/checkSeat/${showtimeId}`,
+            `http://localhost:8080/api/v1/viewer/selectSeat/${showtimeId}`,
             data,
+            // {
+            //     headers: {
+            //         "Authorization": bearerToken,
+            //     }
+            // },
+
+        );
+    }
+    const bookingTicketApi = async (seats, foods) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.post(
+            `http://localhost:8080/api/v1/viewer/book`,
+            {
+                seatIds: seats,
+                foodIds: foods
+            },
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -164,17 +181,18 @@ const UserService = () => {
 
         );
     }
-    const bookingTicketApi = async (data) => {
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.post(
-            `http://localhost:8080/api/v1/viewer/book`,
-            data,
+    const getSeatPriceApi = async (type) => {
+        const params = { type: type }
+        return await axios.get(
+            "http://localhost:8080/api/v1/viewer/seat/price",
             {
-                headers: {
-                    "Authorization": bearerToken,
-                }
+                params: params
             },
-
+        );
+    }
+    const getFoodByIdApi = async (foodId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/foods/${foodId}`
         );
     }
     return {
@@ -189,7 +207,9 @@ const UserService = () => {
         getFoodApi,
         getSeatBookedApi,
         selectSeatApi,
-        bookingTicketApi
+        bookingTicketApi,
+        getSeatPriceApi,
+        getFoodByIdApi
     }
 }
 
