@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArmchairIcon, PopcornIcon, CreditCardIcon, InboxIcon } from 'lucide-react'
 import screen from "../../images/screen.webp"
@@ -9,16 +9,21 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import "./index.css"
 import formatPrice from "../../utils/ConvertStringFollowFormat"
 import UserService from '../../service/UserService';
+import VnPayService from '../../service/VnPayService';
 import { parse, format } from 'date-fns';
+import NumberSpinner from '../../utils/NumberSpinner';
+import { LoginContext } from '../../context/LoginContext';
 
 const OrderMovie = () => {
     const seatsPerRow = 14;
     const numRows = 10;
 
-    const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, getSeatPriceApi, getFoodByIdApi } = UserService()
-
+    const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
+    const { createPaymentApi } = VnPayService()
+    const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [foods, setFoods] = useState([])
+    console.log("🚀 ~ file: index.jsx:26 ~ OrderMovie ~ foods:", foods)
     const [listWater, setListWater] = useState([])
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
@@ -30,8 +35,8 @@ const OrderMovie = () => {
     console.log("🚀 ~ file: index.jsx:29 ~ OrderMovie ~ listFoodBooking:", listFoodBooking)
     const [selectSeats, setSelectSeats] = useState([])
     console.log("🚀 ~ file: index.jsx:31 ~ OrderMovie ~ selectSeats:", selectSeats)
-    const [infoTicket, setInfoTicket] = useState({})
-    console.log("🚀 ~ file: index.jsx:28 ~ OrderMovie ~ infoTicket:", infoTicket)
+    const [bookingInfo, setBookingInfo] = useState({})
+    console.log("🚀 ~ file: index.jsx:28 ~ OrderMovie ~ bookingInfo:", bookingInfo)
     const [showtime, setShowtime] = useState({
         showTimeId: null,
         room: {
@@ -196,21 +201,31 @@ const OrderMovie = () => {
         setLoading(false);
     }
     const handleBookingTicket = async () => {
+        console.log("vào đây")
         setLoading(true);
-        const resTicket = await bookingTicketApi(listSeatBooking, listFoodBooking)
-        if (resTicket && resTicket.data && resTicket.data.result) {
-            setInfoTicket(resTicket.data.result)
+        const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking)
+        console.log("🚀 ~ file: index.jsx:207 ~ handleBookingTicket ~ resBookingInfo:", resBookingInfo)
+        if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
+            setBookingInfo(resBookingInfo.data.result);
+        }
+        setLoading(false);
+        console.log(bookingInfo.bookingId)
+    }
+    const handleGetBookingInfo = async () => {
+        setLoading(true);
+        const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking)
+        if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
+            setBookingInfo(resBookingInfo.data.result)
         }
         setLoading(false);
     }
-    const handleGetFoodById = async (foodId) => {
-        console.log("Vào handle")
-        let resFood = await getFoodByIdApi(foodId)
-        if (resFood && resFood.data && resFood.data.result) {
-            foods.push(resFood.data.result)
+
+    const handlePayment = async (bookingId) => {
+        console.log("🚀 ~ file: index.jsx:229 ~ handlePayment ~ bookingId:", bookingId)
+        let resPayment = await createPaymentApi(bookingId)
+        if (resPayment && resPayment.data && resPayment.data.result) {
+            window.open(resPayment.data.result, '_blank')
         }
-        
-        console.log("🚀 ~ file: index.jsx:212 ~ handleGetFoodById ~ foods:", foods)
     }
 
     const handleSelectSeat = async (seatId, type) => {
@@ -240,12 +255,7 @@ const OrderMovie = () => {
             }
         }
     }
-    const handleSelectFood = () => {
-        listFoodBooking.map(foodId => {
-            (handleGetFoodById(foodId))
-        })
 
-    }
     useEffect(() => {
         handleCheckPathname(pathname)
     }, [pathname]);
@@ -254,60 +264,6 @@ const OrderMovie = () => {
         handleGetFood()
         handleGetSeatBooked()
     }, [showtimeId]);
-    // component number spiner
-    const NumberSpinner = ({ idPerItem, pricePerItem }) => {
-        const [quantity, setQuantity] = useState(0);
-        const [totalPrice, setTotalPrice] = useState(0);
-
-        const decreaseQuantity = () => {
-            const newQuantity = quantity - 1
-            if (newQuantity >= 0) {
-                const indexToRemove = listFoodBooking.indexOf(idPerItem);
-                setQuantity(newQuantity)
-                setTotalPrice(newQuantity * pricePerItem)
-                if (indexToRemove !== -1) {
-                    const updatedItems = [...listFoodBooking];
-                    updatedItems.splice(indexToRemove, 1);
-                    setListFoodBooking(updatedItems);
-                }
-            }
-        }
-        const increaseQuantity = () => {
-            const newQuantity = quantity + 1
-            console.log("New Quantity:", newQuantity); // Thêm dòng này để kiểm tra giá trị mới
-            if (newQuantity >= 0) {
-                setQuantity(newQuantity)
-                setTotalPrice(newQuantity * pricePerItem)
-                if (idPerItem) {
-                    setListFoodBooking((listFoodBooking) => [...listFoodBooking, idPerItem]);
-                }
-            }
-        }
-        return (
-            <div className='w-2/5'>
-                <div className='p-4 flex items-center'>
-                    <div className='flex w-1/2 justify-center'>
-                        <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'>
-                            <MinusSmallIcon />
-                        </a>
-                        <input className='h-8 w-8 bg-transparent text-center font-bold text-xl outline-none'
-                            min={"0"}
-                            type="text"
-                            value={quantity}
-                            readOnly
-                        />
-                        <a onClick={increaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'>
-                            <PlusSmallIcon />
-                        </a>
-                    </div>
-                    <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
-                        <span>{formatPrice(totalPrice)} <sup>đ</sup></span>
-
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className='pt-32 bg-gray-900 h-auto pb-64'>
@@ -432,7 +388,14 @@ const OrderMovie = () => {
                                                     <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
                                                 </div>
                                             </div>
-                                            <NumberSpinner idPerItem={item.foodId} pricePerItem={item.price} />
+                                            <NumberSpinner
+                                                idPerItem={item.foodId}
+                                                pricePerItem={item.price}
+                                                listFoodBooking={listFoodBooking}
+                                                setListFoodBooking={setListFoodBooking}
+                                                foods={foods}
+                                                setFoods={setFoods}
+                                            />
                                         </div>
                                     ))
                                 }
@@ -452,7 +415,14 @@ const OrderMovie = () => {
 
                                                 </div>
                                             </div>
-                                            <NumberSpinner idPerItem={item.foodId} pricePerItem={item.price} />
+                                            <NumberSpinner
+                                                idPerItem={item.foodId}
+                                                pricePerItem={item.price}
+                                                listFoodBooking={listFoodBooking}
+                                                setListFoodBooking={setListFoodBooking}
+                                                foods={foods}
+                                                setFoods={setFoods}
+                                            />
                                         </div>
                                     ))
                                 }
@@ -472,7 +442,14 @@ const OrderMovie = () => {
 
                                                 </div>
                                             </div>
-                                            <NumberSpinner idPerItem={item.foodId} pricePerItem={item.price} />
+                                            <NumberSpinner
+                                                idPerItem={item.foodId}
+                                                pricePerItem={item.price}
+                                                listFoodBooking={listFoodBooking}
+                                                setListFoodBooking={setListFoodBooking}
+                                                foods={foods}
+                                                setFoods={setFoods}
+                                            />
                                         </div>
                                     ))
                                 }
@@ -492,7 +469,14 @@ const OrderMovie = () => {
 
                                                 </div>
                                             </div>
-                                           <NumberSpinner idPerItem={item.foodId} pricePerItem={item.price} />
+                                            <NumberSpinner
+                                                idPerItem={item.foodId}
+                                                pricePerItem={item.price}
+                                                listFoodBooking={listFoodBooking}
+                                                setListFoodBooking={setListFoodBooking}
+                                                foods={foods}
+                                                setFoods={setFoods}
+                                            />
                                         </div>
                                     ))
                                 }
@@ -500,7 +484,7 @@ const OrderMovie = () => {
                             <div className='relative flex justify-end pt-4 top-16'>
                                 <button
                                     onClick={() => {
-                                        handleBookingTicket();
+                                        handleGetBookingInfo();
                                         navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
                                     }}
                                     className="absolute w-1/4 text-[18px] text-slate-200 text-2xl p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
@@ -564,7 +548,7 @@ const OrderMovie = () => {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    infoTicket && infoTicket.seats && infoTicket.seats.map(seatInfo => (
+                                                    bookingInfo && bookingInfo.seats && bookingInfo.seats.map(seatInfo => (
                                                         <tr>
                                                             <td className="relative py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                                 <div className="font-medium text-slate-900">Ghế ({String.fromCharCode(65 + parseInt(seatInfo.row, 10) - 1) + seatInfo.column})</div>
@@ -576,7 +560,7 @@ const OrderMovie = () => {
                                                     ))
                                                 }
                                                 {
-                                                    infoTicket && infoTicket.foods && infoTicket.foods.map(foodInfo => (
+                                                    bookingInfo && bookingInfo.foods && bookingInfo.foods.map(foodInfo => (
                                                         <tr>
                                                             <td className="relative py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                                 <div className="font-medium text-slate-900">{foodInfo.food.name}</div>
@@ -595,7 +579,7 @@ const OrderMovie = () => {
                             </div>
                         </div>
                         <div className="w-full xl:w-1/3 flex-1 text-sm md:text-base">
-                            <div className="bg-slate-300 h-full rounded-2xl p-4 md:p-6 space-y-5">
+                            <div className="bg-slate-300 md:h-[620px] h-full rounded-2xl p-4 md:p-6 space-y-5">
                                 <h4 className="font-bold text-3xl">Phương thức thanh toán</h4>
                                 <div id="headlessui-radiogroup-:rf:" role="radiogroup">
                                     <div className="space-y-2" role="none">
@@ -648,7 +632,7 @@ const OrderMovie = () => {
                                 <div>
                                     <div className="flex items-center justify-between">
                                         <p>Thanh toán</p>
-                                        <p className="font-bold">{formatPrice(infoTicket.total)}<sup>đ</sup></p>
+                                        <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <p>Phí (0%)</p>
@@ -656,17 +640,30 @@ const OrderMovie = () => {
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <p>Tổng cộng</p>
-                                        <p className="font-bold">{formatPrice(infoTicket.total)}<sup>đ</sup></p>
+                                        <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
                                     </div>
                                 </div>
                                 <div className="space-y-3">
                                     <button
+                                        onClick={() => {
+                                            handleBookingTicket()
+                                        }}
                                         className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                         type="button"
                                         disabled={loading}
                                     >
                                         {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                        &nbsp;Xác Nhận
+                                        &nbsp;Xác Nhận Thông Tin
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handlePayment(bookingInfo.bookingId);
+                                        }}
+                                        className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                                        type="button"
+                                        disabled={loading}
+                                    >
+                                        Thanh Toán
                                     </button>
                                     <button className="inline-flex items-center justify-center rounded-full text-sm font-medium hover:bg-neutral-300 hover:text-accent-foreground h-10 px-8 py-2 w-full">
                                         Quay lại
@@ -690,14 +687,22 @@ const OrderMovie = () => {
                         <p>
                             Kèm theo:
                             {
-                                foods.map(food => (<span>&nbsp;{food.name},</span>))}{
                                 console.log("🚀 ~ file: index.jsx:696 ~ OrderMovie ~ foods:", foods)
                             }
-
+                            {
+                                foods.map(food => (<span>&nbsp;{food.name},</span>))
+                            }
+                            {
+                                console.log(JSON.parse(JSON.stringify(foods)))
+                            }
                         </p>
                         <p className='mt-2'>
                             Tổng tiền :
-                            <span> {formatPrice(selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0))}
+                            <span>
+                                {formatPrice(
+                                    selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
+                                    foods.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+                                )}
                                 <sup>đ</sup>
                             </span>
                         </p>

@@ -3,8 +3,9 @@ import Admin from './page/admin/index.jsx'
 import Header from './components/Header'
 import Footer from './components/Footer/index.jsx'
 import Signup from './page/Signup/index.jsx'
+import bg from "../src/images/movie-details-bg.jpg"
 
-import { AdminRouter, MainRouter } from './routes'
+import { AdminRouter, MainRouter, AppRouter } from './routes'
 import { useContext, useEffect } from "react"
 import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';

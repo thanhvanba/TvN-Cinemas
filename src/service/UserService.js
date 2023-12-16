@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import toastNotify from "../utils/UseToastForNotify"
 import { useNavigate } from 'react-router-dom'
+import { AxiosService } from './AxiosService'
 
 const UserService = () => {
     const navigate = useNavigate()
@@ -166,19 +167,42 @@ const UserService = () => {
         );
     }
     const bookingTicketApi = async (seats, foods) => {
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        try {
+            // let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await AxiosService.post('/viewer/book', {
+                seatIds: seats,
+                foodIds: foods
+            })
+            console.log(response)
+            // const response = await axios.post(
+            //     `http://localhost:8080/api/v1/viewer/book`,
+            //     {
+            //         seatIds: seats,
+            //         foodIds: foods
+            //     },
+            //     {
+            //         headers: {
+            //             "Authorization": bearerToken,
+            //         }
+            //     },
+    
+            // )
+            // if (response.data.success) {
+            //     toastNotify(response.data.message, "success")
+            //     return response
+            // }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    }
+    const bookingInfoApi = async (seats, foods) => {
         return await axios.post(
-            `http://localhost:8080/api/v1/viewer/book`,
+            `http://localhost:8080/api/v1/viewer/book-info`,
             {
                 seatIds: seats,
                 foodIds: foods
             },
-            {
-                headers: {
-                    "Authorization": bearerToken,
-                }
-            },
-
         );
     }
     const getSeatPriceApi = async (type) => {
@@ -208,6 +232,7 @@ const UserService = () => {
         getSeatBookedApi,
         selectSeatApi,
         bookingTicketApi,
+        bookingInfoApi,
         getSeatPriceApi,
         getFoodByIdApi
     }

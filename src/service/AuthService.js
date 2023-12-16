@@ -5,7 +5,7 @@ import toastNotify from "../utils/UseToastForNotify"
 import { useContext } from 'react'
 import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
-import { jwtDecode   } from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 const AuthService = () => {
     const navigate = useNavigate()
@@ -21,7 +21,7 @@ const AuthService = () => {
                 data
             );
             const token = response.data.result.accessToken;
-            const decode = jwtDecode (token);
+            const decode = jwtDecode(token);
             const refreshToken = response.data.result.refreshToken;
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
@@ -121,12 +121,34 @@ const AuthService = () => {
             console.log("🚀 ~ file: ApiService.js:112 ~ logoutApi ~ err.response.data.message:", err.response.data.message)
         }
     }
+    const refreshTokenApi = async (accessToken, refreshToken) => {
+        console.log('aaaaa')
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/v1/auth/refresh-access-token",
+                {
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                }
+            );
+            console.log("🚀 ~ file: AuthService.js:134 ~ refreshTokenApi ~ response:", response)
+            // if (response.data.success) {
+            //     return response
+            //     // login(data.credentialId, token, refreshToken, decode.role)
+            //     // changeTab('/');
+            // }
+        } catch (error) {
+            // alert(error.data.message)
+            // toastNotify(error.response.data.message, "error")
+        }
+    };
     return {
         loginApi,
         registerApi,
         verifyApi,
         sendOtpApi,
-        logoutApi
+        logoutApi,
+        refreshTokenApi
     }
 }
 

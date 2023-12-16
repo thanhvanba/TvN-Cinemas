@@ -141,6 +141,7 @@ import ShowTimes from '../components/ShowTimes';
 import OrderMovie from '../components/OrderMovie';
 import Admin from '../page/admin';
 import Info from '../page/Info'
+import Navigate from '../utils/Navigate';
 
 const MainRouter = () => (
   <Routes>
@@ -163,6 +164,7 @@ const MainRouter = () => (
     <Route path='/:showtimeId/order/xacnhan' element={<OrderMovie />} />
     <Route path='/:showtimeId/order/ve' element={<OrderMovie />} />
     <Route path="/user/info" element={<Info />} />
+    <Route path="/user/navigate" element={<Navigate />} />
   </Routes>
 );
 
@@ -174,6 +176,7 @@ const AdminRouter = () => (
     <Route path="/admin/add-item/movie" element={<Admin />} />
     <Route path="/admin/add-item/showtime" element={<Admin />} />
     <Route path="/admin/info" element={<Admin />} />
+    <Route path="/admin/navigate" element={<Navigate />} />
   </Routes>
 );
 

@@ -9,7 +9,7 @@ import yt from "../../images/scl_youtube.png"
 
 function Footer() {
     return (
-        <div className='bg-gray-800'>
+        <div className='bg-gray-800 mt-20'>
             <div className='max-w-7xl mx-auto px-4 py-20 mb-10 border-slate-200 border-b'>
                 <div className='grid grid-cols-4'>
                     <div className='text-slate-200 m-2'>
