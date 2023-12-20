@@ -20,11 +20,12 @@ const UserService = () => {
             },
         );
     };
-    const updateUserApi = async (data, userId) => {
+    const updateProfileApi = async (data) => {
+        console.log("🚀 ~ file: UserService.js:24 ~ updateProfileApi ~ data:", data)
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
-                `http://localhost:8080/api/v1/admin/users/${userId}`,
+                `http://localhost:8080/api/v1/user/update`,
                 data,
                 {
                     headers: {
@@ -38,6 +39,7 @@ const UserService = () => {
         }
         catch (err) {
             toastNotify(err.response.data.message, "error")
+            console.log("🚀 ~ file: UserService.js:42 ~ updateProfileApi ~ err.response.data:", err.response.data)
         }
     };
     const changePasswordApi = async (data) => {
@@ -236,7 +238,7 @@ const UserService = () => {
     }
     return {
         getUserInfoApi,
-        updateUserApi,
+        updateProfileApi,
         changePasswordApi,
         forgotPasswordApi,
         verifyApi,

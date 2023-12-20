@@ -139,7 +139,6 @@ const AddItem = () => {
         const selectedId = cinema.cinemaId
         setRoom({ ...room, cinemaId: selectedId })
     };
-    const indexProp = user.role === "ADMIN" ? "selectedIndex" : "defaultIndex";
 
     useEffect(() => {
         if (pathname === "/admin/add-item/cinema") {
@@ -204,7 +203,7 @@ const AddItem = () => {
         setOneFood(oneFood)
     }, [oneFood]);
 
-
+    const indexProp = user.role === "ADMIN" ? "selectedIndex" : "defaultIndex";
     return (
         <div>
             <div className='px-4'>

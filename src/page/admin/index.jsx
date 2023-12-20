@@ -31,6 +31,7 @@ const Admin = () => {
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState(item || '1');
   const [tabIndex, setTabIndex] = useState(0);
+  console.log("🚀 ~ file: index.jsx:34 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -180,10 +181,9 @@ const Admin = () => {
             <TabPanel>
               <Dashboard />
             </TabPanel>
-            {(user.role === "ADMIN") &&
-              <TabPanel >
-                <ListUser />
-              </TabPanel>}
+            <TabPanel >
+              <ListUser />
+            </TabPanel>
             <TabPanel>
               <ListShowtime />
             </TabPanel>
