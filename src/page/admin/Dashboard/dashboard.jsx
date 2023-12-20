@@ -1,15 +1,18 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { UsersIcon, FilmIcon, Square3Stack3DIcon, BuildingLibraryIcon, ArrowPathIcon, TrophyIcon, FireIcon, StarIcon } from '@heroicons/react/24/outline'
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent';
 
 import AdminService from '../../../service/AdminService';
+import ManagerService from '../../../service/ManagerService';
 import MovieService from '../../../service/MovieService';
 import CinemaService from '../../../service/CinemaService';
 
+import { LoginContext } from '../../../context/LoginContext';
 const Dashboard = () => {
+  const { user } = useContext(LoginContext);
   const navigate = useNavigate()
   const changeTab = (pathname) => {
     navigate(pathname)
@@ -18,6 +21,7 @@ const Dashboard = () => {
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
   const { getAllUserApi, getAllShowtimeApi } = AdminService()
+  const { getAllShowtimeByManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
   const [allCinema, setAllCinema] = useState([])
@@ -90,24 +94,36 @@ const Dashboard = () => {
   const HandleGetAllItem = async () => {
     let resMovie = await GetAllMovieApi()
     let resCinema = await getAllCinemaApi()
-    let resUser = await getAllUserApi()
+    let resUser = (user.role === "ADMIN") && await getAllUserApi()
+    let resShowtime = (user.role === "ADMIN") ?
+      await getAllShowtimeApi() : await getAllShowtimeByManagerApi()
 
-    let resShowtime = await getAllShowtimeApi()
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
 
-    const currentMonth = new Date().getMonth() + 1; // Tháng hiện tại (1-12)
     const totalMovies = resShowtime.data.result.content.filter((showtime) => {
-      const startMonth = new Date(showtime.timeStart).getMonth() + 1;
-      const endMonth = new Date(showtime.timeEnd).getMonth() + 1;
-      return startMonth <= currentMonth && endMonth >= currentMonth;
+      const startTime = new Date(showtime.timeStart);
+      const endTime = new Date(showtime.timeEnd);
+
+      const isShowtimeInCurrentMonth =
+        (startTime < endTime) &&
+        (
+          (startTime.getFullYear() < currentYear || (startTime.getFullYear() === currentYear && startTime.getMonth() + 1 <= currentMonth)) &&
+          (endTime.getFullYear() > currentYear || (endTime.getFullYear() === currentYear && endTime.getMonth() + 1 >= currentMonth))
+        );
+
+      return isShowtimeInCurrentMonth;
     }).length;
-    console.log("🚀 ~ file: dashboard.jsx:101 ~ totalMovies ~ totalMovies:", totalMovies)
 
 
-    setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
+    (user.role === "ADMIN") ?
+      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
+      :
+      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements })
     // setStatistical({...statistical})
 
     if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
-      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 4);
+      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 5);
       setAllMovie(topFourMovies)
     }
     if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
@@ -129,15 +145,19 @@ const Dashboard = () => {
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
           <h2 className='text-3xl'>Dashboard</h2>
-          <button
-            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-            onClick={() => changeTab("/admin/add-item/showtime")}
-            type='button'
-          >
-            Add showtime
-          </button>
+          {
+            user.role === "MANAGER" ?
+              <button
+                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                onClick={() => changeTab("/admin/add-item/showtime")}
+                type='button'
+              >
+                Add showtime
+              </button> :
+              <div></div>
+          }
         </div>
-        
+
         <div>
           <div className='grid grid-cols-4'>
             {
@@ -154,85 +174,86 @@ const Dashboard = () => {
 
             {
               listTable.map((table, index) => (
-                <div className='px-3 col-span-2'>
-                  <div className='mt-6 border-2 rounded-lg bg-slate-100'>
-                    <div className='p-5 flex justify-between border-b-2'>
-                      <h3 className='flex items-center text-2xl font-semibold'>
-                        <table.icon className='h-6 w-6 mr-3 text-emerald-600' />
-                        {table.title}
-                      </h3>
-                      <div className='flex items-center'>
-                        <a href=""><ArrowPathIcon className='h-4 w-4' /></a>
-                        <a onClick={() => changeTab(table.path)} href="" className='ml-4 bg-slate-200 rounded-md px-2'>View All</a>
+                user.role === "MANAGER" && (index == 0 || index == 2) ? null :
+                  <div div className='px-3 col-span-2' >
+                    <div className='mt-6 border-2 rounded-lg bg-slate-100'>
+                      <div className='p-5 flex justify-between border-b-2'>
+                        <h3 className='flex items-center text-2xl font-semibold'>
+                          <table.icon className='h-6 w-6 mr-3 text-emerald-600' />
+                          {table.title}
+                        </h3>
+                        <div className='flex items-center'>
+                          <a href=""><ArrowPathIcon className='h-4 w-4' /></a>
+                          <a onClick={() => changeTab(table.path)} href="" className='ml-4 bg-slate-200 rounded-md px-2'>View All</a>
+                        </div>
                       </div>
-                    </div>
-                    <div className='pt-8 pb-5'>
-                      <div>
-                        <table className='w-full'>
-                          <thead className='border-b'>
-                            <tr>
-                              <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.stth}</th>
-                              <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.cinemah}</th>
-                              <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.addessh}</th>
-                              <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.revenueh}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
+                      <div className='pt-8 pb-5'>
+                        <div>
+                          <table className='w-full'>
+                            <thead className='border-b'>
+                              <tr>
+                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.stth}</th>
+                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.cinemah}</th>
+                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.addessh}</th>
+                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.revenueh}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
 
-                            {index == 0 &&
-                              // Rendering table.listMovie
-                              table.listCinema.map((item, index) => (
-                                <tr key={`movie-${index}`}>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format("3000000")}</td>
-                                </tr>
-                              ))
-                            }
+                              {index == 0 &&
+                                // Rendering table.cinemaRatings
+                                table.listCinema.map((item, index) => (
+                                  <tr key={`movie-${index}`}>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format("3000000")}</td>
+                                  </tr>
+                                ))
+                              }
 
-                            {index == 1 &&
-                              // Rendering table.cinemaRatings
-                              table.listMovie.map((item, index) => (
-                                <tr key={`rating-${index}`}>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.isDelete}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.rating}</td>
-                                </tr>
-                              ))
-                            }
+                              {index == 1 &&
+                                // Rendering table.listMovie
+                                table.listMovie.map((item, index) => (
+                                  <tr key={`rating-${index}`}>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.isDelete}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.rating}</td>
+                                  </tr>
+                                ))
+                              }
 
-                            {index == 2 &&
-                              // Rendering table.cinemaRatings
-                              table.listUser.map((item, index) => (
-                                <tr key={`rating-${index}`}>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
-                                </tr>
-                              ))
-                            }
+                              {user.role === "ADMIN" && index == 2 &&
+                                // Rendering table.listUser
+                                table.listUser.map((item, index) => (
+                                  <tr key={`rating-${index}`}>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
+                                  </tr>
+                                ))
+                              }
 
-                            {index == 3 &&
-                              // Rendering table.cinemaRatings
-                              table.listReview.map((item, index) => (
-                                <tr key={`rating-${index}`}>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.cinema}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.address}</td>
-                                  <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(item.revenue)}</td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
+                              {index == 3 &&
+                                // Rendering table.listReview
+                                table.listReview.map((item, index) => (
+                                  <tr key={`rating-${index}`}>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.cinema}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.address}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(item.revenue)}</td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
 
-                        </table>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
               ))
 
             }
@@ -240,7 +261,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

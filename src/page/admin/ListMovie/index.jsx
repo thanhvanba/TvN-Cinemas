@@ -1,25 +1,53 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import TruncatedContent from '../../../utils/TruncatedContent'
-import MovieService from '../../../service/MovieService'
-import FormatDataTime from '../../../utils/FormatDataTime'
 
+import MovieService from '../../../service/MovieService'
+import AdminService from '../../../service/AdminService'
+
+import FormatDataTime from '../../../utils/FormatDataTime'
+import { LoginContext } from '../../../context/LoginContext'
 const ListMovie = () => {
   const { GetAllMovieApi } = MovieService();
+  const { changeStatusMovieApi, deleteMovieApi } = AdminService()
   const navigate = useNavigate()
 
   const changeTab = (pathname) => {
     navigate(pathname)
   }
+
+  const { user } = useContext(LoginContext)
   const [allMovie, setAllMovie] = useState([])
+
   const HandleGetAllMovie = async () => {
     let res = await GetAllMovieApi()
     if (res && res.data && res.data.result && res.data.result.content) {
       setAllMovie(res.data.result.content)
     }
   }
+  const handleChangeStatus = async (movieId) => {
+    console.log("🚀 ~ file: index.jsx:31 ~ handleChangeStatus ~ movieId:", movieId)
+    await changeStatusMovieApi(movieId);
+
+    const updateMovies = allMovie.map((movie) => {
+      if (movie.movieId === movieId) {
+        return { ...movie, delete: !movie.delete };
+      }
+      return movie;
+    });
+
+    setAllMovie(updateMovies);
+  };
+
+  const handleDeleteMovie = async (movieId) => {
+    await deleteMovieApi(movieId);
+
+    const updateMovies = allMovie.filter((movie) => movie.movieId !== movieId);
+
+    setAllMovie(updateMovies);
+  };
 
   useEffect(() => {
     HandleGetAllMovie()
@@ -36,13 +64,18 @@ const ListMovie = () => {
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
           <h2 className='text-3xl'>List Movie</h2>
-          <button
-            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-            type='submit'
-            onClick={() => changeTab("/admin/add-item/movie")}
-          >
-            Add Movie
-          </button>
+          {
+            (user.role === "ADMIN") ?
+              <button
+                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                type='submit'
+                onClick={() => changeTab("/admin/add-item/movie")}
+              >
+                Add Movie
+              </button>
+              :
+              <div></div>
+          }
         </div>
 
         <div>
@@ -57,15 +90,15 @@ const ListMovie = () => {
                       <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.movieInfo}</th>
                       <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.rating}</th>
                       <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.genres}</th>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.status}</th>
+                      {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.status}</th>}
                       <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.releaseDate}</th>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.action}</th>
+                      {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.action}</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {
-                      listMovie.movie.map((item, index) => (  
-                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                      listMovie.movie.map((item, index) => (
+                        <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-8 border-slate-50 bg-slate-100'>
                           <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
                           <td className='text-start font-medium px-5 py-4'>
                             <div className='flex items-center'>
@@ -79,21 +112,21 @@ const ListMovie = () => {
                           </td>
                           <td className='text-start font-medium px-5 py-4'>{item.rating}</td>
                           <td className='text-start font-medium px-5 py-4'>{item.genres}</td>
-                          <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-start font-medium px-5 py-4`}>{item.delete ? "Hidden" : "Visible"}</td>
+                          {user.role === "ADMIN" && <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-start font-medium px-5 py-4`}>{item.delete ? "Hidden" : "Visible"}</td>}
                           <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.releaseDate).date}</td>
-                          <td className='text-start font-medium px-5 py-4'>
+                          {user.role === "ADMIN" && <td className='text-start font-medium px-5 py-4'>
                             <div className='flex items-center'>
-                              <button className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                              <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.movieId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
                                 <listMovie.action.aChange className='h-4 w-4 text-emerald-600' />
                               </button>
-                              <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                              <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
                                 <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
                               </a>
-                              <button className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                              <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteMovie(item.movieId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                 <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
                               </button>
                             </div>
-                          </td>
+                          </td>}
                         </tr>
                       ))
                     }

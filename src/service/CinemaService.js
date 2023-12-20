@@ -8,8 +8,14 @@ const CinemaService = () => {
             "http://localhost:8080/api/v1/cinemas"
         );
     };
+    const getOneCinemaApi = async (cinemaId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/cinemas/${cinemaId}`
+        );
+    };
     return {
-        getAllCinemaApi
+        getAllCinemaApi,
+        getOneCinemaApi
     }
 }
 

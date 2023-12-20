@@ -126,6 +126,21 @@ const UserService = () => {
             `http://localhost:8080/api/v1/showtimes/${showtimeId}`
         );
     };
+    const getOneMovieApi = async (movieId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/movies/${movieId}`
+        );
+    };
+    const getOneCinemaApi = async (cinemaId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/cinemas/${cinemaId}`
+        );
+    };
+    const getOneFoodApi = async (foodId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/foods/${foodId}`
+        );
+    };
     const getShowtimeByMovieApi = async (movieId) => {
         return await axios.get(
             `http://localhost:8080/api/v1/movies/${movieId}/show-times`
@@ -145,7 +160,7 @@ const UserService = () => {
             `http://localhost:8080/api/v1/viewer/seats/booked`,
             data,
             {
-               
+
                 // headers: {
                 //     "Authorization": bearerToken,
                 // },
@@ -185,7 +200,7 @@ const UserService = () => {
             //             "Authorization": bearerToken,
             //         }
             //     },
-    
+
             // )
             // if (response.data.success) {
             //     toastNotify(response.data.message, "success")
@@ -234,7 +249,10 @@ const UserService = () => {
         bookingTicketApi,
         bookingInfoApi,
         getSeatPriceApi,
-        getFoodByIdApi
+        getFoodByIdApi,
+        getOneMovieApi,
+        getOneCinemaApi,
+        getOneFoodApi
     }
 }
 

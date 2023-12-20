@@ -230,7 +230,7 @@ const Movie = () => {
                         <div className='flex justify-center'>
                             <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
 
-                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} />
+                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Select--------"}/>
                             </div>
                         </div>
                         {

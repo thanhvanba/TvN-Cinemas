@@ -99,9 +99,7 @@ const httpClient = () => {
 const post = (endpoint, data) => {
     debugger
     return httpClient().post(`${endpoint}`, data)
-}
-
-
+}   
 
 export const AxiosService = {
     post

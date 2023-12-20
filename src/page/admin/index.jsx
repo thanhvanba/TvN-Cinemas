@@ -12,6 +12,7 @@ import ListCinema from './ListCinema'
 import ListMovie from './ListMovie';
 import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
+import ListOther from './ListOther';
 import AddItem from './AddItem';
 import AddMovie from './AddMovie';
 import AddShowtime from './AddShowtime';
@@ -24,44 +25,47 @@ import { LoginContext } from '../../context/LoginContext'
 const Admin = () => {
   const { item } = useParams()
   const { pathname } = useLocation()
+  const { checkPath } = useLocation()
   const navigate = useNavigate()
+
+  const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState(item || '1');
   const [tabIndex, setTabIndex] = useState(0);
   const changeTab = (pathname) => {
     navigate(pathname)
   }
+
+  const { logoutApi } = AuthService();
   const items = [
     { content: "Dashboard", icon: Squares2X2Icon, path: "dashboard" },
     { content: "User", icon: UserCircleIconOutline, path: "list-user" },
     { content: "Showtimes", icon: CalendarDaysIcon, path: "list-showtime" },
     { content: "Movies", icon: FilmIcon, path: "list-movie" },
     { content: "Cinemas", icon: BuildingLibraryIcon, path: "list-cinemas" },
-    { content: "Review", icon: StarIcon, path: "list-review" }
+    { content: "Review", icon: StarIcon, path: "list-review" },
+    { content: "Other", icon: StarIcon, path: "list-other" }
   ]
   const handleCheckPathname = (pathname) => {
-    switch (pathname) {
-      case "/admin/add-item/*":
-      case "/admin/add-item/food":
-      case "/admin/add-item/cinema":
-      case "/admin/add-item/room":
-        setCurrentTab("2")
-        break
-      case "/admin/add-item/movie":
-        setCurrentTab("3")
-        break
-      case "/admin/add-item/showtime":
-        setCurrentTab("4")
-        break
-      case "/admin/info":
-        setCurrentTab("5")
-        break
+    switch (true) {
+      case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
+      case /^\/admin\/(add-item\/cinema|update-item\/cinema|cinema)/.test(pathname):
+      case /^\/admin\/(add-item\/room|update-item\/room|room)/.test(pathname):
+        setCurrentTab("2");
+        break;
+      //case pathname === "/admin/add-item/movie":
+      case /^\/admin\/(add-item\/movie|update-item\/movie|movie)/.test(pathname):
+        setCurrentTab("3");
+        break;
+      case /^\/admin\/(add-item\/showtime|update-item\/showtime|showtime)/.test(pathname):
+        setCurrentTab("4");
+        break;
+      case pathname === "/admin/info":
+        setCurrentTab("5");
+        break;
       default:
-        setCurrentTab("1")
+        setCurrentTab("1");
     }
-  }
-
-  const { logoutApi } = AuthService();
-  const { user } = useContext(LoginContext);
+  };
 
   const handleLogoutApi = async (e) => {
     e.preventDefault();
@@ -93,13 +97,15 @@ const Admin = () => {
       item === "list-review" &&
         setTabIndex(5);
     }
+    {
+      item === "list-other" &&
+        setTabIndex(6);
+    }
   };
   useEffect(() => {
     handleCheckPathname(pathname)
     handleTabChange()
   }, [pathname, item]);
-
-
   return (
     <div>
       <Tabs selectedIndex={tabIndex}>
@@ -140,13 +146,20 @@ const Admin = () => {
               {
                 items.map((item) => (
                   <Tab>
-                    <li onClick={() => changeTab(`/admin/${item.path}`)} className='mb-2'>
-                      {/* {key = index} */}
-                      <a className='font-semibold text-lg flex items-center h-10'>
-                        <item.icon className='h-6 w-6 mr-4 text-emerald-600' />
-                        {item.content}
-                      </a>
-                    </li>
+                    {(user.role === "MANAGER") && (item.content === "User") ?
+                      null :
+                      <li onClick={() => { (user.role === "ADMIN") ? changeTab(`/admin/${item.path}`) : changeTab(`/manager/${item.path}`) }}
+                        className='mb-2'
+                      >
+                        {/* {key = index} */}
+                        {
+
+                          <a className='font-semibold text-lg flex items-center h-10'>
+                            <item.icon className='h-6 w-6 mr-4 text-emerald-600' />
+                            {item.content}
+                          </a>
+                        }
+                      </li>}
                   </Tab>
                 ))
               }
@@ -167,9 +180,10 @@ const Admin = () => {
             <TabPanel>
               <Dashboard />
             </TabPanel>
-            <TabPanel>
-              <ListUser />
-            </TabPanel>
+            {(user.role === "ADMIN") &&
+              <TabPanel >
+                <ListUser />
+              </TabPanel>}
             <TabPanel>
               <ListShowtime />
             </TabPanel>
@@ -181,6 +195,9 @@ const Admin = () => {
             </TabPanel>
             <TabPanel>
               <ListReview />
+            </TabPanel>
+            <TabPanel>
+              <ListOther />
             </TabPanel>
           </div>
           <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>

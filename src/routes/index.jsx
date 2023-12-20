@@ -1,13 +1,13 @@
-  // import React from 'react'
-  // import { Routes, Route } from 'react-router-dom'
+// import React from 'react'
+// import { Routes, Route } from 'react-router-dom'
 
-  // import Home from '../components/Home'
-  // import Signup from '../page/Signup'
-  // import Movie from '../components/Movie'
-  // import ShowTimes from '../components/ShowTimes'
-  // import OrderMovie from '../components/OrderMovie'
-  // import Admin from '../page/admin'
-  // import AddItem from '../page/admin/AddItem'
+// import Home from '../components/Home'
+// import Signup from '../page/Signup'
+// import Movie from '../components/Movie'
+// import ShowTimes from '../components/ShowTimes'
+// import OrderMovie from '../components/OrderMovie'
+// import Admin from '../page/admin'
+// import AddItem from '../page/admin/AddItem'
 
 // const routers = [
 //   {
@@ -173,10 +173,44 @@ const AdminRouter = () => (
     <Route path="/" element={<Admin />} />
     <Route path="/admin/:item" element={<Admin />} />
     <Route path="/admin/add-item/:item" element={<Admin />} />
-    <Route path="/admin/add-item/movie" element={<Admin />} />
-    <Route path="/admin/add-item/showtime" element={<Admin />} />
+    {/* <Route path="/admin/add-item/movie" element={<Admin />} />
+    <Route path="/admin/add-item/showtime" element={<Admin />} /> */}
+    <Route path="/admin/update-item/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/admin/update-item/movie/:movieId" element={<Admin />} />
+    <Route path="/admin/update-item/cinema/:cinemaId" element={<Admin />} />
+    <Route path="/admin/update-item/room/:roomId" element={<Admin />} />
+    <Route path="/admin/update-item/food/:foodId" element={<Admin />} />
+    <Route path="/admin/update-item/ticket/:ticketId" element={<Admin />} />
+
+    <Route path="/admin/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/admin/movie/:movieId" element={<Admin />} />
+    <Route path="/admin/cinema/:cinemaId" element={<Admin />} />
+    <Route path="/admin/room/:roomId" element={<Admin />} />
+    <Route path="/admin/food/:foodId" element={<Admin />} />
+    <Route path="/admin/ticket/:ticketId" element={<Admin />} />
+
     <Route path="/admin/info" element={<Admin />} />
     <Route path="/admin/navigate" element={<Navigate />} />
+
+    <Route path="/manager/:item" element={<Admin />} />
+    <Route path="/manager/add-item/:item" element={<Admin />} />
+    {/* <Route path="/manager/add-item/movie" element={<Admin />} />
+    <Route path="/manager/add-item/showtime" element={<Admin />} /> */}
+    <Route path="/manager/update-item/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/manager/update-item/movie/:movieId" element={<Admin />} />
+    <Route path="/manager/update-item/cinema/:cinemaId" element={<Admin />} />
+    <Route path="/manager/update-item/room/:roomId" element={<Admin />} />
+    <Route path="/manager/update-item/ticket/:ticketId" element={<Admin />} />
+
+    <Route path="/manager/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/manager/movie/:movieId" element={<Admin />} />
+    <Route path="/manager/cinema/:cinemaId" element={<Admin />} />
+    <Route path="/manager/room/:roomId" element={<Admin />} />
+    <Route path="/manager/food/:foodId" element={<Admin />} />
+    <Route path="/manager/ticket/:ticketId" element={<Admin />} />
+
+    <Route path="/manager/info" element={<Admin />} />
+    <Route path="/manager/navigate" element={<Navigate />} />
   </Routes>
 );
 
@@ -190,4 +224,4 @@ const AppRouter = () => (
   </Router>
 );
 
-export {AppRouter, AdminRouter, MainRouter};
+export { AppRouter, AdminRouter, MainRouter };

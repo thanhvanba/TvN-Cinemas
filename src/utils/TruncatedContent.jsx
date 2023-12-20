@@ -17,9 +17,10 @@ const TruncatedContent = ({ content, maxLength }) => {
             ) : (
                 <p>{content}</p>
             )}
-            <button onClick={toggleTruncate}>
-                {isTruncated ? '...' : '<<'}
-            </button>
+            {content.length > maxLength &&
+                <button onClick={toggleTruncate}>
+                    {isTruncated ? '...' : '<<'}
+                </button>}
         </div>
     );
 }

@@ -8,7 +8,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const SelectMenu = ({ onSelectChange, items }) => {
+const SelectMenu = ({ onSelectChange, items, content }) => {
 
     const [selected, setSelected] = useState('')
 
@@ -25,7 +25,7 @@ const SelectMenu = ({ onSelectChange, items }) => {
                     <div className="relative">
                         <Listbox.Button className="relative w-full">
                             <span className="flex items-center">
-                                <span className="ml-3 block truncate">{selected || "---Selected---"}</span>
+                                <span className="ml-3 block truncate">{selected || content}</span>
                             </span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                                 <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

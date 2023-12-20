@@ -118,7 +118,25 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
+    const deleteFoodApi = async (foodId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `http://localhost:8080/api/v1/admin/foods/${foodId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     const addPriceSeatApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -139,12 +157,91 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const changeStatusUserApi = async (userId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.patch(
+                `http://localhost:8080/api/v1/admin/users/${userId}`,
+                {},
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const deleteUserApi = async (userId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `http://localhost:8080/api/v1/admin/users/${userId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const changeStatusMovieApi = async (movieId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.patch(
+                `http://localhost:8080/api/v1/admin/movies/${movieId}`,
+                {},
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
 
     const deleteMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.delete(
-                `http://localhost:8080/api/v1/manager/movies/${movieId}`,
+                `http://localhost:8080/api/v1/admin/movies/${movieId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const changeStatusCinemaApi = async (cinemaId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.patch(
+                `http://localhost:8080/api/v1/admin/cinemas/${cinemaId}`,
+                {},
                 {
                     headers: {
                         "Authorization": bearerToken,
@@ -160,28 +257,69 @@ const AdminService = () => {
         }
     };
 
-    const updateMovieApi = async (data) => {
+    const deleteCinemaApi = async (cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `http://localhost:8080/api/v1/admin/cinemas/${cinemaId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const updateMovieApi = async (movieId, data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`;
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (key === "poster" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "poster");
+                        data[key] = file;
+                    }
+                }
+            }
+
             const response = await axios.put(
-                `http://localhost:8080/api/v1/manager/movies/${movieId}`,
+                `http://localhost:8080/api/v1/admin/movies/${movieId}`,
                 data,
                 {
                     headers: {
                         "Authorization": bearerToken,
-                    }
-                },
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
             );
+
             if (response.data.success) {
-                toastNotify(response.data.message, "success")
+                toastNotify(response.data.message, "success");
             }
-        }
-        catch (err) {
-            toastNotify(err.response.data.message, "error")
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
         }
     };
-
+    // Hàm chuyển đổi chuỗi dạng data URL thành đối tượng File
+    const convertDataURLtoFile = async (dataURL, filename) => {
+        const response = await fetch(dataURL);
+        const blob = await response.blob();
+        return new File([blob], filename);
+    };
     const addMovieApi = async (data) => {
+        console.log("🚀 ~ file: AdminService.js:211 ~ addMovieApi ~ data:", data)
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                console.log(`Field: ${key}, Type: ${typeof data[key]}`);
+            }
+        }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
@@ -190,46 +328,7 @@ const AdminService = () => {
                 {
                     headers: {
                         "Authorization": bearerToken,
-                    }
-                },
-            );
-            if (response.data.success) {
-                toastNotify(response.data.message, "success")
-            }
-        }
-        catch (err) {
-            toastNotify(err.response.data.message, "error")
-        }
-    };
-    const addRoomApi = async (data) => {
-        try {
-            let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
-                "http://localhost:8080/api/v1/manager/rooms",
-                data,
-                {
-                    headers: {
-                        "Authorization": bearerToken,
-                    }
-                },
-            );
-            if (response.data.success) {
-                toastNotify(response.data.message, "success")
-            }
-        }
-        catch (err) {
-            toastNotify(err.response.data.message, "error")
-        }
-    };
-    const addShowtimeApi = async (data) => {
-        try {
-            let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
-                "http://localhost:8080/api/v1/manager/showtimes/showtime",
-                data,
-                {
-                    headers: {
-                        "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     }
                 },
             );
@@ -274,25 +373,18 @@ const AdminService = () => {
             },
         );
     };
-    const deleteUserApi = async (userId) => {
-        try {
-            let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
-                `http://localhost:8080/api/v1/admin/users/${userId}`,
-                {
-                    headers: {
-                        "Authorization": bearerToken,
-                    }
-                },
-            );
-            if (response.data.success) {
-                toastNotify(response.data.message, "success")
-            }
-        }
-        catch (err) {
-            toastNotify(err.response.data.message, "error")
-        }
+    const getOneRoomApi = async (roomId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `http://localhost:8080/api/v1/admin/rooms/${roomId}`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
     };
+   
     return {
         addManagerApi,
         addCinemaApi,
@@ -303,12 +395,16 @@ const AdminService = () => {
         deleteMovieApi,
         updateMovieApi,
         addMovieApi,
-        addRoomApi,
-        addShowtimeApi,
         getAllUserApi,
         getAllShowtimeApi,
         getAllRoomApi,
-        deleteUserApi
+        deleteUserApi,
+        changeStatusMovieApi,
+        changeStatusCinemaApi,
+        deleteCinemaApi,
+        getOneRoomApi,
+        deleteFoodApi,
+        changeStatusUserApi
     }
 }
 

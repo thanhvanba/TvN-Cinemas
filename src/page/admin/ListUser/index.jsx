@@ -14,7 +14,7 @@ const ListUser = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
 
-    const { addManagerApi, getAllUserApi, deleteUserApi } = AdminService()
+    const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi } = AdminService()
     const { getAllCinemaApi } = CinemaService()
 
     const [allCinema, setAllCinema] = useState([])
@@ -34,18 +34,6 @@ const ListUser = () => {
         user: allUser,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
         iAvatar: UserCircleIcon
-        // [
-        //     { stt: "1", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "2", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "3", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Banned", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "4", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "5", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "6", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Banned", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "7", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "8", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "9", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } },
-        //     { stt: "10", info: { iAvatar: UserCircleIcon, iName: "Văn Bá Trung Thành", iEmail: "thanh@gmail.com", iPhone: "0378987089" }, username: "Thanh15", role: "User", status: "Approved", created: "11/10/2023", login: "08/11/2023", action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon } }
-        // ]
     }
 
 
@@ -69,20 +57,27 @@ const ListUser = () => {
             setAllUser(ress.data.result.content)
         }
     }
-    const handleDeleteUser = async (userId) => {
-        try {
-            let res = await deleteUserApi(userId);
-            console.log("🚀 ~ file: index.jsx:74 ~ handleDeleteUser ~ res:", res)
-            if (res && res.data && res.data.success) {
-                console.log("Vào đây")
-                await getAllUserApi()
-            } else {
-                alert("DD")
+    const handleChangeStatus = async (userId) => {
+        await changeStatusUserApi(userId);
+
+        const updatedUser = allUser.map((user) => {
+            if (user.userId === userId) {
+                return { ...user, delete: !user.delete };
             }
-        } catch (error) {
-            console.error("Error deleting user:", error);
-        }
+            return user;
+        });
+
+        setAllUser(updatedUser);
     };
+
+    const handleDeleteUser = async (userId) => {
+        await deleteUserApi(userId);
+
+        const updatedUser = allUser.filter((user) => user.userId !== userId);
+
+        setAllUser(updatedUser);
+    };
+
     const handleSelectChange = (selectedValue) => {
         const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
         const selectedId = cinema.cinemaId
@@ -171,7 +166,7 @@ const ListUser = () => {
                                             Cinemas
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                            <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} />
+                                            <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
                                         </div>
                                     </div>
                                     <div className="relative my-4">
@@ -262,14 +257,14 @@ const ListUser = () => {
                                                         <div className='flex items-center'>
                                                             <button
                                                                 className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                onClick={() => handleDeleteUser(item.userId)}
+                                                                type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }} 
                                                             >
                                                                 <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
                                                             </button>
-                                                            <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                            {/* <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                                 <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                            </a>
-                                                            <button className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                            </a> */}
+                                                            <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteUser(item.userId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                 <listUser.action.aDelete className='h-4 w-4 text-red-600' />
                                                             </button>
                                                         </div>
