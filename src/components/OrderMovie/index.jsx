@@ -80,6 +80,7 @@ const OrderMovie = () => {
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
     const { dateTime } = location.state;
+    console.log("🚀 ~ file: index.jsx:83 ~ OrderMovie ~ dateTime:", dateTime)
     const { showtimeId } = useParams();
 
     const steps = [
@@ -180,7 +181,12 @@ const OrderMovie = () => {
     const handleGetSeatBooked = async () => {
         const data = {
             showtimeId: showtimeId,
-            timeShow: format(parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+            timeShow: dateTime
+                ? format(
+                    parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()),
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+                )
+                : null,
         }
         console.log("🚀 ~ file: index.jsx:179 ~ handleGetSeatBooked ~ showtimeId.toString(:", showtimeId.toString())
         console.log("🚀 ~ file: index.jsx:179 ~ handleGetSeatBooked ~ showtimeId.toString(:", showtimeId)

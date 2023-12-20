@@ -1,0 +1,11 @@
+.sub-tab {
+    position: relative;
+    display: block;
+    width: 90%;
+    height: auto;
+    white-space: nowrap;
+    margin: 0 auto;
+    text-align: center;
+    padding: 40px 0 15px 0;
+}
+

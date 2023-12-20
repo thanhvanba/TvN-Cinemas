@@ -146,31 +146,33 @@ const Signup = () => {
         <div style={{ background: `url(${bg})`, "background-attachment": "fixed" }}>
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
                 <div className="sub-tab" style={{ display: currentTab != '3' ? 'block' : 'none' }}>
-                    <ul className="relative inline-block">
-                        <li
-                            onClick={() => changeTab("/thanhvien")}
-                            className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100"
-                        >
-                            <a
-                                href=""
-                                className={`${currentTab === '1' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}
+                    <div>
+                        <ul className="relative inline-block">
+                            <li
+                                onClick={() => changeTab("/thanhvien")}
+                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100"
                             >
-                                Thành viên
-                            </a>
+                                <a
+                                    href=""
+                                    className={`${currentTab === '1' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}
+                                >
+                                    Thành viên
+                                </a>
 
-                        </li>
-                        <li
-                            onClick={() => changeTab("/quydinh")}
-                            className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100"
-                        >
-                            <a
-                                href=""
-                                className={`${currentTab === '2' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}
+                            </li>
+                            <li
+                                onClick={() => changeTab("/quydinh")}
+                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100"
                             >
-                                Quy định
-                            </a>
-                        </li>
-                    </ul>
+                                <a
+                                    href=""
+                                    className={`${currentTab === '2' ? "active1" : ""} text-3xl font-bold uppercase p-2 leading-[3.5rem]`}
+                                >
+                                    Quy định
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
                     <div className='grid grid-cols-2'>

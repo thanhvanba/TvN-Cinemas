@@ -460,13 +460,14 @@ const AddShowtime = () => {
                                                     <DatePicker
                                                         selected={selectDate}
                                                         onChange={e => {
-                                                            handleTimeChange(e, e.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }))
+                                                            handleTimeChange(e, e.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }))
                                                             setShowtime({ ...showtime, listTimeShow: schedule });
                                                         }}
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                         showTimeSelect
                                                         showTimeSelectOnly
-                                                        dateFormat="h:mm aa"
+                                                        dateFormat="HH:mm"
+                                                        timeFormat="HH:mm"
                                                     />
                                                 </div>
                                             </div>

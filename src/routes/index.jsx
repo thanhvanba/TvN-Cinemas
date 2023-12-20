@@ -164,6 +164,8 @@ const MainRouter = () => (
     <Route path='/:showtimeId/order/xacnhan' element={<OrderMovie />} />
     <Route path='/:showtimeId/order/ve' element={<OrderMovie />} />
     <Route path="/user/info" element={<Info />} />
+    <Route path="/user/history-booking" element={<Info />} />
+ 
     <Route path="/user/navigate" element={<Navigate />} />
   </Routes>
 );

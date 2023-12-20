@@ -12,7 +12,9 @@ import useLoadingState from '../../hook/UseLoadingState'
 import FormatDataTime from '../../utils/FormatDataTime';
 import { LoginContext } from '../../context/LoginContext';
 import UserService from '../../service/UserService';
-
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import './info.css'
 import { RegisterContext } from '../../context/RegisterContext'
 
 const Info = () => {
@@ -86,7 +88,21 @@ const Info = () => {
     const { pathname } = useLocation()
     const navigate = useNavigate()
     const [currentTab, setCurrentTab] = useState('1');
-
+    const handleCheckPathname = (pathname) => {
+        switch (pathname) {
+            case "/user/info":
+                setCurrentTab("1")
+                break;
+            case "/user/history-booking":
+                setCurrentTab("2")
+                break;
+            default:
+                setCurrentTab("1")
+        }
+    }
+    useEffect(() => {
+        handleCheckPathname(pathname)
+    }, [pathname]);
     const changeTab = (pathname) => {
         navigate(pathname)
     }
@@ -155,6 +171,31 @@ const Info = () => {
     return (
         <div >
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
+                <div className="sub-tab">
+                    <ul className="relative inline-block">
+                        <li
+                            onClick={() => changeTab("/user/info")}
+                            className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100"
+                        >
+                            <a
+                                className={`${currentTab === '1' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
+                            >
+                                Profile
+                            </a>
+
+                        </li>
+                        <li
+                            onClick={() => changeTab("/user/history-booking")}
+                            className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100"
+                        >
+                            <a
+                                className={`${currentTab === '2' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
+                            >
+                                History Booking
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
                     <div className='grid grid-cols-2 gap-8'>
                         {/* Thông tin tài khoản */}
@@ -162,16 +203,16 @@ const Info = () => {
                             <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>
                             <form id='formAddCinema' action="" onSubmit={handleUpdateUserInfo}>
                                 <div className="rounded-md p-8 shadow-lg bg-slate-100">
-                                    <div className='pb-8 mb-8 border-b border-b-slate-400 flex justify-center items-center'>
-                                        <div className='w-2/5'>
-                                            <div className='flex justify-center h-44 text-center rounded-sm'>
+                                    <div className='pb-8 mb-2 border-b border-b-slate-400 flex justify-center items-center'>
+                                        <div className=''>
+                                            <div className='flex justify-center h-24 text-center rounded-sm'>
                                                 <input
                                                     onChange={handlePreviewImage}
                                                     type="file"
                                                     className="hidden" // Ẩn input mặc định
                                                     id="form_img-upload"
                                                 />
-                                                <UserCircleIcon className="h-40 w-40 text-emerald-600 bg-slate-200 rounded-full" />
+                                                <UserCircleIcon className="h-20 w-20 text-emerald-600 bg-slate-200 rounded-full" />
                                                 {image && (
                                                     <img className='absolute top-0 left-0 h-full' src={image.preview} alt="" />
                                                 )}
@@ -184,8 +225,9 @@ const Info = () => {
                                             </label>
                                         </div>
 
+
                                     </div>
-                                    <div className="my-4">
+                                    <div className="my-2">
                                         <label
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
@@ -201,7 +243,7 @@ const Info = () => {
                                         />
                                     </div>
                                     <div className='flex justify-between items-center'>
-                                        {/* <div className="my-4">
+                                        {/* <div className="my-2">
                                             <label
                                                 htmlFor="gender"
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -248,7 +290,7 @@ const Info = () => {
                                                 <label htmlFor="other" className="ml-2 text-gray-900">Other</label>
                                             </div>
                                         </div> */}
-                                        <div className="relative my-4">
+                                        <div className="relative my-2">
                                             <label
                                                 htmlFor=""
                                                 className="block w-24 font-bold leading-9 text-gray-900"
@@ -266,7 +308,7 @@ const Info = () => {
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
                                             />
                                         </div>
-                                        <div className="my-4">
+                                        <div className="my-2">
                                             <label
                                                 htmlFor=""
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -283,7 +325,7 @@ const Info = () => {
                                         </div>
                                     </div>
                                     <div className='flex justify-between w-full'>
-                                        <div className="my-4 w-3/5 mr-4">
+                                        <div className="my-2 w-3/5 mr-4">
                                             <label
                                                 htmlFor=""
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -298,7 +340,7 @@ const Info = () => {
                                                 placeholder={userInfo.email}
                                             />
                                         </div>
-                                        {user.role === "MANAGER" && <div className="my-4 w-2/5">
+                                        {user.role === "MANAGER" && <div className="my-2 w-2/5">
                                             <label
                                                 htmlFor=""
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -314,7 +356,7 @@ const Info = () => {
                                             />
                                         </div>}
                                     </div>
-                                    <div className="my-4">
+                                    <div className="my-2">
                                         <label
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
@@ -356,7 +398,7 @@ const Info = () => {
                                     </div>
 
                                     <div className='flex justify-between w-full'>
-                                        <div className="my-4 w-2/3 pr-4">
+                                        <div className="my-2 w-2/3 pr-4">
                                             <label
                                                 htmlFor=""
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -371,7 +413,7 @@ const Info = () => {
                                                 placeholder={userInfo.userName}
                                             />
                                         </div>
-                                        <div className="my-4 w-1/3">
+                                        <div className="my-2 w-1/3">
                                             <label
                                                 htmlFor=""
                                                 className="w-24 font-bold leading-9 text-gray-900"
@@ -460,8 +502,42 @@ const Info = () => {
                         </div>
                     </div>
                 </div>
+                <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
+                    <Tabs className='bg-white p-8 rounded-xl'>
+                        <TabList className='py-2 border-y-2'>
+                            <Tab>Phim sắp xem</Tab>
+                            <Tab>Phim đã xem</Tab>
+                        </TabList>
+
+                        <TabPanel>
+                            <div className='border-b-8 border-slate-50 bg-slate-100'>
+                                <td className='text-start font-medium px-5 py-4'>x</td>
+                                <td className='text-start font-medium px-5 py-4'>
+                                    <div className='flex items-center'>
+
+                                        <div>
+                                            <h3>x</h3>
+                                            <p className='font-normal'>Email: x</p>
+                                            <span className='font-normal'>Sdt: x</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className='text-start font-medium px-5 py-4'>x</td>
+                                <td className='text-start font-medium px-5 py-4'>x</td>
+                                <td className="text-green-600 text-start font-medium px-5 py-4">x</td>
+                                <td className='text-start font-medium px-5 py-4'>x</td>
+                                <td className='text-start font-medium px-5 py-4'>x</td>
+
+                            </div>
+                            
+                        </TabPanel>
+                        <TabPanel>
+                            <h2>Any content 2</h2>
+                        </TabPanel>
+                    </Tabs>
+                </div>
             </div>
-        </div>
+        </div >
     )
 }
 
