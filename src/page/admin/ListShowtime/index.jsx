@@ -15,7 +15,25 @@ const ListShowtime = () => {
     navigate(pathname)
   }
   const [loading, setLoading] = useState(false);
-  const [allShowtime, setAllShowtime] = useState([]);
+  const [allShowtime, setAllShowtime] = useState([{
+    room: "",
+    movie: {
+      poster: ""
+    },
+    timeStart: "",
+    timeEnd: "",
+    status: "",
+    isSpecial: false,
+    listTimeShowMovie: [
+      {
+        date: "",
+        time: []
+      },
+      {
+        date: "",
+        time: []
+      }]
+  }]);
   const { user } = useContext(LoginContext);
   const listShowtime = {
     header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
@@ -81,55 +99,58 @@ const ListShowtime = () => {
           <div className='px-3'>
             <div className=''>
               {
-                <table className='mt-6 w-full'>
-                  <thead className=''>
-                    <tr>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.stt}</th>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.time}</th>
-                      <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.room}</th>
-                      {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.status}</th>}
-                      {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.action}</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      listShowtime.showtime.map((item, index) => (
-                        <tr onClick={() => changeTab(`/admin/showtime/${item.showTimeId}`)} className='border-b-8 border-slate-50 bg-slate-100'>
-                          <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                          <td className='text-start font-medium px-5 py-4'>
-                            <div className='flex items-center'>
-                              <div div className='pr-2' >
-                                <img className="h-20 w-16 text-emerald-600" src={item.movie.poster} alt="" />
-                              </div >
-                              <div>
-                                <h3>{item.movie.title}</h3>
-                                <p className='font-normal text-xs'><TruncatedContent content={"Actor: " + item.movie.actor} maxLength={20} /></p>
-                                <span className='font-normal text-xs'><TruncatedContent content={"Director: " + item.movie.director} maxLength={20} /></span>
+                !allShowtime ? user.role === "MANAGER" ?
+                  <p className='text-3xl'>-- Chưa có lịch chiếu nào. Vui lòng thêm lịch chiếu !!! --</p> : <p className='text-3xl'>-- Chưa có lịch chiếu nào!!! --</p>
+                  :
+                  <table className='mt-6 w-full'>
+                    <thead className=''>
+                      <tr>
+                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.stt}</th>
+                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
+                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.time}</th>
+                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.room}</th>
+                        {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.status}</th>}
+                        {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.action}</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        allShowtime && listShowtime.showtime.map((item, index) => (
+                          <tr onClick={() => changeTab(`/admin/showtime/${item.showTimeId}`)} className='border-b-8 border-slate-50 bg-slate-100'>
+                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                            <td className='text-start font-medium px-5 py-4'>
+                              <div className='flex items-center'>
+                                <div div className='pr-2' >
+                                  <img className="h-20 w-16 text-emerald-600" src={item.movie.poster} alt="" />
+                                </div >
+                                <div>
+                                  <h3>{item.movie.title}</h3>
+                                  <p className='font-normal text-xs'><TruncatedContent content={"Actor: " + item.movie.actor} maxLength={20} /></p>
+                                  <span className='font-normal text-xs'><TruncatedContent content={"Director: " + item.movie.director} maxLength={20} /></span>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.timeStart).date} - {FormatDataTime(item.timeEnd).date} </td>
-                          <td className='text-start font-medium px-5 py-4'>{item.room.roomName}</td>
-                          {user.role === "MANAGER" && <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{item.status ? "Active" : "Inactive"}</td>}
-                          <td className='text-start font-medium px-5 py-4'>
-                            {user.role === "MANAGER" && <div className='flex items-center'>
-                              <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.showTimeId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                <listShowtime.action.aChange className='h-4 w-4 text-emerald-600' />
-                              </button>
-                              <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/showtime/${item.showTimeId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                <listShowtime.action.aEdit className='h-4 w-4 text-cyan-600' />
-                              </button>
-                              <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteShowtime(item.showTimeId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
-                              </button>
-                            </div>}
-                          </td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
+                            </td>
+                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.timeStart).date} - {FormatDataTime(item.timeEnd).date} </td>
+                            <td className='text-start font-medium px-5 py-4'>{item.room.roomName}</td>
+                            {user.role === "MANAGER" && <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{item.status ? "Active" : "Inactive"}</td>}
+                            <td className='text-start font-medium px-5 py-4'>
+                              {user.role === "MANAGER" && <div className='flex items-center'>
+                                <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.showTimeId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                  <listShowtime.action.aChange className='h-4 w-4 text-emerald-600' />
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/showtime/${item.showTimeId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                  <listShowtime.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                </button>
+                                <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteShowtime(item.showTimeId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                  <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
+                                </button>
+                              </div>}
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
               }
             </div>
           </div>

@@ -230,77 +230,80 @@ const Movie = () => {
                         <div className='flex justify-center'>
                             <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
 
-                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Select--------"}/>
+                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Select--------"} />
                             </div>
                         </div>
                         {
-                            foundShowtime && foundShowtime.showTimeId &&
-                            <div>
-                                {/* ngày chiếu */}
-                                <div className='grid grid-cols-6'>
-                                    {dateList.map((date, index) => (
-                                        <a
-                                            key={index}
-                                            className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
-                                                }`}
-                                            onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
-                                        >
-                                            {FormatDataTime(date).day} <br />
-                                            <span>
-                                                {FormatDataTime(date).dayOfWeek === 0
-                                                    ? 'CN'
-                                                    : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
-                                            </span>
-                                        </a>
-                                    ))}
-
-                                </div>
-                                {/* ds các cụ thể thời gian chiếu */}
-                                <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                                    <div className='relative pl-60 pb-8 mb-8 h-36'>
-                                        {/* vị trí */}
-                                        <div className='absolute top-0 left-0 bg-slate-700 w-60'>
-                                            <div className='p-6'>
-                                                <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
-                                                <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
-                                            </div>
-                                            <button
-                                                className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                                                onClick={() => window.open(foundShowtime.room.cinema.urlLocation, '_blank')}
+                            !foundShowtime || !foundShowtime.showTimeId ?
+                                <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p> :
+                                <div>
+                                    {/* ngày chiếu */}
+                                    <div className='grid grid-cols-6'>
+                                        {dateList.map((date, index) => (
+                                            <a
+                                                key={index}
+                                                className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
+                                                    }`}
+                                                onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
                                             >
-                                                <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                                <a href={foundShowtime.room.cinema.urlLocation} className='pr-8'>Xem vị trí</a>
-                                            </button>
-                                        </div>
-                                        {/* thời gian */}
-                                        <div className='block relative'>
-                                            <div className='relative pl-28 pt-4'>
-                                                <ul className='grid grid-cols-5 gap-4'>
-                                                    {
-                                                        foundShowtime.listTimeShow
-                                                            .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                                            ?.time.map((time, index) => (
-                                                                <li key={index} onClick={() => {
-                                                                    setSelectedDateTime(prevState => ({ ...prevState, time: time }));
-                                                                    const updatedDateTime = { ...selectedDateTime, time: time };
-                                                                    navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                                }
-                                                                } className='inline-block'>
-                                                                    <a
-                                                                        className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
-                                                                    >
-                                                                        {time}
-                                                                    </a>
-                                                                </li>
-                                                            ))
-                                                    }
-                                                </ul>
+                                                {FormatDataTime(date).day} <br />
+                                                <span>
+                                                    {FormatDataTime(date).dayOfWeek === 0
+                                                        ? 'CN'
+                                                        : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
+                                                </span>
+                                            </a>
+                                        ))}
+
+                                    </div>
+                                    {/* ds các cụ thể thời gian chiếu */}
+                                    <div className='relative max-w-5xl mx-auto text-left pt-5'>
+                                        <div className='relative pl-60 pb-8 mb-8 h-36'>
+                                            {/* vị trí */}
+                                            <div className='absolute top-0 left-0 bg-slate-700 w-60'>
+                                                <div className='p-6'>
+                                                    <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
+                                                    <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
+                                                </div>
+                                                <button
+                                                    className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                                                    onClick={() => window.open(foundShowtime.room.cinema.urlLocation, '_blank')}
+                                                >
+                                                    <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                                                    <a href={foundShowtime.room.cinema.urlLocation} className='pr-8'>Xem vị trí</a>
+                                                </button>
+                                            </div>
+                                            {/* thời gian */}
+                                            <div className='block relative'>
+                                                <div className='relative pl-28 pt-4'>
+                                                    <ul className='grid grid-cols-5 gap-4'>
+                                                        {
+                                                            foundShowtime.listTimeShow
+                                                                .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
+                                                                ?.time.map((time, index) => (
+                                                                    <li key={index} onClick={() => {
+                                                                        setSelectedDateTime(prevState => ({ ...prevState, time: time }));
+                                                                        const updatedDateTime = { ...selectedDateTime, time: time };
+                                                                        navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                    }
+                                                                    } className='inline-block'>
+                                                                        <a
+                                                                            className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
+                                                                        >
+                                                                            {time}
+                                                                        </a>
+                                                                    </li>
+                                                                )) || (
+                                                                <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
+                                                            )
+                                                        }
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
+                                </div>
                         }
                     </div>
                 </div>

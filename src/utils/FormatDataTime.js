@@ -17,7 +17,7 @@ const FormatDataTime = (originalDateTimeString) => {
   // Định dạng ngày và giờ
   const formattedDate = format(dateObject, 'dd/MM/yyyy');
   const formattedDay = format(dateObject, 'dd/MM')
-  const formattedTime = format(dateObject, 'HH:mm:ss');
+  const formattedTime = format(dateObject, 'HH:mm');
 
   // Xác định ngày thứ mấy
   const dayOfWeek = dateObject.getDay();

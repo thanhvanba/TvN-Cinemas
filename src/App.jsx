@@ -10,8 +10,10 @@ import { useContext, useEffect } from "react"
 import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
 import { jwtDecode } from 'jwt-decode'
+import { useLocation } from 'react-router-dom'
 
 function App() {
+  const { pathname } = useLocation()
   // effect
   const { info, register } = useContext(RegisterContext);
   const { user, login } = useContext(LoginContext);
@@ -33,15 +35,19 @@ function App() {
   return (
     <div>
       {
-        (user.role === "ADMIN" || user.role === "MANAGER")
-          ?
+        (user.role === "ADMIN" || user.role === "MANAGER") ? (
           <AdminRouter />
-          :
-          <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
-            <Header />
+        ) : (
+          pathname === "/user/payment-success" ? (
             <MainRouter />
-            <Footer />
-          </div>
+          ) : (
+            <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
+              <Header />
+              <MainRouter />
+              <Footer />
+            </div>
+          )
+        )
       }
     </div>
   )

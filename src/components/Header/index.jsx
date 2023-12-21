@@ -86,6 +86,8 @@ const Header = () => {
         setCurrentTab("1")
         break;
       case "/showtimes":
+      case "/showtimes/lichchieuphim":
+      case "/showtimes/phimtheorap":
         setCurrentTab("2")
         break;
       case "/rap":

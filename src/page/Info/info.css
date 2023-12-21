@@ -9,3 +9,6 @@
     padding: 40px 0 15px 0;
 }
 
+.bg-cover {
+    background-color: rgba(0, 0, 0, .45);
+}

@@ -185,29 +185,29 @@ const UserService = () => {
     }
     const bookingTicketApi = async (seats, foods) => {
         try {
-            // let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await AxiosService.post('/viewer/book', {
-                seatIds: seats,
-                foodIds: foods
-            })
-            console.log(response)
-            // const response = await axios.post(
-            //     `http://localhost:8080/api/v1/viewer/book`,
-            //     {
-            //         seatIds: seats,
-            //         foodIds: foods
-            //     },
-            //     {
-            //         headers: {
-            //             "Authorization": bearerToken,
-            //         }
-            //     },
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            // const response = await AxiosService.post('/viewer/book', {
+            //     seatIds: seats,
+            //     foodIds: foods
+            // })
+            // console.log(response)
+            const response = await axios.post(
+                `http://localhost:8080/api/v1/viewer/book`,
+                {
+                    seatIds: seats,
+                    foodIds: foods
+                },
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
 
-            // )
-            // if (response.data.success) {
-            //     toastNotify(response.data.message, "success")
-            //     return response
-            // }
+            )
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+                return response
+            }
         }
         catch (err) {
             toastNotify(err.response.data.message, "error")
@@ -236,6 +236,34 @@ const UserService = () => {
             `http://localhost:8080/api/v1/foods/${foodId}`
         );
     }
+    const getBookingUpcomingApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            "http://localhost:8080/api/v1/viewer/movies/upcoming",
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    }
+    const getBookingViewedApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `http://localhost:8080/api/v1/viewer/movies/viewed`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+
+        )
+    }
+    const getTicketDetailApi = async (bookingId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/viewer/ticket/detail/${bookingId}`
+        );
+    };
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -254,7 +282,10 @@ const UserService = () => {
         getFoodByIdApi,
         getOneMovieApi,
         getOneCinemaApi,
-        getOneFoodApi
+        getOneFoodApi,
+        getBookingUpcomingApi,
+        getBookingViewedApi,
+        getTicketDetailApi
     }
 }
 

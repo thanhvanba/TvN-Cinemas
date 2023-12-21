@@ -24,6 +24,7 @@ import { LoginContext } from '../../../context/LoginContext';
 const AddShowtime = () => {
     const { showtimeId } = useParams();
     const { pathname } = useLocation()
+    const naviagte = useNavigate()
     console.log("🚀 ~ file: index.jsx:27 ~ AddShowtime ~ pathname:", pathname)
 
     const { getAllRoomApi } = AdminService()
@@ -86,7 +87,7 @@ const AddShowtime = () => {
         special: "",
         listTimeShow: [],
     })
-    const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || []);
+    const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || null);
     console.log("🚀 ~ file: index.jsx:72 ~ AddShowtime ~ oneShowtime:", oneShowtime)
     console.log("🚀 ~ file: index.jsx:34 ~ AddShowtime ~ showtime:", showtime)
     // console.log("🚀 ~ file: index.jsx:27 ~ AddShowtime ~ schedule:", schedule)
@@ -115,6 +116,7 @@ const AddShowtime = () => {
         setLoading(true);
         const data = showtime;
         await addShowtimeApi(data);
+        naviagte("/admin/list-showtime")
         setLoading(false);
     };
     const handleUpdateShowtime = async (e) => {
@@ -461,7 +463,9 @@ const AddShowtime = () => {
                                                         selected={selectDate}
                                                         onChange={e => {
                                                             handleTimeChange(e, e.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }))
-                                                            setShowtime({ ...showtime, listTimeShow: schedule });
+                                                            const nonEmptySchedule = schedule.filter(item => Object.keys(item).length > 0);
+
+                                                            setShowtime({ ...showtime, listTimeShow: nonEmptySchedule });
                                                         }}
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                         showTimeSelect
@@ -487,9 +491,9 @@ const AddShowtime = () => {
                                                             </p>
                                                             <div className='flex'>
                                                                 <p className='text-emerald-600 font-medium px-4'> Time:</p>
-                                                                <ul className='flex justify-center'>
+                                                                <ul className='justify-center grid grid-cols-8 gap-4'>
                                                                     {item.time.map((time) => (
-                                                                        <li className='bg-slate-200 mx-2 rounded-lg p-0.5' key={time}>
+                                                                        <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
                                                                             <span className='p-2'>{time}</span>
                                                                             {pathname !== `/admin/showtime/${showtimeId}` &&
                                                                                 <button className='text-red-400 pr-2' onClick={() => handleRemoveTime(item.date, time)}><sup>X</sup></button>}
