@@ -10,8 +10,12 @@ import CinemaService from '../../../service/CinemaService'
 import FormatDataTime from '../../../utils/FormatDataTime'
 
 import AdminService from '../../../service/AdminService'
+
+import ModalComponent from '../../../utils/Modal';
+
 const ListUser = () => {
     const [loading, setLoading] = useState(false);
+    const [modalStates, setModalStates] = useState({});
     const navigate = useNavigate()
 
     const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi } = AdminService()
@@ -82,6 +86,14 @@ const ListUser = () => {
         const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
         const selectedId = cinema.cinemaId
         setAccount({ ...account, cinemaId: selectedId })
+    };
+
+    const handleOpenModal = (userId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [userId]: true }));
+    };
+
+    const handleCloseModal = (userId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [userId]: false }));
     };
 
     useEffect(() => {
@@ -257,16 +269,29 @@ const ListUser = () => {
                                                         <div className='flex items-center'>
                                                             <button
                                                                 className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }} 
+                                                                type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }}
                                                             >
                                                                 <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
                                                             </button>
                                                             {/* <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                                 <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
                                                             </a> */}
-                                                            <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteUser(item.userId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                            <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                 <listUser.action.aDelete className='h-4 w-4 text-red-600' />
                                                             </button>
+                                                            <div>
+                                                                {modalStates[item.userId] && (
+                                                                    <ModalComponent
+                                                                        isOpen={modalStates[item.userId]}
+                                                                        onClose={() => handleCloseModal(item.userId)}
+                                                                        onConfirm={() => handleDeleteUser(item.userId)}
+                                                                        onCancel={() => handleCloseModal(item.userId)}
+                                                                        title='Deactivate account'
+                                                                        content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
+                                                                        buttonName='Deactivate'
+                                                                    />
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </td>
                                                 </tr>

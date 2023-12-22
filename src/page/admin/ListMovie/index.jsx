@@ -9,6 +9,9 @@ import AdminService from '../../../service/AdminService'
 
 import FormatDataTime from '../../../utils/FormatDataTime'
 import { LoginContext } from '../../../context/LoginContext'
+
+import ModalComponent from '../../../utils/Modal';
+
 const ListMovie = () => {
   const { GetAllMovieApi } = MovieService();
   const { changeStatusMovieApi, deleteMovieApi } = AdminService()
@@ -20,6 +23,7 @@ const ListMovie = () => {
 
   const { user } = useContext(LoginContext)
   const [allMovie, setAllMovie] = useState([])
+  const [modalStates, setModalStates] = useState({});
 
   const HandleGetAllMovie = async () => {
     let res = await GetAllMovieApi()
@@ -47,6 +51,14 @@ const ListMovie = () => {
     const updateMovies = allMovie.filter((movie) => movie.movieId !== movieId);
 
     setAllMovie(updateMovies);
+  };
+
+  const handleOpenModal = (movieId) => {
+    setModalStates((prevStates) => ({ ...prevStates, [movieId]: true }));
+  };
+
+  const handleCloseModal = (movieId) => {
+    setModalStates((prevStates) => ({ ...prevStates, [movieId]: false }));
   };
 
   useEffect(() => {
@@ -122,9 +134,22 @@ const ListMovie = () => {
                               <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
                                 <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
                               </a>
-                              <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteMovie(item.movieId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                              <button type='button' onClick={(e) => { e.stopPropagation();handleOpenModal(item.movieId);  }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                 <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
                               </button>
+                              <div>
+                                {modalStates[item.movieId] && (
+                                  <ModalComponent
+                                    isOpen={modalStates[item.movieId]}
+                                    onClose={() => handleCloseModal(item.movieId)}
+                                    onConfirm={() => handleDeleteMovie(item.movieId)}
+                                    onCancel={() => handleCloseModal(item.movieId)}
+                                    title='Deactivate account'
+                                    content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
+                                    buttonName='Deactivate'
+                                  />
+                                )}
+                              </div>
                             </div>
                           </td>}
                         </tr>

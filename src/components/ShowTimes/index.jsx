@@ -4,12 +4,16 @@ import { MapPinIcon } from "@heroicons/react/24/outline"
 import { useLocation, useNavigate } from 'react-router-dom';
 import MovieService from "../../service/MovieService"
 import CinemaService from '../../service/CinemaService';
+import UserService from '../../service/UserService';
+
 import FormatDataTime from '../../utils/FormatDataTime'
+import TruncatedContent from '../../utils/TruncatedContent';
 import { format, addDays } from 'date-fns';
 
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
+  const { getShowtimeByMovieApi } = UserService()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -17,9 +21,9 @@ const ShowTimes = () => {
   const [allShowMovie, setAllShowMovie] = useState([])
   const [allCinema, setAllCinema] = useState([])
   const [movie, setMovie] = useState([])
-  console.log("🚀 ~ file: index.jsx:22 ~ ShowTimes ~ movie:", movie)
+  const [listShowtime, setListShowtime] = useState([])
+  console.log("🚀 ~ file: index.jsx:24 ~ ShowTimes ~ listShowtime:", listShowtime)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
-  console.log("🚀 ~ file: index.jsx:26 ~ Movie ~ selectedDateTime:", selectedDateTime)
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
     navigate(pathname)
@@ -80,10 +84,14 @@ const ShowTimes = () => {
     }
   }
 
-  const handleGetOneMovie = async (movieId) => {
+  const handleGetShowtimeByMovie = async (movieId) => {
     let resMovie = await GetOneMovieApi(movieId)
     if (resMovie && resMovie.data && resMovie.data.result) {
       setMovie(resMovie.data.result)
+    }
+    let resShowtimes = await getShowtimeByMovieApi(movieId)
+    if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
+      setListShowtime(resShowtimes.data.result)
     }
   }
   useEffect(() => {
@@ -114,7 +122,7 @@ const ShowTimes = () => {
             <div className="grid grid-cols-7 gap-4">
               {
                 allShowMovie.map((item, index) => (
-                  <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetOneMovie(item.movieId)} className="mb-4">
+                  <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetShowtimeByMovie(item.movieId)} className="mb-4">
                     <div className="product-item table border-2 border-slate-600 h-[92%]">
                       <img src={item.poster} alt=""
                         className="product-over h-full w-full table-cell" />
@@ -150,91 +158,75 @@ const ShowTimes = () => {
                   </div>
                 </div>
               </div>
-              {/* ngày chiếu */}
-              <div className='grid grid-cols-6'>
-                {dateList.map((date, index) => (
-                  <a
-                    key={index}
-                    className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
-                      }`}
-                    onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
-                  >
-                    {FormatDataTime(date).day} <br />
-                    <span>
-                      {FormatDataTime(date).dayOfWeek === 0
-                        ? 'CN'
-                        : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
-                    </span>
-                  </a>
-                ))}
-
-              </div>
-              {/* rạp và thời gian chiếu */}
-              <div className='relative pl-60 pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
-                {/* vị trí */}
-                <div className='absolute top-4 left-4 bg-slate-700 w-60 rounded-3xl'>
-                  <div className='p-6'>
-                    <h4 className='uppercase font-bold text-lg text-slate-200'>TvN movie</h4>
-                    <p className='text-slate-500'>Lầu 5, Siêu Thị Vincom 3/2, 3C Đường 3/2, Quận 10, TPHCM</p>
+              {!listShowtime ?
+                <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p> :
+                <div>
+                  {/* ngày chiếu */}
+                  <div className='grid grid-cols-6'>
+                    {dateList.map((date, index) => (
+                      <a
+                        key={index}
+                        className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
+                          }`}
+                        onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
+                      >
+                        {FormatDataTime(date).day} <br />
+                        <span>
+                          {FormatDataTime(date).dayOfWeek === 0
+                            ? 'CN'
+                            : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
+                        </span>
+                      </a>
+                    ))}
                   </div>
-                  <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                  >
-                    <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                    <a href="" className='pr-8'>Xem vị trí</a>
-                  </button>
-                </div>
-                {/* thời gian */}
-                <div className='block relative'>
-                  <div className='relative pl-28 pt-4'>
-                    <ul className='grid grid-cols-5 gap-4'>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                      <li className='inline-block'>
-                        <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
 
+                  {/* rạp và thời gian chiếu */}
+                  {listShowtime.map(foundShowtime => (
+                     <div className='relative pl-60 h-60 pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
+
+                     {/* vị trí */}
+                     <div className='absolute top-4 left-4 bg-slate-700 w-60 rounded-3xl'>
+                       <div className='p-6'>
+                         <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
+                         <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={18} /></p>
+                       </div>
+                       <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                       >
+                         <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                         <a href="" className='pr-8'>Xem vị trí</a>
+                       </button>
+                     </div>
+                      {/* thời gian */}
+                      <div className='block relative'>
+                        <div className='relative pl-28 pt-4'>
+                          <ul className='grid grid-cols-5 gap-4'>
+                            {
+                              foundShowtime.listTimeShow
+                                .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
+                                ?.time.map((time, index) => (
+                                  <li key={index} onClick={() => {
+                                    setSelectedDateTime(prevState => ({ ...prevState, time: time }));
+                                    const updatedDateTime = { ...selectedDateTime, time: time };
+                                    navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                  }
+                                  } className='inline-block'>
+                                    <a
+                                      className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
+                                    >
+                                      {time}
+                                    </a>
+                                  </li>
+                                )) || (
+                                <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
+                              )
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              }
             </div>
           }
 

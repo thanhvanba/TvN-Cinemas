@@ -16,11 +16,15 @@ import ManagerService from '../../../service/ManagerService';
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent'
 import { LoginContext } from '../../../context/LoginContext';
+
+import ModalComponent from '../../../utils/Modal';
+
 const ListOther = () => {
     const { item } = useParams()
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
+    const [modalStates, setModalStates] = useState({});
     const [allFood, setAllFood] = useState([])
     const [allRoom, setAllRoom] = useState([])
     console.log("🚀 ~ file: index.jsx:26 ~ ListOther ~ allRoom:", allRoom)
@@ -84,7 +88,7 @@ const ListOther = () => {
     const handleDeleteFood = async (foodId) => {
         await deleteFoodApi(foodId);
 
-        const updatedFoos = allFood.filter((food) => food.foodId !== foodId);
+        const updatedFoods = allFood.filter((food) => food.foodId !== foodId);
 
         setAllFood(updatedFoods);
     };
@@ -101,6 +105,15 @@ const ListOther = () => {
             setAllRoom(resRoom.data.result.content)
         }
     }
+
+    const handleOpenModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
+    };
+
+    const handleCloseModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
+    };
+
     useEffect(() => {
         handleGetItems()
     }, [item]);
@@ -153,9 +166,22 @@ const ListOther = () => {
                                                     {/* <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/room/${item.roomId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                         <listRoom.action.aEdit className='h-4 w-4 text-cyan-600' />
                                                     </button> */}
-                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteRoom(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                         <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
                                                     </button>
+                                                    <div>
+                                                        {modalStates[item.roomId] && (
+                                                            <ModalComponent
+                                                                isOpen={modalStates[item.roomId]}
+                                                                onClose={() => handleCloseModal(item.roomId)}
+                                                                onConfirm={() => handleDeleteRoom(item.roomId)}
+                                                                onCancel={() => handleCloseModal(item.roomId)}
+                                                                title='Deactivate account'
+                                                                content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
+                                                                buttonName='Deactivate'
+                                                            />
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </td>}
                                         </tr>
@@ -190,9 +216,22 @@ const ListOther = () => {
                                                     <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/food/${item.foodId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                         <listFood.action.aEdit className='h-4 w-4 text-cyan-600' />
                                                     </button>
-                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleDeleteFood(item.foodId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.foodId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                         <listFood.action.aDelete className='h-4 w-4 text-red-600' />
                                                     </button>
+                                                    <div>
+                                                        {modalStates[item.foodId] && (
+                                                            <ModalComponent
+                                                                isOpen={modalStates[item.foodId]}
+                                                                onClose={() => handleCloseModal(item.foodId)}
+                                                                onConfirm={() => handleDeleteFood(item.foodId)}
+                                                                onCancel={() => handleCloseModal(item.foodId)}
+                                                                title='Deactivate account'
+                                                                content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
+                                                                buttonName='Deactivate'
+                                                            />
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </td>}
                                         </tr>

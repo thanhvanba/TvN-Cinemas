@@ -11,8 +11,11 @@ import CinemaService from '../../../service/CinemaService'
 import UserService from '../../../service/UserService'
 import AdminService from '../../../service/AdminService'
 
+import ModalComponent from '../../../utils/Modal';
+
 const ListCinema = () => {
     const { user } = useContext(LoginContext)
+    const [modalStates, setModalStates] = useState({});
     const [loading, setLoading] = useState(false)
     const [info, setInfo] = useState({
         userId: "",
@@ -120,6 +123,14 @@ const ListCinema = () => {
 
     //     setAllCinema(updatedCinemas);
     // };
+
+    const handleOpenModal = (showTimeId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: true }));
+    };
+
+    const handleCloseModal = (showTimeId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: false }));
+    };
 
     useEffect(() => {
         handleGetItems()
