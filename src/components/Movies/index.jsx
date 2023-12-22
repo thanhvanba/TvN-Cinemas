@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import MovieService from '../../service/MovieService'
 import UserService from '../../service/UserService';
+import TruncatedContent from '../../utils/TruncatedContent';
 
 function Movies() {
     const { keyWord } = useParams()
@@ -53,7 +54,7 @@ function Movies() {
     }, [keyWord])
     return (
         <div className='pt-32 pb-10'>
-            {(listMovieFound.length !== 0 ) && keyWord != undefined ?
+            {(listMovieFound.length !== 0) && keyWord != undefined ?
                 <div className='border-y-[0.05px]'>
                     <div className='max-w-6xl mx-auto'>
                         <div className='border-b'>
@@ -62,7 +63,7 @@ function Movies() {
                         </div>
 
                         <div className='pt-8'>
-                            <div className={`${listMovieFound.length > 5 ? "grid grid-cols-5"  : "flex justify-center"} gap-4 max-w-screen-xl mx-auto`}>
+                            <div className={`${listMovieFound.length > 5 ? "grid grid-cols-5" : "flex justify-center"} gap-4`}>
                                 {
                                     listMovieFound && listMovieFound.length > 0 &&
                                     listMovieFound.map((movie, index) => (
@@ -71,11 +72,11 @@ function Movies() {
                                                 <img
                                                     src={movie.poster}
                                                     alt=""
-                                                    className="product-over h-[300px] w-full table-cell"
+                                                    className="product-over h-[300px] w-[200px] table-cell"
                                                 />
                                             </div>
                                             <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                                                {movie.title}
+                                                <TruncatedContent content={movie.title} maxLength={18} />
                                             </div>
                                         </div>
                                     ))
