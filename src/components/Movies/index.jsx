@@ -6,6 +6,7 @@ import UserService from '../../service/UserService';
 
 function Movies() {
     const { keyWord } = useParams()
+    console.log("🚀 ~ file: index.jsx:9 ~ Movies ~ keyWord:", keyWord)
 
     const [nowPlayMovie, setNowPlayMovie] = useState({})
     const [comingSoonMovie, setComingSoonMovie] = useState({})
@@ -45,7 +46,6 @@ function Movies() {
     }
     useEffect(() => {
         handleGetItems()
-        handleSearchMovie(keyWord)
     }, []);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ function Movies() {
     }, [keyWord])
     return (
         <div className='pt-32 pb-10'>
-            {listMovieFound.length != 0 ?
+            {(listMovieFound.length !== 0 ) && keyWord != undefined ?
                 <div className='border-y-[0.05px]'>
                     <div className='max-w-6xl mx-auto'>
                         <div className='border-b'>
