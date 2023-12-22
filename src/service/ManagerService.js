@@ -165,6 +165,17 @@ const ManagerService = () => {
             },
         );
     };
+    const getTotalRevenueOfManagerApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `http://localhost:8080/api/v1/manager/total-revenue`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     const updateShowTimeApi = async (showtimeId, data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -206,7 +217,8 @@ const ManagerService = () => {
         deleteShowtimeApi,
         getOneRoomApi,
         changeStatusRoomApi,
-        deleteRoomApi
+        deleteRoomApi,
+        getTotalRevenueOfManagerApi
     }
 }
 

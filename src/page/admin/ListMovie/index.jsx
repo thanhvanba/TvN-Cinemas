@@ -66,7 +66,7 @@ const ListMovie = () => {
   }, []);
   console.log("🚀 ~ file: index.jsx:11 ~ ListMovie ~ allMovie:", allMovie)
   const listMovie = {
-    header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "status", releaseDate: "Release Date", action: "actions" },
+    header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "Trạng thái", releaseDate: "Ngày phát hành", action: "actions" },
     movie: allMovie,
     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
   }

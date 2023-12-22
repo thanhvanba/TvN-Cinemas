@@ -384,7 +384,17 @@ const AdminService = () => {
             },
         );
     };
-   
+    const getTotalRevenueApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `http://localhost:8080/api/v1/admin/total-revenue`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -404,7 +414,8 @@ const AdminService = () => {
         deleteCinemaApi,
         getOneRoomApi,
         deleteFoodApi,
-        changeStatusUserApi
+        changeStatusUserApi,
+        getTotalRevenueApi
     }
 }
 

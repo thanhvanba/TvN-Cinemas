@@ -9,6 +9,7 @@ import AdminService from '../../../service/AdminService';
 import ManagerService from '../../../service/ManagerService';
 import MovieService from '../../../service/MovieService';
 import CinemaService from '../../../service/CinemaService';
+import FormatDataTime from '../../../utils/FormatDataTime';
 
 import { LoginContext } from '../../../context/LoginContext';
 const Dashboard = () => {
@@ -20,13 +21,13 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi } = AdminService()
-  const { getAllShowtimeByManagerApi } = ManagerService()
+  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi } = AdminService()
+  const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
   const [allCinema, setAllCinema] = useState([])
   const [allUser, setAllUser] = useState([])
-
+  const [totalRevenue, setTotalRevenue] = useState('')
 
   const [statistical, setStatistical] = useState({
     qRevenue: "",
@@ -56,7 +57,7 @@ const Dashboard = () => {
     {
       title: "Hot movies",
       icon: FireIcon,
-      header: { stth: "STT", cinemah: "Tên phim", addessh: "Số lượng suất chiếu", revenueh: "rating" },
+      header: { stth: "STT", cinemah: "Tên phim", addessh: "Ngày phát hành", revenueh: "rating" },
       path: "/admin/list-movie",
       listUser: [],
       listCinema: [],
@@ -98,6 +99,9 @@ const Dashboard = () => {
     let resShowtime = (user.role === "ADMIN") ?
       await getAllShowtimeApi() : await getAllShowtimeByManagerApi()
 
+    let resTotalRevenue = (user.role === "ADMIN") ?
+      await getTotalRevenueApi() : await getTotalRevenueOfManagerApi()
+
     const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
 
@@ -114,12 +118,14 @@ const Dashboard = () => {
 
       return isShowtimeInCurrentMonth;
     }).length;
-
+    if (resTotalRevenue && resTotalRevenue.data && resTotalRevenue.data.result) {
+      setTotalRevenue(resTotalRevenue.data.result)
+    }
 
     (user.role === "ADMIN") ?
-      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
+      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements, qRevenue: resTotalRevenue.data.result })
       :
-      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements })
+      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qRevenue: resTotalRevenue.data.result })
     // setStatistical({...statistical})
 
     if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
@@ -134,6 +140,7 @@ const Dashboard = () => {
       const lastFourUsers = resUser.data.result.content.slice().reverse().slice(0, 5);
       setAllUser(lastFourUsers)
     }
+
   }
 
   useEffect(() => {
@@ -218,7 +225,7 @@ const Dashboard = () => {
                                   <tr key={`rating-${index}`}>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.isDelete}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{FormatDataTime(item.releaseDate).date}</td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.rating}</td>
                                   </tr>
                                 ))
