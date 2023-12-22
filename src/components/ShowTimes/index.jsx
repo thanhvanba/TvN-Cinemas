@@ -128,13 +128,13 @@ const ShowTimes = () => {
         <div id='lichchieutheophim' style={{ display: currentTab === '1' ? 'block' : 'none' }}>
           {/* load ds phim đang chiếu ở đây */}
           <div className="tab-movie max-w-screen-xl mx-auto">
-            <div className="grid grid-cols-7 gap-4">
+            <div className={`${allShowMovie.length > 7 ? "grid grid-cols-7" : "flex justify-center"} gap-4`}>
               {
                 allShowMovie.map((item, index) => (
                   <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetShowtimeByMovie(item.movieId)} className="mb-4">
                     <div className="product-item table border-2 border-slate-600 h-[92%]">
                       <img src={item.poster} alt=""
-                        className="product-over h-full w-full table-cell" />
+                        className="product-over h-[255px] w-[166px] table-cell" />
                     </div>
                     <div className="text-slate-200 mt-2 text-left uppercase font-bold text-sm h-[8%]">
                       {item.title}
@@ -250,7 +250,7 @@ const ShowTimes = () => {
       <div id='lichchieutheorap' style={{ display: currentTab === '2' ? 'block' : 'none' }}>
         <div className='max-w-screen-xl mx-auto'>
           {/*ds rạp */}
-          <div className='grid grid-cols-4 gap-8 mb-16 mx-4'>
+          <div className={`${allCinema.length > 4 ? "grid grid-cols-4" : "flex justify-center"} gap-8 mb-16 mx-4`}>
             {
               allCinema.map((item, index) => (
                 <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='bg-slate-700 w-72 flex flex-col justify-between'>

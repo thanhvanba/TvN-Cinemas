@@ -44,7 +44,10 @@ const Header = () => {
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('');
   const [inputSearch, setInputSearch] = useState("")
+  const [listMovieFound, setListMovieFound] = useState([])
+  const [showMovieList, setShowMovieList] = useState(false);
 
+  console.log("🚀 ~ file: index.jsx:48 ~ Header ~ listMovieFound:", listMovieFound)
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
 
@@ -54,7 +57,18 @@ const Header = () => {
   const navigate = useNavigate()
   const changeTab = (pathname) => {
     navigate(pathname)
+    setInputSearch("")
   }
+  const handleInputFocus = () => {
+    setShowMovieList(true);
+  };
+  const handleInputBlur = () => {
+    // Sử dụng setTimeout để đảm bảo rằng onBlur sẽ được gọi sau khi onClick của danh sách
+    setTimeout(() => {
+      setShowMovieList(false);
+    }, 100);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,7 +89,7 @@ const Header = () => {
   const handleSearchMovie = async (value) => {
     let resMovie = await searchMovieApi(value)
     if (resMovie && resMovie.data && resMovie.data.result) {
-      setAllFood(resMovie.data.result)
+      setListMovieFound(resMovie.data.result)
     }
   }
   const handleChange = (value) => {
@@ -110,8 +124,6 @@ const Header = () => {
       case "/lienhe":
         setCurrentTab("5")
         break;
-      default:
-        setCurrentTab("0")
     }
   }
 
@@ -235,13 +247,32 @@ const Header = () => {
               <div>
                 <input
                   onChange={(e) => handleChange(e.target.value)}
-                  className='h-10 rounded-2xl px-4 text-black'
+                  className='h-10 rounded-2xl px-4 text-black focus:outline-none'
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                   value={inputSearch}
                   placeholder='Tìm kiếm' />
               </div>
-              <a href="#" className='absolute right-0 top-0 m-3'>
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-              </a>
+              <button
+                className='absolute right-0 top-0 m-3'>
+                <MagnifyingGlassIcon
+                  onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
+                  className="h-5 w-5 text-gray-400" />
+              </button>
+              {showMovieList && listMovieFound.length !== 0 &&
+                <div className='absolute -right-[50%] bg-slate-100 w-[200%] mt-2 p-4 rounded-lg'>
+                  {listMovieFound.map(movie => (
+                    <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                      <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
+                        <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                        <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
+                      </div>
+                    </div>
+                  ))
+
+                  }
+                </div>
+              }
             </div>
             {
               user && user.auth === false

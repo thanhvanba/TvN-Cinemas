@@ -56,7 +56,7 @@ const AdminService = () => {
         }
     };
 
-    const updateCinemaApi = async (data) => {
+    const updateCinemaApi = async (data, cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
@@ -98,7 +98,7 @@ const AdminService = () => {
         }
     };
 
-    const updateFoodApi = async (data) => {
+    const updateFoodApi = async (data, foodId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(

@@ -109,7 +109,7 @@ const ListShowtime = () => {
         <div>
           <div className='px-3'>
             <div className=''>
-              {!allShowtime ? (
+              {allShowtime.room ==="" ? (
                 user.role === 'MANAGER' ? (
                   <p className='text-3xl'>-- Chưa có lịch chiếu nào. Vui lòng thêm lịch chiếu !!! --</p>
                 ) : (

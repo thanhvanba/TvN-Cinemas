@@ -31,7 +31,7 @@ const AddItem = () => {
     }
 
     const { getOneFoodApi, getOneCinemaApi } = UserService()
-    const { addCinemaApi, addFoodApi } = AdminService()
+    const { addCinemaApi, addFoodApi, updateCinemaApi, updateFoodApi } = AdminService()
     const { addRoomApi } = ManagerService()
 
     const handleTabChange = () => {
@@ -93,6 +93,13 @@ const AddItem = () => {
         await addCinemaApi(data);
         setLoading(false);
     };
+    const handleUpdateCinema = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const data = cinema;
+        await updateCinemaApi(data, cinemaId);
+        setLoading(false);
+    };
 
 
     const nameFoods = ["BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
@@ -103,7 +110,13 @@ const AddItem = () => {
         await addFoodApi(data);
         setLoading(false);
     };
-
+    const handleUpdateFood = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const data = food;
+        await updateFoodApi(data, foodId);
+        setLoading(false);
+    };
     const [room, setRoom] = useState({
         cinemaId: "",
         roomName: ""
@@ -243,7 +256,7 @@ const AddItem = () => {
                                 <TabPanel>
                                     <div className="w-full py-8">
                                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
-                                            <form id='formAddCinema' onSubmit={handleAddCinema} action="">
+                                            <form id='formAddCinema' onSubmit={handleUpdateCinema} action="">
                                                 <div className="relative my-4">
                                                     <label
                                                         htmlFor=""
@@ -255,7 +268,7 @@ const AddItem = () => {
                                                         onChange={e => setCinema({ ...cinema, cinemaName: e.target.value })}
                                                         type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneCinema.cinemaName}
+                                                        value={cinema.cinemaName}
                                                     />
 
                                                 </div>
@@ -271,7 +284,7 @@ const AddItem = () => {
                                                         onChange={e => { setCinema({ ...cinema, location: e.target.value }); }}
                                                         type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneCinema.location}
+                                                        value={cinema.location}
                                                     />
                                                 </div>
                                                 <div className="relative my-4">
@@ -285,7 +298,7 @@ const AddItem = () => {
                                                         onChange={e => setCinema({ ...cinema, desc: e.target.value })}
                                                         type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneCinema.desc}
+                                                        value={cinema.desc}
                                                         rows={5}
                                                     />
                                                 </div>
@@ -300,7 +313,7 @@ const AddItem = () => {
                                                         // value={account.userName}
                                                         onChange={e => setCinema({ ...cinema, urlLocation: e.target.value })} type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneCinema.urlLocation}
+                                                        value={cinema.urlLocation}
                                                     />
                                                 </div>
                                                 <div className='flex justify-end'>
@@ -321,7 +334,7 @@ const AddItem = () => {
                                 <TabPanel>
                                     <div className="w-full py-8">
                                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
-                                            <form id='formAddCinema' onSubmit={handleAddFood} action="">
+                                            <form id='formAddCinema' onSubmit={handleUpdateFood} action="">
                                                 <div className="relative my-4">
                                                     <label
                                                         htmlFor=""

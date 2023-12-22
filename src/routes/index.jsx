@@ -18,6 +18,7 @@ const MainRouter = () => (
     <Route path="/phim/sapchieu" element={<Home />} />
     <Route path='/dacbiet' element={<Home />} />
     <Route path="/phim" element={<Movies />} />
+    <Route path="/tim-kiem/:keyWord" element={<Movies />} />
     <Route path="/rap" element={<Cinemas />} />
     <Route path='/signup' element={<Signup />} />
     <Route path='/signup/verify' element={<Signup />} />
