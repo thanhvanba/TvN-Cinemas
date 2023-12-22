@@ -13,7 +13,7 @@ import { format, addDays } from 'date-fns';
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getShowtimeByMovieApi } = UserService()
+  const { getShowtimeByMovieApi, getShowtimeByCinemaApi } = UserService()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -22,7 +22,9 @@ const ShowTimes = () => {
   const [allCinema, setAllCinema] = useState([])
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
-  console.log("🚀 ~ file: index.jsx:24 ~ ShowTimes ~ listShowtime:", listShowtime)
+  console.log("🚀 ~ file: index.jsx:25 ~ ShowTimes ~ listShowtime:", listShowtime)
+  const [listShowtimeCinema, setListShowtimeCinema] = useState([])
+  console.log("🚀 ~ file: index.jsx:27 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -94,6 +96,13 @@ const ShowTimes = () => {
       setListShowtime(resShowtimes.data.result)
     }
   }
+
+  const hadnleGetShowtimeByCinema = async (cinemaId) => {
+    let resShowtimes = await getShowtimeByCinemaApi(cinemaId)
+    if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
+      setListShowtimeCinema(resShowtimes.data.result)
+    }
+  }
   useEffect(() => {
     handleCheckPathname(pathname)
     ListDayShowtime()
@@ -158,8 +167,9 @@ const ShowTimes = () => {
                   </div>
                 </div>
               </div>
-              {!listShowtime ?
-                <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p> :
+
+              {listShowtime.length === 0 ?
+                <p className='text-2xl text-slate-200 text-center pt-4'>-- Bộ phim hiện chưa có lịch chiếu !!! --</p> :
                 <div>
                   {/* ngày chiếu */}
                   <div className='grid grid-cols-6'>
@@ -182,20 +192,20 @@ const ShowTimes = () => {
 
                   {/* rạp và thời gian chiếu */}
                   {listShowtime.map(foundShowtime => (
-                     <div className='relative pl-60 h-60 pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
+                    <div className='relative pl-60 h-60 pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
 
-                     {/* vị trí */}
-                     <div className='absolute top-4 left-4 bg-slate-700 w-60 rounded-3xl'>
-                       <div className='p-6'>
-                         <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
-                         <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={18} /></p>
-                       </div>
-                       <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                       >
-                         <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                         <a href="" className='pr-8'>Xem vị trí</a>
-                       </button>
-                     </div>
+                      {/* vị trí */}
+                      <div className='absolute top-4 left-4 bg-slate-700 w-60 rounded-3xl'>
+                        <div className='p-6'>
+                          <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
+                          <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={18} /></p>
+                        </div>
+                        <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
+                        >
+                          <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
+                          <a href="" className='pr-8'>Xem vị trí</a>
+                        </button>
+                      </div>
                       {/* thời gian */}
                       <div className='block relative'>
                         <div className='relative pl-28 pt-4'>
@@ -243,7 +253,7 @@ const ShowTimes = () => {
           <div className='grid grid-cols-4 gap-8 mb-16 mx-4'>
             {
               allCinema.map((item, index) => (
-                <div key={`cinema-${index}`} className='bg-slate-700 w-72 flex flex-col justify-between'>
+                <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='bg-slate-700 w-72 flex flex-col justify-between'>
                   <div className='p-6'>
                     <h4 className='uppercase font-bold text-lg text-slate-200'>{item.cinemaName}</h4>
                     <p className='text-slate-500'>{item.location}</p>
@@ -259,317 +269,83 @@ const ShowTimes = () => {
             }
           </div>
 
-          {/* ngày */}
-          <div className='grid grid-cols-6'>
-            <a href="" className='active2 option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-            <a href="" className='option-style2 px-8 border border-slate-400 text-center text-slate-200'>
-              14/10 <br />
-              <span>Th 7</span>
-            </a>
-          </div>
-
-          {/* phim và thời gian chiếu */}
-          <div className='max-w-5xl mx-auto'>
-            <div className='relative pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
-              {/* chi tiết phim */}
-              <div className='flex pb-10 px-4 my-4'>
-                {/* product image */}
-                <div className='w-1/5 px-4'>
-                  <a href="">
-                    <img src="http://booking.bhdstar.vn/CDN/media/entity/get/FilmPosterGraphic/HO00002699?referenceScheme=HeadOffice&allowPlaceHolder=true&height=500" alt="" />
+          {listShowtimeCinema.length === 0 ?
+            <p className='text-2xl text-slate-200 text-center pt-4'>-- Rạp phim hiện chưa có lịch chiếu !!! --</p> :
+            <div>
+              {/* ngày chiếu */}
+              <div className='grid grid-cols-6'>
+                {dateList.map((date, index) => (
+                  <a
+                    key={index}
+                    className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
+                      }`}
+                    onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
+                  >
+                    {FormatDataTime(date).day} <br />
+                    <span>
+                      {FormatDataTime(date).dayOfWeek === 0
+                        ? 'CN'
+                        : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
+                    </span>
                   </a>
-                </div>
-                {/* product detail */}
-                <div className='w-4/5 px-4'>
-                  {/* name */}
-                  <div>
-                    <h3 className='uppercase text-2xl text-slate-200'>
-                      Đất rừng phương nam
-                    </h3>
-                  </div>
-                  {/* thời gian */}
-                  <div className='block relative'>
-                    <div className='relative pl-2 pt-4'>
-                      <ul className='grid grid-cols-5 gap-4'>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                      </ul>
+                ))}
+              </div>
+
+              {/* phim và thời gian chiếu */}
+              {listShowtimeCinema.map(foundShowtime => (
+                <div className='max-w-5xl mx-auto'>
+                  <div className='relative pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
+
+                    {/* chi tiết phim */}
+                    <div className='flex pb-10 px-4 my-4'>
+                      {/* product image */}
+                      <div className='w-1/5 px-4'>
+                        <a href="">
+                          <img src={foundShowtime.movie.poster} alt="" />
+                        </a>
+                      </div>
+                      {/* product detail */}
+                      <div className='w-4/5 px-4'>
+                        {/* name */}
+                        <div>
+                          <h3 className='uppercase text-2xl text-slate-200'>
+                            {foundShowtime.movie.title}
+                          </h3>
+                        </div>
+                        {/* thời gian */}
+                        <div className='block relative'>
+                          <div className='relative pl-28 pt-4'>
+                            <ul className='grid grid-cols-5 gap-4'>
+                              {
+                                foundShowtime.listTimeShow
+                                  .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
+                                  ?.time.map((time, index) => (
+                                    <li key={index} onClick={() => {
+                                      setSelectedDateTime(prevState => ({ ...prevState, time: time }));
+                                      const updatedDateTime = { ...selectedDateTime, time: time };
+                                      navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                    }
+                                    } className='inline-block'>
+                                      <a
+                                        className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
+                                      >
+                                        {time}
+                                      </a>
+                                    </li>
+                                  )) || (
+                                  <p className='absolute left-4 text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
+                                )
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-            <div className='relative pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
-              {/* chi tiết phim */}
-              <div className='flex pb-10 px-4 my-4'>
-                {/* product image */}
-                <div className='w-1/5 px-4'>
-                  <a href="">
-                    <img src="http://booking.bhdstar.vn/CDN/media/entity/get/FilmPosterGraphic/HO00002699?referenceScheme=HeadOffice&allowPlaceHolder=true&height=500" alt="" />
-                  </a>
-                </div>
-                {/* product detail */}
-                <div className='w-4/5 px-4'>
-                  {/* name */}
-                  <div>
-                    <h3 className='uppercase text-2xl text-slate-200'>
-                      Đất rừng phương nam
-                    </h3>
-                  </div>
-                  {/* thời gian */}
-                  <div className='block relative'>
-                    <div className='relative pl-2 pt-4'>
-                      <ul className='grid grid-cols-5 gap-4'>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='relative pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
-              {/* chi tiết phim */}
-              <div className='flex pb-10 px-4 my-4'>
-                {/* product image */}
-                <div className='w-1/5 px-4'>
-                  <a href="">
-                    <img src="http://booking.bhdstar.vn/CDN/media/entity/get/FilmPosterGraphic/HO00002699?referenceScheme=HeadOffice&allowPlaceHolder=true&height=500" alt="" />
-                  </a>
-                </div>
-                {/* product detail */}
-                <div className='w-4/5 px-4'>
-                  {/* name */}
-                  <div>
-                    <h3 className='uppercase text-2xl text-slate-200'>
-                      Đất rừng phương nam
-                    </h3>
-                  </div>
-                  {/* thời gian */}
-                  <div className='block relative'>
-                    <div className='relative pl-2 pt-4'>
-                      <ul className='grid grid-cols-5 gap-4'>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='relative pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
-              {/* chi tiết phim */}
-              <div className='flex pb-10 px-4 my-4'>
-                {/* product image */}
-                <div className='w-1/5 px-4'>
-                  <a href="">
-                    <img src="http://booking.bhdstar.vn/CDN/media/entity/get/FilmPosterGraphic/HO00002699?referenceScheme=HeadOffice&allowPlaceHolder=true&height=500" alt="" />
-                  </a>
-                </div>
-                {/* product detail */}
-                <div className='w-4/5 px-4'>
-                  {/* name */}
-                  <div>
-                    <h3 className='uppercase text-2xl text-slate-200'>
-                      Đất rừng phương nam
-                    </h3>
-                  </div>
-                  {/* thời gian */}
-                  <div className='block relative'>
-                    <div className='relative pl-2 pt-4'>
-                      <ul className='grid grid-cols-5 gap-4'>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>19:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>20:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>21:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:00</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                        <li className='inline-block'>
-                          <a href="" className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'>22:15</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          }
         </div>
 
       </div>

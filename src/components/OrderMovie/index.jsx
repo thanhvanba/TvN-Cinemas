@@ -20,6 +20,8 @@ const OrderMovie = () => {
 
     const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
     const { createPaymentApi } = VnPayService()
+    const [togglePayment, setTogglePayment] = useState(false);
+    const [toggleConfirm, setToggleConfirm] = useState(true);
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [foods, setFoods] = useState([])
@@ -207,7 +209,8 @@ const OrderMovie = () => {
         setLoading(false);
     }
     const handleBookingTicket = async () => {
-        console.log("vào đây")
+        setTogglePayment(true)
+        setToggleConfirm(false)
         setLoading(true);
         const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking)
         console.log("🚀 ~ file: index.jsx:207 ~ handleBookingTicket ~ resBookingInfo:", resBookingInfo)
@@ -585,7 +588,7 @@ const OrderMovie = () => {
                             </div>
                         </div>
                         <div className="w-full xl:w-1/3 flex-1 text-sm md:text-base">
-                            <div className="bg-slate-300 md:h-[620px] h-full rounded-2xl p-4 md:p-6 space-y-5">
+                            <div className="relative bg-slate-300 md:h-[620px] h-full rounded-2xl p-4 md:p-6 space-y-5">
                                 <h4 className="font-bold text-3xl">Phương thức thanh toán</h4>
                                 <div id="headlessui-radiogroup-:rf:" role="radiogroup">
                                     <div className="space-y-2" role="none">
@@ -649,31 +652,32 @@ const OrderMovie = () => {
                                         <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
                                     </div>
                                 </div>
-                                <div className="space-y-3">
-                                    <button
-                                        onClick={() => {
-                                            handleBookingTicket()
-                                        }}
-                                        className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
-                                        type="button"
-                                        disabled={loading}
-                                    >
-                                        {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                        &nbsp;Xác Nhận Thông Tin
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            handlePayment(bookingInfo.bookingId);
-                                        }}
-                                        className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
-                                        type="button"
-                                        disabled={loading}
-                                    >
-                                        Thanh Toán
-                                    </button>
-                                    <button className="inline-flex items-center justify-center rounded-full text-sm font-medium hover:bg-neutral-300 hover:text-accent-foreground h-10 px-8 py-2 w-full">
-                                        Quay lại
-                                    </button>
+                                <div className="absolute left-4 right-4 bottom-8 space-y-3">
+                                    {toggleConfirm &&
+                                        <button
+                                            onClick={() => {
+                                                handleBookingTicket()
+                                            }}
+                                            className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                                            type="button"
+                                            disabled={loading}
+                                        >
+                                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                            &nbsp;Xác Nhận Thông Tin
+                                        </button>
+                                    }
+                                    {togglePayment &&
+                                        <button
+                                            onClick={() => {
+                                                handlePayment(bookingInfo.bookingId);
+                                            }}
+                                            className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                                            type="button"
+                                            disabled={loading}
+                                        >
+                                            Thanh Toán
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>

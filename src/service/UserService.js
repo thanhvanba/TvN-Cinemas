@@ -148,6 +148,11 @@ const UserService = () => {
             `http://localhost:8080/api/v1/movies/${movieId}/show-times`
         );
     };
+    const getShowtimeByCinemaApi = async (cinemaId) => {
+        return await axios.get(
+            `http://localhost:8080/api/v1/cinemas/${cinemaId}/movies`
+        );
+    };
     const getFoodApi = async (type) => {
         const params = { type: type }
         return await axios.get(
@@ -264,6 +269,15 @@ const UserService = () => {
             `http://localhost:8080/api/v1/viewer/ticket/detail/${bookingId}`
         );
     };
+    const searchMovieApi = async (keyWord) => {
+        const params = { keyWord: keyWord }
+        return await axios.get(
+            "http://localhost:8080/api/v1/movies/search",
+            {
+                params: params
+            },
+        );
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -285,7 +299,9 @@ const UserService = () => {
         getOneFoodApi,
         getBookingUpcomingApi,
         getBookingViewedApi,
-        getTicketDetailApi
+        getTicketDetailApi,
+        getShowtimeByCinemaApi,
+        searchMovieApi
     }
 }
 

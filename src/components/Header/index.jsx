@@ -38,11 +38,12 @@ const callsToAction = [
 
 const Header = () => {
   const { loginApi, logoutApi } = AuthService();
-  const { forgotPasswordApi } = UserService()
+  const { forgotPasswordApi, searchMovieApi } = UserService()
 
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('');
+  const [inputSearch, setInputSearch] = useState("")
 
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
@@ -71,6 +72,16 @@ const Header = () => {
     setLoading(false)
   }
 
+  const handleSearchMovie = async (value) => {
+    let resMovie = await searchMovieApi(value)
+    if (resMovie && resMovie.data && resMovie.data.result) {
+      setAllFood(resMovie.data.result)
+    }
+  }
+  const handleChange = (value) => {
+    handleSearchMovie(value)
+    setInputSearch(value)
+  }
   // const handleForgotPassword = async () => {
   //   setLoading(true)
   //   let logobj = { credentialId, password };
@@ -222,7 +233,11 @@ const Header = () => {
             {/* Tim kiem */}
             <div className='relative mr-2'>
               <div>
-                <input className='h-10 rounded-2xl px-4 text-black' type="text" placeholder='Tìm kiếm' />
+                <input
+                  onChange={(e) => handleChange(e.target.value)}
+                  className='h-10 rounded-2xl px-4 text-black'
+                  value={inputSearch}
+                  placeholder='Tìm kiếm' />
               </div>
               <a href="#" className='absolute right-0 top-0 m-3'>
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
