@@ -17,7 +17,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.patch(
-                `http://localhost:8080/api/v1/manager/showtimes/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 {},
                 {
                     headers: {
@@ -37,7 +37,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.delete(
-                `http://localhost:8080/api/v1/manager/showtimes/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 {
                     headers: {
                         "Authorization": bearerToken,
@@ -56,7 +56,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.patch(
-                `http://localhost:8080/api/v1/manager/rooms/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${showtimeId}`,
                 {},
                 {
                     headers: {
@@ -76,7 +76,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.delete(
-                `http://localhost:8080/api/v1/manager/rooms/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${showtimeId}`,
                 {
                     headers: {
                         "Authorization": bearerToken,
@@ -95,7 +95,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
-                "http://localhost:8080/api/v1/manager/rooms",
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
                 null,
                 {
                     params: params,
@@ -116,7 +116,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
-                "http://localhost:8080/api/v1/manager/showtimes/showtime",
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/showtime`,
                 data,
                 {
                     headers: {
@@ -135,7 +135,7 @@ const ManagerService = () => {
     const getAllShowtimeByManagerApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            "http://localhost:8080/api/v1/manager/showtimes",
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -146,7 +146,7 @@ const ManagerService = () => {
     const getAllRoomByManagerApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            "http://localhost:8080/api/v1/manager/rooms",
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -157,7 +157,7 @@ const ManagerService = () => {
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            `http://localhost:8080/api/v1/manager/rooms/${roomId}`,
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -168,7 +168,7 @@ const ManagerService = () => {
     const getTotalRevenueOfManagerApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            `http://localhost:8080/api/v1/manager/total-revenue`,
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/total-revenue`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -180,7 +180,7 @@ const ManagerService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
-                `http://localhost:8080/api/v1/manager/showtimes/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 data,
                 {
                     headers: {

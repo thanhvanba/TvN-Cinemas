@@ -2,8 +2,15 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { UsersIcon, FilmIcon, Square3Stack3DIcon, BuildingLibraryIcon, ArrowPathIcon, TrophyIcon, FireIcon, StarIcon } from '@heroicons/react/24/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent';
+import Statistical from '../../../utils/Statistical';
+import YearPicker from '../../../utils/YearPicker';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import useLoadingState from '../../../hook/UseLoadingState'
 
 import AdminService from '../../../service/AdminService';
 import ManagerService from '../../../service/ManagerService';
@@ -13,6 +20,7 @@ import FormatDataTime from '../../../utils/FormatDataTime';
 
 import { LoginContext } from '../../../context/LoginContext';
 const Dashboard = () => {
+  const { loading, setLoading } = useLoadingState(false);
   const { user } = useContext(LoginContext);
   const navigate = useNavigate()
   const changeTab = (pathname) => {
@@ -21,13 +29,15 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi } = AdminService()
+  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi } = AdminService()
   const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
   const [allCinema, setAllCinema] = useState([])
   const [allUser, setAllUser] = useState([])
-  const [totalRevenue, setTotalRevenue] = useState('')
+  const [revenueByMonth, setRevenueByMonth] = useState([])
+  console.log("🚀 ~ file: dashboard.jsx:39 ~ Dashboard ~ revenueByMonth:", revenueByMonth)
+  const [revenue, setRevenue] = useState("")
 
   const [statistical, setStatistical] = useState({
     qRevenue: "",
@@ -92,15 +102,35 @@ const Dashboard = () => {
     }
   ]
 
-  const HandleGetAllItem = async () => {
+  const handleGetAllItem = async () => {
+    let resRevenue = await getTotalRevenueApi()
+    if (resRevenue && resRevenue.data && resRevenue.data.result) {
+      setRevenue(resRevenue.data.result)
+    }
+
     let resMovie = await GetAllMovieApi()
+    if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
+      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 5);
+      setAllMovie(topFourMovies)
+    }
+
     let resCinema = await getAllCinemaApi()
+    if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
+      const topCinemas = [...resCinema.data.result.content].sort((a, b) => b.DOANH_THU - a.DOANH_THU).slice(0, 5);
+      setAllCinema(topCinemas)
+    }
+
     let resUser = (user.role === "ADMIN") && await getAllUserApi()
+    if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+      const lastFourUsers = resUser.data.result.content.slice().reverse().slice(0, 5);
+      setAllUser(lastFourUsers)
+    }
+
     let resShowtime = (user.role === "ADMIN") ?
       await getAllShowtimeApi() : await getAllShowtimeByManagerApi()
 
-    let resTotalRevenue = (user.role === "ADMIN") ?
-      await getTotalRevenueApi() : await getTotalRevenueOfManagerApi()
+    let resTotalRevenue = (user.role === "MANAGER") &&
+      await getTotalRevenueOfManagerApi()
 
     const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
@@ -118,34 +148,149 @@ const Dashboard = () => {
 
       return isShowtimeInCurrentMonth;
     }).length;
+
     if (resTotalRevenue && resTotalRevenue.data && resTotalRevenue.data.result) {
-      setTotalRevenue(resTotalRevenue.data.result)
+      getTotalRevenueOfManagerApi(resTotalRevenue.data.result)
     }
 
     (user.role === "ADMIN") ?
-      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements, qRevenue: resTotalRevenue.data.result })
+      setStatistical({ ...statistical, qRevenue: resRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
       :
-      setStatistical({ ...statistical, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qRevenue: resTotalRevenue.data.result })
+      setStatistical({ ...statistical, qRevenue: resRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qRevenue: resTotalRevenue.data.result })
     // setStatistical({...statistical})
-
-    if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
-      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 5);
-      setAllMovie(topFourMovies)
-    }
-    if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
-      const topCinemas = [...resCinema.data.result.content].sort((a, b) => b.DOANH_THU - a.DOANH_THU).slice(0, 5);
-      setAllCinema(topCinemas)
-    }
-    if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-      const lastFourUsers = resUser.data.result.content.slice().reverse().slice(0, 5);
-      setAllUser(lastFourUsers)
-    }
 
   }
 
+  const handleRevenueOfYear = async (year) => {
+    // Sử dụng tham số year nếu nó đã được truyền vào, nếu không thì sử dụng năm hiện tại
+    const selectedYear = year || new Date().getFullYear();
+    setLoading('revenueYear', true);
+    let resRevenue = await totalRevenueOfYearApi(selectedYear);
+    setLoading('revenueYear', false);
+
+    if (resRevenue && resRevenue.data && resRevenue.data.result) {
+      setRevenueByMonth(resRevenue.data.result);
+    }
+  }
+  const [selectedYearFromApp, setSelectedYearFromApp] = useState(null);
+
+  const handleYearChange = (selectedYear) => {
+    // Xử lý giá trị đã chọn tại cấp cha (App)
+    setSelectedYearFromApp(selectedYear);
+  };
+
   useEffect(() => {
-    HandleGetAllItem()
+    handleGetAllItem()
   }, []);
+
+  useEffect(() => {
+    handleRevenueOfYear(selectedYearFromApp)
+    setRevenueByMonth([])
+  }, [selectedYearFromApp]);
+
+  // Hàm tạo mảng màu dựa trên số lượng giá trị trong series
+  const generateColors = (count) => {
+    const defaultColors = ["#0000FF", "#FF0000"]; // Màu mặc định
+
+    // Nếu có nhiều hơn 2 giá trị, tạo thêm màu ngẫu nhiên
+    if (count > 2) {
+      const additionalColors = Array.from({ length: count - 2 }, () => getRandomColor());
+      return [...defaultColors, ...additionalColors];
+    }
+
+    return defaultColors;
+  };
+  // Hàm tạo màu ngẫu nhiên
+  const getRandomColor = () => {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  };
+  const chartConfig = {
+    type: "line",
+    height: 400,
+    series: revenueByMonth,
+    options: {
+      chart: {
+        // toolbar: {
+        // show: false,
+        // },
+      },
+      // title: {
+      //     show: "",
+      // },
+      // dataLabels: {
+      //     enabled: false,
+      // },
+      colors: generateColors(revenueByMonth.length), // Sử dụng hàm generateColors để tạo mảng màuF
+      stroke: {
+        lineCap: "round",
+        curve: "straight",
+      },
+      // markers: {
+      //     size: 0,
+      // },
+      xaxis: {
+        axisTicks: {
+          show: false,
+        },
+        axisBorder: {
+          show: false,
+        },
+        labels: {
+          style: {
+            colors: "#616161",
+            fontSize: "12px",
+            fontFamily: "inherit",
+            fontWeight: 400,
+          },
+        },
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: "#616161",
+            fontSize: "12px",
+            fontFamily: "inherit",
+            fontWeight: 400,
+          },
+        },
+      },
+      grid: {
+        show: true,
+        borderColor: "#dddddd",
+        strokeDashArray: 5,
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+        padding: {
+          top: 5,
+          right: 20,
+        },
+      },
+      fill: {
+        opacity: 0.8,
+      },
+      tooltip: {
+        theme: "dark",
+      },
+    },
+  };
+
 
   return (
     <div>
@@ -178,6 +323,48 @@ const Dashboard = () => {
                 </div>
               ))
             }
+
+            <div className='relative col-span-4'>
+              {revenueByMonth.length === 0 &&
+                <div className='flex justify-center items-center absolute mx-auto w-full h-full  top-0 ringht-0 z-50'>
+                  {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                </div>}
+              <Statistical chartConfig={chartConfig} />
+
+              {/* <div className='absolute top-4 right-[403px]'>
+                <DatePicker
+                  // selected={time}
+                  // onChange={date => {
+                  //   setTime(date);
+                  //   setMovie((prevMovie) => {
+                  //     return { ...prevMovie, releaseDate: date };
+                  //   });
+                  // }}
+                  className="border-2 p-2 rounded-lg focus:outline-none"
+                  placeholderText="{FormatDataTime(oneMovie.releaseDate).date}"
+                  dateFormat="yyyy-MM-dd" // Định dạng ngày
+                />
+              </div>
+
+              <div className='absolute top-4 right-48'>
+                <DatePicker
+                  // selected={time}
+                  // onChange={date => {
+                  //   setTime(date);
+                  //   setMovie((prevMovie) => {
+                  //     return { ...prevMovie, releaseDate: date };
+                  //   });
+                  // }}
+                  className="border-2 p-2 rounded-lg focus:outline-none"
+                  placeholderText="{FormatDataTime(oneMovie.releaseDate).date}"
+                  dateFormat="yyyy-MM-dd" // Định dạng ngày
+                />
+              </div> */}
+
+              <div className='absolute top-4 right-16'>
+                <YearPicker onYearChange={handleYearChange} />
+              </div>
+            </div>
 
             {
               listTable.map((table, index) => (

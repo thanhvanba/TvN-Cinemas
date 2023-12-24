@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import CinemaService from '../../../service/CinemaService'
 import FormatDataTime from '../../../utils/FormatDataTime'
+import Pagination from '../../../utils/Pagination'
 
 import AdminService from '../../../service/AdminService'
 
@@ -51,12 +52,15 @@ const ListUser = () => {
     };
     const handleGetItem = async () => {
         let res = await getAllCinemaApi()
-        let ress = await getAllUserApi()
-        console.log("🚀 ~ file: index.jsx:63 ~ handleGetItem ~ ress:", ress)
 
         if (res && res.data && res.data.result && res.data.result.content) {
             setAllCinema(res.data.result.content)
         }
+    }
+    const handleGetUser = async (pageIndex) => {
+        let ress = await getAllUserApi(pageIndex, 5)
+        console.log("🚀 ~ file: index.jsx:63 ~ handleGetItem ~ ress:", ress)
+
         if (ress && ress.data && ress.data.result && ress.data.result.content) {
             setAllUser(ress.data.result.content)
         }
@@ -98,6 +102,7 @@ const ListUser = () => {
 
     useEffect(() => {
         handleGetItem()
+        handleGetUser()
     }, []);
     const nameCinema = allCinema.map(item => item.cinemaName)
     return (
@@ -301,6 +306,7 @@ const ListUser = () => {
                                 </table>
                             }
                         </div>
+                        {/* <Pagination/> */}
                     </div>
                 </div>
             </div>

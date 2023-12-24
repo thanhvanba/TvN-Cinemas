@@ -17,7 +17,7 @@ const AuthService = () => {
     const loginApi = async (data) => {
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/login",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/login`,
                 data
             );
             const token = response.data.result.accessToken;
@@ -37,7 +37,7 @@ const AuthService = () => {
         try {
             console.log(data)
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/register",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/register`,
                 data
             );
             console.log(response.data)
@@ -54,7 +54,7 @@ const AuthService = () => {
     const verifyApi = async (data) => {
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/verifyOTP",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/verifyOTP`,
                 { email: data.email, otp: data.otpValue },
             );
             if (response.data.success) {
@@ -78,7 +78,7 @@ const AuthService = () => {
 
             console.log("🚀 ~ file: ApiService.js:82 ~ sendOtpApi ~ data:", data)
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/sendOTP",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/sendOTP`,
                 data
             );
             console.log("🚀 ~ file: ApiService.js:82 ~ sendOtpApi ~ data:", data)
@@ -98,7 +98,7 @@ const AuthService = () => {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             let params = { refreshToken: localStorage.getItem("refreshToken") }
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/logout",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/logout`,
                 null,
                 {
                     headers: {
@@ -125,7 +125,7 @@ const AuthService = () => {
         console.log('aaaaa')
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/v1/auth/refresh-access-token",
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/refresh-access-token`,
                 {
                     accessToken: accessToken,
                     refreshToken: refreshToken

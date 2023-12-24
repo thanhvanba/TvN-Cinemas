@@ -34,7 +34,7 @@ const httpClient = () => {
     };
 
     const axiosOptions = axios.create({
-        baseURL: "http://localhost:8080/api/v1",
+        baseURL: `${process.env.REACT_APP_HOST_API_KEY}`,
         headers: {
             'content-type': 'application/json',
             Authorization: `Bearer ${accessToken}`,

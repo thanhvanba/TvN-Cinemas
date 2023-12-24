@@ -12,7 +12,7 @@ const UserService = () => {
     const getUserInfoApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            "http://localhost:8080/api/v1/user/profile",
+            `${process.env.REACT_APP_HOST_API_KEY}/user/profile`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -25,7 +25,7 @@ const UserService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
-                `http://localhost:8080/api/v1/user/update`,
+                `${process.env.REACT_APP_HOST_API_KEY}/user/update`,
                 data,
                 {
                     headers: {
@@ -46,7 +46,7 @@ const UserService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
-                "http://localhost:8080/api/v1/user/change-password",
+                `${process.env.REACT_APP_HOST_API_KEY}/user/change-password`,
                 data,
                 {
                     headers: {
@@ -66,7 +66,7 @@ const UserService = () => {
     const forgotPasswordApi = async (params) => {
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/v1/user/forgot-password",
+                `${process.env.REACT_APP_HOST_API_KEY}/user/forgot-password`,
                 null,
                 {
                     params: params
@@ -84,7 +84,7 @@ const UserService = () => {
     const verifyApi = async (params) => {
         try {
             const response = await axios.put(
-                "http://localhost:8080/api/v1/user/valid-otp",
+                `${process.env.REACT_APP_HOST_API_KEY}/user/valid-otp`,
                 null,
                 {
                     params: params
@@ -104,7 +104,7 @@ const UserService = () => {
     const resetPasswordApi = async (data, params) => {
         try {
             const response = await axios.put(
-                "http://localhost:8080/api/v1/user/change-password",
+                `${process.env.REACT_APP_HOST_API_KEY}/user/change-password`,
                 data,
                 {
                     params: params
@@ -120,43 +120,43 @@ const UserService = () => {
     };
     const getAllShowtimeApi = async () => {
         return await axios.get(
-            "http://localhost:8080/api/v1/showtimes"
+            `${process.env.REACT_APP_HOST_API_KEY}/showtimes`
         );
     };
     const getOneShowtimeApi = async (showtimeId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/showtimes/${showtimeId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/showtimes/${showtimeId}`
         );
     };
     const getOneMovieApi = async (movieId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/movies/${movieId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/movies/${movieId}`
         );
     };
     const getOneCinemaApi = async (cinemaId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/cinemas/${cinemaId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/cinemas/${cinemaId}`
         );
     };
     const getOneFoodApi = async (foodId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/foods/${foodId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/foods/${foodId}`
         );
     };
     const getShowtimeByMovieApi = async (movieId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/movies/${movieId}/show-times`
+            `${process.env.REACT_APP_HOST_API_KEY}/movies/${movieId}/show-times`
         );
     };
     const getShowtimeByCinemaApi = async (cinemaId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/cinemas/${cinemaId}/movies`
+            `${process.env.REACT_APP_HOST_API_KEY}/cinemas/${cinemaId}/showtimes`
         );
     };
     const getFoodApi = async (type) => {
         const params = { type: type }
         return await axios.get(
-            "http://localhost:8080/api/v1/foods",
+            `${process.env.REACT_APP_HOST_API_KEY}/foods`,
             {
                 params: params
             },
@@ -164,7 +164,7 @@ const UserService = () => {
     }
     const getSeatBookedApi = async (data) => {
         return await axios.post(
-            `http://localhost:8080/api/v1/viewer/seats/booked`,
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/seats/booked`,
             data,
             {
 
@@ -178,7 +178,7 @@ const UserService = () => {
     const selectSeatApi = async (data, showtimeId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.post(
-            `http://localhost:8080/api/v1/viewer/selectSeat/${showtimeId}`,
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/selectSeat/${showtimeId}`,
             data,
             // {
             //     headers: {
@@ -197,7 +197,7 @@ const UserService = () => {
             // })
             // console.log(response)
             const response = await axios.post(
-                `http://localhost:8080/api/v1/viewer/book`,
+                `${process.env.REACT_APP_HOST_API_KEY}/viewer/book`,
                 {
                     seatIds: seats,
                     foodIds: foods
@@ -220,7 +220,7 @@ const UserService = () => {
     }
     const bookingInfoApi = async (seats, foods) => {
         return await axios.post(
-            `http://localhost:8080/api/v1/viewer/book-info`,
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/book-info`,
             {
                 seatIds: seats,
                 foodIds: foods
@@ -230,7 +230,7 @@ const UserService = () => {
     const getSeatPriceApi = async (type) => {
         const params = { type: type }
         return await axios.get(
-            "http://localhost:8080/api/v1/viewer/seat/price",
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/seat/price`,
             {
                 params: params
             },
@@ -238,13 +238,13 @@ const UserService = () => {
     }
     const getFoodByIdApi = async (foodId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/foods/${foodId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/foods/${foodId}`
         );
     }
     const getBookingUpcomingApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            "http://localhost:8080/api/v1/viewer/movies/upcoming",
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/upcoming`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -255,7 +255,7 @@ const UserService = () => {
     const getBookingViewedApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            `http://localhost:8080/api/v1/viewer/movies/viewed`,
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/viewed`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -266,13 +266,13 @@ const UserService = () => {
     }
     const getTicketDetailApi = async (bookingId) => {
         return await axios.get(
-            `http://localhost:8080/api/v1/viewer/ticket/detail/${bookingId}`
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/ticket/detail/${bookingId}`
         );
     };
     const searchMovieApi = async (keyWord) => {
         const params = { keyWord: keyWord }
         return await axios.get(
-            "http://localhost:8080/api/v1/movies/search",
+            `${process.env.REACT_APP_HOST_API_KEY}/movies/search`,
             {
                 params: params
             },
