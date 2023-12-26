@@ -29,7 +29,7 @@ export default function Statistical({chartConfig}) {
                 </div>
                 <div>
                     <Typography className='text-3xl' variant="h6" color="blue-gray">
-                        Statistical Revenue
+                        Thống kê doanh thu các rạp
                     </Typography>
                     {/* <Typography
                         variant="small"

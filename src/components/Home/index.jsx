@@ -2,11 +2,12 @@ import Slider from "../Slider"
 import slider1 from "../../images/slider.jpg"
 import slider2 from "../../images/slider-1.jpg"
 import slider3 from "../../images/slider-2.jpg"
-import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import "./index.css"
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import MovieService from "../../service/MovieService"
+
+import OrderQuickly from "../OrderQuickly"
 
 const IMAGES = [
   slider1, slider2, slider3
@@ -70,30 +71,8 @@ const Home = () => {
         </a>
       </div>
       {/* mua vé nhanh */}
-      <div className="cart-wrap">
-        <div className="block h-36">
-          <div className="inline-block w-1/5 p-3 items-center justify-between font-bold text-emerald-800">
-            <h2 className="uppercase font-bold text-2xl">mua vé <br /> online </h2>
-          </div>
-          <div className="inline-block w-4/5 p-2">
-            <div className="inline-block hover:bg-emerald-600 bg-slate-700 m-2 rounded-r-full rounded-bl-full text-gray-200 relative h-12 w-52">
-              <h3 className="flex uppercase pl-2 pr-8 py-3">Chọn phim</h3>
-              <span className="absolute right-2 top-3"><ChevronDownIcon className="h-5 w-5 text-gray-200" /></span>
-            </div>
-            <div className="inline-block hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-br-full text-gray-200 relative h-12 w-52">
-              <h3 className="flex uppercase pl-2 pr-8 py-3">Chọn ngày</h3>
-              <span className="absolute right-2 top-3"><ChevronDownIcon className="h-5 w-5 text-gray-200" /></span>
-            </div>
-            <div className="inline-block hover:bg-emerald-600 bg-slate-700 m-2 rounded-r-full rounded-tl-full text-gray-200 relative h-12 w-52">
-              <h3 className="flex uppercase pl-2 pr-8 py-3">Chọn rạp</h3>
-              <span className="absolute right-2 top-3"><ChevronDownIcon className="h-5 w-5 text-gray-200" /></span>
-            </div>
-            <div className="inline-block hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-tr-full text-gray-200 relative h-12 w-52">
-              <h3 className="flex uppercase pl-2 pr-8 py-3">Chọn suất chiếu</h3>
-              <span className="absolute right-2 top-3"><ChevronDownIcon className="h-5 w-5 text-gray-200" /></span>
-            </div>
-          </div>
-        </div>
+      <div className="cart-wrap rounded-md  ">
+        <OrderQuickly />
       </div>
       {/* hiển thị ds phim */}
       <div className="content-page">

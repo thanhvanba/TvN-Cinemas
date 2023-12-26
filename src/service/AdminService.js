@@ -412,6 +412,17 @@ const AdminService = () => {
             }
         );
     };
+    const totalRevenueOfCinema = async()=>{
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/total-revenue`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            }
+        );
+    }
     return {
         addManagerApi,
         addCinemaApi,
@@ -433,7 +444,8 @@ const AdminService = () => {
         deleteFoodApi,
         changeStatusUserApi,
         getTotalRevenueApi,
-        totalRevenueOfYearApi
+        totalRevenueOfYearApi,
+        totalRevenueOfCinema
     }
 }
 

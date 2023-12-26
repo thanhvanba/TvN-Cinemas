@@ -7,7 +7,6 @@ import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
 
 const MovieService = () => {
-    console.log("🚀 ~ file: MovieService.js:11 ~ MovieService ~ process.env.REACT_APP_HOST_API_KEY:", process.env.REACT_APP_HOST_API_KEY)
 
     const GetAllMovieApi = async () => {
         return await axios.get(`${process.env.REACT_APP_HOST_API_KEY}/movies`);

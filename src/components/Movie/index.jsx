@@ -88,15 +88,17 @@ const Movie = () => {
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
     const hadleGetItem = async (movieId) => {
-        let resMovie = await GetOneMovieApi(movieId)
-        let resCinema = await getAllCinemaApi()
-        let resShowtime = await getAllShowtimeApi()
+        let resMovie = await GetOneMovieApi(movieId)    
         if (resMovie && resMovie.data && resMovie.data.result) {
             setMovie(resMovie.data.result)
         }
+
+        let resCinema = await getAllCinemaApi()
         if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
             setAllCinema(resCinema.data.result.content)
         }
+
+        let resShowtime = await getAllShowtimeApi()
         if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result.content) {
             setAllShowtime(resShowtime.data.result.content)
         }
