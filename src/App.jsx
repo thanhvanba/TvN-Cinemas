@@ -3,7 +3,7 @@ import Admin from './page/admin/index.jsx'
 import Header from './components/Header'
 import Footer from './components/Footer/index.jsx'
 import Signup from './page/Signup/index.jsx'
-import bg from "../src/images/movie-details-bg.jpg"
+import bg from './images/movie-details-bg.jpg'
 
 import { AdminRouter, MainRouter, AppRouter } from './routes'
 import { useContext, useEffect } from "react"
@@ -41,7 +41,7 @@ function App() {
           pathname === "/user/payment-success" ? (
             <MainRouter />
           ) : (
-            <div style={{ background: "url(../src/images/movie-details-bg.jpg)", backgroundAttachment: "fixed" }}>
+            <div style={{ background:`url(${bg})`, backgroundAttachment: "fixed" }}>
               <Header />
               <MainRouter />
               <Footer />
