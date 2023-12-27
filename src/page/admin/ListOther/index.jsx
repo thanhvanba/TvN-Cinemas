@@ -183,9 +183,9 @@ const ListOther = () => {
                                                                 onClose={() => handleCloseModal(item.roomId)}
                                                                 onConfirm={() => handleDeleteRoom(item.roomId)}
                                                                 onCancel={() => handleCloseModal(item.roomId)}
-                                                                title='Deactivate account'
-                                                                content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
-                                                                buttonName='Deactivate'
+                                                                title='Xóa Phòng'
+                                                                content='Bạn có chắc chắn xóa phòng này ???'
+                                                                buttonName='Delete'
                                                             />
                                                         )}
                                                     </div>
@@ -233,9 +233,9 @@ const ListOther = () => {
                                                                 onClose={() => handleCloseModal(item.foodId)}
                                                                 onConfirm={() => handleDeleteFood(item.foodId)}
                                                                 onCancel={() => handleCloseModal(item.foodId)}
-                                                                title='Deactivate account'
-                                                                content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
-                                                                buttonName='Deactivate'
+                                                                title='Xóa Bắp Nước'
+                                                                content='Bạn có chắc chắn xóa đồ dùng này ???'
+                                                                buttonName='Delete'
                                                             />
                                                         )}
                                                     </div>

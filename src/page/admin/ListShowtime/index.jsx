@@ -200,9 +200,9 @@ const ListShowtime = () => {
                                       onClose={() => handleCloseModal(item.showTimeId)}
                                       onConfirm={() => handleDeleteShowtime(item.showTimeId)}
                                       onCancel={() => handleCloseModal(item.showTimeId)}
-                                      title='Deactivate account'
-                                      content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
-                                      buttonName='Deactivate'
+                                      title='Xóa Tài khoản'
+                                      content='Bạn có chắc chắn xóa lịch chiếu này ???'
+                                      buttonName='Delete'
                                     />
                                   )}
                                 </div>

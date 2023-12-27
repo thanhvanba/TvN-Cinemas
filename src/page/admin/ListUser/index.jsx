@@ -292,7 +292,7 @@ const ListUser = () => {
                                                                         onCancel={() => handleCloseModal(item.userId)}
                                                                         title='Xóa Tài khoản'
                                                                         content='Bạn có chắc chắn xóa tài khoản này ???'
-                                                                        buttonName='Xóa'
+                                                                        buttonName='Delete'
                                                                     />
                                                                 )}
                                                             </div>

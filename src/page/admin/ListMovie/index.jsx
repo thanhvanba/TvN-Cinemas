@@ -144,9 +144,9 @@ const ListMovie = () => {
                                     onClose={() => handleCloseModal(item.movieId)}
                                     onConfirm={() => handleDeleteMovie(item.movieId)}
                                     onCancel={() => handleCloseModal(item.movieId)}
-                                    title='Deactivate account'
-                                    content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
-                                    buttonName='Deactivate'
+                                    title='Xóa Phim'
+                                    content='Bạn có chắc chắn xóa phim này ???'
+                                    buttonName='Delete'
                                   />
                                 )}
                               </div>
