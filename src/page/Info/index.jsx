@@ -150,7 +150,6 @@ const Info = () => {
         await changePasswordApi(data);
         setLoading('change', false);
     }
-
     const handlePreviewImage = (e) => {
         const img = e.target.files[0]
         img.preview = URL.createObjectURL(img)
@@ -226,7 +225,7 @@ const Info = () => {
                         {/* Thông tin tài khoản */}
                         <div>
                             <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>
-                            <form id='formAddCinema' action="" onSubmit={handleUpdateUserInfo}>
+                            <form id='formUpdateProfile' action="" onSubmit={handleUpdateUserInfo}>
                                 <div className="rounded-md p-8 shadow-lg bg-slate-100">
                                     <div className='pb-8 mb-2 border-b border-b-slate-400 flex justify-center items-center'>
                                         <div className=''>

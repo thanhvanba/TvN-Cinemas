@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -20,6 +20,10 @@ import FormatDataTime from '../../../utils/FormatDataTime';
 const AddMovie = () => {
     const { getOneMovieApi } = UserService()
 
+    const navigate = useNavigate()
+    const changeTab = (pathname) => {
+        navigate(pathname)
+    }
     const { movieId } = useParams();
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
@@ -62,6 +66,7 @@ const AddMovie = () => {
         setLoading(true);
         const data = movie;
         await addMovieApi(data);
+        changeTab("/admin/list-movie")
         setLoading(false);
     };
     const handleUpdateMovie = async (e) => {
@@ -70,6 +75,7 @@ const AddMovie = () => {
         const data = movie;
 
         let resMovie = await updateMovieApi(movieId, data);
+        changeTab("/admin/list-movie")
         if (resMovie && resMovie.data && resMovie.data.result) {
             console.log(resMovie.data.result)
         }

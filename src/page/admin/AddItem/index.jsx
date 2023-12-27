@@ -86,6 +86,7 @@ const AddItem = () => {
         setLoading(true);
         const data = cinema;
         await addCinemaApi(data);
+        changeTab("/admin/list-cinemas")
         setLoading(false);
     };
     const handleUpdateCinema = async (e) => {
@@ -93,6 +94,7 @@ const AddItem = () => {
         setLoading(true);
         const data = cinema;
         await updateCinemaApi(data, cinemaId);
+        changeTab("/admin/list-cinemas")
         setLoading(false);
     };
 
@@ -103,6 +105,7 @@ const AddItem = () => {
         setLoading(true);
         const data = food;
         await addFoodApi(data);
+        changeTab("/admin/list-other")
         setLoading(false);
     };
     const handleUpdateFood = async (e) => {
@@ -110,6 +113,7 @@ const AddItem = () => {
         setLoading(true);
         const data = food;
         await updateFoodApi(data, foodId);
+        changeTab("/admin/list-other")
         setLoading(false);
     };
     const [room, setRoom] = useState({
@@ -121,6 +125,7 @@ const AddItem = () => {
         setLoading(true);
         const params = { roomName: room.roomName };
         await addRoomApi(params);
+        changeTab("/manager/list-other")
         setLoading(false);
     };
 

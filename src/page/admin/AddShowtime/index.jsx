@@ -111,7 +111,7 @@ const AddShowtime = () => {
         setLoading(true);
         const data = showtime;
         await addShowtimeApi(data);
-        naviagte("/admin/list-showtime")
+        naviagte("/manager/list-showtime")
         setLoading(false);
     };
     const handleUpdateShowtime = async (e) => {
@@ -119,6 +119,7 @@ const AddShowtime = () => {
         setLoading(true);
         const data = showtime;
         let resShowtime = await updateShowTimeApi(showtimeId, data);
+        naviagte("/manager/list-showtime")
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             console.log(resShowtime.data.result)
         }
