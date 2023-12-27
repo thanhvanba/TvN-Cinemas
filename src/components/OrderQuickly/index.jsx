@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { format, addDays } from 'date-fns';
@@ -8,8 +8,12 @@ import SelectMenu from '../SelectMenu/SelectMenu'
 import MovieService from '../../service/MovieService';
 import UserService from '../../service/UserService';
 
+import ModalComponent from '../../utils/Modal';
+
 import CinemaService from '../../service/CinemaService';
 import FormatDataTime from '../../utils/FormatDataTime';
+
+import { LoginContext } from '../../context/LoginContext';
 
 function OrderQuickly() {
     const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
@@ -18,12 +22,14 @@ function OrderQuickly() {
 
     const navigate = useNavigate()
 
+    const [modalStates, setModalStates] = useState(false);
+    const { user } = useContext(LoginContext)
+
     const [toggle, setToggle] = useState(false)
     const [allCinema, setAllCinema] = useState([])
     const [allShowMovie, setAllShowMovie] = useState([])
     const [dateList, setDateList] = useState([]);
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
-    console.log("🚀 ~ file: index.jsx:26 ~ OrderQuickly ~ selectedDateTime:", selectedDateTime)
     const [allShowtime, setAllShowtime] = useState([])
     const [foundShowtime, setFoundShowtime] = useState({
         showTimeId: null,
@@ -62,8 +68,6 @@ function OrderQuickly() {
         seats: null,
         special: null
     })
-    console.log("🚀 ~ file: index.jsx:51 ~ OrderQuickly ~ foundShowtime:", foundShowtime)
-
     const [infoOrderQuickly, setInfoOrderQuickly] = useState({
         movieId: "",
         cinemaId: "",
@@ -86,8 +90,6 @@ function OrderQuickly() {
 
         // Cập nhật state với danh sách ngày
         setDateList(sixDayList);
-
-        console.log("🚀 ~ file: index.jsx:91 ~ ListDayShowtime ~ sixDayList:", sixDayList)
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
 
@@ -113,8 +115,6 @@ function OrderQuickly() {
         }
     }
     const FoundShowtime = (movieId, cinemaId) => {
-        console.log("🚀 ~ file: index.jsx:107 ~ FoundShowtime ~ cinemaId:", cinemaId)
-        console.log("🚀 ~ file: index.jsx:107 ~ FoundShowtime ~ movieId:", movieId)
         const foundShowtime = allShowtime.find(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
@@ -122,10 +122,8 @@ function OrderQuickly() {
         );
         if (foundShowtime) {
             setFoundShowtime(foundShowtime);
-            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
         } else {
             setFoundShowtime(foundShowtime);
-            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
             console.log("No showtimes found for the selected cinema and movie.");
         }
     }
@@ -154,8 +152,6 @@ function OrderQuickly() {
                 setInfoOrderQuickly({ ...infoOrderQuickly, movieId: movieId })
                 break;
             case 'date':
-
-                console.log("🚀 ~ file: index.jsx:160 ~ handleSelectChange ~ selectedValue", selectedValue.split(": ")[1].split("/").reverse().join("/"))
                 FoundShowtime(infoOrderQuickly.movieId, infoOrderQuickly.cinemaId)
                 setInfoOrderQuickly({ ...infoOrderQuickly, date: selectedValue })
                 setSelectedDateTime({ ...selectedDateTime, date: selectedValue.split(': ')[1].replace('Th ', '')})
@@ -165,6 +161,10 @@ function OrderQuickly() {
                 break;
         };
     }
+    const handleModalStates = () => {
+        setModalStates(!modalStates);
+    };
+
     useEffect(() => {
         hadleGetItem()
         ListDayShowtime()
@@ -205,9 +205,14 @@ function OrderQuickly() {
                                     .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
                                     ?.time.map((time, index) => (
                                         <li key={index} onClick={() => {
-                                            setSelectedDateTime(prevState => ({ ...prevState, time: time }));
-                                            const updatedDateTime = { ...selectedDateTime, time: time };
-                                            navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                            !user.auth
+                                            ? handleModalStates()
+                                            : (() => {
+                                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                                const updatedDateTime = { ...selectedDateTime, time: time };
+                                                navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                            })();
+
                                         }
                                         } className='inline-block'>
                                             <a
@@ -223,6 +228,19 @@ function OrderQuickly() {
                         </ul>
                     </div>
                 }
+            </div>
+            <div>
+                {modalStates && (
+                    <ModalComponent
+                        isOpen={modalStates}
+                        onClose={() => handleModalStates()}
+                        onConfirm={() => navigate("/signup")}
+                        onCancel={() => handleModalStates()}
+                        title='Đăng nhập để trải nghiệm đặt vé'
+                        content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
+                        buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                    />
+                )}
             </div>
         </div>
     )

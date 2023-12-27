@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { format, addDays } from 'date-fns';
 import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import SelectMenu from '../SelectMenu/SelectMenu';
@@ -9,9 +9,13 @@ import getSrcYoutube from '../../utils/GetSrcYoutube'
 import TruncatedContent from '../../utils/TruncatedContent';
 import "./index.css"
 
+import ModalComponent from '../../utils/Modal';
+
 import MovieService from '../../service/MovieService';
 import CinemaService from '../../service/CinemaService';
 import UserService from '../../service/UserService';
+
+import { LoginContext } from '../../context/LoginContext';
 
 const Movie = () => {
     const { GetOneMovieApi } = MovieService()
@@ -19,6 +23,8 @@ const Movie = () => {
     const { getShowtimeByMovieApi, getAllShowtimeApi } = UserService()
     const navigate = useNavigate()
 
+    const [modalStates, setModalStates] = useState(false);
+    const { user } = useContext(LoginContext)
 
     const { id } = useParams();
     const [dateList, setDateList] = useState([]);
@@ -88,7 +94,7 @@ const Movie = () => {
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
     const hadleGetItem = async (movieId) => {
-        let resMovie = await GetOneMovieApi(movieId)    
+        let resMovie = await GetOneMovieApi(movieId)
         if (resMovie && resMovie.data && resMovie.data.result) {
             setMovie(resMovie.data.result)
         }
@@ -119,6 +125,12 @@ const Movie = () => {
             console.log("No showtimes found for the selected cinema and movie.");
         }
     }
+
+    const handleModalStates = () => {
+        console.log("🚀 ~ file: index.jsx:268 ~ handleModalStates ~ modalStates:", modalStates)
+        setModalStates(!modalStates);
+    };
+
     useEffect(() => {
         hadleGetItem(id)
         ListDayShowtime()
@@ -284,9 +296,14 @@ const Movie = () => {
                                                                 .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
                                                                 ?.time.map((time, index) => (
                                                                     <li key={index} onClick={() => {
-                                                                        setSelectedDateTime(prevState => ({ ...prevState, time: time }));
-                                                                        const updatedDateTime = { ...selectedDateTime, time: time };
-                                                                        navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                        !user.auth
+                                                                            ? handleModalStates()
+                                                                            : (() => {
+                                                                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                                                                const updatedDateTime = { ...selectedDateTime, time: time };
+                                                                                navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                            })();
+
                                                                     }
                                                                     } className='inline-block'>
                                                                         <a
@@ -307,6 +324,19 @@ const Movie = () => {
 
                                 </div>
                         }
+                    </div>
+                    <div>
+                        {modalStates && (
+                            <ModalComponent
+                                isOpen={modalStates}
+                                onClose={() => handleModalStates()}
+                                onConfirm={() => navigate("/signup")}
+                                onCancel={() => handleModalStates()}
+                                title='Đăng nhập để trải nghiệm đặt vé'
+                                content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
+                                buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                            />
+                        )}
                     </div>
                 </div>
             </div>

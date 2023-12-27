@@ -25,20 +25,15 @@ const OrderMovie = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [foods, setFoods] = useState([])
-    console.log("🚀 ~ file: index.jsx:26 ~ OrderMovie ~ foods:", foods)
     const [listWater, setListWater] = useState([])
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
     const [listSnacks, setListSnacks] = useState([])
     const [listSeatBooked, setListSeatBooked] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
-    console.log("🚀 ~ file: index.jsx:27 ~ OrderMovie ~ listSeatBooking:", listSeatBooking)
     const [listFoodBooking, setListFoodBooking] = useState([])
-    console.log("🚀 ~ file: index.jsx:29 ~ OrderMovie ~ listFoodBooking:", listFoodBooking)
     const [selectSeats, setSelectSeats] = useState([])
-    console.log("🚀 ~ file: index.jsx:31 ~ OrderMovie ~ selectSeats:", selectSeats)
     const [bookingInfo, setBookingInfo] = useState({})
-    console.log("🚀 ~ file: index.jsx:28 ~ OrderMovie ~ bookingInfo:", bookingInfo)
     const [showtime, setShowtime] = useState({
         showTimeId: null,
         room: {
@@ -82,7 +77,6 @@ const OrderMovie = () => {
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
     const { dateTime } = location.state;
-    console.log("🚀 ~ file: index.jsx:83 ~ OrderMovie ~ dateTime:", dateTime)
     const { showtimeId } = useParams();
 
     const steps = [
@@ -213,7 +207,6 @@ const OrderMovie = () => {
         setToggleConfirm(false)
         setLoading(true);
         const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking)
-        console.log("🚀 ~ file: index.jsx:207 ~ handleBookingTicket ~ resBookingInfo:", resBookingInfo)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result);
         }
@@ -230,7 +223,6 @@ const OrderMovie = () => {
     }
 
     const handlePayment = async (bookingId) => {
-        console.log("🚀 ~ file: index.jsx:229 ~ handlePayment ~ bookingId:", bookingId)
         let resPayment = await createPaymentApi(bookingId)
         if (resPayment && resPayment.data && resPayment.data.result) {
             window.open(resPayment.data.result, '_blank')
@@ -677,7 +669,7 @@ const OrderMovie = () => {
                                         >
                                             Thanh Toán
                                         </button>
-                                    }
+                                    }                        
                                 </div>
                             </div>
                         </div>
@@ -697,7 +689,6 @@ const OrderMovie = () => {
                         <p>
                             Kèm theo:
                             {
-                                console.log("🚀 ~ file: index.jsx:696 ~ OrderMovie ~ foods:", foods)
                             }
                             {
                                 foods.map(food => (<span>&nbsp;{food.name},</span>))
