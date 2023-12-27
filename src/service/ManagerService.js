@@ -154,6 +154,17 @@ const ManagerService = () => {
             },
         );
     };
+    const getAllTicketByManagerApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/tickets`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
@@ -233,7 +244,8 @@ const ManagerService = () => {
         changeStatusRoomApi,
         deleteRoomApi,
         getTotalRevenueOfManagerApi,
-        getRevenueYearApi
+        getRevenueYearApi,
+        getAllTicketByManagerApi
     }
 }
 

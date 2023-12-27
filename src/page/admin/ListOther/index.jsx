@@ -18,6 +18,7 @@ import TruncatedContent from '../../../utils/TruncatedContent'
 import { LoginContext } from '../../../context/LoginContext';
 
 import ModalComponent from '../../../utils/Modal';
+import FormatDataTime from '../../../utils/FormatDataTime';
 
 const ListOther = () => {
     const { item } = useParams()
@@ -27,7 +28,7 @@ const ListOther = () => {
     const [modalStates, setModalStates] = useState({});
     const [allFood, setAllFood] = useState([])
     const [allRoom, setAllRoom] = useState([])
-    console.log("🚀 ~ file: index.jsx:26 ~ ListOther ~ allRoom:", allRoom)
+    const [allUser, setAllUser] = useState([])
     const [allTicket, setAllTicket] = useState([])
     const [food, setFood] = useState({
         name: "",
@@ -39,9 +40,9 @@ const ListOther = () => {
         roomName: ""
     })
 
-    const { addCinemaApi, addFoodApi, getAllRoomApi, deleteFoodApi } = AdminService()
+    const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi } = AdminService()
     const { getFoodApi } = UserService()
-    const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, } = ManagerService()
+    const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
 
 
     const navigate = useNavigate()
@@ -59,12 +60,10 @@ const ListOther = () => {
         rooms: allRoom,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
     }
-
-    // const listTicket = {
-    //     header: { stt: "STT", info: "Basic info", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
-    //     user: allTicket,
-    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
-    // }
+    const listTicket = {
+        header: { stt: "STT", movieName: "Movie", cinemaName: "Cinema", showtime: "Showtime", ticketPrice: "Price", createAt: "CreateAt", user: "User" },
+        tickets: allTicket,
+    }
     const handleChangeStatus = async (roomId) => {
         await changeStatusRoomApi(roomId);
 
@@ -77,7 +76,6 @@ const ListOther = () => {
 
         setAllRoom(updatedRooms);
     };
-
     const handleDeleteRoom = async (roomId) => {
         await deleteRoomApi(roomId);
 
@@ -92,9 +90,7 @@ const ListOther = () => {
 
         setAllFood(updatedFoods);
     };
-
     const handleGetItems = async () => {
-
         let resFood = await getFoodApi()
         if (resFood && resFood.data && resFood.data.result) {
             setAllFood(resFood.data.result)
@@ -104,16 +100,27 @@ const ListOther = () => {
         if (resRoom && resRoom.data && resRoom.data.result && resRoom.data.result.content) {
             setAllRoom(resRoom.data.result.content)
         }
-    }
 
+        let resTicket = (user.role === "ADMIN") ? await getAllTicketApi() : await getAllTicketByManagerApi()
+        if (resTicket && resTicket.data && resTicket.data.result && resTicket.data.result.content) {
+            setAllTicket(resTicket.data.result.content)
+        }
+
+        let resUser = await getAllUserApi()
+        if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+            setAllUser(resUser.data.result.content)
+        }
+    }
     const handleOpenModal = (itemId) => {
         setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
     };
-
     const handleCloseModal = (itemId) => {
         setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
     };
-
+    const getNameById = (userId) => {
+        const user = allUser.find((user) => user.userId === userId);
+        return user ? user.userName : null;
+    };
     useEffect(() => {
         handleGetItems()
     }, [item]);
@@ -129,7 +136,7 @@ const ListOther = () => {
 
                         <Tab id="add-cinema-tab">Room</Tab>
                         <Tab id="add-food-tab">Food</Tab>
-                        <Tab id="add-room-tab">Ticket</Tab>
+                        {user.role === "ADMIN" && <Tab id="add-room-tab">Ticket</Tab>}
 
                     </TabList>
                     <TabPanel>
@@ -241,9 +248,37 @@ const ListOther = () => {
                         </table>
                     </TabPanel>
 
+                    {user.role === "ADMIN" &&
                     <TabPanel>
-
-                    </TabPanel>
+                        <table className='mt-6 w-full'>
+                            <thead className=''>
+                                <tr>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.stt}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.movieName}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.showtime}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.ticketPrice}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.createAt}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.user}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    listTicket.tickets.map((item, index) => (
+                                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{item.movieName}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{item.cinemaName}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.showtime).time} - Ngày {FormatDataTime(item.showtime).date}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{item.ticketPrice}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createAt).time} {FormatDataTime(item.createAt).date}</td>
+                                            <td className='text-start font-medium px-5 py-4'>{getNameById(item.userId)}</td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </TabPanel>}
                 </Tabs>
 
 

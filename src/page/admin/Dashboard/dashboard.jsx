@@ -44,7 +44,6 @@ const Dashboard = () => {
   }])
   const [allUser, setAllUser] = useState([])
   const [revenueByYear, setRevenueByYear] = useState([])
-  console.log("🚀 ~ file: dashboard.jsx:47 ~ Dashboard ~ revenueByYear:", revenueByYear)
   const [ticketByYear, setTicketByYear] = useState([])
   const [revenueOfCinema, setRevenueOfCinema] = useState([])
 
@@ -107,8 +106,14 @@ const Dashboard = () => {
       await getTotalRevenueOfManagerApi() : await getTotalRevenueApi()
     let resMovie = await GetAllMovieApi()
     if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
-      const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 5);
-      setAllMovie(topFourMovies)
+      console.log("🚀 ~ file: dashboard.jsx:109 ~ handleGetAllItem ~ resMovie.data.result.content:", resMovie.data.result.content)
+      const updatedMovies = resMovie.data.result.content.map((movie) => ({
+        ...movie,
+        rating: movie.rating === "null" ? "0" : movie.rating,
+      }));
+      console.log("🚀 ~ file: dashboard.jsx:114 ~ updatedMovies ~ updatedMovies:", updatedMovies)
+      
+      setAllMovie(updatedMovies);  
     }
 
     let resCinema = await getAllCinemaApi()
@@ -371,7 +376,7 @@ const Dashboard = () => {
             }
 
             <div className='flex col-span-4 relative'>
-              <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full" } relative`}>
+              <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} relative`}>
                 {revenueByYear.length === 0 &&
                   <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
                     {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
@@ -442,7 +447,7 @@ const Dashboard = () => {
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{FormatDataTime(item.releaseDate).date}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.rating}</td>
+                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{(item.rating === null) ? 0 : item.rating}</td>
                                   </tr>
                                 ))
                               }

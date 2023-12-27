@@ -212,7 +212,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const deleteMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -371,10 +370,32 @@ const AdminService = () => {
             },
         );
     };
+    const getAllTicketApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/tickets`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
+    const getOneUserApi = async (userId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -443,6 +464,7 @@ const AdminService = () => {
             },
         );
     };
+    
     return {
         addManagerApi,
         addCinemaApi,
@@ -454,6 +476,7 @@ const AdminService = () => {
         updateMovieApi,
         addMovieApi,
         getAllUserApi,
+        getOneUserApi,
         getAllShowtimeApi,
         getAllRoomApi,
         deleteUserApi,
@@ -467,7 +490,8 @@ const AdminService = () => {
         totalRevenueOfYearApi,
         totalRevenueOfCinema,
         totalTicketByCinemaApi,
-        getCinemasUnmanagedApi
+        getCinemasUnmanagedApi,
+        getAllTicketApi
     }
 }
 
