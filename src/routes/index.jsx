@@ -7,7 +7,7 @@ import ShowTimes from '../components/ShowTimes';
 import OrderMovie from '../components/OrderMovie';
 import Admin from '../page/admin';
 import Info from '../page/Info'
-import VerifyOTP from '../utils/verifyOTP';
+import VerifyOTP from '../utils/VerifyOTP';
 import Navigate from '../utils/Navigate';
 import Movies from '../components/Movies';
 import Cinemas from '../components/Cinemas';
