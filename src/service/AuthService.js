@@ -98,7 +98,7 @@ const AuthService = () => {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             let params = { refreshToken: localStorage.getItem("refreshToken") }
             const response = await axios.post(
-                `${process.env.REACT_APP_HOST_API_KEY}/auth/logout`,
+                `${process.env.REACT_APP_HOST_API_KEY}/auth/logout-all`,
                 null,
                 {
                     headers: {

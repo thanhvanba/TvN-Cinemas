@@ -22,7 +22,7 @@ const ListUser = () => {
     const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi } = AdminService()
 
     const [allCinema, setAllCinema] = useState([])
-    const [allUser, setAllUser] = useState([])
+    const [allUser, setAllUser] = useState({})
 
 
     const [account, setAccount] = useState({
@@ -35,7 +35,7 @@ const ListUser = () => {
     })
     const listUser = {
         header: { stt: "STT", info: "Basic info", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
-        user: allUser,
+        user: allUser.content,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
         iAvatar: UserCircleIcon
     }
@@ -60,14 +60,14 @@ const ListUser = () => {
         let ress = await getAllUserApi(pageIndex, 5)
         console.log("🚀 ~ file: index.jsx:63 ~ handleGetItem ~ ress:", ress)
 
-        if (ress && ress.data && ress.data.result && ress.data.result.content) {
-            setAllUser(ress.data.result.content)
+        if (ress && ress.data && ress.data.result && ress.data.result) {
+            setAllUser(ress.data.result)
         }
     }
     const handleChangeStatus = async (userId) => {
         await changeStatusUserApi(userId);
 
-        const updatedUser = allUser.map((user) => {
+        const updatedUser = allUser.content.map((user) => {
             if (user.userId === userId) {
                 return { ...user, delete: !user.delete };
             }
@@ -80,7 +80,7 @@ const ListUser = () => {
     const handleDeleteUser = async (userId) => {
         await deleteUserApi(userId);
 
-        const updatedUser = allUser.filter((user) => user.userId !== userId);
+        const updatedUser = allUser.content.filter((user) => user.userId !== userId);
 
         setAllUser(updatedUser);
     };
@@ -249,7 +249,7 @@ const ListUser = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            listUser.user.map((item, index) => (
+                                            listUser && listUser.user && listUser.user.map((item, index) => (
                                                 <tr className='border-b-8 border-slate-50 bg-slate-100'>
                                                     <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
                                                     <td className='text-start font-medium px-5 py-4'>
@@ -290,9 +290,9 @@ const ListUser = () => {
                                                                         onClose={() => handleCloseModal(item.userId)}
                                                                         onConfirm={() => handleDeleteUser(item.userId)}
                                                                         onCancel={() => handleCloseModal(item.userId)}
-                                                                        title='Deactivate account'
-                                                                        content='Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.'
-                                                                        buttonName='Deactivate'
+                                                                        title='Xóa Tài khoản'
+                                                                        content='Bạn có chắc chắn xóa tài khoản này ???'
+                                                                        buttonName='Xóa'
                                                                     />
                                                                 )}
                                                             </div>
@@ -305,7 +305,7 @@ const ListUser = () => {
                                 </table>
                             }
                         </div>
-                        {/* <Pagination/> */}
+                        <Pagination pageNumber={"1"} />
                     </div>
                 </div>
             </div>

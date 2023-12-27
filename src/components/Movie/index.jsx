@@ -104,9 +104,9 @@ const Movie = () => {
             setAllCinema(resCinema.data.result.content)
         }
 
-        let resShowtime = await getAllShowtimeApi()
-        if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result.content) {
-            setAllShowtime(resShowtime.data.result.content)
+        let resShowtime = await getShowtimeByMovieApi(movieId)
+        if (resShowtime && resShowtime.data && resShowtime.data.result) {
+            setAllShowtime(resShowtime.data.result)
         }
     }
 
