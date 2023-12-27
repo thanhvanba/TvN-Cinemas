@@ -52,9 +52,9 @@ const ListCinema = () => {
     const [cinemaId, setCinemaId] = useState("")
     console.log("🚀 ~ file: index.jsx:49 ~ ListCinema ~ cinemaId:", cinemaId)
 
-    const { getAllCinemaApi, getOneCinemaApi } = CinemaService()
+    const { getOneCinemaApi } = CinemaService()
     const { getUserInfoApi } = UserService()
-    const { changeStatusCinemaApi, deleteCinemaApi } = AdminService()
+    const { changeStatusCinemaApi, deleteCinemaApi, getAllCinemaApi } = AdminService()
 
     const navigate = useNavigate()
 

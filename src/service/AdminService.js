@@ -333,6 +333,17 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getAllMovieApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/movies`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            }
+        );
+    };
     const getAllUserApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
@@ -464,7 +475,17 @@ const AdminService = () => {
             },
         );
     };
-    
+    const getAllCinemaApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -491,7 +512,9 @@ const AdminService = () => {
         totalRevenueOfCinema,
         totalTicketByCinemaApi,
         getCinemasUnmanagedApi,
-        getAllTicketApi
+        getAllTicketApi,
+        getAllCinemaApi,
+        getAllMovieApi
     }
 }
 

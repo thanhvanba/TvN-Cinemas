@@ -14,7 +14,7 @@ import ModalComponent from '../../../utils/Modal';
 
 const ListMovie = () => {
   const { GetAllMovieApi } = MovieService();
-  const { changeStatusMovieApi, deleteMovieApi } = AdminService()
+  const { changeStatusMovieApi, deleteMovieApi, getAllMovieApi } = AdminService()
   const navigate = useNavigate()
 
   const changeTab = (pathname) => {
@@ -26,7 +26,7 @@ const ListMovie = () => {
   const [modalStates, setModalStates] = useState({});
 
   const HandleGetAllMovie = async () => {
-    let res = await GetAllMovieApi()
+    let res = (user.role === "ADMIN") ? await getAllMovieApi() : await GetAllMovieApi()
     if (res && res.data && res.data.result && res.data.result.content) {
       setAllMovie(res.data.result.content)
     }
