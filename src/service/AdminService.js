@@ -34,7 +34,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const addCinemaApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -55,7 +54,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const updateCinemaApi = async (data, cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -76,7 +74,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const addFoodApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -97,7 +94,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const updateFoodApi = async (data, foodId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -256,7 +252,6 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const deleteCinemaApi = async (cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -437,6 +432,17 @@ const AdminService = () => {
             }
         );
     };
+    const getCinemasUnmanagedApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/unmanaged`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -460,7 +466,8 @@ const AdminService = () => {
         getTotalRevenueApi,
         totalRevenueOfYearApi,
         totalRevenueOfCinema,
-        totalTicketByCinemaApi
+        totalTicketByCinemaApi,
+        getCinemasUnmanagedApi
     }
 }
 

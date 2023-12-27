@@ -19,8 +19,7 @@ const ListUser = () => {
     const [modalStates, setModalStates] = useState({});
     const navigate = useNavigate()
 
-    const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi } = AdminService()
-    const { getAllCinemaApi } = CinemaService()
+    const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi } = AdminService()
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
@@ -51,10 +50,10 @@ const ListUser = () => {
         setLoading(false);
     };
     const handleGetItem = async () => {
-        let res = await getAllCinemaApi()
+        let res = await getCinemasUnmanagedApi()
 
-        if (res && res.data && res.data.result && res.data.result.content) {
-            setAllCinema(res.data.result.content)
+        if (res && res.data && res.data.result && res.data.result) {
+            setAllCinema(res.data.result)
         }
     }
     const handleGetUser = async (pageIndex) => {
