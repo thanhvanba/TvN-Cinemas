@@ -176,6 +176,20 @@ const ManagerService = () => {
             },
         );
     };
+    const getRevenueYearApi = async (year) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/year/total-revenue`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    year: year,
+                },
+            },
+        );
+    };
     const updateShowTimeApi = async (showtimeId, data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -218,7 +232,8 @@ const ManagerService = () => {
         getOneRoomApi,
         changeStatusRoomApi,
         deleteRoomApi,
-        getTotalRevenueOfManagerApi
+        getTotalRevenueOfManagerApi,
+        getRevenueYearApi
     }
 }
 

@@ -30,8 +30,8 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema } = AdminService()
-  const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi } = ManagerService()
+  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi } = AdminService()
+  const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
   const [allCinema, setAllCinema] = useState([{
@@ -42,12 +42,11 @@ const Dashboard = () => {
     urlLocation: null,
     revenue: ""
   }])
-  console.log("🚀 ~ file: dashboard.jsx:44 ~ Dashboard ~ allCinema:", allCinema)
   const [allUser, setAllUser] = useState([])
-  const [revenueByMonth, setRevenueByMonth] = useState([])
-  console.log("🚀 ~ file: dashboard.jsx:39 ~ Dashboard ~ revenueByMonth:", revenueByMonth)
+  const [revenueByYear, setRevenueByYear] = useState([])
+  console.log("🚀 ~ file: dashboard.jsx:47 ~ Dashboard ~ revenueByYear:", revenueByYear)
+  const [ticketByYear, setTicketByYear] = useState([])
   const [revenueOfCinema, setRevenueOfCinema] = useState([])
-  console.log("🚀 ~ file: dashboard.jsx:41 ~ Dashboard ~ revenueOfCinema:", revenueOfCinema)
 
   const [statistical, setStatistical] = useState({
     qRevenue: "",
@@ -70,7 +69,6 @@ const Dashboard = () => {
     ...cinema,
     revenue: getTotalByName(cinema.cinemaName)
   }));
-  console.log("🚀 ~ file: dashboard.jsx:175 ~ extendedCinema ~ extendedCinema:", extendedCinema)
   const listTable = [
     {
       title: "Cinema ratings",
@@ -102,28 +100,11 @@ const Dashboard = () => {
       listMovie: [],
       listReview: []
     },
-    {
-      title: "Lastest Review",
-      icon: StarIcon,
-      header: { stth: "STT", cinemah: "Phim", addessh: "Người dùng", revenueh: "Raiting" },
-      path: "/admin/list-review",
-      listUser: [],
-      listCinema: [],
-      listMovie: [],
-      listReview: [
-        { Stt: 1, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 2, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 3, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 4, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" },
-        { Stt: 5, cinema: "BHD Star", address: "Tân Phú", revenue: "30000" }
-      ]
-    }
   ]
 
   const handleGetAllItem = async () => {
     let resTotalRevenue = (user.role === "MANAGER") ?
       await getTotalRevenueOfManagerApi() : await getTotalRevenueApi()
-
     let resMovie = await GetAllMovieApi()
     if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
       const topFourMovies = resMovie.data.result.content.slice().sort((a, b) => b.RATING - a.RATING).slice(0, 5);
@@ -164,7 +145,7 @@ const Dashboard = () => {
     (user.role === "ADMIN") ?
       setStatistical({ ...statistical, qRevenue: resTotalRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
       :
-      setStatistical({ ...statistical, qRevenue: resTotalRevenue.data.result.total, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements })
+      setStatistical({ ...statistical, qRevenue: resTotalRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements })
     // setStatistical({...statistical})
 
     let resRevenueOfManager = (user.role === "ADMIN") && await totalRevenueOfCinema()
@@ -174,22 +155,30 @@ const Dashboard = () => {
 
   }
 
-  const handleRevenueOfYear = async (year) => {
+  const handleStatisticalOfYear = async (year) => {
     // Sử dụng tham số year nếu nó đã được truyền vào, nếu không thì sử dụng năm hiện tại
     const selectedYear = year || new Date().getFullYear();
     setLoading('revenueYear', true);
-    let resRevenue = await totalRevenueOfYearApi(selectedYear);
+    let resRevenue = (user.role === "ADMIN") ?
+      await totalRevenueOfYearApi(selectedYear) :
+      await getRevenueYearApi(selectedYear)
     setLoading('revenueYear', false);
 
     if (resRevenue && resRevenue.data && resRevenue.data.result) {
-      setRevenueByMonth(resRevenue.data.result);
+      setRevenueByYear(resRevenue.data.result);
+    }
+    setLoading('ticketYear', true);
+    let resTicket = await totalTicketByCinemaApi(selectedYear);
+    setLoading('ticketYear', false);
+    if (resTicket && resTicket.data && resTicket.data.result) {
+      setTicketByYear(resTicket.data.result);
     }
   }
-  const [selectedYearFromApp, setSelectedYearFromApp] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
 
   const handleYearChange = (selectedYear) => {
-    // Xử lý giá trị đã chọn tại cấp cha (App)
-    setSelectedYearFromApp(selectedYear);
+
+    setSelectedYear(selectedYear);
   };
 
   useEffect(() => {
@@ -197,9 +186,9 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    (user.role === "ADMIN") && handleRevenueOfYear(selectedYearFromApp)
-    setRevenueByMonth([])
-  }, [selectedYearFromApp]);
+    handleStatisticalOfYear(selectedYear)
+    setRevenueByYear([])
+  }, [selectedYear]);
 
   // Hàm tạo mảng màu dựa trên số lượng giá trị trong series
   const generateColors = (count) => {
@@ -221,17 +210,18 @@ const Dashboard = () => {
   let chartData = (user.role === "ADMIN") ?
     {
       type: "line",
-      series: revenueByMonth
+      series: revenueByYear
     } :
     {
       type: "area",
       series: [
         {
-          name: "Sales",
-          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+          name: revenueByYear.name,
+          data: revenueByYear.data,
         },
       ],
     };
+
   const chartConfig = {
     type: chartData.type,
     height: 300,
@@ -248,7 +238,7 @@ const Dashboard = () => {
       // dataLabels: {
       //     enabled: false,
       // },
-      colors: generateColors(revenueByMonth.length), // Sử dụng hàm generateColors để tạo mảng màuF
+      colors: generateColors(revenueByYear.length), // Sử dụng hàm generateColors để tạo mảng màuF
       stroke: {
         lineCap: "round",
         curve: "straight",
@@ -320,6 +310,34 @@ const Dashboard = () => {
   };
 
 
+  const namesArray = ticketByYear.map(item => item.name);
+  const totalTicketArray = ticketByYear.map(item => item.totalTicket);
+
+  const configPieChart = {
+    type: "pie",
+    width: 280,
+    height: 280,
+    series: totalTicketArray,
+    options: {
+      chart: {
+        toolbar: {
+          show: false,
+        },
+      },
+      title: {
+        show: "",
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      colors: generateColors(ticketByYear.length), // Sử dụng hàm generateColors để tạo mảng màuF,
+      legend: {
+        show: false,
+      },
+      labels: namesArray,
+    },
+  };
+
   return (
     <div>
       <div className='px-4'>
@@ -352,52 +370,28 @@ const Dashboard = () => {
               ))
             }
 
-            <div className='flex relative col-span-4'>
-              <div className='w-[55%]'>
-                {revenueByMonth.length === 0 &&
-                  <div className='flex justify-center items-center absolute mx-auto w-full h-full  top-0 ringht-0 z-50'>
+            <div className='flex col-span-4 relative'>
+              <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full" } relative`}>
+                {revenueByYear.length === 0 &&
+                  <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
                     {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
                   </div>}
                 <Statistical chartConfig={chartConfig} />
-
-                {/* <div className='absolute top-4 right-[403px]'>
-                <DatePicker
-                  // selected={time}
-                  // onChange={date => {
-                  //   setTime(date);
-                  //   setMovie((prevMovie) => {
-                  //     return { ...prevMovie, releaseDate: date };
-                  //   });
-                  // }}
-                  className="border-2 p-2 rounded-lg focus:outline-none"
-                  placeholderText="{FormatDataTime(oneMovie.releaseDate).date}"
-                  dateFormat="yyyy-MM-dd" // Định dạng ngày
-                />
-                </div>
-
-                <div className='absolute top-4 right-48'>
-                  <DatePicker
-                    // selected={time}
-                    // onChange={date => {
-                    //   setTime(date);
-                    //   setMovie((prevMovie) => {
-                    //     return { ...prevMovie, releaseDate: date };
-                    //   });
-                    // }}
-                    className="border-2 p-2 rounded-lg focus:outline-none"
-                    placeholderText="{FormatDataTime(oneMovie.releaseDate).date}"
-                    dateFormat="yyyy-MM-dd" // Định dạng ngày
-                  />
-                </div> */}
               </div>
 
-              <div className='w-[45%'>
-                <PieChart />
-              </div>
+              {user.role !== "MANAGER" &&
+                <div className='w-[45%] relative'>
+                  {ticketByYear.length === 0 &&
+                    <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
+                      {loading['ticketYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                    </div>}
+                  <PieChart configPieChart={configPieChart} />
+                </div>}
 
               <div className='absolute top-4 right-4'>
                 <YearPicker onYearChange={handleYearChange} />
               </div>
+
             </div>
 
 
@@ -461,18 +455,6 @@ const Dashboard = () => {
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
                                     <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
-                                  </tr>
-                                ))
-                              }
-
-                              {index == 3 &&
-                                // Rendering table.listReview
-                                table.listReview.map((item, index) => (
-                                  <tr key={`rating-${index}`}>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.cinema}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.address}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(item.revenue)}</td>
                                   </tr>
                                 ))
                               }

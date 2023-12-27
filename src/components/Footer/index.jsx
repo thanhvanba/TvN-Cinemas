@@ -44,23 +44,6 @@ function Footer() {
 
                             +84 345 046 656
                         </p>
-                        <div className='border-t border-t-slate-200 mt-6'>
-                            <h2 className='pt-4 text-center text-lg text-cyan-300'>Chấp nhận thanh toán</h2>
-                            <ul className='pt-2 pl-2 flex justify-center'>
-                                <li className='p-2'>
-                                    <img className="h-10 w-10" src={f_momo} alt="" />
-                                </li>
-                                <li className='p-2'>
-                                    <img className="h-10 w-10" src={f_napas} alt="" />
-                                </li>
-                                <li className='p-2'>
-                                    <img className="h-10 w-10" src={f_mastercard} alt="" />
-                                </li>
-                                <li className='p-2'>
-                                    <img className="h-10 w-10" src={f_visa} alt="" />
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,9 @@ import AuthService from '../../service/AuthService'
 import UserService from '../../service/UserService'
 import { LoginContext } from '../../context/LoginContext'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import './index.css'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
@@ -18,8 +21,6 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import logo from "../../images/logo.png"
 
@@ -40,6 +41,8 @@ const Header = () => {
   const { loginApi, logoutApi } = AuthService();
   const { forgotPasswordApi, searchMovieApi } = UserService()
 
+  const [email, setEmail] = useState('')
+  const [toggle, setToggle] = useState(false)
   const [credentialId, useUserName] = useState('')
   const [password, usePassword] = useState('')
   const [currentTab, setCurrentTab] = useState('');
@@ -47,7 +50,6 @@ const Header = () => {
   const [listMovieFound, setListMovieFound] = useState([])
   const [showMovieList, setShowMovieList] = useState(false);
 
-  console.log("🚀 ~ file: index.jsx:48 ~ Header ~ listMovieFound:", listMovieFound)
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
 
@@ -58,6 +60,11 @@ const Header = () => {
   const changeTab = (pathname) => {
     navigate(pathname)
     setInputSearch("")
+  }
+
+  const handleToggle = () => {
+    console.log('handleToggle called');
+    setToggle(!toggle)
   }
   const handleInputFocus = () => {
     setShowMovieList(true);
@@ -96,12 +103,12 @@ const Header = () => {
     handleSearchMovie(value)
     setInputSearch(value)
   }
-  // const handleForgotPassword = async () => {
-  //   setLoading(true)
-  //   let logobj = { credentialId, password };
-  //   await loginApi(logobj)
-  //   setLoading(false)
-  // }
+  const handleForgotPassword = async () => {
+    setLoading(true)
+    await forgotPasswordApi(email)
+    setToggle(false)
+    setLoading(false)
+  }
   const handleCheckPathname = (pathname) => {
     switch (pathname) {
       case "/":
@@ -241,7 +248,7 @@ const Header = () => {
           </div>
 
           {/* Tìm kiếm, mua vé, đăng nhập */}
-          <Popover className="flex items-center justify-center">
+          <Popover className="relative flex items-center justify-center">
             {/* Tim kiem */}
             <div className='relative mr-2'>
               <div>
@@ -275,8 +282,8 @@ const Header = () => {
               }
             </div>
             {
-              user && user.auth === false
-                ? <div>
+              user && user.auth === false ?
+                <div className='relative'>
                   <button
                     onClick={() => changeTab("/showtimes")}
                     className="my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
@@ -298,7 +305,7 @@ const Header = () => {
                     leaveTo="opacity-0 translate-y-1"
                   >
                     <Popover.Panel
-                      className="absolute top-full right-6 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
+                      className="absolute top-full right-0 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
                       <div className="px-6 py-4 backdrop-blur-sm relative">
                         <form action="">
                           <div className="relative my-2">
@@ -337,7 +344,7 @@ const Header = () => {
                               {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                               &nbsp;Đăng nhập
                             </button>
-                            <span>Quên mật khẩu</span>
+                            <a onClick={handleToggle}>Quên mật khẩu</a>
                           </div>
                           <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
                           >
@@ -365,7 +372,34 @@ const Header = () => {
                   </button>
                 </div>
             }
-
+            {toggle &&
+              <div className='absolute z-50 -left-80 top-20 bg-slate-200 p-4 rounded-md w-96'>
+                <h3 className='text-2xl text-gray-900 font-bold'>Quên mật khẩu</h3>
+                <label
+                  htmlFor=""
+                  className="block text-lg pb-2 font-light leading-6 text-gray-900"
+                >
+                  Vui lòng nhập email tài khoản để xác thực
+                </label>
+                <input
+                  // value={account.email}
+                  onChange={e => { setEmail(e.target.value) }}
+                  type="email"
+                  className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                  placeholder="Email  "
+                />
+                <div className='flex justify-end'>
+                  <button
+                    className="w-1/2 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                    onClick={handleForgotPassword}
+                    disabled={loading}
+                  >
+                    {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                    &nbsp;Xác thực
+                  </button>
+                </div>
+              </div>
+            }
           </Popover>
 
           {/* <a href="" className='px-4 py-8 '>

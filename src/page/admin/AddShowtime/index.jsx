@@ -398,7 +398,7 @@ const AddShowtime = () => {
                                                         checked={isChecked}
                                                         onChange={(e) => {
                                                             handleCheckboxChange(e);
-                                                            setShowtime({ ...showtime, isSpecial: e.target.checked });
+                                                            setShowtime({ ...showtime, special: e.target.checked });
                                                         }}
                                                     /> : pathname === `/admin/showtime/${showtimeId}` ?
                                                         <input

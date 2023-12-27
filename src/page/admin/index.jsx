@@ -43,7 +43,7 @@ const Admin = () => {
     { content: "Showtimes", icon: CalendarDaysIcon, path: "list-showtime" },
     { content: "Movies", icon: FilmIcon, path: "list-movie" },
     { content: "Cinemas", icon: BuildingLibraryIcon, path: "list-cinemas" },
-    { content: "Review", icon: StarIcon, path: "list-review" },
+    // { content: "Review", icon: StarIcon, path: "list-review" },
     { content: "Other", icon: StarIcon, path: "list-other" }
   ]
   const handleCheckPathname = (pathname) => {
@@ -94,13 +94,13 @@ const Admin = () => {
       item === "list-cinemas" &&
         setTabIndex(4);
     }
-    {
-      item === "list-review" &&
-        setTabIndex(5);
-    }
+    // {
+    //   item === "list-review" &&
+    //     setTabIndex(5);
+    // }
     {
       item === "list-other" &&
-        setTabIndex(6);
+        setTabIndex(5);
     }
   };
   useEffect(() => {
@@ -193,9 +193,9 @@ const Admin = () => {
             <TabPanel>
               <ListCinema />
             </TabPanel>
-            <TabPanel>
+            {/* <TabPanel>
               <ListReview />
-            </TabPanel>
+            </TabPanel> */}
             <TabPanel>
               <ListOther />
             </TabPanel>

@@ -63,36 +63,40 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const forgotPasswordApi = async (params) => {
+    const forgotPasswordApi = async (email) => {
         try {
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/forgot-password`,
                 null,
                 {
-                    params: params
+                    params: {
+                        email: email
+                    }
                 },
             );
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                changeTab("/forgot-password/verify");
+                navigate("/forgot-password/verify", { state: { email: email } });
             }
         }
         catch (err) {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const verifyApi = async (params) => {
+    const verifyApi = async (token) => {
         try {
             const response = await axios.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/valid-otp`,
                 null,
                 {
-                    params: params
+                    params: {
+                        token: token
+                    }
                 },
             );
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                changeTab("/signup");
+                navigate("/reset-password", { state: { token: token } });
             }
         }
         catch (err) {
@@ -101,21 +105,24 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error")
         }
     }
-    const resetPasswordApi = async (data, params) => {
+    const resetPasswordApi = async (token, data) => {
         try {
             const response = await axios.put(
-                `${process.env.REACT_APP_HOST_API_KEY}/user/change-password`,
+                `${process.env.REACT_APP_HOST_API_KEY}/user/reset-password`,
                 data,
                 {
-                    params: params
-                },
+                    params: {
+                        token: token,
+                    },
+                }
             );
+
             if (response.data.success) {
-                toastNotify(response.data.message, "success")
+                toastNotify(response.data.message, "success");
+                changeTab("/signup")
             }
-        }
-        catch (err) {
-            toastNotify(err.response.data.message, "error")
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
         }
     };
     const getAllShowtimeApi = async () => {
@@ -283,6 +290,7 @@ const UserService = () => {
         updateProfileApi,
         changePasswordApi,
         forgotPasswordApi,
+        resetPasswordApi,
         verifyApi,
         getAllShowtimeApi,
         getOneShowtimeApi,

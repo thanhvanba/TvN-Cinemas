@@ -7,6 +7,7 @@ import ShowTimes from '../components/ShowTimes';
 import OrderMovie from '../components/OrderMovie';
 import Admin from '../page/admin';
 import Info from '../page/Info'
+import VerifyOTP from '../utils/verifyOTP';
 import Navigate from '../utils/Navigate';
 import Movies from '../components/Movies';
 import Cinemas from '../components/Cinemas';
@@ -22,7 +23,6 @@ const MainRouter = () => (
     <Route path="/rap" element={<Cinemas />} />
     <Route path='/signup' element={<Signup />} />
     <Route path='/signup/verify' element={<Signup />} />
-    <Route path='/forgot-password/verify' element={<Signup />} />
     <Route path='/thanhvien' element={<Signup />} />
     <Route path='/quydinh' element={<Signup />} />
     <Route path='/movie/:id' element={<Movie />} />
@@ -37,6 +37,8 @@ const MainRouter = () => (
     <Route path="/user/info" element={<Info />} />
     <Route path="/user/history-booking" element={<Info />} />
     <Route path="/user/payment-success" element={<Navigate />} />
+    <Route path="/reset-password" element={<Navigate />} />
+    <Route path="/forgot-password/verify" element={<VerifyOTP />} />
   </Routes>
 );
 

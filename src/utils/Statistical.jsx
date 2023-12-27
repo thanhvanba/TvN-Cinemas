@@ -16,6 +16,7 @@ import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
 
 
 export default function Statistical({chartConfig}) {
+    console.log("🚀 ~ file: Statistical.jsx:19 ~ Statistical ~ chartConfig:", chartConfig)
     return (
         <Card>
             <CardHeader
@@ -29,7 +30,7 @@ export default function Statistical({chartConfig}) {
                 </div>
                 <div>
                     <Typography className='text-3xl' variant="h6" color="blue-gray">
-                        Thống kê doanh thu các rạp
+                        Thống kê doanh thu rạp
                     </Typography>
                     {/* <Typography
                         variant="small"

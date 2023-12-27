@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import './index.css'
 import bg from "../../images/bg-cinema-10.png"
 import AuthService from '../../service/AuthService'
+import UserService from '../../service/UserService'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "../../images/logo.png";
@@ -15,10 +16,18 @@ import { RegisterContext } from '../../context/RegisterContext'
 
 const Signup = () => {
     const { registerApi, loginApi, verifyApi, sendOtpApi } = AuthService();
+    const { forgotPasswordApi } = UserService()
 
+    const [email, setEmail] = useState('')
     const { info } = useContext(RegisterContext);
 
     const { loading, setLoading } = useLoadingState(false);
+    const [toggle, setToggle] = useState(false)
+
+    const handleToggle = () => {
+        console.log('handleToggle called');
+        setToggle(!toggle)
+    }
 
     const [account, setAccount] = useState({
         fullName: "",
@@ -141,9 +150,14 @@ const Signup = () => {
             nextInput.selectionStart = nextInput.value.length;
         }
     }
-
+    const handleForgotPassword = async () => {
+        setLoading(true)
+        await forgotPasswordApi(email)
+        setToggle(false)
+        setLoading(false)
+    }
     return (
-        <div style={{ background: `url(${bg})`, "background-attachment": "fixed" }}>
+        <div style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
                 <div className="sub-tab" style={{ display: currentTab != '3' ? 'block' : 'none' }}>
                     <div>
@@ -225,7 +239,7 @@ const Signup = () => {
                                             <input type="checkbox" name='' id='' />
                                             <label htmlFor="Remember Me">Remember Me</label>
                                         </div>
-                                        <Link to='' className="text-blue-500">Forgot Password?</Link>
+                                        <a className='text-blue-500' onClick={handleToggle}>Quên mật khẩu</a>
                                     </div>
                                     <button
                                         className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
@@ -236,6 +250,35 @@ const Signup = () => {
                                         &nbsp;Đăng nhập
                                     </button>
                                 </form>
+                                {toggle &&
+                                    <div className='absolute z-50 left-0 top-52 bg-slate-200 p-4 rounded-md w-full'>
+                                        <h3 className='text-2xl text-gray-900 font-bold'>Quên mật khẩu</h3>
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg pb-2 font-light leading-6 text-gray-900"
+                                        >
+                                            Vui lòng nhập email tài khoản để xác thực
+                                        </label>
+                                        <input
+                                            // value={account.email}
+                                            onChange={e => { setEmail(e.target.value) }}
+                                            type="email"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            placeholder="Email  "
+                                        />
+                                        <div className='flex justify-end'>
+                                            <button
+                                                className="w-1/2 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                                onClick={handleForgotPassword}
+                                                type='submit'
+                                                disabled={loading}
+                                            >
+                                                {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                &nbsp;Xác thực
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                         {/* Đăng ký */}
