@@ -1,20 +1,24 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
+import React from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { MapPinIcon } from "@heroicons/react/24/outline"
 import { useLocation, useNavigate } from 'react-router-dom';
 import MovieService from "../../service/MovieService"
 import CinemaService from '../../service/CinemaService';
 import UserService from '../../service/UserService';
 
+import ModalComponent from '../../utils/Modal';
 import FormatDataTime from '../../utils/FormatDataTime'
 import TruncatedContent from '../../utils/TruncatedContent';
 import { format, addDays } from 'date-fns';
 
+import { LoginContext } from '../../context/LoginContext';
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
   const { getShowtimeByMovieApi, getShowtimeByCinemaApi } = UserService()
 
+  const { user } = useContext(LoginContext)
+  const [modalStates, setModalStates] = useState(false);
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [dateList, setDateList] = useState([]);
@@ -103,6 +107,11 @@ const ShowTimes = () => {
       setListShowtimeCinema(resShowtimes.data.result)
     }
   }
+
+  const handleModalStates = () => {
+    console.log("🚀 ~ file: index.jsx:268 ~ handleModalStates ~ modalStates:", modalStates)
+    setModalStates(!modalStates);
+  };
   useEffect(() => {
     handleCheckPathname(pathname)
     ListDayShowtime()
@@ -215,9 +224,13 @@ const ShowTimes = () => {
                                 .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
                                 ?.time.map((time, index) => (
                                   <li key={index} onClick={() => {
-                                    setSelectedDateTime(prevState => ({ ...prevState, time: time }));
-                                    const updatedDateTime = { ...selectedDateTime, time: time };
-                                    navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                    !user.auth
+                                      ? handleModalStates()
+                                      : (() => {
+                                        setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                        const updatedDateTime = { ...selectedDateTime, time: time };
+                                        navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                      })();
                                   }
                                   } className='inline-block'>
                                     <a
@@ -240,7 +253,19 @@ const ShowTimes = () => {
             </div>
           }
 
-
+          <div>
+            {modalStates && (
+              <ModalComponent
+                isOpen={modalStates}
+                onClose={() => handleModalStates()}
+                onConfirm={() => navigate("/signup")}
+                onCancel={() => handleModalStates()}
+                title='Đăng nhập để trải nghiệm đặt vé'
+                content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
+                buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+              />
+            )}
+          </div>
 
         </div>
       </div>
@@ -321,9 +346,13 @@ const ShowTimes = () => {
                                   .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
                                   ?.time.map((time, index) => (
                                     <li key={index} onClick={() => {
-                                      setSelectedDateTime(prevState => ({ ...prevState, time: time }));
-                                      const updatedDateTime = { ...selectedDateTime, time: time };
-                                      navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                      !user.auth
+                                        ? handleModalStates()
+                                        : (() => {
+                                          setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                          const updatedDateTime = { ...selectedDateTime, time: time };
+                                          navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                        })();
                                     }
                                     } className='inline-block'>
                                       <a
@@ -346,6 +375,20 @@ const ShowTimes = () => {
               ))}
             </div>
           }
+
+          <div>
+            {modalStates && (
+              <ModalComponent
+                isOpen={modalStates}
+                onClose={() => handleModalStates()}
+                onConfirm={() => navigate("/signup")}
+                onCancel={() => handleModalStates()}
+                title='Đăng nhập để trải nghiệm đặt vé'
+                content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
+                buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+              />
+            )}
+          </div>
         </div>
 
       </div>

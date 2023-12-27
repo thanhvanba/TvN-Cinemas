@@ -8,8 +8,16 @@ import { LoginContext } from '../context/LoginContext'
 
 const MovieService = () => {
 
-    const GetAllMovieApi = async () => {
-        return await axios.get(`${process.env.REACT_APP_HOST_API_KEY}/movies`);
+    const GetAllMovieApi = async (pageIndex, pageSize) => {
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/movies`,
+            {
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            },
+        );
     };
 
     const ComingSoonMovieApi = async () => {

@@ -341,6 +341,10 @@ const AdminService = () => {
                 headers: {
                     "Authorization": bearerToken,
                 },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             }
         );
     };
@@ -359,14 +363,18 @@ const AdminService = () => {
             }
         );
     };
-    const getAllShowtimeApi = async () => {
+    const getAllShowtimeApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/showtimes`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };
@@ -381,14 +389,18 @@ const AdminService = () => {
             },
         );
     };
-    const getAllTicketApi = async () => {
+    const getAllTicketApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/tickets`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };
@@ -439,7 +451,7 @@ const AdminService = () => {
             }
         );
     };
-    const totalRevenueOfCinema = async()=>{
+    const totalRevenueOfCinema = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/total-revenue`,
@@ -475,14 +487,18 @@ const AdminService = () => {
             },
         );
     };
-    const getAllCinemaApi = async () => {
+    const getAllCinemaApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };

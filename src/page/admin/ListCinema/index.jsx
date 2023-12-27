@@ -2,6 +2,8 @@ import React from 'react'
 import { useState, useEffect, useContext, Fragment } from 'react'
 import { ArmchairIcon, PopcornIcon, HomeIcon } from 'lucide-react'
 import { MapPinIcon, PowerIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent'
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -11,11 +13,11 @@ import CinemaService from '../../../service/CinemaService'
 import UserService from '../../../service/UserService'
 import AdminService from '../../../service/AdminService'
 
+import Pagination from '../../../utils/Pagination'
 import ModalComponent from '../../../utils/Modal';
 
 const ListCinema = () => {
     const { user } = useContext(LoginContext)
-    const [modalStates, setModalStates] = useState({});
     const [loading, setLoading] = useState(false)
     const [info, setInfo] = useState({
         userId: "",
@@ -45,12 +47,10 @@ const ListCinema = () => {
         active: true,
         delete: false
     })
-    console.log("🚀 ~ file: index.jsx:45 ~ ListCinema ~ info:", info)
+    const [currentPage, setCurrentPage] = useState(1);
     const [allCinema, setAllCinema] = useState([])
     const [oneCinema, setOneCinema] = useState([])
-    console.log("🚀 ~ file: index.jsx:48 ~ ListCinema ~ oneCinema:", oneCinema)
     const [cinemaId, setCinemaId] = useState("")
-    console.log("🚀 ~ file: index.jsx:49 ~ ListCinema ~ cinemaId:", cinemaId)
 
     const { getOneCinemaApi } = CinemaService()
     const { getUserInfoApi } = UserService()
@@ -69,10 +69,8 @@ const ListCinema = () => {
     }
 
     const handleOneCinema = async () => {
-        console.log("Đã vào")
         if (info && info.cinema && info.cinema.cinemaId) {
             try {
-                console.log("🚀 ~ file: index.jsx:42 ~ handleOneCinema ~ info.cinema.cinemaId:", cinemaId);
 
                 if (user.role === "MANAGER" && info) {
                     const resOneCinema = await getOneCinemaApi(info.cinema.cinemaId);
@@ -86,11 +84,9 @@ const ListCinema = () => {
             }
         }
     }
-    const handleGetItems = async () => {
-        let res = await getAllCinemaApi()
-        if (res && res.data && res.data.result && res.data.result.content) {
-            setAllCinema(res.data.result.content)
-        }
+    const handleGetItems = async (pageIndex) => {
+        setCurrentPage(pageIndex)
+        setLoading(true)
         let resInfo;
         if (user.role === "MANAGER") {
             resInfo = await getUserInfoApi();
@@ -98,12 +94,18 @@ const ListCinema = () => {
                 setCinemaId(resInfo.data.result.cinema.cinemaId)
                 setInfo(resInfo.data.result);
             }
+        } else {
+            let res = await getAllCinemaApi(pageIndex, 5)
+            if (res && res.data && res.data.result && res.data.result.content) {
+                setAllCinema(res.data.result.content)
+            }
         }
+        setLoading(false)
     }
 
     const handleChangeStatus = async (cinemaId) => {
         await changeStatusCinemaApi(cinemaId);
-
+        handleGetItems(currentPage)
         const updatedCinemas = allCinema.map((cinema) => {
             if (cinema.cinemaId === cinemaId) {
                 return { ...cinema, status: !cinema.status };
@@ -116,24 +118,8 @@ const ListCinema = () => {
         setAllCinema(updatedCinemas);
     };
 
-    // const handleDeleteCinema = async (cinemaId) => {
-    //     await deleteCinemaApi(cinemaId);
-
-    //     const updatedCinemas = allCinema.filter((cinema) => cinema.cinemaId !== cinemaId);
-
-    //     setAllCinema(updatedCinemas);
-    // };
-
-    const handleOpenModal = (showTimeId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: true }));
-    };
-
-    const handleCloseModal = (showTimeId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: false }));
-    };
-
     useEffect(() => {
-        handleGetItems()
+        handleGetItems(currentPage)
     }, []);
     useEffect(() => {
         handleOneCinema()
@@ -172,8 +158,14 @@ const ListCinema = () => {
                 </div>
             </div>
 
-            <div>
+            <div className='relative'>
                 <div className='px-3'>
+                    {
+                        allCinema.length === 0 &&
+                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                            {loading && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                        </div>
+                    }
                     <div className=''>
                         <table className='mt-6 w-full'>
                             <thead className=''>
@@ -254,6 +246,7 @@ const ListCinema = () => {
                             </tbody>
                         </table>
                     </div>
+                    {user.role === "ADMIN" && <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />}
                 </div>
             </div>
         </div>

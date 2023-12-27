@@ -22,9 +22,10 @@ const ListUser = () => {
     const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi } = AdminService()
 
     const [allCinema, setAllCinema] = useState([])
-    const [allUser, setAllUser] = useState({})
+    const [allUser, setAllUser] = useState([])
+    console.log("🚀 ~ file: index.jsx:26 ~ ListUser ~ allUser:", allUser)
 
-
+    const [currentPage, setCurrentPage] = useState(1);
     const [account, setAccount] = useState({
         fullName: "",
         email: "",
@@ -35,7 +36,7 @@ const ListUser = () => {
     })
     const listUser = {
         header: { stt: "STT", info: "Basic info", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
-        user: allUser.content,
+        user: allUser,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
         iAvatar: UserCircleIcon
     }
@@ -44,7 +45,6 @@ const ListUser = () => {
     const handleAddManager = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log(loading)
         const data = account;
         await addManagerApi(data);
         setLoading(false);
@@ -57,17 +57,18 @@ const ListUser = () => {
         }
     }
     const handleGetUser = async (pageIndex) => {
+        setLoading(true);
         let ress = await getAllUserApi(pageIndex, 5)
-        console.log("🚀 ~ file: index.jsx:63 ~ handleGetItem ~ ress:", ress)
-
-        if (ress && ress.data && ress.data.result && ress.data.result) {
-            setAllUser(ress.data.result)
+        setLoading(false);
+        setCurrentPage(pageIndex)
+        if (ress && ress.data && ress.data.result && ress.data.result && ress.data.result.content) {
+            setAllUser(ress.data.result.content)
         }
     }
     const handleChangeStatus = async (userId) => {
         await changeStatusUserApi(userId);
-
-        const updatedUser = allUser.content.map((user) => {
+        handleGetUser(currentPage)
+        const updatedUser = allUser.map((user) => {
             if (user.userId === userId) {
                 return { ...user, delete: !user.delete };
             }
@@ -79,8 +80,8 @@ const ListUser = () => {
 
     const handleDeleteUser = async (userId) => {
         await deleteUserApi(userId);
-
-        const updatedUser = allUser.content.filter((user) => user.userId !== userId);
+        handleGetUser(currentPage)
+        const updatedUser = allUser.filter((user) => user.userId !== userId);
 
         setAllUser(updatedUser);
     };
@@ -101,7 +102,7 @@ const ListUser = () => {
 
     useEffect(() => {
         handleGetItem()
-        handleGetUser()
+        handleGetUser(currentPage)
     }, []);
     const nameCinema = allCinema.map(item => item.cinemaName)
     return (
@@ -230,8 +231,14 @@ const ListUser = () => {
 
                 </Popover>
 
-                <div>
+                <div className='relative'>
                     <div className='px-3'>
+                        {
+                            allUser.length === 0 &&
+                            <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                {loading && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                            </div>
+                        }
                         <div className=''>
                             {
                                 <table className='mt-6 w-full'>
@@ -305,7 +312,7 @@ const ListUser = () => {
                                 </table>
                             }
                         </div>
-                        <Pagination pageNumber={"1"} />
+                        <Pagination pageNumber={currentPage} onPageChange={handleGetUser} />
                     </div>
                 </div>
             </div>

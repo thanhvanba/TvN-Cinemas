@@ -132,14 +132,18 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const getAllShowtimeByManagerApi = async () => {
+    const getAllShowtimeByManagerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };
@@ -154,14 +158,18 @@ const ManagerService = () => {
             },
         );
     };
-    const getAllTicketByManagerApi = async () => {
+    const getAllTicketByManagerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/tickets`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };

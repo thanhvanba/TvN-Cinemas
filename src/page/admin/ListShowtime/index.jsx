@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import TruncatedContent from '../../../utils/TruncatedContent';
 import FormatDataTime from '../../../utils/FormatDataTime';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +9,7 @@ import AdminService from '../../../service/AdminService';
 import ManagerService from '../../../service/ManagerService';
 import { LoginContext } from '../../../context/LoginContext';
 
+import Pagination from '../../../utils/Pagination'
 import ModalComponent from '../../../utils/Modal';
 
 const ListShowtime = () => {
@@ -16,27 +19,11 @@ const ListShowtime = () => {
   const changeTab = (pathname) => {
     navigate(pathname);
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [modalStates, setModalStates] = useState({});
-  const [allShowtime, setAllShowtime] = useState([{
-    room: "",
-    movie: {
-      poster: ""
-    },
-    timeStart: "",
-    timeEnd: "",
-    status: "",
-    isSpecial: false,
-    listTimeShowMovie: [
-      {
-        date: "",
-        time: []
-      },
-      {
-        date: "",
-        time: []
-      }]
-  }]);
+  const [allShowtime, setAllShowtime] = useState([]);
   const { user } = useContext(LoginContext);
   const listShowtime = {
     header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
@@ -44,22 +31,20 @@ const ListShowtime = () => {
     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
   }
 
-  const handleGetItem = async () => {
-    try {
-      setLoading(true);
-      const res = user.role === 'ADMIN' ? await getAllShowtimeApi() : await getAllShowtimeByManagerApi();
-
-      if (res && res.data && res.data.result && res.data.result.content) {
-        setAllShowtime(res.data.result.content);
-      }
-    } finally {
-      setLoading(false);
+  const handleGetItem = async (pageIndex) => {
+    setCurrentPage(pageIndex)
+    setLoading(true);
+    const res = user.role === 'ADMIN' ? await getAllShowtimeApi(pageIndex, 5) : await getAllShowtimeByManagerApi(pageIndex, 5);
+    setLoading(true);
+    if (res && res.data && res.data.result && res.data.result.content) {
+      setAllShowtime(res.data.result.content);
     }
+
   };
 
   const handleChangeStatus = async (showtimeId) => {
     await changeStatusShowtimeApi(showtimeId);
-
+    handleGetItem(currentPage);
     const updatedShowtimes = allShowtime.map((showtime) => {
       if (showtime.showTimeId === showtimeId) {
         return { ...showtime, status: !showtime.status };
@@ -72,7 +57,7 @@ const ListShowtime = () => {
 
   const handleDeleteShowtime = async (showtimeId) => {
     await deleteShowtimeApi(showtimeId);
-
+    handleGetItem(currentPage);
     const updatedShowtimes = allShowtime.filter((showtime) => showtime.showTimeId !== showtimeId);
 
     setAllShowtime(updatedShowtimes);
@@ -87,7 +72,7 @@ const ListShowtime = () => {
   };
 
   useEffect(() => {
-    handleGetItem();
+    handleGetItem(currentPage);
   }, []);
 
   return (
@@ -105,11 +90,16 @@ const ListShowtime = () => {
             </button>
           )}
         </div>
-
-        <div>
+        <div className='relative'>
           <div className='px-3'>
+            {
+              allShowtime.length === 0 &&
+              <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                {loading && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+              </div>
+            }
             <div className=''>
-              {allShowtime.room ==="" ? (
+              {allShowtime.room === "" ? (
                 user.role === 'MANAGER' ? (
                   <p className='text-3xl'>-- Chưa có lịch chiếu nào. Vui lòng thêm lịch chiếu !!! --</p>
                 ) : (
@@ -215,6 +205,7 @@ const ListShowtime = () => {
                 </table>
               )}
             </div>
+            <Pagination pageNumber={currentPage} onPageChange={handleGetItem} />
           </div>
         </div>
       </div>

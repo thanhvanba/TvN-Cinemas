@@ -2,6 +2,8 @@ import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import TruncatedContent from '../../../utils/TruncatedContent'
 
 import MovieService from '../../../service/MovieService'
@@ -10,6 +12,7 @@ import AdminService from '../../../service/AdminService'
 import FormatDataTime from '../../../utils/FormatDataTime'
 import { LoginContext } from '../../../context/LoginContext'
 
+import Pagination from '../../../utils/Pagination'
 import ModalComponent from '../../../utils/Modal';
 
 const ListMovie = () => {
@@ -21,12 +24,17 @@ const ListMovie = () => {
     navigate(pathname)
   }
 
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useContext(LoginContext)
   const [allMovie, setAllMovie] = useState([])
   const [modalStates, setModalStates] = useState({});
 
-  const HandleGetAllMovie = async () => {
-    let res = (user.role === "ADMIN") ? await getAllMovieApi() : await GetAllMovieApi()
+  const HandleGetAllMovie = async (pageIndex) => {
+    setCurrentPage(pageIndex)
+    setLoading(true)
+    let res = (user.role === "ADMIN") ? await getAllMovieApi(pageIndex, 5) : await GetAllMovieApi(pageIndex, 5)
+    setLoading(false)
     if (res && res.data && res.data.result && res.data.result.content) {
       setAllMovie(res.data.result.content)
     }
@@ -34,7 +42,7 @@ const ListMovie = () => {
   const handleChangeStatus = async (movieId) => {
     console.log("🚀 ~ file: index.jsx:31 ~ handleChangeStatus ~ movieId:", movieId)
     await changeStatusMovieApi(movieId);
-
+    HandleGetAllMovie(currentPage)
     const updateMovies = allMovie.map((movie) => {
       if (movie.movieId === movieId) {
         return { ...movie, delete: !movie.delete };
@@ -47,7 +55,7 @@ const ListMovie = () => {
 
   const handleDeleteMovie = async (movieId) => {
     await deleteMovieApi(movieId);
-
+    HandleGetAllMovie(currentPage)
     const updateMovies = allMovie.filter((movie) => movie.movieId !== movieId);
 
     setAllMovie(updateMovies);
@@ -62,7 +70,7 @@ const ListMovie = () => {
   };
 
   useEffect(() => {
-    HandleGetAllMovie()
+    HandleGetAllMovie(currentPage)
   }, []);
   console.log("🚀 ~ file: index.jsx:11 ~ ListMovie ~ allMovie:", allMovie)
   const listMovie = {
@@ -90,8 +98,14 @@ const ListMovie = () => {
           }
         </div>
 
-        <div>
+        <div className='relative'>
           <div className='px-3'>
+            {
+              allMovie.length === 0 &&
+              <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                {loading && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+              </div>
+            }
             <div className=''>
               {
 
@@ -134,7 +148,7 @@ const ListMovie = () => {
                               <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
                                 <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
                               </a>
-                              <button type='button' onClick={(e) => { e.stopPropagation();handleOpenModal(item.movieId);  }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                              <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                 <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
                               </button>
                               <div>
@@ -159,6 +173,7 @@ const ListMovie = () => {
                 </table>
               }
             </div>
+            <Pagination pageNumber={currentPage} onPageChange={HandleGetAllMovie} />
           </div>
         </div>
       </div>
