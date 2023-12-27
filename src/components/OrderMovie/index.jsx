@@ -184,10 +184,6 @@ const OrderMovie = () => {
                 )
                 : null,
         }
-        console.log("🚀 ~ file: index.jsx:179 ~ handleGetSeatBooked ~ showtimeId.toString(:", showtimeId.toString())
-        console.log("🚀 ~ file: index.jsx:179 ~ handleGetSeatBooked ~ showtimeId.toString(:", showtimeId)
-        console.log(typeof showtimeId);
-        console.log(data)
         let resSeat = await getSeatBookedApi(data)
         if (resSeat && resSeat.data && resSeat.data.result) {
             setListSeatBooked(resSeat.data.result)
@@ -211,7 +207,6 @@ const OrderMovie = () => {
             setBookingInfo(resBookingInfo.data.result);
         }
         setLoading(false);
-        console.log(bookingInfo.bookingId)
     }
     const handleGetBookingInfo = async () => {
         setLoading(true);
@@ -693,9 +688,7 @@ const OrderMovie = () => {
                             {
                                 foods.map(food => (<span>&nbsp;{food.name},</span>))
                             }
-                            {
-                                console.log(JSON.parse(JSON.stringify(foods)))
-                            }
+                  
                         </p>
                         <p className='mt-2'>
                             Tổng tiền :

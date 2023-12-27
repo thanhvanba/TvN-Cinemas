@@ -26,7 +26,7 @@ const ListShowtime = () => {
   const [allShowtime, setAllShowtime] = useState([]);
   const { user } = useContext(LoginContext);
   const listShowtime = {
-    header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Phòng", status: "status", action: "actions" },
+    header: { stt: "STT", movieInfo: "Phim", time: "Thời gian", room: "Rạp", status: "status", action: "actions" },
     showtime: allShowtime,
     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
   }
@@ -144,7 +144,7 @@ const ListShowtime = () => {
                           <td className='text-start font-medium px-5 py-4'>
                             {FormatDataTime(item.timeStart).date} - {FormatDataTime(item.timeEnd).date}
                           </td>
-                          <td className='text-start font-medium px-5 py-4'>{item.room.roomName}</td>
+                          <td className='text-start font-medium px-5 py-4'>{item.room.cinema.cinemaName} - Phòng {item.room.roomName}</td>
                           {user.role === 'MANAGER' && (
                             <td className={`${item.status ? 'text-green-600' : 'text-red-600'} text-start font-medium px-5 py-4`}>
                               {item.status ? 'Active' : 'Inactive'}

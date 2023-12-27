@@ -19,11 +19,8 @@ const AddItem = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
-    console.log("🚀 ~ file: index.jsx:22 ~ AddItem ~ tabIndex:", tabIndex)
     const { pathname } = useLocation()
     const { foodId, cinemaId } = useParams()
-    console.log("🚀 ~ file: index.jsx:24 ~ AddItem ~ foodId:", foodId)
-    console.log("🚀 ~ file: index.jsx:24 ~ AddItem ~ cinemaId:", cinemaId)
 
     const navigate = useNavigate()
     const changeTab = (pathname) => {
@@ -50,7 +47,6 @@ const AddItem = () => {
         desc: "",
         urlLocation: ""
     })
-    console.log("🚀 ~ file: index.jsx:53 ~ AddItem ~ cinema:", cinema)
     const [food, setFood] = useState({
         name: "",
         price: "",
@@ -72,7 +68,6 @@ const AddItem = () => {
         status: true,
         urlLocation: ""
     })
-    console.log("🚀 ~ file: index.jsx:75 ~ AddItem ~ oneCinema:", oneCinema)
 
     const handleGetOneFood = async () => {
         let resFood = await getOneFoodApi(foodId)
@@ -346,7 +341,7 @@ const AddItem = () => {
                                                         onChange={e => setFood({ ...food, name: e.target.value })}
                                                         type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneFood.name}
+                                                        value={food.name}
                                                     />
                                                 </div>
                                                 <div className="relative my-4">
@@ -360,7 +355,7 @@ const AddItem = () => {
                                                         onChange={e => { setFood({ ...food, price: e.target.value }); }}
                                                         type="text"
                                                         className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={oneFood.price}
+                                                        value={food.price}
                                                     />
                                                 </div>
                                                 <div className="relative my-4">
@@ -372,7 +367,7 @@ const AddItem = () => {
                                                     </label>
                                                     <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                                         {pathname === `/admin/update-item/food/${foodId}` ?
-                                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={oneFood.foodType} /> :
+                                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
                                                             <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
                                                     </div>
                                                 </div>

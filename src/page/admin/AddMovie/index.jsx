@@ -22,11 +22,9 @@ const AddMovie = () => {
 
     const { movieId } = useParams();
     const { pathname } = useLocation()
-    console.log("🚀 ~ file: index.jsx:25 ~ AddMovie ~ pathname:", pathname)
     const [loading, setLoading] = useState(false);
     const [time, setTime] = useState()
     const [imageURL, setImageURL] = useState(null);
-    console.log("🚀 ~ file: index.jsx:30 ~ AddMovie ~ imageURL:", imageURL)
     const [movie, setMovie] = useState({
         title: "",
         director: "",
@@ -41,7 +39,6 @@ const AddMovie = () => {
         rating: "0",
         delete: false
     })
-    console.log("🚀 ~ file: index.jsx:36 ~ AddMovie ~ movie:", movie)
     const [oneMovie, setOneMovie] = useState({
         movieId: "",
         title: "",
@@ -57,7 +54,6 @@ const AddMovie = () => {
         rating: "0",
         delete: false
     })
-    console.log("🚀 ~ file: index.jsx:51 ~ AddMovie ~ oneMovie:", oneMovie)
 
     const { addMovieApi, updateMovieApi } = AdminService()
 
@@ -65,8 +61,6 @@ const AddMovie = () => {
         e.preventDefault();
         setLoading(true);
         const data = movie;
-        console.log("🚀 ~ file: index.jsx:68 ~ handleAddMovie ~ movie:", movie)
-        console.log("🚀 ~ file: index.jsx:68 ~ handleAddMovie ~ data:", data)
         await addMovieApi(data);
         setLoading(false);
     };
@@ -74,9 +68,7 @@ const AddMovie = () => {
         e.preventDefault();
         setLoading(true);
         const data = movie;
-        console.log("🚀 ~ file: index.jsx:75 ~ handleUpdateMovie ~ data:", data)
 
-        console.log("🚀 ~ file: index.jsx:77 ~ handleUpdateMovie ~ movieId:", movieId)
         let resMovie = await updateMovieApi(movieId, data);
         if (resMovie && resMovie.data && resMovie.data.result) {
             console.log(resMovie.data.result)
@@ -107,10 +99,8 @@ const AddMovie = () => {
         reader.readAsDataURL(file);
     };
     useEffect(() => {
-        console.log("🚀 ~ file: index.jsx:256 ~ useEffect ~ pathname:", pathname)
 
         if (pathname === "/admin/add-item/movie") {
-            console.log("xxxxxxxx")
             setMovie({
                 movieId: "",
                 title: "",
@@ -147,7 +137,6 @@ const AddMovie = () => {
         movieId && hadleGetOneMovie()
     }, [movieId]);
     useEffect(() => {
-        console.log("🚀 ~ file: index.jsx:256 ~ useEffect ~ pathname:", pathname)
         pathname !== "/admin/add-item/movie" &&
             setMovie({
                 ...movie,

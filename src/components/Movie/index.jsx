@@ -29,7 +29,6 @@ const Movie = () => {
     const { id } = useParams();
     const [dateList, setDateList] = useState([]);
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
-    console.log("🚀 ~ file: index.jsx:26 ~ Movie ~ selectedDateTime:", selectedDateTime)
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
     const [allShowtime, setAllShowtime] = useState([])
@@ -118,16 +117,12 @@ const Movie = () => {
         );
         if (foundShowtime) {
             setFoundShowtime(foundShowtime);
-            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
         } else {
             setFoundShowtime(foundShowtime);
-            console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
-            console.log("No showtimes found for the selected cinema and movie.");
         }
     }
 
     const handleModalStates = () => {
-        console.log("🚀 ~ file: index.jsx:268 ~ handleModalStates ~ modalStates:", modalStates)
         setModalStates(!modalStates);
     };
 
@@ -142,7 +137,6 @@ const Movie = () => {
         const selectedId = cinema.cinemaId
         FoundShowtime(selectedId)
     };
-    console.log("🚀 ~ file: index.jsx:117 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
@@ -243,7 +237,6 @@ const Movie = () => {
                         {/* chọn rạp */}
                         <div className='flex justify-center'>
                             <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
-
                                 <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Select--------"} />
                             </div>
                         </div>

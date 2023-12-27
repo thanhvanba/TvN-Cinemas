@@ -42,10 +42,8 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
             if (idPerItem) {
                 setListFoodBooking((listFoodBooking) => [...listFoodBooking, idPerItem]);
                 let food = await handleGetFoodById(idPerItem)
-                console.log("🚀 ~ file: NumberSpinner.jsx:47 ~ increaseQuantity ~ food:", food)
                 foods.push(food)
                 
-                console.log("🚀 ~ file: NumberSpinner.jsx:47 ~ increaseQuantity ~ foods:", foods)
                 setFoods(foods)
             }
         }

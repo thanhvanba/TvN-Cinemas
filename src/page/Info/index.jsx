@@ -104,7 +104,6 @@ const Info = () => {
     }
 
     const handleOpenModal = () => {
-        console.log("dô chưa")
         setToggle(prevToggle => !prevToggle);
     }
     useEffect(() => {
@@ -160,12 +159,10 @@ const Info = () => {
     }
 
     useEffect(() => {
-        console.log("dô rồi")
         handleGetItems()
     }, []);
 
     useEffect(() => {
-        console.log("dô rồi")
         if (userInfo && userInfo.address && (user.role === "MANAGER" ? userInfo.cinema : true)) {
             setAccount({
                 ...account,
@@ -271,53 +268,6 @@ const Info = () => {
                                         />
                                     </div>
                                     <div className='flex justify-between items-center'>
-                                        {/* <div className="my-2">
-                                            <label
-                                                htmlFor="gender"
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Gender
-                                            </label>
-
-                                            <div className="flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    className='h-4 w-4'
-                                                    id="male"
-                                                    name="gender"
-                                                    value="male"
-                                                    checked={account.gender === 'male'}
-                                                    onChange={e => setAccount({ ...account, gender: e.target.value })}
-                                                    defaultChecked={account.gender === 'male'}
-                                                />
-                                                <label htmlFor="male" className="ml-2 text-gray-900">Male</label>
-
-                                                <input
-                                                    type="radio"
-                                                    id="female"
-                                                    name="gender"
-                                                    value="female"
-                                                    checked={account.gender === 'female'}
-                                                    onChange={e => setAccount({ ...account, gender: e.target.value })}
-                                                    defaultChecked={account.gender === 'female'}
-                                                    className="ml-4 h-4 w-4"
-                                                />
-                                                <label htmlFor="female" className="ml-2 text-gray-900">Female</label>
-
-                                                <input
-                                                    type="radio"
-                                                    id="other"
-                                                    name="gender"
-                                                    value="other"
-                                                    checked={account.gender === 'other'}
-                                                    onChange={e => setAccount({ ...account, gender: e.target.value })}
-                                                    placeholder={userInfo.fullName}
-                                                    defaultChecked={account.gender === 'other'}
-                                                    className="ml-4 h-4 w-4"
-                                                />
-                                                <label htmlFor="other" className="ml-2 text-gray-900">Other</label>
-                                            </div>
-                                        </div> */}
                                         <div className="relative my-2">
                                             <label
                                                 htmlFor=""

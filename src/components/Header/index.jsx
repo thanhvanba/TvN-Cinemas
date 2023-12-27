@@ -63,7 +63,6 @@ const Header = () => {
   }
 
   const handleToggle = () => {
-    console.log('handleToggle called');
     setToggle(!toggle)
   }
   const handleInputFocus = () => {

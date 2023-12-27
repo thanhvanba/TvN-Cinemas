@@ -76,7 +76,6 @@ function OrderQuickly() {
     })
 
     const handleToggle = () => {
-        console.log('handleToggle called');
         setToggle(!toggle)
     }
     const ListDayShowtime = () => {
@@ -124,7 +123,6 @@ function OrderQuickly() {
             setFoundShowtime(foundShowtime);
         } else {
             setFoundShowtime(foundShowtime);
-            console.log("No showtimes found for the selected cinema and movie.");
         }
     }
 

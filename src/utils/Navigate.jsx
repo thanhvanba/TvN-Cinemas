@@ -21,7 +21,6 @@ const Navigate = () => {
     newPassword: "",
     confirmPassword: ""
   })
-  console.log("🚀 ~ file: Navigate.jsx:19 ~ Navigate ~ resetPassword:", resetPassword)
 
   const location = useLocation();
   const { token } = location.state || {};

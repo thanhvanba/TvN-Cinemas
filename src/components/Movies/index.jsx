@@ -7,7 +7,6 @@ import TruncatedContent from '../../utils/TruncatedContent';
 
 function Movies() {
     const { keyWord } = useParams()
-    console.log("🚀 ~ file: index.jsx:9 ~ Movies ~ keyWord:", keyWord)
 
     const [nowPlayMovie, setNowPlayMovie] = useState({})
     const [comingSoonMovie, setComingSoonMovie] = useState({})
@@ -39,7 +38,6 @@ function Movies() {
     }
 
     const handleSearchMovie = async (keyWord) => {
-        console.log("Vô")
         let resMovie = await searchMovieApi(keyWord)
         if (resMovie && resMovie.data && resMovie.data.result) {
             setListMovieFound(resMovie.data.result)

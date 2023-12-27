@@ -60,6 +60,7 @@ const Dashboard = () => {
     { title: "Hệ thống rạp", quantity: statistical.qCinema || "0", icon: BuildingLibraryIcon },
     { title: "Thống kê số lượng người dùng", quantity: statistical.qUser || "0", icon: UsersIcon }
   ]
+  
   const getTotalByName = (name) => {
     const cinema = revenueOfCinema.find(item => item.name === name);
     return cinema ? cinema.total : 0;
@@ -68,6 +69,7 @@ const Dashboard = () => {
     ...cinema,
     revenue: getTotalByName(cinema.cinemaName)
   }));
+
   const listTable = [
     {
       title: "Cinema ratings",
@@ -106,12 +108,10 @@ const Dashboard = () => {
       await getTotalRevenueOfManagerApi() : await getTotalRevenueApi()
     let resMovie = await GetAllMovieApi()
     if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
-      console.log("🚀 ~ file: dashboard.jsx:109 ~ handleGetAllItem ~ resMovie.data.result.content:", resMovie.data.result.content)
       const updatedMovies = resMovie.data.result.content.map((movie) => ({
         ...movie,
         rating: movie.rating === "null" ? "0" : movie.rating,
       }));
-      console.log("🚀 ~ file: dashboard.jsx:114 ~ updatedMovies ~ updatedMovies:", updatedMovies)
       
       setAllMovie(updatedMovies);  
     }

@@ -113,7 +113,6 @@ const ListCinema = () => {
             return cinema;
         });
 
-        console.log('Updated Showtimes:', updatedCinemas);
 
         setAllCinema(updatedCinemas);
     };

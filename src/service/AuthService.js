@@ -35,12 +35,10 @@ const AuthService = () => {
     };
     const registerApi = async (data) => {
         try {
-            console.log(data)
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/auth/register`,
                 data
             );
-            console.log(response.data)
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
                 register(data.email, data.fullName, data.phone)
@@ -58,7 +56,6 @@ const AuthService = () => {
                 { email: data.email, otp: data.otpValue },
             );
             if (response.data.success) {
-                console.log("verify pass")
                 toastNotify(response.data.message, "success")
                 localStorage.removeItem("email")
                 localStorage.removeItem("fullname")
@@ -67,7 +64,6 @@ const AuthService = () => {
             }
         }
         catch (err) {
-            console.log("🚀 ~ file: ApiService.js:71 ~ verifyApi ~ err:", err)
             console.log("verify fail")
 
             toastNotify(err.response.data.message, "error")
@@ -108,9 +104,7 @@ const AuthService = () => {
                 },
             );
             if (response.data.success) {
-                console.log("🚀 ~ file: ApiService.js:104 ~ logoutApi ~ response.data:", response.data)
                 toastNotify(response.data.message, "success")
-                console.log("🚀 ~ file: ApiService.js:105 ~ logoutApi ~ response.data.message:", response.data.message)
 
                 logout()
                 changeTab("/");
@@ -118,7 +112,6 @@ const AuthService = () => {
         }
         catch (err) {
             toastNotify(err.response.data.message, "error")
-            console.log("🚀 ~ file: ApiService.js:112 ~ logoutApi ~ err.response.data.message:", err.response.data.message)
         }
     }
     const refreshTokenApi = async (accessToken, refreshToken) => {
@@ -131,12 +124,7 @@ const AuthService = () => {
                     refreshToken: refreshToken
                 }
             );
-            console.log("🚀 ~ file: AuthService.js:134 ~ refreshTokenApi ~ response:", response)
-            // if (response.data.success) {
-            //     return response
-            //     // login(data.credentialId, token, refreshToken, decode.role)
-            //     // changeTab('/');
-            // }
+
         } catch (error) {
             // alert(error.data.message)
             // toastNotify(error.response.data.message, "error")

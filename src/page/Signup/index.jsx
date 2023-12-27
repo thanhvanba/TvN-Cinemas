@@ -25,7 +25,6 @@ const Signup = () => {
     const [toggle, setToggle] = useState(false)
 
     const handleToggle = () => {
-        console.log('handleToggle called');
         setToggle(!toggle)
     }
 
@@ -77,7 +76,6 @@ const Signup = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading('register', true);
-        console.log(loading)
         const params = account;
         await registerApi(params);
         setLoading('register', false);
@@ -92,9 +90,7 @@ const Signup = () => {
     const handleVerify = async (e) => {
         e.preventDefault();
         setOTP(["", "", "", "", "", ""])
-        console.log(loading)
         setLoading('verify', true)
-        console.log(loading)
         document.getElementById('formRegister').reset();
         const otpValue = otp.join("");
         const email = info.email
@@ -106,11 +102,9 @@ const Signup = () => {
         e.preventDefault();
         setOTP(["", "", "", "", "", ""])
         setLoading('sendotp', true)
-        console.log(loading)
         const email = info.email
         await sendOtpApi({ email })
         setLoading('sendotp', false)
-        console.log(loading)
     }
     const handleInputChange = (e, index) => {
         const value = e.target.value;

@@ -17,7 +17,6 @@ function App() {
   // effect
   const { info, register } = useContext(RegisterContext);
   const { user, login } = useContext(LoginContext);
-  console.log(">>> user", user, ">>> info", info)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -28,7 +27,6 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem("email")) {
-      //console.log("🚀 ~ file: App.jsx:20 ~ useEffect ~ email:", email)
       register(localStorage.getItem("email"), localStorage.getItem("fullname"), localStorage.getItem("phone"))
     }
   }, []);

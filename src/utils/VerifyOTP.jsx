@@ -65,7 +65,6 @@ function VerifyOTP() {
         setLoading('verify', true)
         console.log(loading)
         const otpValue = otp.join("");
-        console.log("🚀 ~ file: verifyOTP.jsx:67 ~ handleVerify ~ otpValue:", otpValue)
         await verifyApi(otpValue)
         setLoading('verify', false)
     }

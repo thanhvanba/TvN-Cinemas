@@ -21,7 +21,6 @@ const UserService = () => {
         );
     };
     const updateProfileApi = async (data) => {
-        console.log("🚀 ~ file: UserService.js:24 ~ updateProfileApi ~ data:", data)
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.put(
@@ -39,7 +38,6 @@ const UserService = () => {
         }
         catch (err) {
             toastNotify(err.response.data.message, "error")
-            console.log("🚀 ~ file: UserService.js:42 ~ updateProfileApi ~ err.response.data:", err.response.data)
         }
     };
     const changePasswordApi = async (data) => {
@@ -198,11 +196,6 @@ const UserService = () => {
     const bookingTicketApi = async (seats, foods) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            // const response = await AxiosService.post('/viewer/book', {
-            //     seatIds: seats,
-            //     foodIds: foods
-            // })
-            // console.log(response)
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/viewer/book`,
                 {

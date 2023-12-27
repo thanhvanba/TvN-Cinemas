@@ -40,7 +40,6 @@ const ListMovie = () => {
     }
   }
   const handleChangeStatus = async (movieId) => {
-    console.log("🚀 ~ file: index.jsx:31 ~ handleChangeStatus ~ movieId:", movieId)
     await changeStatusMovieApi(movieId);
     HandleGetAllMovie(currentPage)
     const updateMovies = allMovie.map((movie) => {
@@ -72,7 +71,6 @@ const ListMovie = () => {
   useEffect(() => {
     HandleGetAllMovie(currentPage)
   }, []);
-  console.log("🚀 ~ file: index.jsx:11 ~ ListMovie ~ allMovie:", allMovie)
   const listMovie = {
     header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "Trạng thái", releaseDate: "Ngày phát hành", action: "actions" },
     movie: allMovie,

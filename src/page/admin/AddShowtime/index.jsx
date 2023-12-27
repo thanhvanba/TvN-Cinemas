@@ -25,7 +25,6 @@ const AddShowtime = () => {
     const { showtimeId } = useParams();
     const { pathname } = useLocation()
     const naviagte = useNavigate()
-    console.log("🚀 ~ file: index.jsx:27 ~ AddShowtime ~ pathname:", pathname)
 
     const { getAllRoomApi } = AdminService()
     const { addShowtimeApi, updateShowTimeApi, getAllRoomByManagerApi } = ManagerService()
@@ -88,10 +87,6 @@ const AddShowtime = () => {
         listTimeShow: [],
     })
     const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || null);
-    console.log("🚀 ~ file: index.jsx:72 ~ AddShowtime ~ oneShowtime:", oneShowtime)
-    console.log("🚀 ~ file: index.jsx:34 ~ AddShowtime ~ showtime:", showtime)
-    // console.log("🚀 ~ file: index.jsx:27 ~ AddShowtime ~ schedule:", schedule)
-    // console.log("🚀 ~ file: index.jsx:27 ~ AddShowtime ~ oneShowtime.listTimeShow:", oneShowtime.listTimeShow)
 
 
 
@@ -195,7 +190,6 @@ const AddShowtime = () => {
 
 
     useEffect(() => {
-        console.log("🚀 ~ file: index.jsx:256 ~ useEffect ~ pathname:", pathname)
         if (pathname === "/admin/add-item/showtime") {
             setShowtime({
                 roomId: "",
@@ -256,7 +250,6 @@ const AddShowtime = () => {
     useEffect(() => {
         setIsChecked(oneShowtime.special)
         setSchedule(oneShowtime.listTimeShow)
-        console.log("🚀 ~ file: index.jsx:256 ~ useEffect ~ pathname:", pathname)
         pathname !== "/admin/add-item/showtime" &&
             setShowtime({
                 ...showtime,

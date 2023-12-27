@@ -23,7 +23,6 @@ const ListUser = () => {
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
-    console.log("🚀 ~ file: index.jsx:26 ~ ListUser ~ allUser:", allUser)
 
     const [currentPage, setCurrentPage] = useState(1);
     const [account, setAccount] = useState({

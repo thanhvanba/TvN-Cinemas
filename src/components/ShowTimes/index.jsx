@@ -26,9 +26,7 @@ const ShowTimes = () => {
   const [allCinema, setAllCinema] = useState([])
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
-  console.log("🚀 ~ file: index.jsx:25 ~ ShowTimes ~ listShowtime:", listShowtime)
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
-  console.log("🚀 ~ file: index.jsx:27 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -109,7 +107,6 @@ const ShowTimes = () => {
   }
 
   const handleModalStates = () => {
-    console.log("🚀 ~ file: index.jsx:268 ~ handleModalStates ~ modalStates:", modalStates)
     setModalStates(!modalStates);
   };
   useEffect(() => {
