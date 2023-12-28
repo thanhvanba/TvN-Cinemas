@@ -314,7 +314,6 @@ const Dashboard = () => {
     },
   };
 
-
   const namesArray = ticketByYear.map(item => item.name);
   const totalTicketArray = ticketByYear.map(item => item.totalTicket);
 

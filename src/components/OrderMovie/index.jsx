@@ -34,6 +34,7 @@ const OrderMovie = () => {
     const [listFoodBooking, setListFoodBooking] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
     const [bookingInfo, setBookingInfo] = useState({})
+
     const [showtime, setShowtime] = useState({
         showTimeId: null,
         room: {
@@ -71,6 +72,9 @@ const OrderMovie = () => {
         seats: null,
         special: null
     })
+
+    const [totalTime, setTotalTime] = useState(320); 
+    const [timeRemaining, setTimeRemaining] = useState(totalTime); 
     const [currentStep, useCurrentStep] = useState('1');
     const { pathname } = useLocation()
 
@@ -260,6 +264,31 @@ const OrderMovie = () => {
         handleGetFood()
         handleGetSeatBooked()
     }, [showtimeId]);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (timeRemaining > 0) {
+                setTimeRemaining(timeRemaining - 1);
+            } else {
+                setTimeRemaining(0);
+                handleTimeOut();
+            }
+        }, 1000);
+
+        return () => clearTimeout(timer); // Xóa interval khi component bị unmount
+
+    }, [timeRemaining, currentStep]);
+
+    const handleTimeOut = () => {
+        console.log('Thời gian đặt vé đã hết');
+        navigate("/booking-timeout")
+    };
+
+    // Hàm để định dạng thời gian thành chuỗi hh:mm
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
 
     return (
         <div className='pt-32 bg-gray-900 h-auto pb-64'>
@@ -296,7 +325,7 @@ const OrderMovie = () => {
                     {/* thời gian */}
                     <div className='block border-2 border-cyan-600 uppercase text-center  mb-8 px-8 py-2 rounded-3xl text-slate-200'>
                         <span className='text-emerald-600'>Thời gian:</span>
-                        <span className='font-bold '> 05:20</span>
+                        <span className='font-bold '>{formatTime(timeRemaining)}</span>
                     </div>
                 </div>
                 {/* trang chọn ghế */}
@@ -664,7 +693,7 @@ const OrderMovie = () => {
                                         >
                                             Thanh Toán
                                         </button>
-                                    }                        
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -688,7 +717,7 @@ const OrderMovie = () => {
                             {
                                 foods.map(food => (<span>&nbsp;{food.name},</span>))
                             }
-                  
+
                         </p>
                         <p className='mt-2'>
                             Tổng tiền :

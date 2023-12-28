@@ -36,7 +36,7 @@ function App() {
         (user.role === "ADMIN" || user.role === "MANAGER") ? (
           <AdminRouter />
         ) : (
-          (pathname === "/user/payment-success" || pathname === "/reset-password") ? (
+          (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
             <MainRouter />
           ) : (
             <div style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>

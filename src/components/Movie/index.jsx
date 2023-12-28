@@ -69,6 +69,7 @@ const Movie = () => {
         seats: null,
         special: null
     })
+    console.log("🚀 ~ file: index.jsx:72 ~ Movie ~ foundShowtime:", foundShowtime)
     const [showTrailer, setShowTrailer] = useState(false);
 
     const openTrailer = () => {
@@ -284,31 +285,35 @@ const Movie = () => {
                                             <div className='block relative'>
                                                 <div className='relative pl-28 pt-4'>
                                                     <ul className='grid grid-cols-5 gap-4'>
-                                                        {
-                                                            foundShowtime.listTimeShow
-                                                                .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                                                ?.time.map((time, index) => (
+                                                        {foundShowtime.listTimeShow
+                                                            .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
+                                                            ?.time.map((time, index) => {
+                                                                const currentDateTime = new Date();
+                                                                const currentDate = FormatDataTime(currentDateTime.toISOString()).date
+                                                                const currentTime = FormatDataTime(currentDateTime.toISOString()).time
+                                                               
+                                                                const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
+                                                                return (
                                                                     <li key={index} onClick={() => {
-                                                                        !user.auth
-                                                                            ? handleModalStates()
-                                                                            : (() => {
-                                                                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                                                const updatedDateTime = { ...selectedDateTime, time: time };
-                                                                                navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                                            })();
-
-                                                                    }
-                                                                    } className='inline-block'>
+                                                                        if (!user.auth) {
+                                                                            handleModalStates();
+                                                                        } else if (isTimeInFuture) {
+                                                                            setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                                                            const updatedDateTime = { ...selectedDateTime, time: time };
+                                                                            navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                        }
+                                                                    }} className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}>
                                                                         <a
-                                                                            className='block leading-[46px] hover:text-white hover:bg-emerald-600 bg-slate-900 text-center text-xl text-cyan-300'
+                                                                            className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                                                            style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                                                         >
                                                                             {time}
                                                                         </a>
                                                                     </li>
-                                                                )) || (
+                                                                );
+                                                            }) || (
                                                                 <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
-                                                            )
-                                                        }
+                                                            )}
                                                     </ul>
                                                 </div>
                                             </div>

@@ -38,6 +38,7 @@ const MainRouter = () => (
     <Route path="/user/history-booking" element={<Info />} />
     <Route path="/user/payment-success" element={<Navigate />} />
     <Route path="/reset-password" element={<Navigate />} />
+    <Route path="/booking-timeout" element={<Navigate />} />
     <Route path="/forgot-password/verify" element={<VerifyOTP />} />
   </Routes>
 );

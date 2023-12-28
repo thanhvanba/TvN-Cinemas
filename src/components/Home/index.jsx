@@ -1,6 +1,6 @@
 import Slider from "../Slider"
-import slider1 from "../../images/slider.jpg"
-import slider2 from "../../images/slider-1.jpg"
+import slider2 from "../../images/slider.jpg"
+import slider1 from "../../images/slider-1.jpg"
 import slider3 from "../../images/slider-2.jpg"
 import "./index.css"
 import { useState, useEffect } from 'react'
@@ -65,10 +65,7 @@ const Home = () => {
     <div className="w-full">
       {/* slider */}
       <div className="relative">
-        <Slider images={IMAGES} />
-        <a href="/" style={{ fontSize: "4rem" }}>
-          Link
-        </a>
+        <Slider images={IMAGES} />  
       </div>
       {/* mua vé nhanh */}
       <div className="cart-wrap rounded-md  ">

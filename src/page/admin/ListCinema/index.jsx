@@ -47,6 +47,7 @@ const ListCinema = () => {
         active: true,
         delete: false
     })
+    const [revenueOfCinema, setRevenueOfCinema] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [allCinema, setAllCinema] = useState([])
     const [oneCinema, setOneCinema] = useState([])
@@ -54,7 +55,7 @@ const ListCinema = () => {
 
     const { getOneCinemaApi } = CinemaService()
     const { getUserInfoApi } = UserService()
-    const { changeStatusCinemaApi, deleteCinemaApi, getAllCinemaApi } = AdminService()
+    const { changeStatusCinemaApi, deleteCinemaApi, getAllCinemaApi, totalRevenueOfCinema } = AdminService()
 
     const navigate = useNavigate()
 
@@ -62,9 +63,18 @@ const ListCinema = () => {
         navigate(pathname)
     }
 
+    const getTotalByName = (name) => {
+        const cinema = revenueOfCinema.find(item => item.name === name);
+        return cinema ? cinema.total : 0;
+    };
+    const extendedCinema = allCinema.map(cinema => ({
+        ...cinema,
+        revenue: getTotalByName(cinema.cinemaName)
+    }));
+
     const listCinema = {
         header: { stt: "STT", name: "Rạp", location: "Địa chỉ", revenue: "Doanh Thu", status: "status", desc: "Mô tả", map: "Vị trí", action: "ACtions" },
-        cinema: (user.role === "ADMIN") ? allCinema : oneCinema,
+        cinema: (user.role === "ADMIN") ? extendedCinema : oneCinema,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon }
     }
 
@@ -113,12 +123,19 @@ const ListCinema = () => {
             return cinema;
         });
 
-
         setAllCinema(updatedCinemas);
     };
 
+    const handleGetRevenueOfCinema = async () => {
+        let resRevenueOfManager = (user.role === "ADMIN") && await totalRevenueOfCinema()
+        if (resRevenueOfManager && resRevenueOfManager.data && resRevenueOfManager.data && resRevenueOfManager.data.result) {
+            setRevenueOfCinema(resRevenueOfManager.data.result)
+        }
+    }
+    
     useEffect(() => {
         handleGetItems(currentPage)
+        handleGetRevenueOfCinema()
     }, []);
     useEffect(() => {
         handleOneCinema()
@@ -187,7 +204,7 @@ const ListCinema = () => {
                                                 <td className='text-start text-sm font-medium px-5 py-4'>{index + 1}</td>
                                                 <td className='text-start text-sm font-medium px-5 py-4'>{item.cinemaName}</td>
                                                 <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.location} maxLength={30} /></td>
-                                                <td className='text-start text-sm font-medium px-5 py-4'>{format(100000000)}</td>
+                                                <td className='text-start text-sm font-medium px-5 py-4'>{format(getTotalByName(item.cinemaName))}</td>
                                                 <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start text-sm font-medium px-5 py-4`}>{item.status ? 'Active' : 'Inactive'}</td>
                                                 <td className='text-start text-sm font-medium px-5 py-4'><TruncatedContent content={item.desc} maxLength={70} /></td>
                                                 <td className='text-start text-sm font-medium px-5 py-4'>
