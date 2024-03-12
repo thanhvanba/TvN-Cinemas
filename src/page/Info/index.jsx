@@ -196,10 +196,10 @@ const Info = () => {
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
                 {user.role === "VIEWER" &&
                     <div className="sub-tab">
-                        <ul className="relative inline-block">
+                        <ul className="relative flex flex-col md:inline-block">
                             <li
                                 onClick={() => changeTab("/user/info")}
-                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100"
+                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none text-slate-100"
                             >
                                 <a
                                     className={`${currentTab === '1' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
@@ -210,7 +210,7 @@ const Info = () => {
                             </li>
                             <li
                                 onClick={() => changeTab("/user/history-booking")}
-                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100"
+                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-none md:rounded-tr-full text-slate-100"
                             >
                                 <a
                                     className={`${currentTab === '2' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
@@ -221,7 +221,7 @@ const Info = () => {
                         </ul>
                     </div>}
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
-                    <div className='grid grid-cols-2 gap-8'>
+                    <div className='grid lg:grid-cols-2 gap-8 px-4'>
                         {/* Thông tin tài khoản */}
                         <div>
                             <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>
@@ -262,11 +262,11 @@ const Info = () => {
                                             //value={userInfo.fullName}
                                             onChange={e => setAccount({ ...account, fullName: e.target.value })}
                                             type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block w-full px-4 py-1 text-[10px] sm:text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             placeholder={userInfo.fullName}
                                         />
                                     </div>
-                                    <div className='flex justify-between items-center'>
+                                    <div className='flex justify-between items-center text-[10px] sm:text-lg'>
                                         <div className="relative my-2">
                                             <label
                                                 htmlFor=""
@@ -281,7 +281,7 @@ const Info = () => {
                                                     setAccount({ ...account, dob: date });
                                                 }}
                                                 placeholderText={FormatDataTime(userInfo.dob).date}
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
                                             />
                                         </div>
@@ -296,12 +296,12 @@ const Info = () => {
                                                 // value={account.fullName}
                                                 onChange={e => setAccount({ ...account, phone: e.target.value })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder={userInfo.phone}
                                             />
                                         </div>
                                     </div>
-                                    <div className='flex justify-between w-full'>
+                                    <div className='flex justify-between w-full text-[10px] sm:text-lg'>
                                         <div className="my-2 w-3/5 mr-4">
                                             <label
                                                 htmlFor=""
@@ -313,7 +313,7 @@ const Info = () => {
                                                 // value={account.fullName}
                                                 onChange={e => setAccount({ ...account, email: e.target.value })}
                                                 type="email"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder={userInfo.email}
                                             />
                                         </div>
@@ -327,13 +327,13 @@ const Info = () => {
                                             <input
                                                 onChange={e => setAccount({ ...account, cinema: { ...account.cinema, cinemaName: e.target.value } })}
                                                 type="email"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
                                                 placeholder={userInfo.cinema.cinemaName}
                                                 readOnly
                                             />
                                         </div>}
                                     </div>
-                                    <div className="my-2">
+                                    <div className="my-2 text-[10px] sm:text-lg">
                                         <label
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
@@ -345,14 +345,14 @@ const Info = () => {
                                                 value={account.address ? account.address.street : ''}
                                                 onChange={e => setAccount({ ...account, address: { ...account.address, street: e.target.value } })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                                 placeholder={"Wards (Xã, Phường)"}
                                             />
                                             <input
                                                 value={account.address ? account.address.district : ''}
                                                 onChange={e => setAccount({ ...account, address: { ...account.address, district: e.target.value } })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder={"District (Quận, Huyện)"}
                                             />
                                         </div>
@@ -361,20 +361,20 @@ const Info = () => {
                                                 value={account.address ? account.address.province : ''}
                                                 onChange={e => setAccount({ ...account, address: { ...account.address, province: e.target.value } })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                                 placeholder={"Province (Thành phố, Tỉnh)"}
                                             />
                                             <input
                                                 value={account.address ? account.address.country : ''}
                                                 onChange={e => setAccount({ ...account, address: { ...account.address, country: e.target.value } })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder={"Country (Quốc gia)"}
                                             />
                                         </div>
                                     </div>
 
-                                    <div className='flex justify-between w-full'>
+                                    <div className='flex justify-between w-full text-[10px] sm:text-lg'>
                                         <div className="my-2 w-2/3 pr-4">
                                             <label
                                                 htmlFor=""
@@ -386,7 +386,7 @@ const Info = () => {
                                                 // value={account.fullName}
                                                 onChange={e => setAccount({ ...account, userName: e.target.value })}
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder={userInfo.userName}
                                             />
                                         </div>
@@ -399,7 +399,7 @@ const Info = () => {
                                             </label>
                                             <input
                                                 type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2"
+                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
                                                 placeholder={userInfo.role.roleName}
                                                 readOnly
                                             />
@@ -420,7 +420,7 @@ const Info = () => {
                         <div>
                             <h2 className="text-2xl text-emerald-800  font-bold text-center uppercase mb-6">Change password</h2>
                             <form onSubmit={handleChangePassword} className="rounded-md p-8 shadow-lg bg-slate-100">
-                                <div className='grid grid-cols-2 gap-4'>
+                                <div className='grid grid-cols-2 gap-4 text-[10px] sm:text-lg'>
                                     <div>
                                         <label
                                             htmlFor=""
@@ -432,7 +432,7 @@ const Info = () => {
                                             // value={account.fullName}
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, currentPassword: e.target.value })}
                                             type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             placeholder=""
                                         />
                                     </div>
@@ -447,7 +447,7 @@ const Info = () => {
                                             // value={account.fullName}
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, newPassword: e.target.value })}
                                             type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             placeholder=""
                                         />
                                     </div>
@@ -462,7 +462,7 @@ const Info = () => {
                                             // value={account.fullName}
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, confirmNewPassword: e.target.value })}
                                             type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             placeholder=""
                                         />
                                     </div>
@@ -479,7 +479,7 @@ const Info = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
+                <div style={{ display: currentTab === '2' ? 'block' : 'none' }} className='px-4'>
                     <Tabs className='bg-white rounded-xl border-b-[12px] border-slate-300'>
                         <TabList className='py-2 px-8  border-b-[12px] border-slate-300'>
                             <Tab>Phim sắp xem</Tab>

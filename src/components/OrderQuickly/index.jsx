@@ -68,6 +68,8 @@ function OrderQuickly() {
         seats: null,
         special: null
     })
+
+    console.log("🚀 ~ OrderQuickly ~ foundShowtime:", foundShowtime)
     const [infoOrderQuickly, setInfoOrderQuickly] = useState({
         movieId: "",
         cinemaId: "",
@@ -92,11 +94,7 @@ function OrderQuickly() {
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
 
-    const hadleGetItem = async () => {
-        let resCinema = await getAllCinemaApi()
-        if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
-            setAllCinema(resCinema.data.result.content)
-        }
+    const handleGetShowMovie = async () => {
 
         let resNowPlayMovie = await NowPlayingMovieApi()
         let resSpecialMovie = await SpecialMovieApi()
@@ -107,19 +105,33 @@ function OrderQuickly() {
             let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
             setAllShowMovie(movie)
         }
+    }
 
-        let resShowtime = await getAllShowtimeApi()
-        if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result.content) {
-            setAllShowtime(resShowtime.data.result.content)
+    const handleGetShowtimeByMovie = async (movieId) => {
+        let resShowtime = await getShowtimeByMovieApi(movieId)
+        if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result) {
+            setAllShowtime(resShowtime.data.result)
+        }
+    }
+
+    const handleGetAllCinema = async () => {
+        let resCinema = await getAllCinemaApi()
+        if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
+            setAllCinema(resCinema.data.result.content)
         }
     }
     const FoundShowtime = (movieId, cinemaId) => {
+        console.log("🚀 ~ FoundShowtime ~ cinemaId:", cinemaId)
+        console.log("🚀 ~ FoundShowtime ~ movieId:", movieId)
+
+        console.log("🚀 ~ FoundShowtime ~ allShowtime:", allShowtime)
         const foundShowtime = allShowtime.find(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
                 item.movie.movieId === movieId
         );
         if (foundShowtime) {
+            console.log("🚀 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
             setFoundShowtime(foundShowtime);
         } else {
             setFoundShowtime(foundShowtime);
@@ -139,15 +151,16 @@ function OrderQuickly() {
 
     const handleSelectChange = (selectedValue, selectType) => {
         switch (selectType) {
-            case 'cinema':
-                const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
-                const cinemaId = cinema.cinemaId
-                setInfoOrderQuickly({ ...infoOrderQuickly, cinemaId: cinemaId })
-                break;
             case 'movie':
                 const movie = allShowMovie.find(movie => movie.title === selectedValue)
                 const movieId = movie.movieId
                 setInfoOrderQuickly({ ...infoOrderQuickly, movieId: movieId })
+                handleGetShowtimeByMovie(infoOrderQuickly.movieId)
+                break;
+            case 'cinema':
+                const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
+                const cinemaId = cinema.cinemaId
+                setInfoOrderQuickly({ ...infoOrderQuickly, cinemaId: cinemaId })
                 break;
             case 'date':
                 FoundShowtime(infoOrderQuickly.movieId, infoOrderQuickly.cinemaId)
@@ -164,19 +177,20 @@ function OrderQuickly() {
     };
 
     useEffect(() => {
-        hadleGetItem()
+        handleGetShowMovie()
+        handleGetAllCinema()
         ListDayShowtime()
     }, []);
     return (
-        <div className="block h-36">
-            <div className="inline-block w-[18%] p-3 items-center justify-between font-bold text-emerald-800">
+        <div className="block h-36 w-full">
+            <div className="inline-block md:w-[40%] lg:w-[18%] p-3 items-center justify-between font-bold text-emerald-800">
                 <h2 className="uppercase font-bold text-2xl">mua vé <br /> nhanh </h2>
             </div>
-            <div className="inline-block w-[82%] p-2">
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-120 w-64">
+            <div className="inline-block md:w-[60%] lg:w-[82%] p-2">
+                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-120 md:w-11/12 lg:w-[44%]">
                     <SelectMenu onSelectChange={(value) => handleSelectChange(value, 'movie')} items={listNameMovie} content={"Chọn phim"} />
                 </div>
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-br-full text-gray-200 relative h-12 w-64">
+                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-br-full text-gray-200 relative md:w-11/12 h-12 lg:w-[44%]">
                     <SelectMenu
                         onSelectChange={(value) => handleSelectChange(value, 'cinema')}
                         items={infoOrderQuickly.movieId ? listNameCinema : []}
@@ -184,13 +198,16 @@ function OrderQuickly() {
                     />
                     {/* {!infoOrderQuickly.movieId && <div className='absolute z-50 rounded-xl top-8 px-4 py-2 bg-orange-600 text-slate-900 w-60'>Vui lòng chọn phim</div>} */}
                 </div>
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-tl-full rounded-r-full text-gray-200 relative h-12 w-64">
+                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-tl-full rounded-r-full text-gray-200 relative md:w-11/12  h-12 lg:w-[44%]">
                     <SelectMenu
                         onSelectChange={(value) => handleSelectChange(value, 'date')}
                         items={infoOrderQuickly.cinemaId ? formattedDates : []}
                         content={"Chọn ngày"} />
                 </div>
-                <div onClick={handleToggle} className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-tr-full text-gray-200 relative h-12 w-64">
+                <div
+                    onClick={handleToggle}
+                    className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-tr-full text-gray-200 relative h-12 md:w-11/12 lg:w-[44%]"
+                >
                     <h3 className='pl-2 pr-8'>Chọn lịch chiếu</h3>
                     <span className='absolute right-2 top-3 '><ChevronUpDownIcon className='h-5 w-5 text-gray-400' /></span>
                 </div>

@@ -81,7 +81,7 @@ const ListMovie = () => {
     <div>
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-          <h2 className='text-3xl'>List Movie</h2>
+          <h2 className='text-3xl'>Danh sách phim</h2>
           {
             (user.role === "ADMIN") ?
               <button

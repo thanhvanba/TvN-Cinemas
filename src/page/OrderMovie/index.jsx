@@ -25,6 +25,7 @@ const OrderMovie = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [foods, setFoods] = useState([])
+    console.log("🚀 ~ OrderMovie ~ foods:", foods)
     const [listWater, setListWater] = useState([])
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
@@ -32,6 +33,7 @@ const OrderMovie = () => {
     const [listSeatBooked, setListSeatBooked] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
     const [listFoodBooking, setListFoodBooking] = useState([])
+    console.log("🚀 ~ OrderMovie ~ listFoodBooking:", listFoodBooking)
     const [selectSeats, setSelectSeats] = useState([])
     const [bookingInfo, setBookingInfo] = useState({})
 
@@ -73,8 +75,8 @@ const OrderMovie = () => {
         special: null
     })
 
-    const [totalTime, setTotalTime] = useState(320); 
-    const [timeRemaining, setTimeRemaining] = useState(totalTime); 
+    const [totalTime, setTotalTime] = useState(3200);
+    const [timeRemaining, setTimeRemaining] = useState(totalTime);
     const [currentStep, useCurrentStep] = useState('1');
     const { pathname } = useLocation()
 
@@ -293,7 +295,7 @@ const OrderMovie = () => {
     return (
         <div className='pt-32 bg-gray-900 h-auto pb-64'>
             {/* Thanh navbar */}
-            <div className='max-w-6xl mx-auto mb-4'>
+            <div className='xl:max-w-6xl lg:max-w-5xl md:max-w-4xl sm:max-w-2xl max-w-lg mx-auto mb-4'>
                 <ul className='grid grid-cols-4 mx-auto'>
                     {
                         steps.map((step, index) => (
@@ -304,7 +306,7 @@ const OrderMovie = () => {
                                 <span className='flex justify-center items-center py-2'>
                                     {step.icon}
                                 </span>
-                                <span className='uppercase font-bold block py-2'>{step.title}</span>
+                                <span className='uppercase font-bold block py-2 text-[10px] sm:text-base'>{step.title}</span>
                                 <span className='absolute left-0 w-full py-2'>
                                     <a className={`${index < currentStep - 1 ? 'bg-cyan-500 text-slate-200' : 'bg-slate-200 text-cyan-950'}   font-bold px-4 py-2 rounded-full`}>{index + 1}</a>
                                 </span>
@@ -313,9 +315,10 @@ const OrderMovie = () => {
                     }
                 </ul>
             </div>
-            <div className='max-w-5xl mx-auto'>
+
+            <div className='xl:max-w-5xl lg:max-w-4xl md:max-w-3xl sm:max-w-2xl max-w-lg mx-auto'>
                 {/* Thông tin phim và thời gian đặt vé */}
-                <div className='flex justify-between mb-4'>
+                <div className='flex justify-between mb-4 text-[10px] sm:text-base px-4'>
                     {/* thông tin */}
                     <div className='text-slate-200'>
                         <h3 className='uppercase font-bold text-emerald-600'>{showtime.movie.title}</h3>
@@ -328,6 +331,7 @@ const OrderMovie = () => {
                         <span className='font-bold '>{formatTime(timeRemaining)}</span>
                     </div>
                 </div>
+
                 {/* trang chọn ghế */}
                 <div style={{ display: currentStep === '1' ? 'block' : 'none' }}>
 
@@ -335,6 +339,7 @@ const OrderMovie = () => {
                     <div className='flex justify-center'>
                         <img className='w-5/6' src={screen} alt="" />
                     </div>
+
                     {/* Sơ đồ ghế*/}
                     <div>
                         {/* Tên phòng */}
@@ -343,11 +348,11 @@ const OrderMovie = () => {
                             <span>&nbsp;{showtime.room.roomName}</span>
                         </div>
                         {/*  Sơ đồ*/}
-                        <div className='grid grid-cols-14 gap-1 mx-44'>
+                        <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'>
                             {seatData.map(seat => (
                                 <div
                                     key={seat.id}
-                                    className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} flex justify-center items-center text-slate-200 md:h-8 lg:h-10 rounded-xl`}
+                                    className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
                                     onClick={() => handleSelectSeat(seat.id, seat.type)}
                                 >
                                     {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
@@ -355,38 +360,40 @@ const OrderMovie = () => {
                             ))}
                         </div>
                     </div>
+
                     {/* Loại ghế */}
-                    <div className='mt-10 grid grid-cols-5 justify-center'>
+                    <div className='mt-10 grid grid-cols-3 lg:grid-cols-5 justify-center'>
                         <div className='relative flex'>
-                            <div className='absolute left-4 lg:h-10 lg:w-10 md:h-8 md:w-8 bg-slate-800 rounded-xl'>
+                            <div className='absolute left-4 h-8 w-8 lg:h-10 lg:w-10 bg-slate-800 rounded-xl'>
                                 <XMarkIcon className='text-slate-400' />
                             </div>
-                            <p className='text-slate-200 text-lg font-bold py-2 pl-16'>Ghế đã đặt</p>
+                            <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đã đặt</p>
                         </div>
                         <div className='relative flex'>
-                            <div className='absolute left-4 lg:h-10 lg:w-10 md:h-8 md:w-8 bg-slate-800 rounded-xl' />
-                            <p className='text-slate-200 text-lg font-bold py-2 pl-16'>Ghế thường</p>
+                            <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-slate-800 rounded-xl' />
+                            <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế thường</p>
                         </div>
                         <div className='relative flex'>
-                            <div className='absolute left-4 lg:h-10 lg:w-10 md:h-8 md:w-8 bg-orange-500 rounded-xl' />
-                            <p className='text-slate-200 text-lg font-bold py-2 pl-16'>Ghế VIP</p>
+                            <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-orange-500 rounded-xl' />
+                            <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế VIP</p>
                         </div>
                         <div className='relative flex'>
-                            <div className='absolute left-4 lg:h-10 lg:w-10 md:h-8 md:w-8 bg-pink-700 rounded-xl' />
-                            <p className='text-slate-200 text-lg font-bold py-2 pl-16'>Ghế đôi</p>
+                            <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-pink-700 rounded-xl' />
+                            <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đôi</p>
                         </div>
                         <div className='relative flex'>
-                            <div className='absolute left-4 lg:h-10 lg:w-10 md:h-8 md:w-8 bg-green-500 rounded-xl border-2 border-[#00e608]' />
-                            <p className='text-slate-200 text-lg font-bold py-2 pl-16'>Ghế đang chọn</p>
+                            <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-green-500 rounded-xl border-2 border-[#00e608]' />
+                            <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đang chọn</p>
                         </div>
                     </div>
-                    <div className='relative flex justify-end pt-4 top-16'>
+
+                    <div className='relative flex justify-end pt-4 top-16 pr-4 sm:pr-0 text-xs sm:text-2xl'>
                         <button
                             onClick={() => {
                                 handleSelectSeatApi();
                                 navigate(`/${showtimeId}/order/bapnuoc`, { state: { dateTime: dateTime } })
                             }}
-                            className="absolute w-1/4 text-[18px] text-slate-200 text-2xl p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                            className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
                             type="button"
                             disabled={loading}
                         >
@@ -395,8 +402,9 @@ const OrderMovie = () => {
                         </button>
                     </div>
                 </div>
+
                 {/* trang bắp nước */}
-                <div style={{ display: currentStep === '2' ? 'block' : 'none' }}>
+                <div style={{ display: currentStep === '2' ? 'block' : 'none' }} className='px-4'>
                     <div className='relative block bg-slate-300 cyan-200 rounded-3xl h-auto text-slate-900'>
                         <ul>
                             {/* nước lọc */}
@@ -405,10 +413,10 @@ const OrderMovie = () => {
                                 {
                                     listWater.map((item, index) => (
                                         <div className='flex items-center border-b'>
-                                            <p className='text-2xl p-4'>{index + 1}</p>
-                                            <div className='px-4 w-3/5'>
-                                                <h3 className='text-xl py-1'>{item.name}</h3>
-                                                <div className='px-2 py-1 text-slate-600'>
+                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
                                                     Giá :
                                                     <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
                                                 </div>
@@ -431,10 +439,10 @@ const OrderMovie = () => {
                                 {
                                     listPopcorn.map((item, index) => (
                                         <div className='flex items-center border-b'>
-                                            <p className='text-2xl p-4'>{index + 1}</p>
-                                            <div className='px-4 w-3/5'>
-                                                <h3 className='text-xl py-1'>{item.name}</h3>
-                                                <div className='px-2 py-1 text-slate-600'>
+                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
                                                     Giá :
                                                     <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
@@ -458,10 +466,10 @@ const OrderMovie = () => {
                                 {
                                     listSoda.map((item, index) => (
                                         <div className='flex items-center border-b'>
-                                            <p className='text-2xl p-4'>{index + 1}</p>
-                                            <div className='px-4 w-3/5'>
-                                                <h3 className='text-xl py-1'>{item.name}</h3>
-                                                <div className='px-2 py-1 text-slate-600'>
+                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
                                                     Giá :
                                                     <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
@@ -485,10 +493,10 @@ const OrderMovie = () => {
                                 {
                                     listSnacks.map((item, index) => (
                                         <div className='flex items-center border-b'>
-                                            <p className='text-2xl p-4'>{index + 1}</p>
-                                            <div className='px-4 w-3/5'>
-                                                <h3 className='text-xl py-1'>{item.name}</h3>
-                                                <div className='px-2 py-1 text-slate-600'>
+                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
                                                     Giá :
                                                     <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
@@ -506,13 +514,13 @@ const OrderMovie = () => {
                                     ))
                                 }
                             </li>
-                            <div className='relative flex justify-end pt-4 top-16'>
+                            <div className='relative flex justify-end pt-4 top-16 pr-4 sm:pr-0 text-xs sm:text-2xl'>
                                 <button
                                     onClick={() => {
                                         handleGetBookingInfo();
                                         navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
                                     }}
-                                    className="absolute w-1/4 text-[18px] text-slate-200 text-2xl p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                                    className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                     type="button"
                                     disabled={loading}
                                 >
@@ -523,11 +531,12 @@ const OrderMovie = () => {
                         </ul>
                     </div>
                 </div>
+
                 {/* trang thanh toán */}
-                <div style={{ display: currentStep === '3' ? 'block' : 'none' }}>
-                    <div className='flex gap-5 '>
-                        <div className="w-full xl:w-2/3">
-                            <div className="p-4 md:p-6 space-y-6 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                <div style={{ display: currentStep === '3' ? 'block' : 'none' }} className='px-4'>
+                    <div className='flex flex-col md:flex md:flex-row md:gap-5 '>
+                        <div className="w-full md:w-2/3">
+                            <div className="p-4 md:p-6 space-y-6 bg-slate-300 rounded-2xl text-slate-900">
                                 <h4 className="font-bold text-3xl">Thông tin phim</h4>
                                 <div>
                                     <p>Phim</p>
@@ -558,7 +567,7 @@ const OrderMovie = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-4 md:p-6 space-y-6 bg-slate-300 mt-5 rounded-2xl text-sm md:text-base text-slate-900">
+                            <div className="p-4 md:p-6 space-y-6 bg-slate-300 mt-5 rounded-2xl text-slate-900">
                                 <h4 className="font-bold text-3xl">Thông tin thanh toán</h4>
                                 <div>
                                     <div className="mt-4 ring-1 ring-gray-700 sm:mx-0 rounded-xl">
@@ -603,12 +612,12 @@ const OrderMovie = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full xl:w-1/3 flex-1 text-sm md:text-base">
-                            <div className="relative bg-slate-300 md:h-[620px] h-full rounded-2xl p-4 md:p-6 space-y-5">
+                        <div className="w-full pt-4 md:pt-0 md:w-1/3 flex-1">
+                            <div className="relative bg-slate-300 h-[525] rounded-2xl p-4 md:p-6 md:space-y-5">
                                 <h4 className="font-bold text-3xl">Phương thức thanh toán</h4>
                                 <div id="headlessui-radiogroup-:rf:" role="radiogroup">
                                     <div className="space-y-2" role="none">
-                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rg:" role="radio" aria-checked="true" tabIndex="0" data-headlessui-state="checked" aria-labelledby="headlessui-label-:rh:">
+                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rg:" role="radio" aria-checked="true" tabIndex="0" data-headlessui-state="checked" aria-labelledby="headlessui-label-:rh:">
                                             <span className="flex items-center">
                                                 <span className="h-6 w-6 rounded-full border flex items-center justify-center mr-4 bg-transparent border-red-500" aria-hidden="true">
                                                     <span className="bg-red-500 rounded-full h-4 w-4 flex items-center justify-center">
@@ -617,7 +626,7 @@ const OrderMovie = () => {
                                                         </svg>
                                                     </span>
                                                 </span>
-                                                <span className="flex flex-col text-sm">
+                                                <span className="flex flex-col">
                                                     <span className="font-medium text-slate-900 flex items-center gap-2" id="headlessui-label-:rh:">
                                                         {/* <img alt="hình ảnh" loading="lazy" width="50" height="50" decoding="async" data-nimg="1" src="/images/vnpay.svg" style="color: transparent;" /> */}
                                                         VNPAY
@@ -626,10 +635,10 @@ const OrderMovie = () => {
                                             </span>
                                             <span className="pointer-events-none absolute -inset-px rounded-xl border border-red-500" aria-hidden="true"></span>
                                         </div>
-                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:ri:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rj:">
+                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:ri:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rj:">
                                             <span className="flex items-center">
                                                 <span className="h-6 w-6 rounded-full border border-gray-700 flex items-center justify-center mr-4 bg-transparent" aria-hidden="true"></span>
-                                                <span className="flex flex-col text-sm">
+                                                <span className="flex flex-col">
                                                     <span className="font-medium text-slate-900 flex items-center gap-2" id="headlessui-label-:rj:">
                                                         {/* <img alt="hình ảnh" loading="lazy" width="50" height="50" decoding="async" data-nimg="1" src="/images/payoo.svg" style="color: transparent;" />Payoo */}
                                                         Payoo
@@ -638,10 +647,10 @@ const OrderMovie = () => {
                                             </span>
                                             <span className="pointer-events-none absolute -inset-px rounded-xl border border-transparent" aria-hidden="true"></span>
                                         </div>
-                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rk:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rl:">
+                                        <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rk:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rl:">
                                             <span className="flex items-center">
                                                 <span className="h-6 w-6 rounded-full border border-gray-700 flex items-center justify-center mr-4 bg-transparent" aria-hidden="true"></span>
-                                                <span className="flex flex-col text-sm">
+                                                <span className="flex flex-col">
                                                     <span className="font-medium text-slate-900 flex items-center gap-2" id="headlessui-label-:rl:">
                                                         <img src="" alt="" />
                                                         {/* <img alt="hình ảnh" loading="lazy" width="50" height="50" decoding="async" data-nimg="1" srcSet="/_next/image?url=%2Fimages%2Fviettel1.png&amp;w=64&amp;q=75 1x, /_next/image?url=%2Fimages%2Fviettel1.png&amp;w=128&amp;q=75 2x" src="/_next/image?url=%2Fimages%2Fviettel1.png&amp;w=128&amp;q=75" style="color: transparent;" /> */}
@@ -668,7 +677,7 @@ const OrderMovie = () => {
                                         <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
                                     </div>
                                 </div>
-                                <div className="absolute left-4 right-4 bottom-8 space-y-3">
+                                <div className=" left-4 right-4 bottom-8 space-y-3">
                                     {toggleConfirm &&
                                         <button
                                             onClick={() => {
@@ -699,13 +708,14 @@ const OrderMovie = () => {
                         </div>
                     </div>
                 </div>
+
                 {/* trang thông tin ve */}
                 <div style={{ display: currentStep === '4' ? 'block' : 'none' }}>
                     <div className='text-slate-200'>ve</div>
                 </div>
                 {/* Thông tin ghế, giá tiền */}
-                <div className='flex text-slate-200 text-2xl pt-4 border-t border-t-slate-400 mt-10 justify-between'>
-                    <div>
+                <div className='flex text-slate-200 pt-4 border-t border-t-slate-400 mt-10 justify-between text-lg pl-4 sm:pl-0 sm:text-2xl'>
+                    <div className='w-3/4'>
                         <p className=''>
                             Ghế đã chọn :
                             {selectSeats.map(seat => (<span>&nbsp;{seat.seatId},</span>))}

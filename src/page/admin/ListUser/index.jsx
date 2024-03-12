@@ -109,7 +109,7 @@ const ListUser = () => {
             <div className='px-4'>
                 {/* add manager */}
                 <Popover className='relative h-20 mb-2 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>List User</h2>
+                    <h2 className='text-3xl'>Danh sách người dùng</h2>
                     <Popover.Button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
                         type='submit'

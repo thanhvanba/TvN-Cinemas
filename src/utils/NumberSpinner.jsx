@@ -14,11 +14,14 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
             return resFood.data.result
         }
     }
-    const decreaseQuantity =async  () => {
+    const decreaseQuantity = async () => {
         const newQuantity = quantity - 1
         if (newQuantity >= 0) {
             const indexToRemove = listFoodBooking.indexOf(idPerItem);
-            const indexFoodToRemove = foods.indexOf(idPerItem);
+            let food = await handleGetFoodById(idPerItem)
+            console.log("🚀 ~ decreaseQuantity ~ food:", food)
+            const indexFoodToRemove = foods.findIndex(item => item.foodId === idPerItem);
+            console.log("🚀 ~ decreaseQuantity ~ indexFoodToRemove:", indexFoodToRemove)
             setQuantity(newQuantity)
             setTotalPrice(newQuantity * pricePerItem)
             if (indexToRemove !== -1) {
@@ -27,13 +30,15 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
                 setListFoodBooking(updatedItems);
             }
             if (indexFoodToRemove !== -1) {
-                const updatedItems = [...foods];
-                updatedItems.splice(indexFoodToRemove, 1);
-                setFoods(updatedItems);
+                const updatedFoods = [...foods];
+
+                console.log("🚀 ~ decreaseQuantity ~ updatedFoods:", updatedFoods)
+                updatedFoods.splice(indexFoodToRemove, 1);
+                setFoods(updatedFoods);
             }
         }
     }
-    const increaseQuantity = async  () => {
+    const increaseQuantity = async () => {
         const newQuantity = quantity + 1
         console.log("New Quantity:", newQuantity); // Thêm dòng này để kiểm tra giá trị mới
         if (newQuantity >= 0) {
@@ -43,15 +48,15 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
                 setListFoodBooking((listFoodBooking) => [...listFoodBooking, idPerItem]);
                 let food = await handleGetFoodById(idPerItem)
                 foods.push(food)
-                
+                console.log("🚀 ~ increaseQuantity ~ foods:", foods)
                 setFoods(foods)
             }
         }
     }
     return (
-        <div className='w-2/5'>
-            <div className='p-4 flex items-center'>
-                <div className='flex w-1/2 justify-center'>
+        <div className='w-3/5 sm:w-1/2 md:w-2/5'>
+            <div className='p-3 sm:p-4 flex items-center'>
+                <div className='flex w-2/3 sm:w-1/2 justify-center'>
                     <a onClick={decreaseQuantity} className='h-8 w-8 border-2 border-slate-900 rounded-full mx-2'>
                         <MinusSmallIcon />
                     </a>
@@ -65,7 +70,7 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
                         <PlusSmallIcon />
                     </a>
                 </div>
-                <div className='ml-4 w-1/2 text-right text-2xl font-bold text-cyan-600'>
+                <div className='ml-2 sm:ml-4 w-1/3 sm:w-1/2 text-right text-xs sm:text-2xl font-bold text-cyan-600'>
                     <span>{formatPrice(totalPrice)} <sup>đ</sup></span>
 
                 </div>

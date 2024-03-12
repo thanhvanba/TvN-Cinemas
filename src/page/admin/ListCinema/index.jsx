@@ -144,7 +144,7 @@ const ListCinema = () => {
         <div>
             <div className='px-4'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                    {user.role === "ADMIN" ? <h2 className='text-3xl'>List Cinema</h2> : <h2 className='text-3xl'>Detail Cinema</h2>}
+                    {user.role === "ADMIN" ? <h2 className='text-3xl'>Danh sách rạp </h2> : <h2 className='text-3xl'>Chi tiết rạp</h2>}
                     <div className='flex items-center'>
                         {user.role === "MANAGER" ?
                             <button

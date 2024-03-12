@@ -20,8 +20,11 @@ import CinemaService from '../../../service/CinemaService';
 import FormatDataTime from '../../../utils/FormatDataTime';
 
 import { LoginContext } from '../../../context/LoginContext';
+
+import Loading from '../../../components/Loading';
 const Dashboard = () => {
   const { loading, setLoading } = useLoadingState(false);
+  const [loading1, setLoading1] = useState(false);
   const { user } = useContext(LoginContext);
   const navigate = useNavigate()
   const changeTab = (pathname) => {
@@ -60,7 +63,7 @@ const Dashboard = () => {
     { title: "Hệ thống rạp", quantity: statistical.qCinema || "0", icon: BuildingLibraryIcon },
     { title: "Thống kê số lượng người dùng", quantity: statistical.qUser || "0", icon: UsersIcon }
   ]
-  
+
   const getTotalByName = (name) => {
     const cinema = revenueOfCinema.find(item => item.name === name);
     return cinema ? cinema.total : 0;
@@ -112,8 +115,8 @@ const Dashboard = () => {
         ...movie,
         rating: movie.rating === "null" ? "0" : movie.rating,
       }));
-      
-      setAllMovie(updatedMovies);  
+
+      setAllMovie(updatedMovies);
     }
 
     let resCinema = await getAllCinemaApi()
@@ -158,23 +161,24 @@ const Dashboard = () => {
       setRevenueOfCinema(resRevenueOfManager.data.result)
     }
 
+    setLoading1(false)
   }
 
   const handleStatisticalOfYear = async (year) => {
     // Sử dụng tham số year nếu nó đã được truyền vào, nếu không thì sử dụng năm hiện tại
     const selectedYear = year || new Date().getFullYear();
-    setLoading('revenueYear', true);
+    // setLoading('revenueYear', true);
     let resRevenue = (user.role === "ADMIN") ?
       await totalRevenueOfYearApi(selectedYear) :
       await getRevenueYearApi(selectedYear)
-    setLoading('revenueYear', false);
+    // setLoading('revenueYear', false);
 
     if (resRevenue && resRevenue.data && resRevenue.data.result) {
       setRevenueByYear(resRevenue.data.result);
     }
-    setLoading('ticketYear', true);
+    // setLoading('ticketYear', true);
     let resTicket = await totalTicketByCinemaApi(selectedYear);
-    setLoading('ticketYear', false);
+    // setLoading('ticketYear', false);
     if (resTicket && resTicket.data && resTicket.data.result) {
       setTicketByYear(resTicket.data.result);
     }
@@ -187,12 +191,13 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    setLoading1(true)
     handleGetAllItem()
   }, []);
 
   useEffect(() => {
     handleStatisticalOfYear(selectedYear)
-    setRevenueByYear([])
+    // setRevenueByYear([])
   }, [selectedYear]);
 
   // Hàm tạo mảng màu dựa trên số lượng giá trị trong series
@@ -361,119 +366,123 @@ const Dashboard = () => {
         </div>
 
         <div>
-          <div className='grid grid-cols-4'>
-            {
-              listStatistical.map((item) => (
-                <div className='px-3'>
-                  <div className='mt-6 p-5 relative border-2 rounded-lg bg-slate-100'>
-                    <span className='text-xs'>{item.title}</span>
-                    <p className='pr-8 text-3xl font-semibold mt-2'>{format(item.quantity)}</p>
-                    <item.icon className='h-8 w-8 absolute right-5 bottom-5 text-emerald-600' />
-                  </div>
-                </div>
-              ))
-            }
-
-            <div className='flex col-span-4 relative'>
-              <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} relative`}>
-                {revenueByYear.length === 0 &&
-                  <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
-                    {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                  </div>}
-                <Statistical chartConfig={chartConfig} />
-              </div>
-
-              {user.role !== "MANAGER" &&
-                <div className='w-[45%] relative'>
-                  {ticketByYear.length === 0 &&
-                    <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
-                      {loading['ticketYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                    </div>}
-                  <PieChart configPieChart={configPieChart} />
-                </div>}
-
-              <div className='absolute top-4 right-4'>
-                <YearPicker onYearChange={handleYearChange} />
-              </div>
-
-            </div>
-
-
-            {
-              listTable.map((table, index) => (
-                user.role === "MANAGER" && (index == 0 || index == 2) ? null :
-                  <div div className='px-3 col-span-2' >
-                    <div className='mt-6 border-2 rounded-lg bg-slate-100'>
-                      <div className='p-5 flex justify-between border-b-2'>
-                        <h3 className='flex items-center text-2xl font-semibold'>
-                          <table.icon className='h-6 w-6 mr-3 text-emerald-600' />
-                          {table.title}
-                        </h3>
-                        <div className='flex items-center'>
-                          <a href=""><ArrowPathIcon className='h-4 w-4' /></a>
-                          <a onClick={() => changeTab(table.path)} href="" className='ml-4 bg-slate-200 rounded-md px-2'>View All</a>
-                        </div>
-                      </div>
-                      <div className='pt-8 pb-5'>
-                        <div>
-                          <table className='w-full'>
-                            <thead className='border-b'>
-                              <tr>
-                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.stth}</th>
-                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.cinemah}</th>
-                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.addessh}</th>
-                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.revenueh}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-
-                              {index == 0 &&
-                                // Rendering table.cinemaRatings
-                                table.listCinema.map((item, index) => (
-                                  <tr key={`movie-${index}`}>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(getTotalByName(item.cinemaName))}</td>
-                                  </tr>
-                                ))
-                              }
-
-                              {index == 1 &&
-                                // Rendering table.listMovie
-                                table.listMovie.map((item, index) => (
-                                  <tr key={`rating-${index}`}>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{FormatDataTime(item.releaseDate).date}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{(item.rating === null) ? 0 : item.rating}</td>
-                                  </tr>
-                                ))
-                              }
-
-                              {user.role === "ADMIN" && index == 2 &&
-                                // Rendering table.listUser
-                                table.listUser.map((item, index) => (
-                                  <tr key={`rating-${index}`}>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
-                                    <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
-                                  </tr>
-                                ))
-                              }
-                            </tbody>
-
-                          </table>
-                        </div>
+          {
+            loading1 ?
+              <Loading /> :
+              <div className='grid grid-cols-4'>
+                {
+                  listStatistical.map((item) => (
+                    <div className='px-3'>
+                      <div className='mt-6 p-5 relative border-2 rounded-lg bg-slate-100'>
+                        <span className='text-xs'>{item.title}</span>
+                        <p className='pr-8 text-3xl font-semibold mt-2'>{format(item.quantity)}</p>
+                        <item.icon className='h-8 w-8 absolute right-5 bottom-5 text-emerald-600' />
                       </div>
                     </div>
+                  ))
+                }
+
+                <div className='flex col-span-4 relative'>
+                  <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} relative`}>
+                    {revenueByYear.length === 0 &&
+                      <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
+                        {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                      </div>}
+                    <Statistical chartConfig={chartConfig} />
                   </div>
-              ))
 
-            }
+                  {user.role !== "MANAGER" &&
+                    <div className='w-[45%] relative'>
+                      {ticketByYear.length === 0 &&
+                        <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
+                          {loading['ticketYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
+                        </div>}
+                      <PieChart configPieChart={configPieChart} />
+                    </div>}
 
-          </div>
+                  <div className='absolute top-4 right-4'>
+                    <YearPicker onYearChange={handleYearChange} />
+                  </div>
+
+                </div>
+
+
+                {
+                  listTable.map((table, index) => (
+                    user.role === "MANAGER" && (index == 0 || index == 2) ? null :
+                      <div div className='px-3 col-span-2' >
+                        <div className='mt-6 border-2 rounded-lg bg-slate-100'>
+                          <div className='p-5 flex justify-between border-b-2'>
+                            <h3 className='flex items-center text-2xl font-semibold'>
+                              <table.icon className='h-6 w-6 mr-3 text-emerald-600' />
+                              {table.title}
+                            </h3>
+                            <div className='flex items-center'>
+                              <a href=""><ArrowPathIcon className='h-4 w-4' /></a>
+                              <a onClick={() => changeTab(table.path)} href="" className='ml-4 bg-slate-200 rounded-md px-2'>View All</a>
+                            </div>
+                          </div>
+                          <div className='pt-8 pb-5'>
+                            <div>
+                              <table className='w-full'>
+                                <thead className='border-b'>
+                                  <tr>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.stth}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.cinemah}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.addessh}</th>
+                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.revenueh}</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                  {index == 0 &&
+                                    // Rendering table.cinemaRatings
+                                    table.listCinema.map((item, index) => (
+                                      <tr key={`movie-${index}`}>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(getTotalByName(item.cinemaName))}</td>
+                                      </tr>
+                                    ))
+                                  }
+
+                                  {index == 1 &&
+                                    // Rendering table.listMovie
+                                    table.listMovie.map((item, index) => (
+                                      <tr key={`rating-${index}`}>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{FormatDataTime(item.releaseDate).date}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{(item.rating === null) ? 0 : item.rating}</td>
+                                      </tr>
+                                    ))
+                                  }
+
+                                  {user.role === "ADMIN" && index == 2 &&
+                                    // Rendering table.listUser
+                                    table.listUser.map((item, index) => (
+                                      <tr key={`rating-${index}`}>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
+                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
+                                      </tr>
+                                    ))
+                                  }
+                                </tbody>
+
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  ))
+
+                }
+
+              </div>
+          }
         </div>
       </div>
     </div >

@@ -9,12 +9,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { RegisterProvider } from './context/RegisterContext.jsx'
 import { LoginProvider } from './context/LoginContext.jsx'
 import './index.css'
+import ScrollToTop from './utils/ScrollToTop.js'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RegisterProvider>
       <LoginProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <App />
           <ToastContainer />
         </BrowserRouter>

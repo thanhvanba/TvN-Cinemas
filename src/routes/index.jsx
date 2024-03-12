@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../components/Home';
+import Home from '../page/Home';
 import Signup from '../page/Signup';
-import Movie from '../components/Movie';
-import ShowTimes from '../components/ShowTimes';
-import OrderMovie from '../components/OrderMovie';
+import Movie from '../page/Movie';
+import ShowTimes from '../page/ShowTimes';
+import OrderMovie from '../page/OrderMovie';
 import Admin from '../page/admin';
 import Info from '../page/Info'
 import VerifyOTP from '../utils/VerifyOTP';
 import Navigate from '../utils/Navigate';
-import Movies from '../components/Movies';
-import Cinemas from '../components/Cinemas';
+import Movies from '../page/Movies';
+import Cinemas from '../page/Cinemas';
 
 const MainRouter = () => (
   <Routes>

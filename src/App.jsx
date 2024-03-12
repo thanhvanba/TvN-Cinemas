@@ -39,7 +39,7 @@ function App() {
           (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
             <MainRouter />
           ) : (
-            <div style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>
+            <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
               <Header />
               <MainRouter />
               <Footer />

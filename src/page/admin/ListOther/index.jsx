@@ -139,14 +139,14 @@ const ListOther = () => {
         <div>
             <div className='px-4'>
                 <div className='h-20 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>Manager</h2>
+                    <h2 className='text-3xl'>Quản lý</h2>
                 </div>
                 <Tabs>
                     <TabList className='py-6 border-b-2'>
 
-                        <Tab id="add-cinema-tab">Room</Tab>
-                        <Tab id="add-food-tab">Food</Tab>
-                        {user.role === "ADMIN" && <Tab id="add-room-tab">Ticket</Tab>}
+                        <Tab id="add-cinema-tab">Phòng</Tab>
+                        <Tab id="add-food-tab">Thức ăn</Tab>
+                        {user.role === "ADMIN" && <Tab id="add-room-tab">Vé</Tab>}
 
                     </TabList>
                     <TabPanel>

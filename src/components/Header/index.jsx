@@ -52,6 +52,7 @@ const Header = () => {
 
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const { user } = useContext(LoginContext);
 
@@ -135,109 +136,46 @@ const Header = () => {
 
   useEffect(() => {
     handleCheckPathname(pathname)
+    setMobileMenuOpen(false)
   }, [pathname]);
   return (
     <header className="header">
       <div className='top-menu'>
-        <div className='mx-auto flex max-w-7xl justify-between lg:px-8 top-menu-container'>
+        <div className='mx-auto h-full flex max-w-5xl xl:max-w-7xl justify-between lg:px-8 top-menu-container'>
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
-              <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
+              <a onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5">
                 <span className="sr-only">Your Company</span>
-                <img className="h-[80px] w-auto" src={logo} alt="" />
+                <img className="h-[60px] md:h-[80px] w-auto" src={logo} alt="" />
               </a>
             </div>
             {/* Thanh điều hướng */}
-            <nav className="mx-auto flex max-w-7xl justify-between lg:px-8">
-              {/* <div className="flex lg:hidden">
-                <button
-                  type="button"
-                  className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-                  onClick={() => setMobileMenuOpen(true)}
-                >
-                  <span className="sr-only">Open main menu</span>
-                  <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div> */}
+            <nav className="mx-auto flex max-w-6xl xl:max-w-7xl justify-between lg:px-8">
               <Popover.Group className="hidden lg:flex lg:gap-x-12">
                 <ul className="hidden lg:flex">
-                  {/* <li className='px-4 py-8 relative'>
-                    <Popover>
-                      <Popover.Button onClick={() => changeTab( "/")} className="flex">
-                        <a href="#" className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
-                          Phim
-                        </a>
-                        <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                      </Popover.Button>
-
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
-                        leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
-                      >
-                        <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                          <div className="p-4">
-                            {products.map((item) => (
-                              <div
-                                key={item.name}
-                                className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                              >
-                                <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                                  <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
-                                </div>
-                                <div className="flex-auto">
-                                  <a href={item.href} className="block font-semibold text-gray-900">
-                                    {item.name}
-                                    <span className="absolute inset-0" />
-                                  </a>
-                                  <p className="mt-1 text-gray-600">{item.description}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                            {callsToAction.map((item) => (
-                              <a
-                                key={item.name}
-                                href={item.href}
-                                className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
-                              >
-                                <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                                {item.name}
-                              </a>
-                            ))}
-                          </div>
-                        </Popover.Panel>
-                      </Transition>
-                    </Popover>
-                  </li> */}
                   <li onClick={() => changeTab("/phim")} className='px-4 py-8 relative'>
-                    <a className={`${currentTab === '1' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '1' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Phim
                     </a>
                   </li>
                   <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative'>
-                    <a className={`${currentTab === '2' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
                   </li>
                   <li onClick={() => changeTab("/rap")} className='px-4 py-8 relative'>
-                    <a className={`${currentTab === '3' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '3' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Hệ thống rạp
                     </a>
                   </li>
                   <li onClick={() => changeTab("/khuyenmai")} className='px-4 py-8 relative'>
-                    <a className={`${currentTab === '4' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '4' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Khuyến mãi
                     </a>
                   </li>
                   <li onClick={() => changeTab("/lienhe")} className='px-4 py-8 relative'>
-                    <a className={`${currentTab === '5' ? "active" : ""} text-lg font-bold uppercase option-style`}>
+                    <a className={`${currentTab === '5' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Liên hệ
                     </a>
                   </li>
@@ -245,15 +183,14 @@ const Header = () => {
               </Popover.Group>
             </nav>
           </div>
-
           {/* Tìm kiếm, mua vé, đăng nhập */}
-          <Popover className="relative flex items-center justify-center">
+          <Popover className="relative items-center justify-center hidden lg:flex">
             {/* Tim kiem */}
             <div className='relative mr-2'>
-              <div>
+              <div className=''>
                 <input
                   onChange={(e) => handleChange(e.target.value)}
-                  className='h-10 rounded-2xl px-4 text-black focus:outline-none'
+                  className='h-10 xl:w-full w-32 rounded-2xl px-4 text-black focus:outline-none'
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                   value={inputSearch}
@@ -282,15 +219,15 @@ const Header = () => {
             </div>
             {
               user && user.auth === false ?
-                <div className='relative'>
+                <div className='flex'>
                   <button
                     onClick={() => changeTab("/showtimes")}
-                    className="my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                    className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
                     type='submit'
                   >
                     Mua Vé
                   </button>
-                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-2xl xl:rounded-s-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
                   >
                     Đăng Nhập
                   </Popover.Button>
@@ -400,97 +337,129 @@ const Header = () => {
               </div>
             }
           </Popover>
-
-          {/* <a href="" className='px-4 py-8 '>
-              <UserIcon className="h-5 w-5 text-gray-400" />
-            </a> */}
-
-          {/* <a href="#" className="text-sm font-bold leading-6 text-slate-100">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a> */}
-
-          {/* <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-            <div className="fixed inset-0 z-10" />
-            <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt=""
-                  />
-                </a>
-                <button
-                  type="button"
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10">
-                  <div className="space-y-2 py-6">
-                    <Disclosure as="div" className="-mx-3">
-                      {({ open }) => (
-                        <>
-                          <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-slate-100 hover:bg-gray-50">
-                            Product
-                            <ChevronDownIcon
-                              className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
-                              aria-hidden="true"
-                            />
-                          </Disclosure.Button>
-                          <Disclosure.Panel className="mt-2 space-y-2">
-                            {[...products, ...callsToAction].map((item) => (
-                              <Disclosure.Button
-                                key={item.name}
-                                as="a"
-                                href={item.href}
-                                className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                              >
-                                {item.name}
-                              </Disclosure.Button>
-                            ))}
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100 hover:bg-gray-50"
-                    >
-                      Features
-                    </a>
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100 hover:bg-gray-50"
-                    >
-                      Marketplace
-                    </a>
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100 hover:bg-gray-50"
-                    >
-                      Company
-                    </a>
-                  </div>
-                  <div className="py-6">
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-100 hover:bg-gray-50"
-                    >
-                      Log in
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </Dialog.Panel>
-          </Dialog> */}
+          <div className="absolute right-6 top-7 lg:hidden">
+            <button
+              type="button"
+              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <span className="sr-only">Open main menu</span>
+              {!mobileMenuOpen && <Bars3Icon className="h-6 w-6" aria-hidden="true" />}
+            </button>
+          </div>
         </div>
       </div>
+
+      <Dialog as="div" className="lg:hidden z-10" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <div className="fixed inset-0 z-10" />
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-[#312b2b] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="flex items-center justify-between">
+            <a href="" className="-mt-1">
+              <span className="sr-only">Your Company</span>
+              <img className="h-[60px] w-auto" src={logo} alt="" />
+            </a>
+            <button
+              type="button"
+              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="mt-6 flow-root pt-8">
+            <div className="-my-6 divide-y divide-gray-500/10">
+              <div className="space-y-2 py-10">
+                <div className='relative mr-2'>
+                  <div className=''>
+                    <input
+                      onChange={(e) => handleChange(e.target.value)}
+                      className='h-10 w-full rounded-2xl px-4 text-black focus:outline-none'
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      value={inputSearch}
+                      placeholder='Tìm kiếm' />
+                  </div>
+                  <button
+                    className='absolute right-0 top-0 m-3'>
+                    <MagnifyingGlassIcon
+                      onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
+                      className="h-5 w-5 text-gray-400" />
+                  </button>
+                  {showMovieList && listMovieFound.length !== 0 &&
+                    <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
+                      {listMovieFound.map(movie => (
+                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                          <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
+                            <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                            <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
+                          </div>
+                        </div>
+                      ))
+
+                      }
+                    </div>
+                  }
+                </div>
+                <ul className="text-white">
+                  <li onClick={() => changeTab("/phim")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '1' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Phim
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/showtimes")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Lịch Chiếu
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/rap")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '3' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Hệ thống rạp
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/khuyenmai")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '4' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Khuyến mãi
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/lienhe")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '5' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Liên hệ
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="py-6">
+
+                {
+                  user && user.auth === false ?
+                    <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                    >
+                      Đăng ký thành viên
+                    </button>
+                    : <div className='flex justify-center items-center'>
+                      <span
+                        className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
+                        onClick={() => { changeTab('/user/info') }}
+                      >
+                        {user.credentialId}
+                      </span>
+                      <button
+                        onClick={handleLogoutApi}
+                        className="ml-2 p-2 text-sm font-bold uppercase rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                        type='submit'
+                      >
+                        {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                        &nbsp;Đăng xuất
+                      </button>
+                    </div>
+                }
+              </div>
+            </div>
+          </div>
+        </Dialog.Panel>
+      </Dialog>
     </header >
   )
 }

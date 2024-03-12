@@ -37,13 +37,13 @@ const Admin = () => {
 
   const { logoutApi } = AuthService();
   const items = [
-    { content: "Dashboard", icon: Squares2X2Icon, path: "dashboard" },
-    { content: "User", icon: UserCircleIconOutline, path: "list-user" },
-    { content: "Showtimes", icon: CalendarDaysIcon, path: "list-showtime" },
-    { content: "Movies", icon: FilmIcon, path: "list-movie" },
-    { content: "Cinemas", icon: BuildingLibraryIcon, path: "list-cinemas" },
+    { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" },
+    { content: "Người Dùng", icon: UserCircleIconOutline, path: "list-user" },
+    { content: "Lịch Chiếu", icon: CalendarDaysIcon, path: "list-showtime" },
+    { content: "Phim", icon: FilmIcon, path: "list-movie" },
+    { content: "Rạp", icon: BuildingLibraryIcon, path: "list-cinemas" },
     // { content: "Review", icon: StarIcon, path: "list-review" },
-    { content: "Other", icon: StarIcon, path: "list-other" }
+    { content: "Khác", icon: StarIcon, path: "list-other" }
   ]
   const handleCheckPathname = (pathname) => {
     switch (true) {

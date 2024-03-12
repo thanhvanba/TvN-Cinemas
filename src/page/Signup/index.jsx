@@ -155,10 +155,10 @@ const Signup = () => {
             <div className='mx-auto max-w-6xl pt-32 pb-8'>
                 <div className="sub-tab" style={{ display: currentTab != '3' ? 'block' : 'none' }}>
                     <div>
-                        <ul className="relative inline-block">
+                        <ul className="relative flex flex-col md:inline-block">
                             <li
                                 onClick={() => changeTab("/thanhvien")}
-                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tl-full text-slate-100"
+                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none text-slate-100"
                             >
                                 <a
                                     href=""
@@ -170,7 +170,7 @@ const Signup = () => {
                             </li>
                             <li
                                 onClick={() => changeTab("/quydinh")}
-                                className="relative option1-style uppercase font-bold float-left w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-full text-slate-100"
+                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-none md:rounded-tr-full text-slate-100"
                             >
                                 <a
                                     href=""
@@ -183,7 +183,7 @@ const Signup = () => {
                     </div>
                 </div>
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
-                    <div className='grid grid-cols-2'>
+                    <div className='grid lg:grid-cols-2 px-4'>
                         {/* Đăng nhập */}
                         <div className='m-8'>
                             <h2 className="text-white font-bold uppercase text-center mb-6">Đăng Nhập</h2>

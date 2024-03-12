@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot } from "lucide-react"
 import "./index.css"
 
@@ -20,6 +20,15 @@ const Slider = ({ images }) => {
             return index - 1
         })
     }
+
+    // Auto slide every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            showNextImage();
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, [imageIndex]);
 
     return (
         <section

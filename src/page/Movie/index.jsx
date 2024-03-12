@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { format, addDays } from 'date-fns';
 import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
-import SelectMenu from '../SelectMenu/SelectMenu';
+import SelectMenu from '../../components/SelectMenu/SelectMenu';
 import FormatDataTime from '../../utils/FormatDataTime'
 import getSrcYoutube from '../../utils/GetSrcYoutube'
 import TruncatedContent from '../../utils/TruncatedContent';
@@ -144,14 +144,14 @@ const Movie = () => {
                 {/* chi tiết phim */}
                 <div className='flex'>
                     {/* product image */}
-                    <div className='w-1/3 px-4'>
+                    <div className='hidden sm:block w-1/3 px-4'>
                         <img
                             className='w-full h-5/6'
                             src={movie.poster}
                         />
                     </div>
                     {/* product detail */}
-                    <div className='w-2/3 px-4'>
+                    <div className='w-full sm:w-2/3 px-4'>
                         {/* name */}
                         <div>
                             <h3 className='uppercase text-2xl text-slate-200'>
@@ -246,7 +246,7 @@ const Movie = () => {
                                 <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p> :
                                 <div>
                                     {/* ngày chiếu */}
-                                    <div className='grid grid-cols-6'>
+                                    <div className='grid grid-cols-6 px-4'>
                                         {dateList.map((date, index) => (
                                             <a
                                                 key={index}
@@ -266,9 +266,9 @@ const Movie = () => {
                                     </div>
                                     {/* ds các cụ thể thời gian chiếu */}
                                     <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                                        <div className='relative pl-60 pb-8 mb-8 h-36'>
+                                        <div className='relative sm:pl-60 pb-4 mb-4 min-h-[144px] px-4'>
                                             {/* vị trí */}
-                                            <div className='absolute top-0 left-0 bg-slate-700 w-60'>
+                                            <div className='absolute hidden sm:block top-0 left-4 bg-slate-700 w-60'>
                                                 <div className='p-6'>
                                                     <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
                                                     <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
@@ -283,8 +283,8 @@ const Movie = () => {
                                             </div>
                                             {/* thời gian */}
                                             <div className='block relative'>
-                                                <div className='relative pl-28 pt-4'>
-                                                    <ul className='grid grid-cols-5 gap-4'>
+                                                <div className='relative sm:pl-28 pt-4'>
+                                                    <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
                                                         {foundShowtime.listTimeShow
                                                             .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
                                                             ?.time.map((time, index) => {

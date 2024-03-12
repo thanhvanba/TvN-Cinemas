@@ -140,7 +140,7 @@ const ListShowtime = () => {
     <div>
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-          <h2 className='text-3xl'>List Showtime</h2>
+          <h2 className='text-3xl'>Danh sách lịch chiếu</h2>
           <div className='flex'>
             <div
               className="relative mt-1 pr-4 mr-2 w-60 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6"
