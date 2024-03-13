@@ -278,6 +278,21 @@ const UserService = () => {
             },
         );
     }
+    const reviewMovieApi = async (comment, rating, movieId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.post(
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/${movieId}/review`,
+            {
+                comment: comment,
+                rating: rating
+            },
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -302,7 +317,8 @@ const UserService = () => {
         getBookingViewedApi,
         getTicketDetailApi,
         getShowtimeByCinemaApi,
-        searchMovieApi
+        searchMovieApi,
+        reviewMovieApi
     }
 }
 

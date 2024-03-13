@@ -2,7 +2,8 @@ import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { format, addDays } from 'date-fns';
-import { ChevronDownIcon, MapPinIcon } from "@heroicons/react/24/outline"
+import { ChevronDownIcon, MapPinIcon, StarIcon as StarOutlineIcon } from "@heroicons/react/24/outline"
+import { StarIcon as StarSolidIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import SelectMenu from '../../components/SelectMenu/SelectMenu';
 import FormatDataTime from '../../utils/FormatDataTime'
 import getSrcYoutube from '../../utils/GetSrcYoutube'
@@ -20,7 +21,7 @@ import { LoginContext } from '../../context/LoginContext';
 const Movie = () => {
     const { GetOneMovieApi } = MovieService()
     const { getAllCinemaApi } = CinemaService()
-    const { getShowtimeByMovieApi, getAllShowtimeApi } = UserService()
+    const { getShowtimeByMovieApi, reviewMovieApi } = UserService()
     const navigate = useNavigate()
 
     const [modalStates, setModalStates] = useState(false);
@@ -32,6 +33,7 @@ const Movie = () => {
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
     const [allShowtime, setAllShowtime] = useState([])
+    const [toggleRV, setToggleRV] = useState(false)
     const [foundShowtime, setFoundShowtime] = useState({
         showTimeId: null,
         room: {
@@ -69,13 +71,14 @@ const Movie = () => {
         seats: null,
         special: null
     })
-    console.log("🚀 ~ file: index.jsx:72 ~ Movie ~ foundShowtime:", foundShowtime)
     const [showTrailer, setShowTrailer] = useState(false);
 
     const openTrailer = () => {
         setShowTrailer(true);
     };
-
+    const handleToggle = () => {
+        setToggleRV(!toggleRV)
+    }
     const closeTrailer = () => {
         setShowTrailer(false);
     };
@@ -110,6 +113,9 @@ const Movie = () => {
         }
     }
 
+    const handleReviewMovie = async (comment, rating, movieId) => {
+        await reviewMovieApi(comment, rating, movieId)
+    }
     const FoundShowtime = (cinemaId) => {
         const foundShowtime = allShowtime.find(
             item =>
@@ -138,6 +144,10 @@ const Movie = () => {
         const selectedId = cinema.cinemaId
         FoundShowtime(selectedId)
     };
+
+    const [hoverRating, setHoverRating] = useState(0);
+    const [rating, setRating] = useState(0);
+
     return (
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
@@ -151,12 +161,115 @@ const Movie = () => {
                         />
                     </div>
                     {/* product detail */}
-                    <div className='w-full sm:w-2/3 px-4'>
+                    <div className='w-full sm:w-2/3 px-4 relative'>
                         {/* name */}
-                        <div>
+                        <div className='flex items-center'>
                             <h3 className='uppercase text-2xl text-slate-200'>
                                 {movie.title}
                             </h3>
+                            <span className='text-orange-400 pl-4'>(</span>
+                            <div
+                                className='flex flex-col group justify-center items-center'
+                                onClick={handleToggle}
+                            >
+                                <StarSolidIcon className='h-8 text-amber-200 group-hover:text-amber-400' />
+                                <p className='text-slate-200 group-hover:text-slate-400 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                            </div>
+                            <span className='text-orange-400'>)</span>
+
+                            {toggleRV &&
+                                <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50'>
+                                    <div className='absolute top-32 w-1/3 h-3/4'>
+                                        <div className='w-full h-full bg-slate-200 bg-cover'>
+                                            <button
+                                                type="button"
+                                                className="absolute -top-8 -right-8"
+                                                onClick={handleToggle}
+                                            >
+                                                <span className="sr-only">Close menu</span>
+                                                <XMarkIcon className="h-10 w-10 text-gray-400" aria-hidden="true" />
+                                            </button>
+                                            <img src={movie.poster} className='h-1/2 w-full' />
+                                            <h1 className='py-4 text-center font-bold text-lg opacity-70'>{movie.title}</h1>
+                                            <div className='w-[60px] h-[60px] md:w-[100px] md:h-[100px] mx-auto border-blue-500 border rounded-full flex flex-col items-center justify-center text-center'>
+                                                <div className='flex flex-col justify-center items-center'>
+                                                    <StarSolidIcon className='h-8 text-amber-400' />
+                                                    <p className={`${movie.rating ? 'text-lg' : 'text-base'} text-slate-700 font-bold`}>{movie.rating ? movie.rating : "N/A"}</p>
+                                                </div>
+                                            </div>
+                                            <div className='flex justify-center py-2'>
+                                                <div className='grid grid-cols-5 gap-1'>
+                                                    <span
+                                                        onMouseEnter={() => setHoverRating(1)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        onClick={() => setRating(1)}
+                                                    >
+                                                        <StarOutlineIcon
+                                                            className={`flex justify-center h-6 md:h-8 ${hoverRating >= 1 || rating >= 1 ? 'text-amber-300' : 'text-gray-400'}`}
+                                                        />
+                                                    </span>
+                                                    <span
+                                                        onMouseEnter={() => setHoverRating(2)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        onClick={() => setRating(2)}
+                                                    >
+                                                        <StarOutlineIcon
+                                                            className={`flex justify-center h-6 md:h-8 ${hoverRating >= 2 || rating >= 2 ? 'text-amber-300' : 'text-gray-400'}`}
+                                                        />
+                                                    </span>
+                                                    <span
+                                                        onMouseEnter={() => setHoverRating(3)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        onClick={() => setRating(3)}
+                                                    >
+                                                        <StarOutlineIcon
+                                                            className={`flex justify-center h-6 md:h-8 ${hoverRating >= 3 || rating >= 3 ? 'text-amber-300' : 'text-gray-400'}`}
+                                                        />
+                                                    </span>
+                                                    <span
+                                                        onMouseEnter={() => setHoverRating(4)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        onClick={() => setRating(4)}
+                                                    >
+                                                        <StarOutlineIcon
+                                                            className={`flex justify-center h-6 md:h-8 ${hoverRating >= 4 || rating >= 4 ? 'text-amber-300' : 'text-gray-400'}`}
+                                                        />
+                                                    </span>
+                                                    <span
+                                                        onMouseEnter={() => setHoverRating(5)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        onClick={() => setRating(5)}
+                                                    >
+                                                        <StarOutlineIcon
+                                                            className={`flex justify-center h-6 md:h-8 ${hoverRating >= 5 || rating >= 5 ? 'text-amber-300' : 'text-gray-400'}`}
+                                                        />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className='w-full bottom-0 absolute md:flex'>
+                                                <button
+                                                    className="w-1/2 p-4 text-sm bg-slate-300 font-medium uppercase hidden md:block"
+                                                    type="button"
+                                                    onClick={handleToggle}
+                                                >
+                                                    Đóng
+                                                </button>
+                                                <button
+                                                    className="w-full md:w-1/2 p-2 md:p-4 text-sm bg-cyan-600 font-medium uppercase" type='submit'
+                                                    onClick={() => {
+                                                        (!user.auth) ?
+                                                            handleModalStates() :
+                                                            handleReviewMovie('', rating, movie.movieId)
+                                                        handleToggle(!toggleRV)
+                                                    }}
+                                                >
+                                                    <a>Xác nhận</a>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                         {/* dec */}
                         <div className='pt-4 text-slate-500'>
@@ -212,10 +325,10 @@ const Movie = () => {
                                         ></iframe>
                                         {/* Nút đóng ở góc phải trên của iframe */}
                                         <button
-                                            className="absolute -top-7 -right-3 text-white cursor-pointer"
+                                            className="absolute -top-8 -right-8 text-white cursor-pointer"
                                             onClick={closeTrailer}
                                         >
-                                            <span role="img" aria-label="Close" className="text-2xl">×</span>
+                                            <XMarkIcon className="h-10 w-10 text-gray-400" aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>
@@ -291,18 +404,21 @@ const Movie = () => {
                                                                 const currentDateTime = new Date();
                                                                 const currentDate = FormatDataTime(currentDateTime.toISOString()).date
                                                                 const currentTime = FormatDataTime(currentDateTime.toISOString()).time
-                                                               
+
                                                                 const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
                                                                 return (
-                                                                    <li key={index} onClick={() => {
-                                                                        if (!user.auth) {
-                                                                            handleModalStates();
-                                                                        } else if (isTimeInFuture) {
-                                                                            setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                                            const updatedDateTime = { ...selectedDateTime, time: time };
-                                                                            navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                                        }
-                                                                    }} className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}>
+                                                                    <li key={index}
+                                                                        onClick={() => {
+                                                                            if (!user.auth) {
+                                                                                handleModalStates();
+                                                                            } else if (isTimeInFuture) {
+                                                                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                                                                const updatedDateTime = { ...selectedDateTime, time: time };
+                                                                                navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                            }
+                                                                        }}
+                                                                        className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                                    >
                                                                         <a
                                                                             className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
                                                                             style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
@@ -330,7 +446,7 @@ const Movie = () => {
                                 onClose={() => handleModalStates()}
                                 onConfirm={() => navigate("/signup")}
                                 onCancel={() => handleModalStates()}
-                                title='Đăng nhập để trải nghiệm đặt vé'
+                                title='Đăng nhập để trải nghiệm chức năng'
                                 content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
                                 buttonName='Chuyển đến trang đăng ký/ đăng nhập'
                             />

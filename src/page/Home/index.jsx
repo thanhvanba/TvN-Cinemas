@@ -10,6 +10,7 @@ import MovieService from "../../service/MovieService"
 
 import OrderQuickly from "../../components/OrderQuickly"
 import Loading from "../../components/Loading"
+import { StarIcon } from "@heroicons/react/20/solid"
 
 const IMAGES = [
   slider1, slider2, slider3
@@ -79,7 +80,7 @@ const Home = () => {
       {/* slider */}
       <div className="relative">
         <Slider images={IMAGES} />
-      </div>    
+      </div>
       {/* mua vé nhanh */}
       <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">
         <OrderQuickly />
@@ -109,12 +110,18 @@ const Home = () => {
                   allMovie && allMovie.length > 0 &&
                   allMovie.map((movie, index) => (
                     <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                      <div className="product-item table border-2 border-slate-600 h-[92%]">
+                      <div className="relative product-item table border-2 border-slate-600 h-[92%]">
                         <img
                           src={movie.poster}
                           alt=""
                           className="product-over h-[462px] w-full table-cell"
                         />
+                        <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                          <div className='flex justify-center items-center p-2'>
+                            <StarIcon className='h-6 text-amber-400 px-4' />
+                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                          </div>
+                        </div>
                       </div>
                       <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
                         {movie.title}

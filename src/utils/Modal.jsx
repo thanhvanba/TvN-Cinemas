@@ -24,7 +24,7 @@ function Modal({ title, content, buttonName, onConfirm, onCancel }) {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => setOpen(false)}>
+      <Dialog as="div" className="relative z-[100]" initialFocus={cancelButtonRef} onClose={() => setOpen(false)}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

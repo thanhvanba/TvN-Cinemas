@@ -5,6 +5,7 @@ import MovieService from '../../service/MovieService'
 import UserService from '../../service/UserService';
 import TruncatedContent from '../../utils/TruncatedContent';
 import Loading from '../../components/Loading'
+import { StarIcon } from '@heroicons/react/20/solid';
 
 function Movies() {
     const { keyWord } = useParams()
@@ -76,12 +77,18 @@ function Movies() {
                                                 listMovieFound && listMovieFound.length > 0 &&
                                                 listMovieFound.map((movie, index) => (
                                                     <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                        <div className="product-item table border-2 border-slate-600 h-[80%]">
+                                                        <div className="relative product-item table border-2 border-slate-600 h-[80%]">
                                                             <img
                                                                 src={movie.poster}
                                                                 alt=""
                                                                 className="product-over h-[300px] w-[200px] table-cell"
                                                             />
+                                                            <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                                                <div className='flex justify-center items-center p-2'>
+                                                                    <StarIcon className='h-6 text-amber-400 px-4' />
+                                                                    <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
                                                             <TruncatedContent content={movie.title} maxLength={18} />
@@ -107,12 +114,18 @@ function Movies() {
                                                         specialMovie && specialMovie.length > 0 &&
                                                         specialMovie.map((movie, index) => (
                                                             <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="product-item table border-2 border-slate-600 h-[80%]">
+                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
                                                                     <img
                                                                         src={movie.poster}
                                                                         alt=""
                                                                         className="product-over h-[300px] w-full table-cell"
                                                                     />
+                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                                                        <div className='flex justify-center items-center p-2'>
+                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
+                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
                                                                     {movie.title}
@@ -139,12 +152,18 @@ function Movies() {
                                                         nowPlayMovie && nowPlayMovie.length > 0 &&
                                                         nowPlayMovie.map((movie, index) => (
                                                             <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="product-item table border-2 border-slate-600 h-[80%]">
+                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
                                                                     <img
                                                                         src={movie.poster}
                                                                         alt=""
                                                                         className="product-over h-[300px] w-full table-cell"
                                                                     />
+                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                                                        <div className='flex justify-center items-center p-2'>
+                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
+                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
                                                                     {movie.title}
@@ -171,12 +190,18 @@ function Movies() {
                                                         comingSoonMovie && comingSoonMovie.length > 0 &&
                                                         comingSoonMovie.map((movie, index) => (
                                                             <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="product-item table border-2 border-slate-600 h-[80%]">
+                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
                                                                     <img
                                                                         src={movie.poster}
                                                                         alt=""
                                                                         className="product-over h-[300px] w-full table-cell"
                                                                     />
+                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                                                        <div className='flex justify-center items-center p-2'>
+                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
+                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
                                                                     {movie.title}

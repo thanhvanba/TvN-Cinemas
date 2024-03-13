@@ -14,6 +14,7 @@ import { format, addDays } from 'date-fns';
 
 import { LoginContext } from '../../context/LoginContext';
 import Loading from '../../components/Loading';
+import { StarIcon } from '@heroicons/react/20/solid';
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
@@ -147,9 +148,16 @@ const ShowTimes = () => {
                     {
                       allShowMovie.map((item, index) => (
                         <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetShowtimeByMovie(item.movieId)} className="mb-4">
-                          <div className="product-item table border-2 border-slate-600 h-[92%]">
+                          <div className="relative product-item table border-2 border-slate-600 h-[92%]">
                             <img src={item.poster} alt=""
-                              className="product-over h-full lg:w-[188px] xl:w-[166px] table-cell" />
+                              className="product-over h-full lg:w-[188px] xl:w-[166px] table-cell"
+                            />
+                            <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                              <div className='flex justify-center items-center p-2'>
+                                <StarIcon className='h-6 text-amber-400 px-4' />
+                                <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                              </div>
+                            </div>
                           </div>
                           <div className="text-slate-200 mt-2 text-left uppercase font-bold text-sm h-[8%]">
                             {item.title}
@@ -165,10 +173,16 @@ const ShowTimes = () => {
                       {/* chi tiết phim */}
                       <div className='flex pt-12 max-w-5xl mx-auto pb-10 px-4 my-4 border-t-4 border-t-cyan-600'>
                         {/* product image */}
-                        <div className='w-1/5 px-4'>
+                        <div className='relative w-1/5 px-4'>
                           <a href="">
                             <img src={movie.poster} alt="" />
                           </a>
+                          <div className="absolute top-0 right-4 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                            <div className='flex justify-center items-center p-2'>
+                              <StarIcon className='h-6 text-amber-400 px-4' />
+                              <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                            </div>
+                          </div>
                         </div>
                         <div className='w-4/5 px-4'>
                           <div>
@@ -338,10 +352,16 @@ const ShowTimes = () => {
                             {/* chi tiết phim */}
                             <div className='flex pb-10 px-4 my-4 min-h-[144px] '>
                               {/* product image */}
-                              <div className='md:block hidden w-1/5 px-4'>
+                              <div className='relative md:block hidden w-1/5 px-4'>
                                 <a href="">
                                   <img src={foundShowtime.movie.poster} alt="" />
                                 </a>
+                                <div className="absolute top-0 right-4 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                  <div className='flex justify-center items-center p-2'>
+                                    <StarIcon className='h-6 text-amber-400 px-4' />
+                                    <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                  </div>
+                                </div>
                               </div>
                               {/* product detail */}
                               <div className='w-full md:w-4/5 px-4'>
