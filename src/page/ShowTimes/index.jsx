@@ -15,6 +15,7 @@ import { format, addDays } from 'date-fns';
 import { LoginContext } from '../../context/LoginContext';
 import Loading from '../../components/Loading';
 import { StarIcon } from '@heroicons/react/20/solid';
+import Cinema from '../../components/Cinema';
 const ShowTimes = () => {
   const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
@@ -127,11 +128,11 @@ const ShowTimes = () => {
         {/* tab */}
         <TabList className="sub-tab">
           <ul className="relative flex flex-col sm:inline-block">
-            <Tab onClick={() => changeTab("/showtimes/lichchieuphim")} className="relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent">
+            <Tab onClick={() => changeTab("/showtimes/lichchieuphim")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent">
               <a className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
 
             </Tab>
-            <Tab onClick={() => changeTab("/showtimes/phimtheorap")} className="relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent">
+            <Tab onClick={() => changeTab("/showtimes/phimtheorap")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent">
               <a className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
             </Tab>
           </ul>
@@ -155,7 +156,7 @@ const ShowTimes = () => {
                             <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
                               <div className='flex justify-center items-center p-2'>
                                 <StarIcon className='h-6 text-amber-400 px-4' />
-                                <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                <p className=' text-slate-200 font-bold text-lg'>{item.rating ? item.rating : "N/A"}</p>
                               </div>
                             </div>
                           </div>
@@ -221,19 +222,10 @@ const ShowTimes = () => {
 
                           {/* rạp và thời gian chiếu */}
                           {listShowtime.map(foundShowtime => (
-                            <div className='relative md:pl-60 min-h-[240px] pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
-
+                            <div className='relative md:pl-60 min-h-[250px] pb-10 pt-4 my-4 px-4 shadow-inner shadow-cyan-500 rounded-3xl'>
                               {/* vị trí */}
                               <div className='hidden md:block absolute top-4 left-4 bg-slate-700 w-60 rounded-3xl'>
-                                <div className='p-6'>
-                                  <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
-                                  <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={18} /></p>
-                                </div>
-                                <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                                >
-                                  <span className="absolute right-16 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                  <a href="" className='pr-8'>Xem vị trí</a>
-                                </button>
+                                <Cinema cinemaName={foundShowtime.room.cinema.cinemaName} location={foundShowtime.room.cinema.location} urlLocation={foundShowtime.room.cinema.urlLocation} />
                               </div>
                               <div className='block md:hidden'>
                                 <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
@@ -307,16 +299,7 @@ const ShowTimes = () => {
                     {
                       allCinema.map((item, index) => (
                         <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='bg-slate-700 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
-                          <div className='p-6'>
-                            <h4 className='uppercase font-bold text-lg text-slate-200'>{item.cinemaName}</h4>
-                            <p className='text-slate-500'>{item.location}</p>
-                          </div>
-                          <button className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                            onClick={() => window.open(item.urlLocation, '_blank')}
-                          >
-                            <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                            <a className='pr-8'>Xem vị trí</a>
-                          </button>
+                          <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                         </div>
                       ))
                     }
@@ -359,7 +342,7 @@ const ShowTimes = () => {
                                 <div className="absolute top-0 right-4 bg-black bg-opacity-40 z-10 rounded-bl-full">
                                   <div className='flex justify-center items-center p-2'>
                                     <StarIcon className='h-6 text-amber-400 px-4' />
-                                    <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                    <p className=' text-slate-200 font-bold text-lg'>{foundShowtime.movie.rating ? foundShowtime.movie.rating : "N/A"}</p>
                                   </div>
                                 </div>
                               </div>

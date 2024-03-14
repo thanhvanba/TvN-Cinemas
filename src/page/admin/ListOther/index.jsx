@@ -21,6 +21,7 @@ import useLoadingState from '../../../hook/UseLoadingState';
 import Pagination from '../../../utils/Pagination'
 import ModalComponent from '../../../utils/Modal';
 import FormatDataTime from '../../../utils/FormatDataTime';
+import Loading from '../../../components/Loading';
 
 const ListOther = () => {
     const { item } = useParams()
@@ -152,127 +153,133 @@ const ListOther = () => {
                     <TabPanel>
                         <div className='relative'>
                             {
-                                allRoom.length === 0 &&
-                                <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                                    {loading["room"] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                                </div>
-                            }
-                            <table className='mt-6 w-full'>
-                                <thead className=''>
-                                    <tr>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.stt}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.roomName}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.cinema}</th>
-                                        {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.status}</th>}
-                                        {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.action}</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listRoom.rooms.map((item, index) => (
-                                            <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                <td className='text-start font-medium px-5 py-4'>{item.roomName}</td>
-                                                <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <div>
-                                                            <h3>{item.cinema.cinemaName}</h3>
-                                                            <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                {user.role === "MANAGER" && <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Visible" : "Hidden"}</td>}
-                                                {user.role === "MANAGER" && <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                            <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                        </button>
-                                                        {/* <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/room/${item.roomId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                allRoom.length === 0 ?
+                                    <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                        {loading["room"] && <Loading />}
+                                    </div>
+                                    :
+                                    <>
+                                        <table className='mt-6 w-full'>
+                                            <thead className=''>
+                                                <tr>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.stt}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.roomName}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.cinema}</th>
+                                                    {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.status}</th>}
+                                                    {user.role === "MANAGER" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.action}</th>}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listRoom.rooms.map((item, index) => (
+                                                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{item.roomName}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <div>
+                                                                        <h3>{item.cinema.cinemaName}</h3>
+                                                                        <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            {user.role === "MANAGER" && <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Visible" : "Hidden"}</td>}
+                                                            {user.role === "MANAGER" && <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                                                        <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                                    </button>
+                                                                    {/* <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/room/${item.roomId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                         <listRoom.action.aEdit className='h-4 w-4 text-cyan-600' />
                                                     </button> */}
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                            <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
-                                                        </button>
-                                                        <div>
-                                                            {modalStates[item.roomId] && (
-                                                                <ModalComponent
-                                                                    isOpen={modalStates[item.roomId]}
-                                                                    onClose={() => handleCloseModal(item.roomId)}
-                                                                    onConfirm={() => handleDeleteRoom(item.roomId)}
-                                                                    onCancel={() => handleCloseModal(item.roomId)}
-                                                                    title='Xóa Phòng'
-                                                                    content='Bạn có chắc chắn xóa phòng này ???'
-                                                                    buttonName='Delete'
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </td>}
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                            <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
+                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                        <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
+                                                                    </button>
+                                                                    <div>
+                                                                        {modalStates[item.roomId] && (
+                                                                            <ModalComponent
+                                                                                isOpen={modalStates[item.roomId]}
+                                                                                onClose={() => handleCloseModal(item.roomId)}
+                                                                                onConfirm={() => handleDeleteRoom(item.roomId)}
+                                                                                onCancel={() => handleCloseModal(item.roomId)}
+                                                                                title='Xóa Phòng'
+                                                                                content='Bạn có chắc chắn xóa phòng này ???'
+                                                                                buttonName='Delete'
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>}
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
+                                    </>
+                            }
                         </div>
                     </TabPanel>
                     <TabPanel>
                         <div className='relative'>
                             {
-                                allFood.length === 0 &&
-                                <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                                    {loading["food"] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                                </div>
+                                allFood.length === 0 ?
+                                    <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                        {loading["food"] && <Loading />}
+                                    </div>
+                                    :
+                                    <>
+                                        <table className='mt-6 w-full'>
+                                            <thead className=''>
+                                                <tr>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.stt}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.name}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.price}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.foodType}</th>
+                                                    {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.status}</th>}
+                                                    {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.action}</th>}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listFood.foods.map((item, index) => (
+                                                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{item.name}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{format(item.price)}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{item.foodType}</td>
+                                                            {user.role === "ADMIN" && <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Active" : "In Active"}</td>}
+                                                            {user.role == "ADMIN" && <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/food/${item.foodId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                                        <listFood.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                                    </button>
+                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.foodId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                        <listFood.action.aDelete className='h-4 w-4 text-red-600' />
+                                                                    </button>
+                                                                    <div>
+                                                                        {modalStates[item.foodId] && (
+                                                                            <ModalComponent
+                                                                                isOpen={modalStates[item.foodId]}
+                                                                                onClose={() => handleCloseModal(item.foodId)}
+                                                                                onConfirm={() => handleDeleteFood(item.foodId)}
+                                                                                onCancel={() => handleCloseModal(item.foodId)}
+                                                                                title='Xóa Bắp Nước'
+                                                                                content='Bạn có chắc chắn xóa đồ dùng này ???'
+                                                                                buttonName='Delete'
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>}
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
+                                    </>
                             }
-                            <table className='mt-6 w-full'>
-                                <thead className=''>
-                                    <tr>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.stt}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.name}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.price}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.foodType}</th>
-                                        {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.status}</th>}
-                                        {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listFood.header.action}</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listFood.foods.map((item, index) => (
-                                            <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                <td className='text-start font-medium px-5 py-4'>{item.name}</td>
-                                                <td className='text-start font-medium px-5 py-4'>{format(item.price)}</td>
-                                                <td className='text-start font-medium px-5 py-4'>{item.foodType}</td>
-                                                {user.role === "ADMIN" && <td className={`${item.status ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Active" : "In Active"}</td>}
-                                                {user.role == "ADMIN" && <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/food/${item.foodId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                                            <listFood.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                        </button>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.foodId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                            <listFood.action.aDelete className='h-4 w-4 text-red-600' />
-                                                        </button>
-                                                        <div>
-                                                            {modalStates[item.foodId] && (
-                                                                <ModalComponent
-                                                                    isOpen={modalStates[item.foodId]}
-                                                                    onClose={() => handleCloseModal(item.foodId)}
-                                                                    onConfirm={() => handleDeleteFood(item.foodId)}
-                                                                    onCancel={() => handleCloseModal(item.foodId)}
-                                                                    title='Xóa Bắp Nước'
-                                                                    content='Bạn có chắc chắn xóa đồ dùng này ???'
-                                                                    buttonName='Delete'
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </td>}
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                            <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
                         </div>
                     </TabPanel>
 
@@ -280,41 +287,44 @@ const ListOther = () => {
                         <TabPanel>
                             <div className='relative'>
                                 {
-                                    allTicket.length === 0 &&
-                                    <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                                        {loading['ticket'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                                    </div>
-                                }
-                                <table className='mt-6 w-full'>
-                                    <thead className=''>
-                                        <tr>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.stt}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.movieName}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.showtime}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.ticketPrice}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.createAt}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.user}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            listTicket.tickets.map((item, index) => (
-                                                <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                    <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{item.movieName}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{item.cinemaName}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.showtime).time} - Ngày {FormatDataTime(item.showtime).date}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{item.ticketPrice}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createAt).time} {FormatDataTime(item.createAt).date}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{getNameById(item.userId)}</td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
+                                    allTicket.length === 0 ?
+                                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                            {loading['ticket'] && <Loading />}
+                                        </div>
+                                        :
+                                        <>
+                                            <table className='mt-6 w-full'>
+                                                <thead className=''>
+                                                    <tr>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.stt}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.movieName}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.showtime}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.ticketPrice}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.createAt}</th>
+                                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listTicket.header.user}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        listTicket.tickets.map((item, index) => (
+                                                            <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                                                <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{item.movieName}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{item.cinemaName}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.showtime).time} - Ngày {FormatDataTime(item.showtime).date}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{item.ticketPrice}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createAt).time} {FormatDataTime(item.createAt).date}</td>
+                                                                <td className='text-start font-medium px-5 py-4'>{getNameById(item.userId)}</td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
 
-                                </table>
-                                <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
+                                            </table>
+                                            <Pagination pageNumber={currentPage} onPageChange={handleGetItems} />
+                                        </>
+                                }
                             </div>
                         </TabPanel>}
                 </Tabs>

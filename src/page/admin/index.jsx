@@ -110,7 +110,7 @@ const Admin = () => {
     <div>
       <Tabs selectedIndex={tabIndex}>
         {/* sidebar */}
-        < div className='flex flex-col fixed top-0 bottom-0 right-0 left-0 max-w-xs shadow-right' >
+        < div className='flex flex-col fixed top-0 bottom-0 right-0 left-0 max-w-xs shadow-right bg-[#F8F4F3]' >
 
           {/* logo */}
           <div className='flex items-center justify-center px-8 p-3 border-b-2' >

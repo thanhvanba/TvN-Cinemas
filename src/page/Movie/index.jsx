@@ -17,6 +17,7 @@ import CinemaService from '../../service/CinemaService';
 import UserService from '../../service/UserService';
 
 import { LoginContext } from '../../context/LoginContext';
+import Cinema from '../../components/Cinema';
 
 const Movie = () => {
     const { GetOneMovieApi } = MovieService()
@@ -379,20 +380,10 @@ const Movie = () => {
                                     </div>
                                     {/* ds các cụ thể thời gian chiếu */}
                                     <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                                        <div className='relative sm:pl-60 pb-4 mb-4 min-h-[144px] px-4'>
+                                        <div className='relative sm:pl-60 pb-4 mb-4 min-h-[200px] px-4'>
                                             {/* vị trí */}
                                             <div className='absolute hidden sm:block top-0 left-4 bg-slate-700 w-60'>
-                                                <div className='p-6'>
-                                                    <h4 className='uppercase font-bold text-lg text-slate-200'>{foundShowtime.room.cinema.cinemaName}</h4>
-                                                    <p className='text-slate-500'><TruncatedContent content={foundShowtime.room.cinema.location} maxLength={50} /></p>
-                                                </div>
-                                                <button
-                                                    className="relative w-full border-slate-400 border p-4 text-sm font-bold uppercase hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white" type='submit'
-                                                    onClick={() => window.open(foundShowtime.room.cinema.urlLocation, '_blank')}
-                                                >
-                                                    <span className="absolute right-12 top-3 "><MapPinIcon className="h-6 w-6" /></span>
-                                                    <a href={foundShowtime.room.cinema.urlLocation} className='pr-8'>Xem vị trí</a>
-                                                </button>
+                                                <Cinema cinemaName={foundShowtime.room.cinema.cinemaName} location={foundShowtime.room.cinema.location} urlLocation={foundShowtime.room.cinema.urlLocation} />
                                             </div>
                                             {/* thời gian */}
                                             <div className='block relative'>

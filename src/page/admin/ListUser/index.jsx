@@ -13,6 +13,7 @@ import Pagination from '../../../utils/Pagination'
 import AdminService from '../../../service/AdminService'
 
 import ModalComponent from '../../../utils/Modal';
+import Loading from '../../../components/Loading'
 
 const ListUser = () => {
     const [loading, setLoading] = useState(false);
@@ -233,85 +234,87 @@ const ListUser = () => {
                 <div className='relative'>
                     <div className='px-3'>
                         {
-                            allUser.length === 0 &&
-                            <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                                {loading && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                            </div>
-                        }
-                        <div className=''>
-                            {
-                                <table className='mt-6 w-full'>
-                                    <thead className=''>
-                                        <tr>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.stt}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.info}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.username}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.role}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.status}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.created}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.login}</th>
-                                            <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.action}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            listUser && listUser.user && listUser.user.map((item, index) => (
-                                                <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                    <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>
-                                                        <div className='flex items-center'>
-                                                            <div div className='pr-2' >
-                                                                <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
-                                                            </div >
-                                                            <div>
-                                                                <h3>{item.fullName}</h3>
-                                                                <p className='font-normal'>Email: {item.email}</p>
-                                                                <span className='font-normal'>Sdt: {item.phone}</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className='text-start font-medium px-5 py-4'>{item.userName}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{item.role.roleName}</td>
-                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Approved" : "Banned"}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt).date}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt).date}</td>
-                                                    <td className='text-start font-medium px-5 py-4'>
-                                                        <div className='flex items-center'>
-                                                            <button
-                                                                className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }}
-                                                            >
-                                                                <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                            </button>
-                                                            {/* <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                            allUser.length === 0 ?
+                                <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                    {loading && <Loading />}
+                                </div>
+                                :
+                                <div className=''>
+                                    {
+                                        <table className='mt-6 w-full'>
+                                            <thead className=''>
+                                                <tr>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.stt}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.info}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.username}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.role}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.status}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.created}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.login}</th>
+                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.action}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listUser && listUser.user && listUser.user.map((item, index) => (
+                                                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
+                                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <div div className='pr-2' >
+                                                                        <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
+                                                                    </div >
+                                                                    <div>
+                                                                        <h3>{item.fullName}</h3>
+                                                                        <p className='font-normal'>Email: {item.email}</p>
+                                                                        <span className='font-normal'>Sdt: {item.phone}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className='text-start font-medium px-5 py-4'>{item.userName}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{item.role.roleName}</td>
+                                                            <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Approved" : "Banned"}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt).date}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt).date}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <button
+                                                                        className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
+                                                                        type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }}
+                                                                    >
+                                                                        <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                                    </button>
+                                                                    {/* <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                                 <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
                                                             </a> */}
-                                                            <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                                <listUser.action.aDelete className='h-4 w-4 text-red-600' />
-                                                            </button>
-                                                            <div>
-                                                                {modalStates[item.userId] && (
-                                                                    <ModalComponent
-                                                                        isOpen={modalStates[item.userId]}
-                                                                        onClose={() => handleCloseModal(item.userId)}
-                                                                        onConfirm={() => handleDeleteUser(item.userId)}
-                                                                        onCancel={() => handleCloseModal(item.userId)}
-                                                                        title='Xóa Tài khoản'
-                                                                        content='Bạn có chắc chắn xóa tài khoản này ???'
-                                                                        buttonName='Delete'
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            }
-                        </div>
-                        <Pagination pageNumber={currentPage} onPageChange={handleGetUser} />
+                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                        <listUser.action.aDelete className='h-4 w-4 text-red-600' />
+                                                                    </button>
+                                                                    <div>
+                                                                        {modalStates[item.userId] && (
+                                                                            <ModalComponent
+                                                                                isOpen={modalStates[item.userId]}
+                                                                                onClose={() => handleCloseModal(item.userId)}
+                                                                                onConfirm={() => handleDeleteUser(item.userId)}
+                                                                                onCancel={() => handleCloseModal(item.userId)}
+                                                                                title='Xóa Tài khoản'
+                                                                                content='Bạn có chắc chắn xóa tài khoản này ???'
+                                                                                buttonName='Delete'
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+
+                                    <Pagination pageNumber={currentPage} onPageChange={handleGetUser} />
+                                </div>
+                        }
                     </div>
                 </div>
             </div>

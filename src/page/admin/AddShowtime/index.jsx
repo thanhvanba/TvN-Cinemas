@@ -88,8 +88,6 @@ const AddShowtime = () => {
     })
     const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || null);
 
-
-
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
 
