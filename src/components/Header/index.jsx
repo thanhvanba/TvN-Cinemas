@@ -23,6 +23,7 @@ import {
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid'
 
 import logo from "../../images/logo.png"
+import Search from '../Search'
 
 
 const products = [
@@ -217,6 +218,8 @@ const Header = () => {
                 </div>
               }
             </div>
+
+            {/* <Search searchFunction={hannd} /> */}
             {
               user && user.auth === false ?
                 <div className='flex'>

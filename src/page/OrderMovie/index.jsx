@@ -13,11 +13,9 @@ import VnPayService from '../../service/VnPayService';
 import { parse, format } from 'date-fns';
 import NumberSpinner from '../../utils/NumberSpinner';
 import { LoginContext } from '../../context/LoginContext';
+import CreateSeat from '../../components/CreateSeat';
 
 const OrderMovie = () => {
-    const seatsPerRow = 14;
-    const numRows = 10;
-
     const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
     const { createPaymentApi } = VnPayService()
     const [togglePayment, setTogglePayment] = useState(false);
@@ -109,31 +107,34 @@ const OrderMovie = () => {
     ];
 
     // Hàm tạo danh sách ghế ngồi
-    const createSeatData = (rows, seatsPerRow) => {
-        const seatData = [];
-        let type;
+    // const createSeatData = (rows, seatsPerRow) => {
+    //     const seatData = [];
+    //     let type;
 
-        for (let row = 1; row <= rows; row++) {
-            for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
-                const seatLabel = String.fromCharCode(65 + row - 1) + seatNum;
-                const isSeatBooked = listSeatBooked.find(
-                    item => parseInt(item.row) === row && parseInt(item.column) === seatNum)
-                if (isSeatBooked) {
-                    type = "booked";
-                } else if (row === 10) {
-                    type = "COUPLE";
-                } else if ((row < 4) || (seatNum < 3 || seatNum > 12)) {
-                    type = "NORMAL";
-                } else
-                    type = "VIP";
+    //     for (let row = 1; row <= rows; row++) {
+    //         for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
+    //             const seatLabel = String.fromCharCode(65 + row - 1) + seatNum;
+    //             const isSeatBooked = listSeatBooked.find(
+    //                 item => parseInt(item.row) === row && parseInt(item.column) === seatNum)
+    //             if (isSeatBooked) {
+    //                 type = "booked";
+    //             } else if (row === rows) {
+    //                 type = "COUPLE";
+    //             } else if ((row < 4) || (seatNum < 3 || seatNum > (seatsPerRow - 3))) {
+    //                 type = "NORMAL";
+    //             } else
+    //                 type = "VIP";
 
-                seatData.push({ id: seatLabel, label: seatLabel, type: type });
-            }
-        }
+    //             seatData.push({ id: seatLabel, label: seatLabel, type: type });
+    //         }
+    //     }
 
-        return seatData;
-    };
-    const seatData = createSeatData(numRows, seatsPerRow);
+    //     return seatData;
+    // };
+    // const seatData = createSeatData(10, 14);
+
+    const seatData = CreateSeat(10, 14, showtimeId, dateTime)
+    console.log("🚀 ~ OrderMovie ~ seatData:", seatData)
 
     const navigate = useNavigate()
 
@@ -180,21 +181,21 @@ const OrderMovie = () => {
             setListSnacks(resFood3.data.result)
         }
     }
-    const handleGetSeatBooked = async () => {
-        const data = {
-            showtimeId: showtimeId,
-            timeShow: dateTime
-                ? format(
-                    parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()),
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-                )
-                : null,
-        }
-        let resSeat = await getSeatBookedApi(data)
-        if (resSeat && resSeat.data && resSeat.data.result) {
-            setListSeatBooked(resSeat.data.result)
-        }
-    }
+    // const handleGetSeatBooked = async () => {
+    //     const data = {
+    //         showtimeId: showtimeId,
+    //         timeShow: dateTime
+    //             ? format(
+    //                 parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()),
+    //                 "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+    //             )
+    //             : null,
+    //     }
+    //     let resSeat = await getSeatBookedApi(data)
+    //     if (resSeat && resSeat.data && resSeat.data.result) {
+    //         setListSeatBooked(resSeat.data.result)
+    //     }
+    // }
     const handleSelectSeatApi = async () => {
         setLoading(true);
         const data = selectSeats;
@@ -264,7 +265,7 @@ const OrderMovie = () => {
     useEffect(() => {
         hadleGetItem()
         handleGetFood()
-        handleGetSeatBooked()
+        // handleGetSeatBooked()
     }, [showtimeId]);
     useEffect(() => {
         const timer = setTimeout(() => {

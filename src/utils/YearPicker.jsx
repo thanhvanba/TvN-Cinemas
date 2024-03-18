@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 const YearPicker = ({ onYearChange }) => {
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedYear, setSelectedYear] = useState('');
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 10 }, (_, index) => currentYear - index);

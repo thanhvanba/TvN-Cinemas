@@ -145,7 +145,7 @@ const ShowTimes = () => {
               < TabPanel >
                 {/* load ds phim đang chiếu ở đây */}
                 <div div className="tab-movie max-w-screen-xl mx-auto px-4">
-                  <div className={`${allShowMovie.length > 7 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7" : "flex justify-center"} gap-4`}>
+                  <div className={`${allShowMovie.length > 4 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7" : "flex justify-center"} gap-4`}>
                     {
                       allShowMovie.map((item, index) => (
                         <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetShowtimeByMovie(item.movieId)} className="mb-4">
@@ -244,15 +244,19 @@ const ShowTimes = () => {
 
                                           const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
                                           return (
-                                            <li key={index} onClick={() => {
-                                              if (!user.auth) {
-                                                handleModalStates();
-                                              } else if (isTimeInFuture) {
-                                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                const updatedDateTime = { ...selectedDateTime, time: time };
-                                                navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                              }
-                                            }} className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}>
+                                            <li
+                                              key={index}
+                                              onClick={() => {
+                                                if (!user.auth) {
+                                                  handleModalStates();
+                                                } else if (isTimeInFuture) {
+                                                  setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
+                                                  const updatedDateTime = { ...selectedDateTime, time: time };
+                                                  navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                }
+                                              }}
+                                              className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                            >
                                               <a
                                                 className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
                                                 style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}

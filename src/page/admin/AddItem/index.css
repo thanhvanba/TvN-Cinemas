@@ -1,13 +1,18 @@
 .react-tabs__tab--selected {
     border: none;
-    background-color: rgb(241 245 249);
+    background-color: #F8F4F3;
     /* Thay đổi màu và độ dày của border-bottom nếu cần */
     color: rgb(5 150 105);
     /* Màu chữ của tab hiện tại */
     font-weight: bold;
     /* Độ đậm của chữ tab hiện tại */
-    /* Thêm các thuộc tính CSS khác cho tab hiện tại nếu cần */
+    /* Thêm các thuộc tính CSS khác cho tab hiện tại nếu cần */ 
 }
-.react-tabs__tab-list{
+
+.react-tabs__tab--selected::after {
+    display: none;
+}
+
+.react-tabs__tab-list {
     border: none;
 }

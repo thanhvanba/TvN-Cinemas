@@ -21,6 +21,7 @@ import Info from '../Info';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import AuthService from '../../service/AuthService'
 import { LoginContext } from '../../context/LoginContext'
+import DetailShowtime from './ListShowtime/detailShowtime';
 
 const Admin = () => {
   const { item } = useParams()
@@ -47,6 +48,9 @@ const Admin = () => {
   ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
+      case /^\/admin\/(list-showtime)/.test(pathname):
+        setCurrentTab("1");
+        break;
       case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
       case /^\/admin\/(add-item\/cinema|update-item\/cinema|cinema)/.test(pathname):
       case /^\/admin\/(add-item\/room|update-item\/room|room)/.test(pathname):
@@ -82,7 +86,7 @@ const Admin = () => {
         setTabIndex(1);
     }
     {
-      item === "list-showtime" &&
+      /^\/(admin|manager)\/list-showtime/.test(pathname) &&
         setTabIndex(2);
     }
     {
@@ -108,7 +112,7 @@ const Admin = () => {
   }, [pathname, item]);
   return (
     <div>
-      <Tabs selectedIndex={tabIndex}>
+      <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
         {/* sidebar */}
         < div className='flex flex-col fixed top-0 bottom-0 right-0 left-0 max-w-xs shadow-right bg-[#F8F4F3]' >
 
@@ -144,8 +148,8 @@ const Admin = () => {
           <TabList>
             <ul className='flex flex-col p-8' >
               {
-                items.map((item) => (
-                  <Tab>
+                items.map((item, index) => (
+                  <Tab key={index}>
                     {(user.role === "MANAGER") && (item.content === "User") ?
                       null :
                       <li onClick={() => { (user.role === "ADMIN") ? changeTab(`/admin/${item.path}`) : changeTab(`/manager/${item.path}`) }}
@@ -216,6 +220,9 @@ const Admin = () => {
               <Info />
             </div>
           </div>
+          {/* <div style={{ display: currentTab === '6' ? 'block' : 'none' }}>
+            <DetailShowtime />
+          </div> */}
         </div >
 
 

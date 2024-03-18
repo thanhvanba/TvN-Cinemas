@@ -11,6 +11,7 @@ import VerifyOTP from '../utils/VerifyOTP';
 import Navigate from '../utils/Navigate';
 import Movies from '../page/Movies';
 import Cinemas from '../page/Cinemas';
+import ListShowtime from '../page/admin/ListShowtime';
 
 const MainRouter = () => (
   <Routes>
@@ -57,6 +58,9 @@ const AdminRouter = () => (
     <Route path="/admin/update-item/food/:foodId" element={<Admin />} />
     <Route path="/admin/update-item/ticket/:ticketId" element={<Admin />} />
 
+    <Route path="/admin/list-showtime/:cinemaId" element={<Admin />} />
+    <Route path="/admin/list-showtime/cinema/:cinemaId/:showtimeId" element={<Admin />} />
+
     <Route path="/admin/showtime/:showtimeId" element={<Admin />} />
     <Route path="/admin/movie/:movieId" element={<Admin />} />
     <Route path="/admin/cinema/:cinemaId" element={<Admin />} />
@@ -76,6 +80,9 @@ const AdminRouter = () => (
     <Route path="/manager/update-item/cinema/:cinemaId" element={<Admin />} />
     <Route path="/manager/update-item/room/:roomId" element={<Admin />} />
     <Route path="/manager/update-item/ticket/:ticketId" element={<Admin />} />
+
+    <Route path="/manager/list-showtime/:cinemaId" element={<ShowTimes />} />
+    <Route path="/manager/list-showtime/showtime/:showtimeId" element={<ShowTimes />} />
 
     <Route path="/manager/showtime/:showtimeId" element={<Admin />} />
     <Route path="/manager/movie/:movieId" element={<Admin />} />

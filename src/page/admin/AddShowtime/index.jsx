@@ -86,7 +86,10 @@ const AddShowtime = () => {
         special: "",
         listTimeShow: [],
     })
-    const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || null);
+
+    console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
+    const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || [{ date: "", time: [] },]);
+    console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
 
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
@@ -156,6 +159,7 @@ const AddShowtime = () => {
         const dateFormat = `${parts[2]}-${String(parts[0]).padStart(2, '0')}-${String(parts[1]).padStart(2, '0')}`;
 
         const existingDay = schedule.find((item) => item.date === dateFormat);
+        console.log("🚀 ~ handleTimeChange ~ existingDay:", existingDay)
         if (existingDay) {
             // Nếu ngày đã tồn tại, thêm thời gian vào ngày đó
             if (!existingDay.time.includes(selectedTime)) {
@@ -166,7 +170,10 @@ const AddShowtime = () => {
             }
 
         } else {
-            // Nếu ngày chưa tồn tại, thêm một đối tượng mới vào mảng lịch
+            // schedule.push({
+            //     date: dateFormat,
+            //     time: [selectedTime]
+            // })
             setSchedule([...schedule, { date: dateFormat, time: [selectedTime] }]);
         }
     };
@@ -176,7 +183,7 @@ const AddShowtime = () => {
 
         if (existingDay) {
             const updatedTimes = existingDay.time.filter((time) => time !== selectedTime);
-
+            existingDay.time = updatedTimes
             // Cập nhật mảng lịch với thời gian mới
             setSchedule((prevSchedule) => {
                 const newSchedule = [...prevSchedule];
@@ -487,8 +494,18 @@ const AddShowtime = () => {
                                                                     {item.time.map((time) => (
                                                                         <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
                                                                             <span className='p-2'>{time}</span>
-                                                                            {pathname !== `/admin/showtime/${showtimeId}` &&
-                                                                                <button className='text-red-400 pr-2' onClick={() => handleRemoveTime(item.date, time)}><sup>X</sup></button>}
+                                                                            {
+                                                                                pathname !== `/admin/showtime/${showtimeId}` &&
+                                                                                <button className='text-red-400 pr-2'
+                                                                                    onClick={() => {
+                                                                                        handleRemoveTime(item.date, time)
+                                                                                        const nonEmptySchedule = schedule.filter(item => Object.keys(item).length > 0);
+                                                                                        setShowtime({ ...showtime, listTimeShow: nonEmptySchedule });
+                                                                                    }}
+                                                                                >
+                                                                                    <sup>X</sup>
+                                                                                </button>
+                                                                            }
                                                                         </li>
                                                                     ))}
                                                                 </ul>

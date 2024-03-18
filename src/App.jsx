@@ -11,6 +11,7 @@ import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
 import { jwtDecode } from 'jwt-decode'
 import { useLocation } from 'react-router-dom'
+import DetailShowtime from './page/admin/ListShowtime/detailShowtime.jsx'
 
 function App() {
   const { pathname } = useLocation()
@@ -33,20 +34,21 @@ function App() {
   return (
     <div>
       {
-        (user.role === "ADMIN" || user.role === "MANAGER") ? (
-          <AdminRouter />
-        ) : (
-          (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
-            <MainRouter />
+          (user.role === "ADMIN" || user.role === "MANAGER") ? (
+            <AdminRouter />
           ) : (
-            <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
-              <Header />
+            (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
               <MainRouter />
-              <Footer />
-            </div>
+            ) : (
+              <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
+                <Header />
+                <MainRouter />
+                <Footer />
+              </div>
+            )
           )
-        )
-      }
+        }
+      {/* <DetailShowtime /> */}
     </div>
   )
 }
