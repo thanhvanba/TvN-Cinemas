@@ -193,7 +193,7 @@ const ListShowtime = () => {
                     )
                   ) : (
                     <div className=''>
-                        <table className='mt-6 w-full'>
+                        {/* <table className='mt-6 w-full'>
                           <thead className=''>
                             <tr>
                               <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.stt}</th>
@@ -289,7 +289,7 @@ const ListShowtime = () => {
                                 </tr>
                               ))}
                           </tbody>
-                        </table>
+                        </table> */}
                       {
                         !cinemaId ?
                           <div>

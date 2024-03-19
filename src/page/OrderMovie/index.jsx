@@ -132,9 +132,8 @@ const OrderMovie = () => {
     //     return seatData;
     // };
     // const seatData = createSeatData(10, 14);
-
-    const seatData = CreateSeat(10, 14, showtimeId, dateTime)
-    console.log("🚀 ~ OrderMovie ~ seatData:", seatData)
+    const generateSeatData = CreateSeat(10, 14, showtimeId, dateTime);
+    const seatData = generateSeatData();
 
     const navigate = useNavigate()
 

@@ -5,11 +5,17 @@ import './detailShowtime.css'
 import UserService from '../../../service/UserService'
 import FormatDataTime from '../../../utils/FormatDataTime'
 import { useNavigate, useParams } from 'react-router-dom'
+import ManagerService from '../../../service/ManagerService'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import useLoadingState from '../../../hook/UseLoadingState'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
   const { cinemaId } = useParams()
   const navigate = useNavigate();
   const { getOneShowtimeApi } = UserService()
+  const { updateShowTimeApi } = ManagerService()
+  const [loading, setLoading] = useState(false)
   const [showtime, setShowtime] = useState({
     showTimeId: null,
     room: {
@@ -48,6 +54,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     special: null
   })
   const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
+  console.log("🚀 ~ DetailShowtime ~ selectedDateTime:", selectedDateTime)
   const generateSeatData = CreateSeat(10, 14, showtimeId, dateTime);
   const seatData = generateSeatData();
 
@@ -56,16 +63,30 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     if (resShowtime && resShowtime.data && resShowtime.data.result) {
       setShowtime(resShowtime.data.result)
     }
+    setLoading(false)
   }
 
+  const handleUpdateShowtime = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const data = showtime;
+    let resShowtime = await updateShowTimeApi(showtimeId, data);
+    if (resShowtime && resShowtime.data && resShowtime.data.result) {
+      console.log(resShowtime.data.result)
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
+    setLoading(true)
     hadleGetItem(showtimeId)
   }, [dateTime]);
   return (
     <div className='top-0 bottom-0 left-0 bg-black bg-opacity-50 w-full fixed flex justify-center items-center z-10'>
       <div className="w-[60%] z-10 overflow-hidden bg-slate-300 rounded-md">
         <div className="bg-slate-300 text-sm md:text-base text-slate-900">
-          <div className='loader'></div>
+
+          {loading && <div className='loader'></div>}
 
           <div className='flex border-b-2 border-b-slate-400'>
             <h4 className="w-1/3 pt-4 font-bold px-4 text-3xl pb-2 border-r-2">Chi tiết xuất chiếu</h4>
@@ -120,22 +141,30 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                         }) || (
                         <p className='absolute left-20 -top-4 text-center text-lg text-slate-300'>-- Chưa có lịch chiếu --</p>
                       )}
-                    {/* );
-                      }) || (
-                      <p className='absolute left-20 -top-4 text-center text-lg text-slate-300'>-- Chưa có lịch chiếu --</p>
-                    )} */}
                   </ul>
                 </div>
               </div>
+
               <div className='flex justify-end'>
+                <button
+                  className="w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-red-400 hover:text-white text-white bg-red-600 py-2 transition-colors duration-300"
+                  type='button'
+                  disabled={loading['change']}
+                  onClick={() => {
+
+                  }}
+                >
+                  {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                  &nbsp;Xóa
+                </button>
                 <button
                   className="w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                   type='button'
-                // disabled={loading['change']}
-                // onClick={() => handleOpenModal()}
+                  disabled={loading['change']}
+                  onClick={() => navigate(`/admin/list-showtime/${showtimeId}`)}
                 >
-                  {/* {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
-                  &nbsp;OK
+                  {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                  &nbsp;Thoát
                 </button>
               </div>
             </div>
@@ -155,23 +184,25 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                   <span>98</span>
                 </div>
               </div>
-              <div className='grid grid-cols-14 gap-1 mx-10 py-4'>
-                {seatData.map(seat => (
-                  <div
-                    key={seat.id}
-                    className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
-                  >
-                    {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                  </div>
-                ))}
-              </div>
+              {!loading &&
+                <div className='grid grid-cols-14 gap-1 mx-10 py-4'>
+                  {seatData.map(seat => (
+                    <div
+                      key={seat.id}
+                      className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
+                    >
+                      {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                    </div>
+                  ))}
+                </div>
+              }
             </div>
           </div>
 
 
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 
