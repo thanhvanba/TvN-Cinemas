@@ -22,12 +22,21 @@ import Pagination from '../../../utils/Pagination'
 import ModalComponent from '../../../utils/Modal';
 import FormatDataTime from '../../../utils/FormatDataTime';
 import Loading from '../../../components/Loading';
+import Search from '../../../components/Search';
+import FoodItems from './components/foodItems';
 
-const ListOther = () => {
+import popcorn from '../../../images/popcorn.png'
+import pnpegg from '../../../images/pngegg.png'
+import AddItem from './components/addItem';
+import Inflow from './components/inflow';
+import Button from './components/button';
+
+const ListProduct = () => {
     const { item } = useParams()
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
     const { loading, setLoading } = useLoadingState(false);
+    const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
     const [modalStates, setModalStates] = useState({});
     const [allFood, setAllFood] = useState([])
@@ -68,81 +77,118 @@ const ListOther = () => {
         header: { stt: "STT", movieName: "Movie", cinemaName: "Cinema", showtime: "Showtime", ticketPrice: "Price", createAt: "CreateAt", user: "User" },
         tickets: allTicket,
     }
-    const handleChangeStatus = async (roomId) => {
-        await changeStatusRoomApi(roomId);
-        handleGetItems(currentPage)
-        const updatedRooms = allRoom.map((room) => {
-            if (room.roomId === roomId) {
-                return { ...room, delete: !room.delete };
-            }
-            return room;
-        });
+    // const handleChangeStatus = async (roomId) => {
+    //     await changeStatusRoomApi(roomId);
+    //     handleGetItems(currentPage)
+    //     const updatedRooms = allRoom.map((room) => {
+    //         if (room.roomId === roomId) {
+    //             return { ...room, delete: !room.delete };
+    //         }
+    //         return room;
+    //     });
 
-        setAllRoom(updatedRooms);
-    };
-    const handleDeleteRoom = async (roomId) => {
-        await deleteRoomApi(roomId);
-        handleGetItems(currentPage)
-        const updatedRooms = allRoom.filter((room) => room.roomId !== roomId);
+    //     setAllRoom(updatedRooms);
+    // };
+    // const handleDeleteRoom = async (roomId) => {
+    //     await deleteRoomApi(roomId);
+    //     handleGetItems(currentPage)
+    //     const updatedRooms = allRoom.filter((room) => room.roomId !== roomId);
 
-        setAllRoom(updatedRooms);
-    };
-    const handleDeleteFood = async (foodId) => {
-        await deleteFoodApi(foodId);
-        handleGetItems(currentPage)
-        const updatedFoods = allFood.filter((food) => food.foodId !== foodId);
+    //     setAllRoom(updatedRooms);
+    // };
+    // const handleDeleteFood = async (foodId) => {
+    //     await deleteFoodApi(foodId);
+    //     handleGetItems(currentPage)
+    //     const updatedFoods = allFood.filter((food) => food.foodId !== foodId);
 
-        setAllFood(updatedFoods);
-    };
-    const handleGetItems = async (pageIndex) => {
-        setCurrentPage(pageIndex)
+    //     setAllFood(updatedFoods);
+    // };
+    const handleGetItems = async (foodType) => {
+        // setCurrentPage(pageIndex)
         setLoading("food", true)
-        let resFood = await getFoodApi()
+        let resFood = await getFoodApi(foodType)
         setLoading("food", false)
         if (resFood && resFood.data && resFood.data.result) {
             setAllFood(resFood.data.result)
         }
 
-        setLoading("room", true)
-        let resRoom = (user.role === "ADMIN") ? await getAllRoomApi() : await getAllRoomByManagerApi()
-        setLoading("room", false)
-        if (resRoom && resRoom.data && resRoom.data.result && resRoom.data.result.content) {
-            setAllRoom(resRoom.data.result.content)
-        }
+        // setLoading("room", true)
+        // let resRoom = (user.role === "ADMIN") ? await getAllRoomApi() : await getAllRoomByManagerApi()
+        // setLoading("room", false)
+        // if (resRoom && resRoom.data && resRoom.data.result && resRoom.data.result.content) {
+        //     setAllRoom(resRoom.data.result.content)
+        // }
 
-        setLoading("ticket", true)
-        let resTicket = (user.role === "ADMIN") ? await getAllTicketApi(pageIndex, 7) : await getAllTicketByManagerApi(pageIndex, 7)
-        setLoading("ticket", false)
-        if (resTicket && resTicket.data && resTicket.data.result && resTicket.data.result.content) {
-            setAllTicket(resTicket.data.result.content)
-        }
+        // setLoading("ticket", true)
+        // let resTicket = (user.role === "ADMIN") ? await getAllTicketApi(pageIndex, 7) : await getAllTicketByManagerApi(pageIndex, 7)
+        // setLoading("ticket", false)
+        // if (resTicket && resTicket.data && resTicket.data.result && resTicket.data.result.content) {
+        //     setAllTicket(resTicket.data.result.content)
+        // }
 
-        let resUser = await getAllUserApi()
-        if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-            setAllUser(resUser.data.result.content)
-        }
+        // let resUser = await getAllUserApi()
+        // if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+        //     setAllUser(resUser.data.result.content)
+        // }
     }
-    const handleOpenModal = (itemId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
-    };
-    const handleCloseModal = (itemId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
-    };
-    const getNameById = (userId) => {
-        const user = allUser.find((user) => user.userId === userId);
-        return user ? user.userName : null;
-    };
+    // const handleOpenModal = (itemId) => {
+    //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
+    // };
+    // const handleCloseModal = (itemId) => {
+    //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
+    // };
+    // const getNameById = (userId) => {
+    //     const user = allUser.find((user) => user.userId === userId);
+    //     return user ? user.userName : null;
+    // };
+
+
+    const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
+    const handleSelectChange = (selectedValue) => {
+        selectedValue === "ALL" ? handleGetItems() : handleGetItems(selectedValue)
+    }
+
     useEffect(() => {
-        handleGetItems(currentPage)
+        handleGetItems()
     }, [item]);
 
     return (
         <div>
             <div className='px-4'>
-                <div className='h-20 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>Quản lý</h2>
+                <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                    <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
                 </div>
-                <Tabs>
+                {
+                    /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname) ?
+                        <AddItem /> :
+                        <div className='border-2 h-screen'>
+                            <div className='h-full'>
+                                <div className='relative flex justify-end items-center p-4'>
+                                    <div className="border-2 rounded-xl z-10">
+                                        <Search />
+                                    </div>
+                                    <div className="inline-block z-10 pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
+                                        <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
+                                    </div>
+                                    <div className='flex justify-center absolute top-0 w-full p-3'>
+                                        <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
+                                        <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                    </div>
+                                </div>
+                                {toggle && <Inflow />}
+                                <div className='grid grid-cols-5 gap-4 px-4'>
+                                    <FoodItems listFood={allFood} />
+                                </div>
+                            </div>
+                        </div>
+                }
+
+
+
+
+
+
+                {/* <Tabs>
                     <TabList className='py-6 border-b-2'>
 
                         <Tab id="add-cinema-tab">Phòng</Tab>
@@ -189,9 +235,9 @@ const ListOther = () => {
                                                                     <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
                                                                         <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
                                                                     </button>
-                                                                    {/* <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/room/${item.roomId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                                        <listRoom.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                    </button> */}
+                                                                    <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/room/${item.roomId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                                        <listRoom.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                                    </button>
                                                                     <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                         <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
                                                                     </button>
@@ -327,12 +373,9 @@ const ListOther = () => {
                                 }
                             </div>
                         </TabPanel>}
-                </Tabs>
-
-
-
+                </Tabs> */}
             </div>
         </div >
     )
 }
-export default ListOther
+export default ListProduct

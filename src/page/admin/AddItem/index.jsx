@@ -19,6 +19,7 @@ const AddItem = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
+    const [imageURL, setImageURL] = useState(null);
     const { pathname } = useLocation()
     const { foodId, cinemaId } = useParams()
 
@@ -75,6 +76,21 @@ const AddItem = () => {
             setOneFood(resFood.data.result)
         }
     }
+    // const handleFileChange = (e) => {
+    //     const selectedFile = e.target.files[0];
+    //     readAndDisplayFile(selectedFile);
+    // };
+    // const readAndDisplayFile = (file) => {
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //         setImageURL(reader.result);
+    //         setMovie((prevMovie) => ({
+    //             ...prevMovie,
+    //             poster: file,
+    //         }));
+    //     };
+    //     reader.readAsDataURL(file);
+    // };
     const handleGetOneCinema = async () => {
         let resCinema = await getOneCinemaApi(cinemaId)
         if (resCinema && resCinema.data && resCinema.data.result) {
@@ -221,7 +237,7 @@ const AddItem = () => {
         <div>
             <div className='px-4'>
                 <div className='h-20 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>Manager Cinema</h2>
+                    <h2 className='text-3xl'>Quản lý rạp</h2>
                 </div>
                 <Tabs {...{ [indexProp]: tabIndex }} >
 
@@ -229,23 +245,23 @@ const AddItem = () => {
                         {user.role === "ADMIN" ? (
                             <>
                                 {pathname === `/admin/update-item/cinema/${cinemaId}` ? (
-                                    <Tab id="update-cinema-tab">Update Cinema</Tab>
+                                    <Tab id="update-cinema-tab">Sửa thông tin rạp</Tab>
                                 ) : pathname === `/admin/update-item/food/${foodId}` ? (
-                                    <Tab id="update-food-tab">Update Food</Tab>
+                                    <Tab id="update-food-tab">Sửa sản phẩm</Tab>
                                 ) : (
                                     <>
                                         <Tab onClick={() => changeTab(`/admin/add-item/cinema`)} id="add-cinema-tab">
-                                            Add Cinema
+                                            Thêm rạp phim
                                         </Tab>
                                         <Tab onClick={() => changeTab(`/admin/add-item/food`)} id="add-food-tab">
-                                            Add Food
+                                            Thêm sản phẩm
                                         </Tab>
                                     </>
                                 )}
                             </>
                         ) : (
                             <Tab onClick={() => changeTab(`/admin/add-item/room`)} id="add-room-tab">
-                                Add Room
+                                Thêm phòng
                             </Tab>
                         )}
                     </TabList>
@@ -262,7 +278,7 @@ const AddItem = () => {
                                                         htmlFor=""
                                                         className="block text-lg font-medium leading-6 text-gray-900"
                                                     >
-                                                        Name
+                                                        Tên rạp phim
                                                     </label>
                                                     <input
                                                         onChange={e => setCinema({ ...cinema, cinemaName: e.target.value })}
@@ -277,7 +293,7 @@ const AddItem = () => {
                                                         htmlFor=""
                                                         className="block text-lg font-medium leading-6 text-gray-900"
                                                     >
-                                                        Location
+                                                        Địa chỉ
                                                     </label>
                                                     <input
                                                         // value={account.email}
@@ -292,7 +308,7 @@ const AddItem = () => {
                                                         htmlFor=""
                                                         className="block text-lg font-medium leading-6 text-gray-900"
                                                     >
-                                                        Description
+                                                        Mô tả
                                                     </label>
                                                     <textarea
                                                         onChange={e => setCinema({ ...cinema, desc: e.target.value })}
@@ -307,7 +323,7 @@ const AddItem = () => {
                                                         htmlFor=""
                                                         className="block text-lg font-medium leading-6 text-gray-900"
                                                     >
-                                                        Location URL
+                                                        URL
                                                     </label>
                                                     <input
                                                         // value={account.userName}
@@ -323,7 +339,7 @@ const AddItem = () => {
                                                         disabled={loading}
                                                     >
                                                         {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                        &nbsp;Update Cinema
+                                                        &nbsp;Lưu thay đổi
                                                     </button>
                                                 </div>
                                             </form>
@@ -334,59 +350,88 @@ const AddItem = () => {
                                 <TabPanel>
                                     <div className="w-full py-8">
                                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
-                                            <form id='formAddCinema' onSubmit={handleUpdateFood} action="">
-                                                <div className="relative my-4">
-                                                    <label
-                                                        htmlFor=""
-                                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                                    >
-                                                        Name
-                                                    </label>
-                                                    <input
-                                                        onChange={e => setFood({ ...food, name: e.target.value })}
-                                                        type="text"
-                                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={food.name}
-                                                    />
-                                                </div>
-                                                <div className="relative my-4">
-                                                    <label
-                                                        htmlFor=""
-                                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                                    >
-                                                        Price
-                                                    </label>
-                                                    <input
-                                                        onChange={e => { setFood({ ...food, price: e.target.value }); }}
-                                                        type="text"
-                                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                        value={food.price}
-                                                    />
-                                                </div>
-                                                <div className="relative my-4">
-                                                    <label
-                                                        htmlFor=""
-                                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                                    >
-                                                        Food type
-                                                    </label>
-                                                    <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                        {pathname === `/admin/update-item/food/${foodId}` ?
-                                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
-                                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
+                                            <div className="flex">
+                                                <div>
+                                                    {/* {pathname !== `/admin/movie/${movieId}` ?
+                                                    <div className="my-4 border">
+                                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                                    </div> : */}
+                                                    <div className='my-4 border'>
+                                                        <img
+                                                            className='w-96 h-80'
+                                                        // src={movie.poster}
+                                                        />
+                                                    </div>
+                                                    <div className='px-4'>
+                                                        <input
+                                                            // onChange={handleFileChange}
+                                                            type="file"
+                                                            className="hidden"
+                                                            id="form_img-upload"
+                                                        />
+                                                        <label
+                                                            htmlFor="form_img-upload"
+                                                            className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                                        >
+                                                            Chọn một tập tin
+                                                        </label>
                                                     </div>
                                                 </div>
-                                                <div className='flex justify-end'>
-                                                    <button
-                                                        className="w-[12%] mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                                        type='submit'
-                                                        disabled={loading}
-                                                    >
-                                                        {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                        &nbsp;Update Food
-                                                    </button>
-                                                </div>
-                                            </form>
+                                                <form className='px-4 w-[80%]' id='formAddCinema' onSubmit={handleUpdateFood} action="">
+                                                    <div className="relative my-4">
+                                                        <label
+                                                            htmlFor=""
+                                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                                        >
+                                                            Tên sản phẩm
+                                                        </label>
+                                                        <input
+                                                            onChange={e => setFood({ ...food, name: e.target.value })}
+                                                            type="text"
+                                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                            value={food.name}
+                                                        />
+                                                    </div>
+                                                    <div className="relative my-4">
+                                                        <label
+                                                            htmlFor=""
+                                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                                        >
+                                                            Giá tiền
+                                                        </label>
+                                                        <input
+                                                            onChange={e => { setFood({ ...food, price: e.target.value }); }}
+                                                            type="text"
+                                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                            value={food.price}
+                                                        />
+                                                    </div>
+                                                    <div className="relative my-4">
+                                                        <label
+                                                            htmlFor=""
+                                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                                        >
+                                                            Loại sản phẩm
+                                                        </label>
+                                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                                            {pathname === `/admin/update-item/food/${foodId}` ?
+                                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
+                                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
+                                                        </div>
+                                                    </div>
+                                                    <div className='flex justify-end'>
+                                                        <button
+                                                            className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                                            type='submit'
+                                                            disabled={loading}
+                                                        >
+                                                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                            &nbsp;Lưu thay đổi
+                                                        </button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </TabPanel>
@@ -403,7 +448,7 @@ const AddItem = () => {
                                                                     htmlFor=""
                                                                     className="block text-lg font-medium leading-6 text-gray-900"
                                                                 >
-                                                                    Name
+                                                                    Tên rạp phim
                                                                 </label>
                                                                 <input
                                                                     // value={account.fullName}
@@ -426,7 +471,7 @@ const AddItem = () => {
                                                             htmlFor=""
                                                             className="block text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Location
+                                                            Địa chỉ
                                                         </label>
                                                         <input
                                                             // value={account.email}
@@ -441,7 +486,7 @@ const AddItem = () => {
                                                             htmlFor=""
                                                             className="block text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Description
+                                                            Mô tả
                                                         </label>
                                                         <textarea
                                                             onChange={e => setCinema({ ...cinema, desc: e.target.value })}
@@ -456,7 +501,7 @@ const AddItem = () => {
                                                             htmlFor=""
                                                             className="block text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Location URL
+                                                            URL
                                                         </label>
                                                         <input
                                                             // value={account.userName}
@@ -472,7 +517,7 @@ const AddItem = () => {
                                                             disabled={loading}
                                                         >
                                                             {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                            &nbsp;Add Cinema
+                                                            &nbsp;Thêm rạp phim
                                                         </button>
                                                     </div>
                                                 </form>
@@ -482,57 +527,85 @@ const AddItem = () => {
                                     <TabPanel>
                                         <div className="w-full py-8">
                                             <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
-                                                <form id='formAddCinema' onSubmit={handleAddFood} action="">
-                                                    <div className="relative my-4">
-                                                        <label
-                                                            htmlFor=""
-                                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                                        >
-                                                            Name
-                                                        </label>
-                                                        <input
-                                                            onChange={e => setFood({ ...food, name: e.target.value })}
-                                                            type="text"
-                                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                            placeholder=""
-                                                        />
-                                                    </div>
-                                                    <div className="relative my-4">
-                                                        <label
-                                                            htmlFor=""
-                                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                                        >
-                                                            Price
-                                                        </label>
-                                                        <input
-                                                            onChange={e => { setFood({ ...food, price: e.target.value }); }}
-                                                            type="text"
-                                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                            placeholder=""
-                                                        />
-                                                    </div>
-                                                    <div className="relative my-4">
-                                                        <label
-                                                            htmlFor=""
-                                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                                        >
-                                                            Food type
-                                                        </label>
-                                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />
+                                                <div className='flex'>
+                                                    <div>
+                                                        {/* {pathname !== `/admin/movie/${movieId}` ?
+                                                    <div className="my-4 border">
+                                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                                    </div> : */}
+                                                        <div className='my-4 border'>
+                                                            <img
+                                                                className='w-96 h-80'
+                                                            // src={movie.poster}
+                                                            />
+                                                        </div>
+                                                        <div className='px-4'>
+                                                            <input
+                                                                // onChange={handleFileChange}
+                                                                type="file"
+                                                                className="hidden"
+                                                                id="form_img-upload"
+                                                            />
+                                                            <label
+                                                                htmlFor="form_img-upload"
+                                                                className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                                            >
+                                                                Chọn một tập tin
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                    <div className='flex justify-end'>
-                                                        <button
-                                                            className="w-[12%] mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                                            type='submit'
-                                                            disabled={loading}
-                                                        >
-                                                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                            &nbsp;Add Food
-                                                        </button>
-                                                    </div>
-                                                </form>
+                                                    <form className='px-4 w-[80%]' id='formAddCinema' onSubmit={handleAddFood} action="">
+                                                        <div className="relative my-4">
+                                                            <label
+                                                                htmlFor=""
+                                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                                            >
+                                                                Tên sản phẩm
+                                                            </label>
+                                                            <input
+                                                                onChange={e => setFood({ ...food, name: e.target.value })}
+                                                                type="text"
+                                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                                placeholder=""
+                                                            />
+                                                        </div>
+                                                        <div className="relative my-4">
+                                                            <label
+                                                                htmlFor=""
+                                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                                            >
+                                                                Giá tiền
+                                                            </label>
+                                                            <input
+                                                                onChange={e => { setFood({ ...food, price: e.target.value }); }}
+                                                                type="text"
+                                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                                placeholder=""
+                                                            />
+                                                        </div>
+                                                        <div className="relative my-4">
+                                                            <label
+                                                                htmlFor=""
+                                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                                            >
+                                                                Loại sản phẩm
+                                                            </label>
+                                                            <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex justify-end'>
+                                                            <button
+                                                                className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                                                type='submit'
+                                                                disabled={loading}
+                                                            >
+                                                                {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                                &nbsp;Thêm sản phẩm
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </TabPanel>
@@ -550,7 +623,7 @@ const AddItem = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Cinemas
+                                                Tên rạp
                                             </label>
                                             <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"-------Select-------"} />
@@ -561,7 +634,7 @@ const AddItem = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Name
+                                                Tên phòng
                                             </label>
                                             <input
                                                 onChange={e => setRoom({ ...room, roomName: e.target.value })}
@@ -577,7 +650,7 @@ const AddItem = () => {
                                                 disabled={loading}
                                             >
                                                 {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                &nbsp;Add Room
+                                                &nbsp;Thêm phòng
                                             </button>
                                         </div>
                                     </form>

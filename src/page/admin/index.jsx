@@ -12,7 +12,7 @@ import ListCinema from './ListCinema'
 import ListMovie from './ListMovie';
 import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
-import ListOther from './ListOther';
+
 import AddItem from './AddItem';
 import AddMovie from './AddMovie';
 import AddShowtime from './AddShowtime';
@@ -21,7 +21,8 @@ import Info from '../Info';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import AuthService from '../../service/AuthService'
 import { LoginContext } from '../../context/LoginContext'
-import DetailShowtime from './ListShowtime/detailShowtime';
+import DetailShowtime from './ListShowtime/components/detailShowtime';
+import ListProduct from './ListProduct';
 
 const Admin = () => {
   const { item } = useParams()
@@ -38,20 +39,21 @@ const Admin = () => {
 
   const { logoutApi } = AuthService();
   const items = [
-    { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" },
-    { content: "Người Dùng", icon: UserCircleIconOutline, path: "list-user" },
-    { content: "Lịch Chiếu", icon: CalendarDaysIcon, path: "list-showtime" },
     { content: "Phim", icon: FilmIcon, path: "list-movie" },
-    { content: "Rạp", icon: BuildingLibraryIcon, path: "list-cinemas" },
+    { content: "Rạp", icon: CalendarDaysIcon, path: "list-showtime" },
+    { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
+    { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-user" },
+    { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-cinemas" },
     // { content: "Review", icon: StarIcon, path: "list-review" },
-    { content: "Khác", icon: StarIcon, path: "list-other" }
+    { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
   ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
       case /^\/admin\/(list-showtime)/.test(pathname):
+      case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
         setCurrentTab("1");
         break;
-      case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
+      // case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
       case /^\/admin\/(add-item\/cinema|update-item\/cinema|cinema)/.test(pathname):
       case /^\/admin\/(add-item\/room|update-item\/room|room)/.test(pathname):
         setCurrentTab("2");
@@ -78,20 +80,16 @@ const Admin = () => {
 
   const handleTabChange = () => {
     {
-      item === "dashboard" &&
+      item === "list-movie" &&
         setTabIndex(0);
     }
     {
       item === "list-user" &&
-        setTabIndex(1);
+        setTabIndex(3);
     }
     {
       /^\/(admin|manager)\/list-showtime/.test(pathname) &&
-        setTabIndex(2);
-    }
-    {
-      item === "list-movie" &&
-        setTabIndex(3);
+        setTabIndex(1);
     }
     {
       item === "list-cinemas" &&
@@ -102,7 +100,11 @@ const Admin = () => {
     //     setTabIndex(5);
     // }
     {
-      item === "list-other" &&
+      /^\/admin\/(add-item\/food|update-item\/food|list-food)/.test(pathname) &&
+        setTabIndex(2);
+    }
+    {
+      item === "dashboard" &&
         setTabIndex(5);
     }
   };
@@ -182,16 +184,16 @@ const Admin = () => {
         < div className='pr-4 pb-10 pl-[336px]'>
           <div style={{ display: currentTab === '1' ? 'block' : 'none' }} >
             <TabPanel>
-              <Dashboard />
-            </TabPanel>
-            <TabPanel >
-              <ListUser />
+              <ListMovie />
             </TabPanel>
             <TabPanel>
               <ListShowtime />
             </TabPanel>
             <TabPanel>
-              <ListMovie />
+              <ListProduct />
+            </TabPanel>
+            <TabPanel >
+              <ListUser />
             </TabPanel>
             <TabPanel>
               <ListCinema />
@@ -200,7 +202,7 @@ const Admin = () => {
               <ListReview />
             </TabPanel> */}
             <TabPanel>
-              <ListOther />
+              <Dashboard />
             </TabPanel>
           </div>
           <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>

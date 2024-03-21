@@ -1,17 +1,17 @@
 import { MagnifyingGlassIcon, PencilSquareIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useState } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Search from '../../../components/Search';
-import AdminService from '../../../service/AdminService';
-import FormatDataTime from '../../../utils/FormatDataTime';
-import TruncatedContent from '../../../utils/TruncatedContent';
-import SelectMenu from '../../../components/SelectMenu/SelectMenu';
-import ModalComponent from '../../../utils/Modal';
+import Search from '../../../../components/Search';
+import AdminService from '../../../../service/AdminService';
+import FormatDataTime from '../../../../utils/FormatDataTime';
+import TruncatedContent from '../../../../utils/TruncatedContent';
+import SelectMenu from '../../../../components/SelectMenu/SelectMenu';
+import ModalComponent from '../../../../utils/Modal';
 import { addDays } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailShowtime from './detailShowtime';
 
-const ListShowtimes = () => {
+const ShowtimeByRoom = () => {
   const { getAllShowtimeApi, getAllRoomApi } = AdminService();
 
   const currentDateTime = new Date();
@@ -251,4 +251,4 @@ const ListShowtimes = () => {
   )
 }
 
-export default ListShowtimes
+export default ShowtimeByRoom

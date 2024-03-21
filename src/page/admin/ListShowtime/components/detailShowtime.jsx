@@ -1,14 +1,14 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import React, { useEffect, useState } from 'react'
-import CreateSeat from '../../../components/CreateSeat'
+import CreateSeat from '../../../../components/CreateSeat'
 import './detailShowtime.css'
-import UserService from '../../../service/UserService'
-import FormatDataTime from '../../../utils/FormatDataTime'
+import UserService from '../../../../service/UserService'
+import FormatDataTime from '../../../../utils/FormatDataTime'
 import { useNavigate, useParams } from 'react-router-dom'
-import ManagerService from '../../../service/ManagerService'
+import ManagerService from '../../../../service/ManagerService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import useLoadingState from '../../../hook/UseLoadingState'
+import useLoadingState from '../../../../hook/UseLoadingState'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
   const { cinemaId } = useParams()
@@ -16,7 +16,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   const { getOneShowtimeApi } = UserService()
   const { updateShowTimeApi } = ManagerService()
   const [loading, setLoading] = useState(false)
-  const [showtime, setShowtime] = useState({
+  const [oneShowtime, setOneShowtime] = useState({
     showTimeId: null,
     room: {
       roomId: null,
@@ -56,12 +56,14 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
   console.log("🚀 ~ DetailShowtime ~ selectedDateTime:", selectedDateTime)
   const generateSeatData = CreateSeat(10, 14, showtimeId, dateTime);
+
+  const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || [{ date: "", time: [] },]);
   const seatData = generateSeatData();
 
   const hadleGetItem = async (showtimeId) => {
     let resShowtime = await getOneShowtimeApi(showtimeId)
     if (resShowtime && resShowtime.data && resShowtime.data.result) {
-      setShowtime(resShowtime.data.result)
+      setOneShowtime(resShowtime.data.result)
     }
     setLoading(false)
   }
@@ -69,12 +71,29 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   const handleUpdateShowtime = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const data = showtime;
+    const data = oneShowtime;
     let resShowtime = await updateShowTimeApi(showtimeId, data);
     if (resShowtime && resShowtime.data && resShowtime.data.result) {
       console.log(resShowtime.data.result)
     }
     setLoading(false);
+  };
+
+  const handleRemoveTime = (date, selectedTime) => {
+    // Tìm đối tượng có ngày tương ứng trong mảng lịch
+    const existingDay = schedule.find((item) => item.date === date);
+
+    if (existingDay) {
+      const updatedTimes = existingDay.time.filter((time) => time !== selectedTime);
+      existingDay.time = updatedTimes
+      // Cập nhật mảng lịch với thời gian mới
+      setSchedule((prevSchedule) => {
+        const newSchedule = [...prevSchedule];
+        const existingDayIndex = newSchedule.findIndex((item) => item.date === date);
+        newSchedule[existingDayIndex] = { date: date, time: updatedTimes };
+        return newSchedule;
+      });
+    }
   };
 
   useEffect(() => {
@@ -98,7 +117,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
             <div className='w-1/3 border-r-2'>
               <div className='px-6 space-y-6'>
                 <div>
-                  <p className="text-3xl pt-4 text-emerald-600 font-semibold">{showtime.movie.title}</p>
+                  <p className="text-3xl pt-4 text-emerald-600 font-semibold">{oneShowtime.movie.title}</p>
                 </div>
                 <div className='flex'>
                   <div className='w-3/5'>
@@ -107,14 +126,14 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                   </div>
                   <div className='2/5'>
                     <p className='font-light'>Phòng chiếu</p>
-                    <p className="font-semibold text-xl">{showtime.room.roomName}</p>
+                    <p className="font-semibold text-xl">{oneShowtime.room.roomName}</p>
                   </div>
                 </div>
                 <div>
                   <p className='font-light'>Các xuất chiếu</p>
                   <ul className='relative items-center grid grid-cols-3 gap-2 py-4'>
                     {
-                      showtime.listTimeShow
+                      oneShowtime.listTimeShow
                         .find((item) => FormatDataTime(item.date).date === dateTime.date)
                         ?.time.map((time, index) => {
                           const currentDateTime = new Date();

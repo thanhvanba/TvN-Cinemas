@@ -18,8 +18,8 @@ import ModalComponent from '../../../utils/Modal';
 import Cinemas from '../../Cinemas';
 import Loading from '../../../components/Loading';
 import Cinema from '../../../components/Cinema';
-import ShowtimesByRoom from '../ListShowtime/showtimes';
-import DetailShowtime from './detailShowtime';
+import ShowtimesByRoom from './components/showtimesByRoom'
+import DetailShowtime from './components/detailShowtime';
 
 const ListShowtime = () => {
   const { getAllShowtimeApi, getAllCinemaApi } = AdminService();
@@ -98,21 +98,21 @@ const ListShowtime = () => {
     }
   }
 
-  // const handleDeleteShowtime = async (showtimeId) => {
-  //   await deleteShowtimeApi(showtimeId);
-  //   handleGetItem(currentPage);
-  //   const updatedShowtimes = allShowtime.filter((showtime) => showtime.showTimeId !== showtimeId);
+  const handleDeleteShowtime = async (showtimeId) => {
+    await deleteShowtimeApi(showtimeId);
+    handleGetItem(currentPage);
+    const updatedShowtimes = allShowtime.filter((showtime) => showtime.showTimeId !== showtimeId);
 
-  //   setAllShowtime(updatedShowtimes);
-  // };
+    setAllShowtime(updatedShowtimes);
+  };
 
-  // const handleOpenModal = (showTimeId) => {
-  //   setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: true }));
-  // };
+  const handleOpenModal = (showTimeId) => {
+    setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: true }));
+  };
 
-  // const handleCloseModal = (showTimeId) => {
-  //   setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: false }));
-  // };
+  const handleCloseModal = (showTimeId) => {
+    setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: false }));
+  };
 
   // const handleGetShowtimeByMovie = async (movieId) => {
   //   let resMovie = await GetOneMovieApi(movieId)
@@ -177,7 +177,7 @@ const ListShowtime = () => {
           </button>
         </div>
         <div className='relative'>
-          <div className='px-3'>
+          <div className=''>
             {
               allShowtime.length === 0 ?
                 <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
@@ -193,7 +193,7 @@ const ListShowtime = () => {
                     )
                   ) : (
                     <div className=''>
-                        {/* <table className='mt-6 w-full'>
+                      {/* <table className='mt-6 w-full'>
                           <thead className=''>
                             <tr>
                               <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listShowtime.header.stt}</th>
@@ -291,7 +291,7 @@ const ListShowtime = () => {
                           </tbody>
                         </table> */}
                       {
-                        !cinemaId ?
+                        user.role !== "MANAGER" && !cinemaId ?
                           <div>
                             <h1 className='uppercase text-center py-10 text-2xl font-bold text-emerald-600'>Danh sách rạp phim</h1>
                             <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-16 mx-4'>
@@ -319,8 +319,6 @@ const ListShowtime = () => {
                   )}
                 </div>
             }
-
-
           </div>
         </div>
       </div>

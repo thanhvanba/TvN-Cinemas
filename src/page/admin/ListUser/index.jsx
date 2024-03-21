@@ -35,7 +35,7 @@ const ListUser = () => {
         cinemaId: ""
     })
     const listUser = {
-        header: { stt: "STT", info: "Basic info", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
+        header: { stt: "STT", info: "Thông tin cơ bản", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
         user: allUser,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
         iAvatar: UserCircleIcon

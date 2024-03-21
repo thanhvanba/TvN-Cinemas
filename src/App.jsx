@@ -11,7 +11,6 @@ import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
 import { jwtDecode } from 'jwt-decode'
 import { useLocation } from 'react-router-dom'
-import DetailShowtime from './page/admin/ListShowtime/detailShowtime.jsx'
 
 function App() {
   const { pathname } = useLocation()

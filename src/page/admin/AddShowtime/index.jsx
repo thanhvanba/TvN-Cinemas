@@ -87,9 +87,7 @@ const AddShowtime = () => {
         listTimeShow: [],
     })
 
-    console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
     const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || [{ date: "", time: [] },]);
-    console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
 
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
@@ -158,13 +156,15 @@ const AddShowtime = () => {
         const parts = date.toLocaleDateString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }).split('/');
         const dateFormat = `${parts[2]}-${String(parts[0]).padStart(2, '0')}-${String(parts[1]).padStart(2, '0')}`;
 
-        const existingDay = schedule.find((item) => item.date === dateFormat);
-        console.log("🚀 ~ handleTimeChange ~ existingDay:", existingDay)
-        if (existingDay) {
+        const existingDayIndex = schedule.findIndex((item) => item.date === dateFormat);
+        if (existingDayIndex !== -1) {
             // Nếu ngày đã tồn tại, thêm thời gian vào ngày đó
+            const existingDay = schedule[existingDayIndex];
             if (!existingDay.time.includes(selectedTime)) {
-                existingDay.time.push(selectedTime);
-                setSchedule([...schedule]);
+                const updatedSchedule = [...schedule];
+                const updatedTime = [...existingDay.time, selectedTime].sort();
+                updatedSchedule[existingDayIndex].time = updatedTime;
+                setSchedule(updatedSchedule); // Cập nhật lịch
             } else {
                 UseToastNotify(`Thời gian ${selectedTime} đã tồn tại trong ngày ${dateFormat}.`, 'warn')
             }
@@ -174,7 +174,11 @@ const AddShowtime = () => {
             //     date: dateFormat,
             //     time: [selectedTime]
             // })
-            setSchedule([...schedule, { date: dateFormat, time: [selectedTime] }]);
+            // setSchedule([...schedule, { date: dateFormat, time: [selectedTime] }]);
+            const newDay = { date: dateFormat, time: [selectedTime] };
+            const updatedSchedule = [...schedule, newDay];
+            updatedSchedule.sort((a, b) => new Date(a.date) - new Date(b.date)); // Sắp xếp lại lịch
+            setSchedule(updatedSchedule);
         }
     };
     const handleRemoveTime = (date, selectedTime) => {
