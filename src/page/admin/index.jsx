@@ -14,7 +14,7 @@ import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
 
 import AddItem from './AddItem';
-import AddMovie from './AddMovie';
+// import AddMovie from './ListMovie/components/addMovie';
 import AddShowtime from './AddShowtime';
 import Info from '../Info';
 
@@ -49,18 +49,14 @@ const Admin = () => {
   ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
-      case /^\/admin\/(list-showtime)/.test(pathname):
-      case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
+      case /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname):
+      case /^\/admin\/(add-item\/food|update-item\/food|food|list-showtime)/.test(pathname):
         setCurrentTab("1");
         break;
       // case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
       case /^\/admin\/(add-item\/cinema|update-item\/cinema|cinema)/.test(pathname):
       case /^\/admin\/(add-item\/room|update-item\/room|room)/.test(pathname):
         setCurrentTab("2");
-        break;
-      //case pathname === "/admin/add-item/movie":
-      case /^\/admin\/(add-item\/movie|update-item\/movie|movie)/.test(pathname):
-        setCurrentTab("3");
         break;
       case /^\/admin\/(add-item\/showtime|update-item\/showtime|showtime)/.test(pathname):
         setCurrentTab("4");
@@ -80,7 +76,7 @@ const Admin = () => {
 
   const handleTabChange = () => {
     {
-      item === "list-movie" &&
+      /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/ &&
         setTabIndex(0);
     }
     {
@@ -88,7 +84,7 @@ const Admin = () => {
         setTabIndex(3);
     }
     {
-      /^\/(admin|manager)\/list-showtime/.test(pathname) &&
+      /^\/(admin|manager)\/(add-item\/showtime|update-item\/showtime|list-showtime)/.test(pathname) &&
         setTabIndex(1);
     }
     {
@@ -207,9 +203,6 @@ const Admin = () => {
           </div>
           <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
             <AddItem />
-          </div>
-          <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
-            <AddMovie />
           </div>
           <div style={{ display: currentTab === '4' ? 'block' : 'none' }}>
             <AddShowtime />

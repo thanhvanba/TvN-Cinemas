@@ -47,7 +47,6 @@ function App() {
             )
           )
         }
-      {/* <DetailShowtime /> */}
     </div>
   )
 }
