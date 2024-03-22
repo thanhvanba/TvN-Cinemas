@@ -4,6 +4,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import 'react-tabs/style/react-tabs.css';
 import UserService from '../../../../service/UserService';
 import FormatDataTime from '../../../../utils/FormatDataTime';
+import Loading from '../../../../components/Loading';
 
 const DetailMovie = () => {
     const { getOneMovieApi } = UserService()
@@ -13,6 +14,7 @@ const DetailMovie = () => {
         navigate(pathname)
     }
     const { movieId } = useParams();
+    const [loading, setLoading] = useState(false);
     const [movie, setMovie] = useState({
         title: "",
         director: "",
@@ -33,14 +35,19 @@ const DetailMovie = () => {
         if (resMovie && resMovie.data && resMovie.data.result) {
             setMovie(resMovie.data.result)
         }
+        setLoading(false)
     }
     useEffect(() => {
+        setLoading(true)
         movieId && hadleGetOneMovie()
     }, []);
     return (
-        <div className='px-4' >
+        <div className='px-4 relative' >
             <div className='pt-8'>
-                <div className='border py-8 px-4'>
+                <div className='absolute mx-auto top-80 right-1/2 z-50'>
+                    {loading && <Loading />}
+                </div>
+                {!loading && <div className='border py-8 px-4'>
                     <div className='flex'>
                         <div>
                             <div className='my-4 border'>
@@ -92,7 +99,7 @@ const DetailMovie = () => {
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div>}
             </div>
         </div >
     )

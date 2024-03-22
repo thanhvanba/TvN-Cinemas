@@ -13,7 +13,7 @@ import CinemaService from '../../../service/CinemaService'
 import UserService from '../../../service/UserService'
 import AdminService from '../../../service/AdminService'
 
-import Pagination from '../../../utils/Pagination'
+import Pagination from '../../../components/Pagination'
 import ModalComponent from '../../../utils/Modal';
 import Cinema from '../../../components/Cinema';
 import Loading from '../../../components/Loading';

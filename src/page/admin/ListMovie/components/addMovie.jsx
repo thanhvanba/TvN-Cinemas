@@ -16,6 +16,7 @@ import UserService from '../../../../service/UserService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import FormatDataTime from '../../../../utils/FormatDataTime';
+import Loading from '../../../../components/Loading';
 
 const AddMovie = () => {
     const { getOneMovieApi } = UserService()
@@ -26,6 +27,7 @@ const AddMovie = () => {
     }
     const { movieId } = useParams();
     const { pathname } = useLocation()
+    const [loading1, setLoading1] = useState(false);
     const [loading, setLoading] = useState(false);
     const [time, setTime] = useState()
     const [imageURL, setImageURL] = useState(null);
@@ -86,6 +88,7 @@ const AddMovie = () => {
         if (resMovie && resMovie.data && resMovie.data.result) {
             setOneMovie(resMovie.data.result)
         }
+        setLoading1(false)
     }
 
     const handleFileChange = (e) => {
@@ -140,7 +143,10 @@ const AddMovie = () => {
         }
     }, [pathname]);
     useEffect(() => {
-        movieId && hadleGetOneMovie()
+        if (movieId) {
+            hadleGetOneMovie();
+            setLoading1(true);
+        }
     }, [movieId]);
     useEffect(() => {
         pathname !== "/admin/add-item/movie" &&
@@ -164,9 +170,12 @@ const AddMovie = () => {
     }, [oneMovie]);
     return (
         <div>
-            <div className='px-4'>
+            <div className='px-4 relative'>
                 <div className='pt-8'>
-                    <div className='border py-8 px-4'>
+                    <div className='absolute mx-auto top-80 right-1/2 z-50'>
+                        {loading1 && <Loading />}
+                    </div>
+                    {!loading1 && <div className='border py-8 px-4'>
                         <div className='flex'>
                             <div>
                                 <div className="my-4 border">
@@ -330,7 +339,7 @@ const AddMovie = () => {
                         <div>
 
                         </div>
-                    </div>
+                    </div>}
                 </div>
 
 

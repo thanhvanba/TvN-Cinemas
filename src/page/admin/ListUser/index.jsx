@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import CinemaService from '../../../service/CinemaService'
 import FormatDataTime from '../../../utils/FormatDataTime'
-import Pagination from '../../../utils/Pagination'
+import Pagination from '../../../components/Pagination'
 
 import AdminService from '../../../service/AdminService'
 

@@ -13,7 +13,7 @@ import UserService from '../../../service/UserService';
 import { LoginContext } from '../../../context/LoginContext';
 
 import SelectMenu from '../../../components/SelectMenu/SelectMenu';
-import Pagination from '../../../utils/Pagination'
+import Pagination from '../../../components/Pagination'
 import ModalComponent from '../../../utils/Modal';
 import Cinemas from '../../Cinemas';
 import Loading from '../../../components/Loading';

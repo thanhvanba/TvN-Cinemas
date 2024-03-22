@@ -18,7 +18,7 @@ import TruncatedContent from '../../../utils/TruncatedContent'
 import { LoginContext } from '../../../context/LoginContext';
 import useLoadingState from '../../../hook/UseLoadingState';
 
-import Pagination from '../../../utils/Pagination'
+import Pagination from '../../../components/Pagination'
 import ModalComponent from '../../../utils/Modal';
 import FormatDataTime from '../../../utils/FormatDataTime';
 import Loading from '../../../components/Loading';

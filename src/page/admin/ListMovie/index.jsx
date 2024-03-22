@@ -2,26 +2,26 @@ import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ArrowRightIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import TruncatedContent from '../../../utils/TruncatedContent'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+// import TruncatedContent from '../../../utils/TruncatedContent'
 
-import MovieService from '../../../service/MovieService'
-import AdminService from '../../../service/AdminService'
+// import MovieService from '../../../service/MovieService'
+// import AdminService from '../../../service/AdminService'
 
-import FormatDataTime from '../../../utils/FormatDataTime'
+// import FormatDataTime from '../../../utils/FormatDataTime'
 import { LoginContext } from '../../../context/LoginContext'
 
-import Pagination from '../../../utils/Pagination'
-import ModalComponent from '../../../utils/Modal';
-import Loading from '../../../components/Loading';
+import Pagination from '../../../components/Pagination'
+// import ModalComponent from '../../../utils/Modal';
+// import Loading from '../../../components/Loading';
 import DetailMovie from './components/detailMovie';
 import AddMovie from './components/addMovie';
 import ListMovies from './components/listMovies';
 
 const ListMovie = () => {
-  const { GetAllMovieApi } = MovieService();
-  const { changeStatusMovieApi, deleteMovieApi, getAllMovieApi } = AdminService()
+  // const { GetAllMovieApi } = MovieService();
+  // const { changeStatusMovieApi, deleteMovieApi, getAllMovieApi } = AdminService()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -29,71 +29,70 @@ const ListMovie = () => {
     navigate(pathname)
   }
 
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useContext(LoginContext)
-  const [allMovie, setAllMovie] = useState([])
-  console.log("🚀 ~ ListMovie ~ allMovie:", allMovie)
-  const [modalStates, setModalStates] = useState({});
+  // const [loading, setLoading] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [allMovie, setAllMovie] = useState([])
+  // const [modalStates, setModalStates] = useState({});
 
-  const handleGetAllMovie = async (pageIndex) => {
-    setCurrentPage(pageIndex)
-    setLoading(true)
-    let res = (user.role === "ADMIN") ? await GetAllMovieApi(pageIndex, 5) : await GetAllMovieApi(pageIndex, 5)
-    setLoading(false)
-    if (res && res.data && res.data.result && res.data.result.content) {
-      setAllMovie(res.data.result.content)
-    }
-  }
-  const handleChangeStatus = async (movieId) => {
-    await changeStatusMovieApi(movieId);
-    handleGetAllMovie(currentPage)
-    const updateMovies = allMovie.map((movie) => {
-      if (movie.movieId === movieId) {
-        return { ...movie, delete: !movie.delete };
-      }
-      return movie;
-    });
+  // const handleGetAllMovie = async (pageIndex) => {
+  //   setCurrentPage(pageIndex)
+  //   setLoading(true)
+  //   let res = (user.role === "ADMIN") ? await GetAllMovieApi(pageIndex, 5) : await GetAllMovieApi(pageIndex, 5)
+  //   setLoading(false)
+  //   if (res && res.data && res.data.result && res.data.result.content) {
+  //     setAllMovie(res.data.result.content)
+  //   }
+  // }
+  // const handleChangeStatus = async (movieId) => {
+  //   await changeStatusMovieApi(movieId);
+  //   handleGetAllMovie(currentPage)
+  //   const updateMovies = allMovie.map((movie) => {
+  //     if (movie.movieId === movieId) {
+  //       return { ...movie, delete: !movie.delete };
+  //     }
+  //     return movie;
+  //   });
 
-    setAllMovie(updateMovies);
-  };
+  //   setAllMovie(updateMovies);
+  // };
 
-  const handleDeleteMovie = async (movieId) => {
-    await deleteMovieApi(movieId);
-    handleGetAllMovie(currentPage)
-    const updateMovies = allMovie.filter((movie) => movie.movieId !== movieId);
+  // const handleDeleteMovie = async (movieId) => {
+  //   await deleteMovieApi(movieId);
+  //   handleGetAllMovie(currentPage)
+  //   const updateMovies = allMovie.filter((movie) => movie.movieId !== movieId);
 
-    setAllMovie(updateMovies);
-  };
+  //   setAllMovie(updateMovies);
+  // };
 
-  const handleOpenModal = (movieId) => {
-    setModalStates((prevStates) => ({ ...prevStates, [movieId]: true }));
-  };
+  // const handleOpenModal = (movieId) => {
+  //   setModalStates((prevStates) => ({ ...prevStates, [movieId]: true }));
+  // };
 
-  const handleCloseModal = (movieId) => {
-    setModalStates((prevStates) => ({ ...prevStates, [movieId]: false }));
-  };
+  // const handleCloseModal = (movieId) => {
+  //   setModalStates((prevStates) => ({ ...prevStates, [movieId]: false }));
+  // };
 
-  useEffect(() => {
-    console.log("DDaay")
-    handleGetAllMovie(currentPage)
-  }, []);
-  const listMovie = {
-    header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "Trạng thái", releaseDate: "Ngày phát hành", action: "actions" },
-    movie: allMovie,
-    action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
-  }
+  // useEffect(() => {
+  //   console.log("DDaay")
+  //   handleGetAllMovie(currentPage)
+  // }, []);
+  // const listMovie = {
+  //   header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "Trạng thái", releaseDate: "Ngày phát hành", action: "actions" },
+  //   movie: allMovie,
+  //   action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
+  // }
 
   return (
     <div>
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
           <div className='flex items-center'>
-            <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl'>Danh sách phim</h2>
+            <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl'>Phim</h2>
+            <ChevronRightIcon className='px-1 h-6' />
             {
-              !/^\/(admin|manager)\/list-movie/.test(pathname) &&
+              !/^\/(admin|manager)\/list-movie/.test(pathname) ?
               <>
-                <ChevronRightIcon className='px-1 h-6' />
                 {
                   /^\/(admin|manager)\/movie/.test(pathname) ?
                     <h2 className='cursor-default text-xl'>Chi tiết phim</h2>
@@ -101,7 +100,7 @@ const ListMovie = () => {
                       <h2 className='cursor-default text-xl'>Thêm phim mới</h2>
                       : <h2 className='cursor-default text-xl'>Chỉnh sửa phim</h2>
                 }
-              </>
+              </> : <h2 className='cursor-default text-xl'>Danh sách phim</h2>
             }
           </div>
 
