@@ -1,28 +1,16 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-// import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
-
-// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-// import 'react-tabs/style/react-tabs.css';
 import SelectMenu from '../../../../components/SelectMenu/SelectMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import UserService from '../../../../service/UserService';
 import AdminService from '../../../../service/AdminService';
-// import ManagerService from '../../../service/ManagerService';
-// import CinemaService from '../../../service/CinemaService';
-// import './index.css'
-// import { LoginContext } from '../../../context/LoginContext';
 const AddItem = () => {
-    // const { item } = useParams()
-    // const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
-    // const [tabIndex, setTabIndex] = useState(0);
-    // const [imageURL, setImageURL] = useState(null);
     const { pathname } = useLocation()
     console.log("🚀 ~ pathname:", pathname)
-    const { foodId, cinemaId } = useParams()
+    const { foodId } = useParams()
 
     const navigate = useNavigate()
     const changeTab = (pathname) => {
@@ -56,13 +44,13 @@ const AddItem = () => {
         status: null
     })
 
-    // const [oneFood, setOneFood] = useState({
-    //     foodId: "",
-    //     name: "",
-    //     price: "",
-    //     foodType: "",
-    //     status: null
-    // })
+    const [oneFood, setOneFood] = useState({
+        foodId: "",
+        name: "",
+        price: "",
+        foodType: "",
+        status: null
+    })
 
     const handleGetOneFood = async () => {
         let resFood = await getOneFoodApi(foodId)
@@ -70,21 +58,21 @@ const AddItem = () => {
             setFood(resFood.data.result)
         }
     }
-    // // const handleFileChange = (e) => {
-    // //     const selectedFile = e.target.files[0];
-    // //     readAndDisplayFile(selectedFile);
-    // // };
-    // // const readAndDisplayFile = (file) => {
-    // //     const reader = new FileReader();
-    // //     reader.onloadend = () => {
-    // //         setImageURL(reader.result);
-    // //         setMovie((prevMovie) => ({
-    // //             ...prevMovie,
-    // //             poster: file,
-    // //         }));
-    // //     };
-    // //     reader.readAsDataURL(file);
-    // // };
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        readAndDisplayFile(selectedFile);
+    };
+    const readAndDisplayFile = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageURL(reader.result);
+            setMovie((prevMovie) => ({
+                ...prevMovie,
+                poster: file,
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
 
 
     const nameFoods = ["BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
@@ -134,19 +122,19 @@ const AddItem = () => {
                     <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
                         <div className="flex">
                             <div>
-                                {/* {pathname !== `/admin/movie/${movieId}` ?
-                                                    <div className="my-4 border">
-                                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
-                                                    </div> : */}
-                                <div className='my-4 border'>
-                                    <img
-                                        className='w-96 h-80'
-                                    // src={movie.poster}
-                                    />
-                                </div>
+                                {pathname !== `/admin/movie/${movieId}` ?
+                                    <div className="my-4 border">
+                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                    </div> :
+                                    <div className='my-4 border'>
+                                        <img
+                                            className='w-96 h-80'
+                                            src={movie.poster}
+                                        />
+                                    </div>}
                                 <div className='px-4'>
                                     <input
-                                        // onChange={handleFileChange}
+                                        onChange={handleFileChange}
                                         type="file"
                                         className="hidden"
                                         id="form_img-upload"

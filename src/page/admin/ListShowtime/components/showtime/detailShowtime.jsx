@@ -1,14 +1,14 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import React, { useEffect, useState } from 'react'
-import CreateSeat from '../../../../components/CreateSeat'
+import CreateSeat from '../../../../../components/CreateSeat'
 import './detailShowtime.css'
-import UserService from '../../../../service/UserService'
-import FormatDataTime from '../../../../utils/FormatDataTime'
+import UserService from '../../../../../service/UserService'
+import FormatDataTime from '../../../../../utils/FormatDataTime'
 import { useNavigate, useParams } from 'react-router-dom'
-import ManagerService from '../../../../service/ManagerService'
+import ManagerService from '../../../../../service/ManagerService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import useLoadingState from '../../../../hook/UseLoadingState'
+import useLoadingState from '../../../../../hook/UseLoadingState'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
   const { cinemaId } = useParams()
@@ -180,7 +180,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                   className="w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                   type='button'
                   disabled={loading['change']}
-                  onClick={() => navigate(`/admin/list-showtime/${showtimeId}`)}
+                  onClick={() => navigate(-1)}
                 >
                   {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                   &nbsp;Thoát

@@ -116,7 +116,7 @@ const ListMovies = () => {
                                 <tbody>
                                     {
                                         listMovie.movie.map((item, index) => (
-                                            <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-8 border-slate-50 bg-slate-100'>
+                                            <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)}  className='border-b-2 border-slate-200 hover:bg-slate-200'>
                                                 <td className='text-start font-medium px-5 py-4'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
                                                 <td className='text-start font-medium px-5 py-4'>
                                                     <div className='flex items-center'>
@@ -164,7 +164,7 @@ const ListMovies = () => {
                                 </tbody>
                             </table>
                         }
-                        <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getMovieByPage={handleGetAllMovie} />
+                        <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllMovie} />
                     </div>
                 }
             </div>

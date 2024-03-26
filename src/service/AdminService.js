@@ -502,6 +502,39 @@ const AdminService = () => {
             },
         );
     };
+    const getShowtimeByCinemaApi = async (cinemaId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/showtimes`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
+    const getShowtimeByRoomApi = async (roomId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}/showtimes`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            },
+        );
+    };
+    const getRoomeByCinemaApi = async (cinemaId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/rooms`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -530,7 +563,10 @@ const AdminService = () => {
         getCinemasUnmanagedApi,
         getAllTicketApi,
         getAllCinemaApi,
-        getAllMovieApi
+        getAllMovieApi,
+        getShowtimeByCinemaApi,
+        getShowtimeByRoomApi,
+        getRoomeByCinemaApi
     }
 }
 

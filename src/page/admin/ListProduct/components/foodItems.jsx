@@ -27,6 +27,7 @@ const FoodItems = ({ listFood }) => {
         await deleteFoodApi(foodId);
         // handleGetItems(currentPage)
         const updatedFoods = allFood.filter((food) => food.foodId !== foodId);
+        setModalStates((prevStates) => ({ ...prevStates, [foodId]: false }));
         setAllFood(updatedFoods);
     };
     // const handleGetItems = async (pageIndex) => {

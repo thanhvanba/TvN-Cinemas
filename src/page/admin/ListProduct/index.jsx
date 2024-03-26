@@ -38,6 +38,14 @@ const ListProduct = () => {
     const { loading, setLoading } = useLoadingState(false);
     const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState(
+        {
+            pageNumber: 1,
+            pageSize: null,
+            totalPages: null,
+            totalElements: null
+        }
+    );
     const [modalStates, setModalStates] = useState({});
     const [allFood, setAllFood] = useState([])
     const [allRoom, setAllRoom] = useState([])
@@ -159,7 +167,7 @@ const ListProduct = () => {
                     <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
                 </div>
                 {
-                    /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname) ?
+                    /^\/admin\/((add-item|update-item)\/food|food)/.test(pathname) ?
                         <AddItem /> :
                         <div className='border-2 h-screen'>
                             <div className='h-full'>
@@ -182,12 +190,6 @@ const ListProduct = () => {
                             </div>
                         </div>
                 }
-
-
-
-
-
-
                 {/* <Tabs>
                     <TabList className='py-6 border-b-2'>
 

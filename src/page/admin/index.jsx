@@ -15,13 +15,13 @@ import ListReview from './ListReview';
 
 import AddItem from './AddItem';
 // import AddMovie from './ListMovie/components/addMovie';
-import AddShowtime from './AddShowtime';
+// import AddShowtime from './AddShowtime';
 import Info from '../Info';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import AuthService from '../../service/AuthService'
 import { LoginContext } from '../../context/LoginContext'
-import DetailShowtime from './ListShowtime/components/detailShowtime';
+// import DetailShowtime from './ListShowtime/components/detailShowtime';
 import ListProduct from './ListProduct';
 
 const Admin = () => {
@@ -40,7 +40,7 @@ const Admin = () => {
   const { logoutApi } = AuthService();
   const items = [
     { content: "Phim", icon: FilmIcon, path: "list-movie" },
-    { content: "Rạp", icon: CalendarDaysIcon, path: "list-showtime" },
+    { content: "Rạp", icon: CalendarDaysIcon, path: "list-cinema" },
     { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
     { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-user" },
     { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-cinemas" },
@@ -49,18 +49,6 @@ const Admin = () => {
   ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
-      case /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname):
-      case /^\/admin\/(add-item\/food|update-item\/food|food|list-showtime)/.test(pathname):
-        setCurrentTab("1");
-        break;
-      // case /^\/admin\/(add-item\/food|update-item\/food|food)/.test(pathname):
-      case /^\/admin\/(add-item\/cinema|update-item\/cinema|cinema)/.test(pathname):
-      case /^\/admin\/(add-item\/room|update-item\/room|room)/.test(pathname):
-        setCurrentTab("2");
-        break;
-      case /^\/admin\/(add-item\/showtime|update-item\/showtime|showtime)/.test(pathname):
-        setCurrentTab("4");
-        break;
       case pathname === "/admin/info":
         setCurrentTab("5");
         break;
@@ -80,12 +68,12 @@ const Admin = () => {
         setTabIndex(0);
     }
     {
-      item === "list-user" &&
-        setTabIndex(3);
+      /^\/(admin|manager)\/(add-item\/(cinema|showtime|room)|update-item\/(cinema|showtime|room)|list-cinema|list-room|cinema|list-showtime\/showtime)/.test(pathname) &&
+        setTabIndex(1);
     }
     {
-      /^\/(admin|manager)\/(add-item\/showtime|update-item\/showtime|list-showtime)/.test(pathname) &&
-        setTabIndex(1);
+      item === "list-user" &&
+        setTabIndex(3);
     }
     {
       item === "list-cinemas" &&
@@ -201,12 +189,6 @@ const Admin = () => {
               <Dashboard />
             </TabPanel>
           </div>
-          <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
-            <AddItem />
-          </div>
-          <div style={{ display: currentTab === '4' ? 'block' : 'none' }}>
-            <AddShowtime />
-          </div>
           <div style={{ display: currentTab === '5' ? 'block' : 'none' }}>
             <div className=''>
               <div className='h-20 mb-2 absolute flex items-center w-full border-b-2'>
@@ -215,9 +197,6 @@ const Admin = () => {
               <Info />
             </div>
           </div>
-          {/* <div style={{ display: currentTab === '6' ? 'block' : 'none' }}>
-            <DetailShowtime />
-          </div> */}
         </div >
 
 

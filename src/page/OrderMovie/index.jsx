@@ -80,7 +80,7 @@ const OrderMovie = () => {
 
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
-    const { dateTime } = location.state;
+    const { dateTime } = location.state || {};
     const { showtimeId } = useParams();
 
     const steps = [

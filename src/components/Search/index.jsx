@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import UserService from '../../service/UserService'
 
 const Search = ({ searchFunction, resultList }) => {
-    console.log("🚀 ~ Search ~ searchFunction:", searchFunction)
     const [inputSearch, setInputSearch] = useState("")
     const [listMovieFound, setListMovieFound] = useState([])
     const [showMovieList, setShowMovieList] = useState(false);

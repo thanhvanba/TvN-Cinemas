@@ -49,8 +49,7 @@ const AdminRouter = () => (
     <Route path="/" element={<Admin />} />
     <Route path="/admin/:item" element={<Admin />} />
     <Route path="/admin/add-item/:item" element={<Admin />} />
-    {/* <Route path="/admin/add-item/movie" element={<Admin />} />
-    <Route path="/admin/add-item/showtime" element={<Admin />} /> */}
+
     <Route path="/admin/update-item/showtime/:showtimeId" element={<Admin />} />
     <Route path="/admin/update-item/movie/:movieId" element={<Admin />} />
     <Route path="/admin/update-item/cinema/:cinemaId" element={<Admin />} />
@@ -58,8 +57,8 @@ const AdminRouter = () => (
     <Route path="/admin/update-item/food/:foodId" element={<Admin />} />
     <Route path="/admin/update-item/ticket/:ticketId" element={<Admin />} />
 
-    <Route path="/admin/list-showtime/:cinemaId" element={<Admin />} />
-    <Route path="/admin/list-showtime/cinema/:cinemaId/:showtimeId" element={<Admin />} />
+    <Route path="/admin/cinema/:cinemaId/list-showtime" element={<Admin />} />
+    <Route path="/admin/list-showtime/showtime/:showtimeId" element={<Admin />} />
 
     <Route path="/admin/showtime/:showtimeId" element={<Admin />} />
     <Route path="/admin/movie/:movieId" element={<Admin />} />
@@ -73,16 +72,14 @@ const AdminRouter = () => (
 
     <Route path="/manager/:item" element={<Admin />} />
     <Route path="/manager/add-item/:item" element={<Admin />} />
-    {/* <Route path="/manager/add-item/movie" element={<Admin />} />
-    <Route path="/manager/add-item/showtime" element={<Admin />} /> */}
     <Route path="/manager/update-item/showtime/:showtimeId" element={<Admin />} />
     <Route path="/manager/update-item/movie/:movieId" element={<Admin />} />
     <Route path="/manager/update-item/cinema/:cinemaId" element={<Admin />} />
     <Route path="/manager/update-item/room/:roomId" element={<Admin />} />
     <Route path="/manager/update-item/ticket/:ticketId" element={<Admin />} />
 
-    <Route path="/manager/list-showtime/:cinemaId" element={<ShowTimes />} />
-    <Route path="/manager/list-showtime/showtime/:showtimeId" element={<ShowTimes />} />
+    <Route path="/manager/cinema/:cinemaId/list-showtime" element={<Admin />} />
+    <Route path="/manager/list-showtime/showtime/:showtimeId" element={<Admin />} />
 
     <Route path="/manager/showtime/:showtimeId" element={<Admin />} />
     <Route path="/manager/movie/:movieId" element={<Admin />} />

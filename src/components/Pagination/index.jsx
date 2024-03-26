@@ -8,18 +8,20 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 
 import { useState } from 'react'; // Import useState hook
 
-export default function Pagination({ pageNumber, pageSize, totalPages, totalElements, getMovieByPage }) {
+export default function Pagination({ pageNumber, pageSize, totalPages, totalElements, getItemByPage }) {
   const [inputValue, setInputValue] = useState(pageNumber); // State to manage input value
 
   const handlePreviousPage = () => {
     if (pageNumber > 1) {
-      getMovieByPage(pageNumber - 1);
+      getItemByPage(pageNumber - 1);    
+      setInputValue(pageNumber-1);
     }
   };
 
   const handleNextPage = () => {
     if (pageNumber < totalPages) {
-      getMovieByPage(pageNumber + 1);
+      getItemByPage(pageNumber + 1);
+      setInputValue(pageNumber + 1);
     }
   };
 
@@ -27,7 +29,7 @@ export default function Pagination({ pageNumber, pageSize, totalPages, totalElem
     const value = parseInt(inputValue);
     if (e.key === 'Enter') {
       if (!isNaN(value) && value >= 1 && value <= totalPages) {
-        getMovieByPage(value);
+        getItemByPage(value);
       } else {
         setInputValue(pageNumber);
       }
