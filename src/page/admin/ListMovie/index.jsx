@@ -86,38 +86,6 @@ const ListMovie = () => {
   return (
     <div>
       <div className='px-4'>
-        <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-          <div className='flex items-center'>
-            <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl'>Phim</h2>
-            <ChevronRightIcon className='px-1 h-6' />
-            {
-              !/^\/(admin|manager)\/list-movie/.test(pathname) ?
-              <>
-                {
-                  /^\/(admin|manager)\/movie/.test(pathname) ?
-                    <h2 className='cursor-default text-xl'>Chi tiết phim</h2>
-                    : /^\/admin\/(add-item\/movie)/.test(pathname) ?
-                      <h2 className='cursor-default text-xl'>Thêm phim mới</h2>
-                      : <h2 className='cursor-default text-xl'>Chỉnh sửa phim</h2>
-                }
-              </> : <h2 className='cursor-default text-xl'>Danh sách phim</h2>
-            }
-          </div>
-
-          {
-            (user.role === "ADMIN" && /^\/(admin|manager)\/list-movie/.test(pathname)) ?
-              <button
-                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                type='submit'
-                onClick={() => changeTab("/admin/add-item/movie")}
-              >
-                Thêm phim
-              </button>
-              :
-              <div></div>
-          }
-        </div>
-
         {/^\/(admin|manager)\/movie/.test(pathname) ? <DetailMovie /> :
           /^\/admin\/(add-item\/movie|update-item)/.test(pathname) ? <AddMovie /> :
             // <div className='relative'>

@@ -61,15 +61,15 @@ const ShowtimeByRoom = () => {
   const handleGetAllShowtime = async (cinemaId) => {
     setLoading(true)
     let resST = await getShowtimeByCinemaApi(cinemaId)
-    if (resST && resST.data && resST.data.result) {
-      setAllShowtime(resST.data.result);
+    if (resST && resST.data && resST.data.result.content) {
+      setAllShowtime(resST.data.result.content);
     }
     setLoading(false)
   }
   const handleGetRoomByCinema = async (cinemaId) => {
     let resR = await getRoomeByCinemaApi(cinemaId)
-    if (resR && resR.data && resR.data.result) {
-      setAllRoom(resR.data.result);
+    if (resR && resR.data && resR.data.result.content) {
+      setAllRoom(resR.data.result.content);
     }
   }
 
@@ -207,7 +207,7 @@ const ShowtimeByRoom = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {allShowtime.map((item, index) => (
+                      {allShowtime && allShowtime.map((item, index) => (
                         <tr
                           onClick={() => {
                           }}

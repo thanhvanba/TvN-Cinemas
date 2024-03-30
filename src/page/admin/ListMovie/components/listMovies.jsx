@@ -94,6 +94,22 @@ const ListMovies = () => {
         <div className='relative'>
             <div className='px-3'>
 
+                <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                    <h2 className='text-3xl cursor-default'>Quản lý phim</h2>
+
+                    {
+                        (user.role === "ADMIN" && /^\/(admin|manager)\/list-movie/.test(pathname)) ?
+                            <button
+                                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                                type='submit'
+                                onClick={() => changeTab("/admin/add-item/movie")}
+                            >
+                                Thêm phim
+                            </button>
+                            :
+                            <div></div>
+                    }
+                </div>
                 <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
                     {loading && <Loading />}
                 </div>
@@ -116,7 +132,7 @@ const ListMovies = () => {
                                 <tbody>
                                     {
                                         listMovie.movie.map((item, index) => (
-                                            <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)}  className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                            <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-2 border-slate-200 hover:bg-slate-200'>
                                                 <td className='text-start font-medium px-5 py-4'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
                                                 <td className='text-start font-medium px-5 py-4'>
                                                     <div className='flex items-center'>

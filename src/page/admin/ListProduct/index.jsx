@@ -35,7 +35,7 @@ const ListProduct = () => {
     const { item } = useParams()
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
-    const { loading, setLoading } = useLoadingState(false);
+    const [loading, setLoading] = useState(false);
     const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState(
@@ -49,7 +49,6 @@ const ListProduct = () => {
     const [modalStates, setModalStates] = useState({});
     const [allFood, setAllFood] = useState([])
     const [allRoom, setAllRoom] = useState([])
-    const [allUser, setAllUser] = useState([])
     const [allTicket, setAllTicket] = useState([])
     const [food, setFood] = useState({
         name: "",
@@ -111,14 +110,20 @@ const ListProduct = () => {
 
     //     setAllFood(updatedFoods);
     // };
-    const handleGetItems = async (foodType) => {
+    const handleGetItems = async (pageNumber, foodType) => {
         // setCurrentPage(pageIndex)
-        setLoading("food", true)
-        let resFood = await getFoodApi(foodType)
-        setLoading("food", false)
-        if (resFood && resFood.data && resFood.data.result) {
-            setAllFood(resFood.data.result)
+        let resFood = await getFoodApi(foodType, pageNumber, 10)
+        if (resFood && resFood.data && resFood.data.result.content) {
+            setAllFood(resFood.data.result.content)
+            setPagination(prevPagination => ({
+                ...prevPagination,
+                pageNumber: pageNumber,
+                pageSize: resFood.data.result.pageSize,
+                totalPages: resFood.data.result.totalPages,
+                totalElements: resFood.data.result.totalElements
+            }));
         }
+        setLoading(false)
 
         // setLoading("room", true)
         // let resRoom = (user.role === "ADMIN") ? await getAllRoomApi() : await getAllRoomByManagerApi()
@@ -153,42 +158,53 @@ const ListProduct = () => {
 
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
     const handleSelectChange = (selectedValue) => {
-        selectedValue === "ALL" ? handleGetItems() : handleGetItems(selectedValue)
+        selectedValue === "ALL" ? handleGetItems(pagination.pageNumber) : handleGetItems(pagination.pageNumber, selectedValue)
     }
 
     useEffect(() => {
-        handleGetItems()
+        setLoading(true)
+        handleGetItems(pagination.pageNumber)
     }, [item]);
 
     return (
         <div>
             <div className='px-4'>
-                <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
-                </div>
                 {
                     /^\/admin\/((add-item|update-item)\/food|food)/.test(pathname) ?
                         <AddItem /> :
-                        <div className='border-2 h-screen'>
-                            <div className='h-full'>
-                                <div className='relative flex justify-end items-center p-4'>
-                                    <div className="border-2 rounded-xl z-10">
-                                        <Search />
-                                    </div>
-                                    <div className="inline-block z-10 pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
-                                        <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
-                                    </div>
-                                    <div className='flex justify-center absolute top-0 w-full p-3'>
-                                        <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
-                                        <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
-                                    </div>
-                                </div>
-                                {toggle && <Inflow />}
-                                <div className='grid grid-cols-5 gap-4 px-4'>
-                                    <FoodItems listFood={allFood} />
-                                </div>
+                        <div className='relative'>
+                            <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                                <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
                             </div>
+                            <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                                {loading && <Loading />}
+                            </div>
+                            {!loading &&
+                                <div className='border-2 h-full'>
+                                    <div className='h-full'>
+                                        <div className='relative flex justify-end items-center p-4'>
+                                            <div className="border-2 rounded-xl z-10">
+                                                <Search />
+                                            </div>
+                                            <div className="inline-block z-10 pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
+                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
+                                            </div>
+                                            <div className='flex justify-center absolute top-0 w-full p-3'>
+                                                <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
+                                                <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                            </div>
+                                        </div>
+                                        {toggle && <Inflow />}
+                                        <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
+                                            <FoodItems listFood={allFood} />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
                         </div>
+
                 }
                 {/* <Tabs>
                     <TabList className='py-6 border-b-2'>

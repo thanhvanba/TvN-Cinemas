@@ -47,7 +47,7 @@ const FoodItems = ({ listFood }) => {
                         <div className='p-1'>
                             <div className='flex'>
                                 <div className='w-5/6 p-2 border-slate-300 border-2 rounded-sm'>
-                                    <img className='h-full w-full' src={itemImg} alt="" />
+                                    <img className='h-28 w-full' src={item.image ? item.image : itemImg} alt="" />
                                 </div>
                                 <div className='w-1/6 pl-1'>
                                     <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/food/${item.foodId}`) }} className='flex justify-center items-center w-full h-8 mb-2 rounded-lg bg-cyan-100 cursor-pointer'>
@@ -73,7 +73,7 @@ const FoodItems = ({ listFood }) => {
                             </div>
                             <h3 className='font-bold text-lg text-gray-600 pt-4 cursor-default'>{item.name}</h3>
                             <p className='flex justify-between'>
-                                <span className='text-slate-600 cursor-default'>SL: xxx</span>
+                                <span className='text-slate-600 cursor-default'>SL: {item.quantity}</span>
                                 <span className='text-slate-600 cursor-default'>{format(item.price)}<sup>đ</sup></span>
                             </p>
                         </div>

@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import UserService from '../../../../service/UserService';
 import AdminService from '../../../../service/AdminService';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import Loading from '../../../../components/Loading';
 const AddItem = () => {
     const [loading, setLoading] = useState(false);
+    const [imageURL, setImageURL] = useState()
     const { pathname } = useLocation()
-    console.log("🚀 ~ pathname:", pathname)
     const { foodId } = useParams()
 
     const navigate = useNavigate()
@@ -39,18 +41,21 @@ const AddItem = () => {
     // })
     const [food, setFood] = useState({
         name: "",
+        image: {},
+        // quantity: "",
         price: "",
         foodType: "",
         status: null
     })
 
-    const [oneFood, setOneFood] = useState({
-        foodId: "",
-        name: "",
-        price: "",
-        foodType: "",
-        status: null
-    })
+    console.log("🚀 ~ food:", food)
+    // const [oneFood, setOneFood] = useState({
+    //     foodId: "",
+    //     name: "",
+    //     price: "",
+    //     foodType: "",
+    //     status: null
+    // })
 
     const handleGetOneFood = async () => {
         let resFood = await getOneFoodApi(foodId)
@@ -66,9 +71,9 @@ const AddItem = () => {
         const reader = new FileReader();
         reader.onloadend = () => {
             setImageURL(reader.result);
-            setMovie((prevMovie) => ({
-                ...prevMovie,
-                poster: file,
+            setFood((prevFood) => ({
+                ...prevFood,
+                image: file,
             }));
         };
         reader.readAsDataURL(file);
@@ -113,97 +118,109 @@ const AddItem = () => {
     }, [foodId]);
 
     return (
-        <div >
-            <div className='py-6 border-b-2 font-semibold text-lg text-green-600'>
-                {pathname === '/admin/add-item/food' ? <p>Thêm sản phẩm</p> : <p>Cập nhật sản phẩm</p>}
+        <div className='relative'>
+            <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                <div className='flex items-center'>
+                    <h2 onClick={() => { navigate("/admin/list-food/") }} className='cursor-pointer font-medium text-2xl'>Quản lý sản phẩm</h2>
+                    <ChevronRightIcon className='px-1 h-6' />
+                    {/^\/admin\/add-item\/food/.test(pathname) ?
+                        <h2 className='cursor-default text-xl'>Thêm sản phẩm</h2>
+                        : <h2 className='cursor-default text-xl'>Chỉnh sửa sản phẩm</h2>
+                    }
+                </div>
             </div>
-            <div>
-                <div className="w-full py-8">
-                    <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
-                        <div className="flex">
-                            <div>
-                                {pathname !== `/admin/movie/${movieId}` ?
-                                    <div className="my-4 border">
-                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
-                                    </div> :
+            <div><div className='absolute mx-auto top-80 right-1/2 z-50'>
+                {loading && <Loading/>}
+            </div>
+                {!loading &&
+                    <div className="w-full py-8">
+                        <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
+                            <div className="flex">
+                                <div>
+                                    {/* {pathname !== `/admin/movie/${movieId}` ?
+                                                    <div className="my-4 border">
+                                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                                    </div> : */}
                                     <div className='my-4 border'>
                                         <img
                                             className='w-96 h-80'
-                                            src={movie.poster}
+                                            // src={movie.poster}
+                                            src={imageURL ? imageURL : food.image} alt="Preview"
                                         />
-                                    </div>}
-                                <div className='px-4'>
-                                    <input
-                                        onChange={handleFileChange}
-                                        type="file"
-                                        className="hidden"
-                                        id="form_img-upload"
-                                    />
-                                    <label
-                                        htmlFor="form_img-upload"
-                                        className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
-                                    >
-                                        Chọn một tập tin
-                                    </label>
-                                </div>
-                            </div>
-                            <form className='px-4 w-[80%]' id='formAddCinema' onSubmit={pathname === "/admin/add-item/food" ? handleAddFood : handleUpdateFood} action="">
-                                <div className="relative my-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Tên sản phẩm
-                                    </label>
-                                    <input
-                                        onChange={e => setFood({ ...food, name: e.target.value })}
-                                        type="text"
-                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        value={food.name}
-                                    />
-                                </div>
-                                <div className="relative my-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Giá tiền
-                                    </label>
-                                    <input
-                                        onChange={e => { setFood({ ...food, price: e.target.value }); }}
-                                        type="text"
-                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        value={food.price}
-                                    />
-                                </div>
-                                <div className="relative my-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Loại sản phẩm
-                                    </label>
-                                    <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                        {pathname === `/admin/update-item/food/${foodId}` ?
-                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
-                                            <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
+                                    </div>
+                                    <div className='px-4'>
+                                        <input
+                                            onChange={handleFileChange}
+                                            type="file"
+                                            className="hidden"
+                                            id="form_img-upload"
+                                        />
+                                        <label
+                                            htmlFor="form_img-upload"
+                                            className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                        >
+                                            Chọn một tập tin
+                                        </label>
                                     </div>
                                 </div>
-                                <div className='flex justify-end'>
-                                    <button
-                                        className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                        type='submit'
-                                        disabled={loading}
-                                    >
-                                        {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                        &nbsp;{pathname === '/admin/add-item/food' ? <span>Thêm sản phẩm</span> : <span>Lưu thay đổi</span>}
-                                    </button>
-                                </div>
-                            </form>
+                                <form className='px-4 w-[80%]' id='formAddCinema' onSubmit={pathname === "/admin/add-item/food" ? handleAddFood : handleUpdateFood} action="">
+                                    <div className="relative my-4">
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            Tên sản phẩm
+                                        </label>
+                                        <input
+                                            onChange={e => setFood({ ...food, name: e.target.value })}
+                                            type="text"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            value={food.name}
+                                        />
+                                    </div>
+                                    <div className="relative my-4">
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            Giá tiền
+                                        </label>
+                                        <input
+                                            onChange={e => { setFood({ ...food, price: e.target.value }); }}
+                                            type="text"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            value={food.price}
+                                        />
+                                    </div>
+                                    <div className="relative my-4">
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            Loại sản phẩm
+                                        </label>
+                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                            {pathname === `/admin/update-item/food/${foodId}` ?
+                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
+                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-end'>
+                                        <button
+                                            className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                            type='submit'
+                                            disabled={loading}
+                                        >
+                                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                            &nbsp;{pathname === '/admin/add-item/food' ? <span>Thêm sản phẩm</span> : <span>Lưu thay đổi</span>}
+                                        </button>
+                                    </div>
+                                </form>
 
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
 
         </div >

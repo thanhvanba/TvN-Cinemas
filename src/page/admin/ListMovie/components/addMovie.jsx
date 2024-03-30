@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -171,6 +171,17 @@ const AddMovie = () => {
     return (
         <div>
             <div className='px-4 relative'>
+                <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                    <div className='flex items-center'>
+                        <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl'>Phim</h2>
+                        <ChevronRightIcon className='px-1 h-6' />
+                        {
+                            /^\/admin\/(add-item\/movie)/.test(pathname) ?
+                                <h2 className='cursor-default text-xl'>Thêm phim mới</h2>
+                                : <h2 className='cursor-default text-xl'>Chỉnh sửa phim</h2>
+                        }
+                    </div>
+                </div>
                 <div className='pt-8'>
                     <div className='absolute mx-auto top-80 right-1/2 z-50'>
                         {loading1 && <Loading />}

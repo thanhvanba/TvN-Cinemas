@@ -75,6 +75,11 @@ const AdminService = () => {
         }
     };
     const addFoodApi = async (data) => {
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                console.log(`Field: ${key}, Type: ${typeof data[key]}`);
+            }
+        }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
@@ -83,6 +88,7 @@ const AdminService = () => {
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     }
                 },
             );
@@ -97,12 +103,22 @@ const AdminService = () => {
     const updateFoodApi = async (data, foodId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (key === "image" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "image");
+                        data[key] = file;
+                    }
+                }
+            }
             const response = await axios.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/foods/${foodId}`,
                 data,
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     }
                 },
             );

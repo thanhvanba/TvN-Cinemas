@@ -158,8 +158,8 @@ const UserService = () => {
             `${process.env.REACT_APP_HOST_API_KEY}/cinemas/${cinemaId}/showtimes`
         );
     };
-    const getFoodApi = async (type) => {
-        const params = { type: type }
+    const getFoodApi = async (type, index, size) => {
+        const params = { type: type, index: index, size: size }
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/foods`,
             {
@@ -279,19 +279,27 @@ const UserService = () => {
         );
     }
     const reviewMovieApi = async (comment, rating, movieId) => {
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.post(
-            `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/${movieId}/review`,
-            {
-                comment: comment,
-                rating: rating
-            },
-            {
-                headers: {
-                    "Authorization": bearerToken,
-                }
-            },
-        );
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/${movieId}/review`,
+                {
+                    comment: comment,
+                    rating: rating
+                },
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+
+            if (response.data.success) {
+                toastNotify(response.data.message, "success");
+            }
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
+        }
     }
     return {
         getUserInfoApi,

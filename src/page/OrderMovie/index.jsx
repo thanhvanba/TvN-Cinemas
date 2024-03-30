@@ -25,6 +25,7 @@ const OrderMovie = () => {
     const [foods, setFoods] = useState([])
     console.log("🚀 ~ OrderMovie ~ foods:", foods)
     const [listWater, setListWater] = useState([])
+    console.log("🚀 ~ OrderMovie ~ listWater:", listWater)
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
     const [listSnacks, setListSnacks] = useState([])
@@ -167,17 +168,17 @@ const OrderMovie = () => {
         let resFood1 = await getFoodApi("NUOCLOC")
         let resFood2 = await getFoodApi("NUOCNGOT")
         let resFood3 = await getFoodApi("ANVAT")
-        if (resFood && resFood.data && resFood.data.result) {
-            setListPopcorn(resFood.data.result)
+        if (resFood && resFood.data && resFood.data.result.content) {
+            setListPopcorn(resFood.data.result.content)
         }
-        if (resFood1 && resFood1.data && resFood1.data.result) {
-            setListWater(resFood1.data.result)
+        if (resFood1 && resFood1.data && resFood1.data.result.content) {
+            setListWater(resFood1.data.result.content)
         }
-        if (resFood2 && resFood2.data && resFood2.data.result) {
-            setListSoda(resFood2.data.result)
+        if (resFood2 && resFood2.data && resFood2.data.result.content) {
+            setListSoda(resFood2.data.result.content)
         }
-        if (resFood3 && resFood3.data && resFood3.data.result) {
-            setListSnacks(resFood3.data.result)
+        if (resFood3 && resFood3.data && resFood3.data.result.content) {
+            setListSnacks(resFood3.data.result.content)
         }
     }
     // const handleGetSeatBooked = async () => {
@@ -251,7 +252,7 @@ const OrderMovie = () => {
                         price: price,
                         row: row,
                         column: seatNum,
-                        timeShow: format(parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                        timeShow: format(parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm:ss', new Date()), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
                     }]);
                 }
             }

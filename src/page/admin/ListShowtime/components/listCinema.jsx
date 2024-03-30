@@ -75,13 +75,7 @@ const ListCinema = () => {
         <div>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
 
-                <div className='flex items-center'>
-                    <h2 onClick={() => { changeTab("/admin/list-cinema") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
-                    <ChevronRightIcon className='px-1 h-6' />
-                    {
-                        <h2 className='cursor-default text-xl'>Danh sách rạp</h2>
-                    }
-                </div>
+                <h2 className='text-3xl cursor-default'>Quản lý rạp</h2>
                 <button
                     className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
                     onClick={() => changeTab('/admin/add-item/cinema')}

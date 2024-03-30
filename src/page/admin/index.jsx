@@ -32,7 +32,9 @@ const Admin = () => {
 
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState(item || '1');
+  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
+  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }

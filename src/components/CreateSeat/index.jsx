@@ -11,7 +11,7 @@ const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
             showtimeId: showtimeId,
             timeShow: dateTime
                 ? format(
-                    parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()),
+                    parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm:ss', new Date()),
                     "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
                 )
                 : null,

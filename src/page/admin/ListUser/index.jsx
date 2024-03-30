@@ -18,6 +18,14 @@ import Loading from '../../../components/Loading'
 const ListUser = () => {
     const [loading, setLoading] = useState(false);
     const [modalStates, setModalStates] = useState({});
+    const [pagination, setPagination] = useState(
+        {
+            pageNumber: 1,
+            pageSize: null,
+            totalPages: null,
+            totalElements: null
+        }
+    );
     const navigate = useNavigate()
 
     const { addManagerApi, getAllUserApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi } = AdminService()
@@ -25,7 +33,6 @@ const ListUser = () => {
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
 
-    const [currentPage, setCurrentPage] = useState(1);
     const [account, setAccount] = useState({
         fullName: "",
         email: "",
@@ -35,7 +42,7 @@ const ListUser = () => {
         cinemaId: ""
     })
     const listUser = {
-        header: { stt: "STT", info: "Thông tin cơ bản", username: "user name", role: "role", status: "status", created: "created date", login: "last login", action: "actions" },
+        header: { stt: "STT", info: "Thông tin cơ bản", username: "Tên đăng nhập", role: "Chức vụ", status: "status", created: "Ngày tạo", login: "Đăng nhập gần đây", action: "actions" },
         user: allUser,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
         iAvatar: UserCircleIcon
@@ -56,18 +63,24 @@ const ListUser = () => {
             setAllCinema(res.data.result)
         }
     }
-    const handleGetUser = async (pageIndex) => {
+    const handleGetUser = async (pageNumber) => {
         setLoading(true);
-        let ress = await getAllUserApi(pageIndex, 5)
+        let ress = await getAllUserApi(pageNumber, 5)
         setLoading(false);
-        setCurrentPage(pageIndex)
         if (ress && ress.data && ress.data.result && ress.data.result && ress.data.result.content) {
             setAllUser(ress.data.result.content)
+            setPagination(prevPagination => ({
+                ...prevPagination,
+                pageNumber: pageNumber,
+                pageSize: ress.data.result.pageSize,
+                totalPages: ress.data.result.totalPages,
+                totalElements: ress.data.result.totalElements
+            }));
         }
     }
     const handleChangeStatus = async (userId) => {
         await changeStatusUserApi(userId);
-        handleGetUser(currentPage)
+        handleGetUser(pagination.pageNumber)
         const updatedUser = allUser.map((user) => {
             if (user.userId === userId) {
                 return { ...user, delete: !user.delete };
@@ -80,7 +93,7 @@ const ListUser = () => {
 
     const handleDeleteUser = async (userId) => {
         await deleteUserApi(userId);
-        handleGetUser(currentPage)
+        handleGetUser(pagination.pageNumber)
         const updatedUser = allUser.filter((user) => user.userId !== userId);
 
         setAllUser(updatedUser);
@@ -102,7 +115,7 @@ const ListUser = () => {
 
     useEffect(() => {
         handleGetItem()
-        handleGetUser(currentPage)
+        handleGetUser(pagination.pageNumber)
     }, []);
     const nameCinema = allCinema.map(item => item.cinemaName)
     return (
@@ -233,87 +246,86 @@ const ListUser = () => {
 
                 <div className='relative'>
                     <div className='px-3'>
-                        {
-                            allUser.length === 0 ?
-                                <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                                    {loading && <Loading />}
-                                </div>
-                                :
-                                <div className=''>
-                                    {
-                                        <table className='mt-6 w-full'>
-                                            <thead className=''>
-                                                <tr>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.stt}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.info}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.username}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.role}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.status}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.created}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.login}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.action}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    listUser && listUser.user && listUser.user.map((item, index) => (
-                                                        <tr className='border-b-8 border-slate-50 bg-slate-100'>
-                                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>
-                                                                <div className='flex items-center'>
-                                                                    <div div className='pr-2' >
-                                                                        <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
-                                                                    </div >
-                                                                    <div>
-                                                                        <h3>{item.fullName}</h3>
-                                                                        <p className='font-normal'>Email: {item.email}</p>
-                                                                        <span className='font-normal'>Sdt: {item.phone}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className='text-start font-medium px-5 py-4'>{item.userName}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>{item.role.roleName}</td>
-                                                            <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Approved" : "Banned"}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt).date}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt).date}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>
-                                                                <div className='flex items-center'>
-                                                                    <button
-                                                                        className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                        type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.userId) }}
-                                                                    >
-                                                                        <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                                    </button>
-                                                                    {/* <a className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                                                <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                            </a> */}
-                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                                        <listUser.action.aDelete className='h-4 w-4 text-red-600' />
-                                                                    </button>
-                                                                    <div>
-                                                                        {modalStates[item.userId] && (
-                                                                            <ModalComponent
-                                                                                isOpen={modalStates[item.userId]}
-                                                                                onClose={() => handleCloseModal(item.userId)}
-                                                                                onConfirm={() => handleDeleteUser(item.userId)}
-                                                                                onCancel={() => handleCloseModal(item.userId)}
-                                                                                title='Xóa Tài khoản'
-                                                                                content='Bạn có chắc chắn xóa tài khoản này ???'
-                                                                                buttonName='Delete'
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                }
-                                            </tbody>
-                                        </table>
-                                    }
 
-                                    <Pagination pageNumber={currentPage} onPageChange={handleGetUser} />
-                                </div>
+                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                            {loading && <Loading />}
+                        </div>
+                        {!loading &&
+                            <div className=''>
+                                {
+                                    <table className='mt-6 w-full'>
+                                        <thead className=''>
+                                            <tr>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.stt}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.info}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.username}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.role}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.status}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.created}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.login}</th>
+                                                <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listUser.header.action}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                listUser && listUser.user && listUser.user.map((item, index) => (
+                                                    <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                                        <td className='text-start font-medium px-5 py-4'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
+                                                        <td className='text-start font-medium px-5 py-4'>
+                                                            <div className='flex items-center'>
+                                                                <div div className='pr-2' >
+                                                                    <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
+                                                                </div >
+                                                                <div>
+                                                                    <h3>{item.fullName}</h3>
+                                                                    <p className='font-normal'>Email: {item.email}</p>
+                                                                    <span className='font-normal'>Sdt: {item.phone}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className='text-start font-medium px-5 py-4'>{item.userName}</td>
+                                                        <td className='text-start font-medium px-5 py-4'>{item.role.roleName}</td>
+                                                        <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Approved" : "Banned"}</td>
+                                                        <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.createdAt).date}</td>
+                                                        <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.lastLoginAt).date}</td>
+                                                        <td className='text-start font-medium px-5 py-4'>
+                                                            <div className='flex items-center'>
+                                                                <button
+                                                                    className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
+                                                                    type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }}
+                                                                >
+                                                                    <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                                </button>
+                                                                <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/user/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                                    <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                                </a>
+                                                                {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                        <listUser.action.aDelete className='h-4 w-4 text-red-600' />
+                                                                    </button> */}
+                                                                <div>
+                                                                    {modalStates[item.userId] && (
+                                                                        <ModalComponent
+                                                                            isOpen={modalStates[item.userId]}
+                                                                            onClose={() => handleCloseModal(item.userId)}
+                                                                            onConfirm={() => handleChangeStatus(item.userId)}
+                                                                            onCancel={() => handleCloseModal(item.userId)}
+                                                                            title='Xóa Tài khoản'
+                                                                            content='Bạn có chắc chắn xóa tài khoản này ???'
+                                                                            buttonName='Delete'
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+
+                                <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetUser} />
+                            </div>
                         }
                     </div>
                 </div>

@@ -29,7 +29,7 @@ const ListRoom = () => {
         }
     );
     const [modalStates, setModalStates] = useState({});
-    const [allRoom, setAllRoom] = useState([]) 
+    const [allRoom, setAllRoom] = useState([])
 
     const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi, getRoomeByCinemaApi } = AdminService()
     const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
@@ -107,81 +107,73 @@ const ListRoom = () => {
 
                     }
                 </div>
-                <div className='border-2 h-screen'>
-                    <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                        {loading && <Loading />}
-                    </div>
-                    {!loading &&
-                        <div className='h-full'>
-                            <div className='flex justify-end items-center py-4 pr-4'>
-                                <div className="border-2 rounded-xl ">
-                                    <Search />
-                                </div>
-                            </div>
-                            <div className='flex justify-between h-[85%]'>
-                                <div className='w-full bg-slate-100 shadow-inner p-4 rounded-lg'>
-                                    <div>
-                                        <table className='mt-6 w-full'>
-                                            <thead className=''>
-                                                <tr>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.stt}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.roomName}</th>
-                                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.cinema}</th>
-                                                    {<th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.status}</th>}
-                                                    {<th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.action}</th>}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    listRoom.rooms.map((item, index) => (
-                                                        <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
-                                                            <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>{item.roomName}</td>
-                                                            <td className='text-start font-medium px-5 py-4'>
-                                                                <div className='flex items-center'>
-                                                                    <div>
-                                                                        <h3>{item.cinema.cinemaName}</h3>
-                                                                        <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}
-                                                            {<td className='text-start font-medium px-5 py-4'>
-                                                                <div className='flex items-center'>
-                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                                        <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                                    </button>
-                                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                                        <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
-                                                                    </button>
-                                                                    <div>
-                                                                        {modalStates[item.roomId] && (
-                                                                            <ModalComponent
-                                                                                isOpen={modalStates[item.roomId]}
-                                                                                onClose={() => handleCloseModal(item.roomId)}
-                                                                                onConfirm={() => handleDeleteRoom(item.roomId)}
-                                                                                onCancel={() => handleCloseModal(item.roomId)}
-                                                                                title='Xóa Phòng'
-                                                                                content='Bạn có chắc chắn xóa phòng này ???'
-                                                                                buttonName='Delete'
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </td>}
-                                                        </tr>
-                                                    ))
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-
+                <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                    {loading && <Loading />}
+                </div>
+                {!loading &&
+                    <div className='h-full'>
+                        <div className='flex justify-end items-center py-4 pr-4'>
+                            <div className="border-2 rounded-xl ">
+                                <Search />
                             </div>
                         </div>
-                    }
-                </div>
+                        <div>
+                            <table className='mt-6 w-full'>
+                                <thead className=''>
+                                    <tr>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.stt}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.roomName}</th>
+                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.cinema}</th>
+                                        {<th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.status}</th>}
+                                        {<th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listRoom.header.action}</th>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        listRoom.rooms.map((item, index) => (
+                                            <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                                <td className='text-start font-medium px-5 py-4'>{index + 1}</td>
+                                                <td className='text-start font-medium px-5 py-4'>{item.roomName}</td>
+                                                <td className='text-start font-medium px-5 py-4'>
+                                                    <div className='flex items-center'>
+                                                        <div>
+                                                            <h3>{item.cinema.cinemaName}</h3>
+                                                            <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-start font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}
+                                                {<td className='text-start font-medium px-5 py-4'>
+                                                    <div className='flex items-center'>
+                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                                            <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                        </button>
+                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                            <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
+                                                        </button>
+                                                        <div>
+                                                            {modalStates[item.roomId] && (
+                                                                <ModalComponent
+                                                                    isOpen={modalStates[item.roomId]}
+                                                                    onClose={() => handleCloseModal(item.roomId)}
+                                                                    onConfirm={() => handleDeleteRoom(item.roomId)}
+                                                                    onCancel={() => handleCloseModal(item.roomId)}
+                                                                    title='Xóa Phòng'
+                                                                    content='Bạn có chắc chắn xóa phòng này ???'
+                                                                    buttonName='Delete'
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>}
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
             </div>
         </div >
     )
