@@ -7,7 +7,7 @@ import FormatDataTime from '../../../../../utils/FormatDataTime';
 import TruncatedContent from '../../../../../utils/TruncatedContent';
 import SelectMenu from '../../../../../components/SelectMenu/SelectMenu';
 import ModalComponent from '../../../../../utils/Modal';
-import { addDays } from 'date-fns';
+import { addDays, format, isAfter, parse } from 'date-fns';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailShowtime from './detailShowtime';
 import ManagerService from '../../../../../service/ManagerService';
@@ -52,8 +52,8 @@ const ShowtimeByRoom = () => {
   const handleGetShowtimeByRoom = async (roomId, cinemaId) => {
     setLoading(true)
     let resST = await getShowtimeByCinemaApi(cinemaId)
-    if (resST && resST.data && resST.data.result) {
-      const showtimes = resST.data.result.filter(showtime => showtime.room.roomId === roomId)
+    if (resST && resST.data && resST.data.result.content) {
+      const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
       setAllShowtime(showtimes);
     }
     setLoading(false)
@@ -68,11 +68,11 @@ const ShowtimeByRoom = () => {
   }
   const handleGetRoomByCinema = async (cinemaId) => {
     let resR = await getRoomeByCinemaApi(cinemaId)
-    if (resR && resR.data && resR.data.result.content) {
-      setAllRoom(resR.data.result.content);
+    if (resR && resR.data && resR.data.result) {
+      setAllRoom(resR.data.result);
     }
   }
-
+  let hasShowtimes = false;
   const ListDayShowtime = () => {
 
     // Tạo danh sách 6 ngày liên tiếp
@@ -163,7 +163,7 @@ const ShowtimeByRoom = () => {
               <div className="border-2 rounded-xl ">
                 <Search />
               </div>
-              <div className="inline-block pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
+              <div className="inline-block py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
                 <SelectMenu onSelectChange={handleSelectChange} items={dateList} content={selectedDateTime.date} />
               </div>
             </div>
@@ -231,32 +231,40 @@ const ShowtimeByRoom = () => {
                           <td className='text-center font-medium px-5 py-4'>
                             <ul className='relative items-center grid grid-cols-3 gap-2'>
                               {
-                                item.listTimeShow
-                                  .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                  ?.time.map((time, index) => {
-                                    const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                                    const currentTime = FormatDataTime(currentDateTime.toISOString()).time
-
-                                    const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
+                                item.schedules.map((schedule, index) => {
+                                  const currentDateTime = new Date();
+                                  const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                  if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                    const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                    hasShowtimes = true;
                                     return (
-                                      <li
+                                      <li key={index}
                                         onClick={() => {
-                                          setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                          const updatedDateTime = { ...selectedDateTime, time: time };
+                                          setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                          const updatedDateTime = { ...selectedDateTime, time: schedule.startTime };
                                           navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
                                         }}
+                                        className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                                       >
                                         <a
                                           className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-600 opacity-70'}`}
                                         >
-                                          {time}
+
+                                          {format(
+                                            parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                            "HH:mm"
+                                          )}
                                         </a>
                                       </li>
-                                    );
-                                  }) || (
-                                  <p className='absolute left-20 -top-4 text-center text-lg text-slate-300'>-- Chưa có lịch chiếu --</p>
-                                )}
+                                    )
+                                  }
+
+                                })
+                              }
                             </ul>
+                            {!hasShowtimes && (
+                              <p className=' text-center text-lg text-slate-400'>-- Chưa có lịch chiếu --</p>
+                            )}
                           </td>
                           <td className='font-medium px-5 py-4'>
                             {(

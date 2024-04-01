@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect, useContext } from 'react';
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { format, addDays } from 'date-fns';
+import { format, addDays, parse, isAfter } from 'date-fns';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import SelectMenu from '../SelectMenu/SelectMenu'
 import MovieService from '../../service/MovieService';
@@ -27,48 +27,51 @@ function OrderQuickly() {
 
     const [toggle, setToggle] = useState(false)
     const [allCinema, setAllCinema] = useState([])
+    console.log("🚀 ~ OrderQuickly ~ allCinema:", allCinema)
     const [allShowMovie, setAllShowMovie] = useState([])
+    console.log("🚀 ~ OrderQuickly ~ allShowMovie:", allShowMovie)
     const [dateList, setDateList] = useState([]);
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
     const [allShowtime, setAllShowtime] = useState([])
-    const [foundShowtime, setFoundShowtime] = useState({
-        showTimeId: null,
-        room: {
-            roomId: null,
-            cinema: {
-                cinemaId: null,
-                location: null,
-                cinemaName: null,
-                desc: null,
-                status: null,
-                urlLocation: null
-            },
-            roomName: null
-        },
-        movie: {
-            movieId: null,
-            title: null,
-            director: null,
-            genres: null,
-            actor: null,
-            releaseDate: null,
-            desc: null,
-            poster: null,
-            trailerLink: null,
-            duration: null,
-            reviews: null,
-            rating: null,
-            delete: null
-        },
-        timeStart: null,
-        timeEnd: null,
-        status: null,
-        listTimeShow: [
-        ],
-        seats: null,
-        special: null
-    })
-
+    console.log("🚀 ~ OrderQuickly ~ allShowtime:", allShowtime)
+    // const [foundShowtime, setFoundShowtime] = useState({
+    //     showTimeId: null,
+    //     room: {
+    //         roomId: null,
+    //         cinema: {
+    //             cinemaId: null,
+    //             location: null,
+    //             cinemaName: null,
+    //             desc: null,
+    //             status: null,
+    //             urlLocation: null
+    //         },
+    //         roomName: null
+    //     },
+    //     movie: {
+    //         movieId: null,
+    //         title: null,
+    //         director: null,
+    //         genres: null,
+    //         actor: null,
+    //         releaseDate: null,
+    //         desc: null,
+    //         poster: null,
+    //         trailerLink: null,
+    //         duration: null,
+    //         reviews: null,
+    //         rating: null,
+    //         delete: null
+    //     },
+    //     timeStart: null,
+    //     timeEnd: null,
+    //     status: null,
+    //     listTimeShow: [
+    //     ],
+    //     seats: null,
+    //     special: null
+    // })
+    const [foundShowtime, setFoundShowtime] = useState([])
     console.log("🚀 ~ OrderQuickly ~ foundShowtime:", foundShowtime)
     const [infoOrderQuickly, setInfoOrderQuickly] = useState({
         movieId: "",
@@ -77,6 +80,7 @@ function OrderQuickly() {
         timeShow: ""
     })
 
+    console.log("🚀 ~ OrderQuickly ~ infoOrderQuickly:", infoOrderQuickly)
     const handleToggle = () => {
         setToggle(!toggle)
     }
@@ -97,20 +101,21 @@ function OrderQuickly() {
     const handleGetShowMovie = async () => {
 
         let resNowPlayMovie = await NowPlayingMovieApi()
-        let resSpecialMovie = await SpecialMovieApi()
-        if (resNowPlayMovie && resSpecialMovie &&
-            resNowPlayMovie.data && resSpecialMovie.data &&
-            resNowPlayMovie.data.result && resSpecialMovie.data.result
-        ) {
-            let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
-            setAllShowMovie(movie)
-        }
+        resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
+            setAllShowMovie(resNowPlayMovie.data.result)
+
     }
 
     const handleGetShowtimeByMovie = async (movieId) => {
-        let resShowtime = await getShowtimeByMovieApi(movieId)
-        if (resShowtime && resShowtime.data && resShowtime.data.result && resShowtime.data.result) {
-            setAllShowtime(resShowtime.data.result)
+        console.log("🚀 ~ handleGetShowtimeByMovie ~ movieId:", movieId)
+        // let resShowtimes = await getShowtimeByMovieApi(movieId)
+        // if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
+        //     setAllShowtime(resShowtimes.data.result)
+        // }
+
+        let resShowtimes = await getShowtimeByMovieApi(movieId)
+        if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
+            setAllShowtime(resShowtimes.data.result)
         }
     }
 
@@ -123,15 +128,12 @@ function OrderQuickly() {
     const FoundShowtime = (movieId, cinemaId) => {
         console.log("🚀 ~ FoundShowtime ~ cinemaId:", cinemaId)
         console.log("🚀 ~ FoundShowtime ~ movieId:", movieId)
-
-        console.log("🚀 ~ FoundShowtime ~ allShowtime:", allShowtime)
-        const foundShowtime = allShowtime.find(
+        const foundShowtime = allShowtime.filter(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
                 item.movie.movieId === movieId
         );
         if (foundShowtime) {
-            console.log("🚀 ~ FoundShowtime ~ foundShowtime:", foundShowtime)
             setFoundShowtime(foundShowtime);
         } else {
             setFoundShowtime(foundShowtime);
@@ -155,7 +157,7 @@ function OrderQuickly() {
                 const movie = allShowMovie.find(movie => movie.title === selectedValue)
                 const movieId = movie.movieId
                 setInfoOrderQuickly({ ...infoOrderQuickly, movieId: movieId })
-                handleGetShowtimeByMovie(infoOrderQuickly.movieId)
+                handleGetShowtimeByMovie(movieId)
                 break;
             case 'cinema':
                 const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
@@ -181,6 +183,7 @@ function OrderQuickly() {
         handleGetAllCinema()
         ListDayShowtime()
     }, []);
+    let hasShowtimes = false
     return (
         <div className="block h-36 w-full">
             <div className="inline-block md:w-[40%] lg:w-[18%] p-3 items-center justify-between font-bold text-emerald-800">
@@ -215,37 +218,54 @@ function OrderQuickly() {
                 {toggle &&
                     <div className='bg-slate-100 py-8 absolute right-4 top-32 rounded-xl'>
                         <ul className='px-2 grid grid-cols-4 gap-4 w-80'>
-                            {
-                                foundShowtime && foundShowtime.listTimeShow
-                                    .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                    ?.time.map((time, index) => {
-                                        const currentDateTime = new Date();
-                                        const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                                        const currentTime = FormatDataTime(currentDateTime.toISOString()).time
-
-                                        const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
+                            {foundShowtime.map((showtimeByRoom, index) => (
+                                showtimeByRoom.schedules.map((schedule, index) => {
+                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
+                                    const currentDateTime = new Date();
+                                    const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                    if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                        const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
+                                        hasShowtimes = true;
                                         return (
-                                            <li key={index} onClick={() => {
-                                                if (!user.auth) {
-                                                    handleModalStates();
-                                                } else if (isTimeInFuture) {
-                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                    const updatedDateTime = { ...selectedDateTime, time: time };
-                                                    navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                }
-                                            }} className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}>
+                                            <li key={index}
+                                                onClick={() => {
+                                                    if (!user.auth) {
+                                                        handleModalStates();
+                                                    } else if (isTimeInFuture) {
+                                                        setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                        const updatedDateTime = {
+                                                            ...selectedDateTime, time: schedule.startTime
+                                                        };
+
+                                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
+                                                        navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                    }
+                                                }}
+                                                className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                            >
                                                 <a
                                                     className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
                                                     style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                                 >
-                                                    {time}
+
+                                                    {format(
+                                                        parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                        "HH:mm"
+                                                    )}
                                                 </a>
                                             </li>
-                                        );
-                                    }) || (
-                                    <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
-                                )}
+                                        )
+                                    }
+
+                                })
+                            ))
+
+                            }
                         </ul>
+                        {!hasShowtimes && (
+                            <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
+                        )}
                     </div>
                 }
             </div>

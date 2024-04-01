@@ -9,6 +9,7 @@ import ManagerService from '../../../../../service/ManagerService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import useLoadingState from '../../../../../hook/UseLoadingState'
+import { format, isAfter, parse } from 'date-fns'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
   const { cinemaId } = useParams()
@@ -100,6 +101,8 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     setLoading(true)
     hadleGetItem(showtimeId)
   }, [dateTime]);
+
+  let hasShowtimes = false
   return (
     <div className='top-0 bottom-0 left-0 bg-black bg-opacity-50 w-full fixed flex justify-center items-center z-10'>
       <div className="w-[60%] z-10 overflow-hidden bg-slate-300 rounded-md">
@@ -133,34 +136,41 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                   <p className='font-light'>Các xuất chiếu</p>
                   <ul className='relative items-center grid grid-cols-3 gap-2 py-4'>
                     {
-                      oneShowtime.listTimeShow
-                        .find((item) => FormatDataTime(item.date).date === dateTime.date)
-                        ?.time.map((time, index) => {
-                          const currentDateTime = new Date();
-                          const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                          const currentTime = FormatDataTime(currentDateTime.toISOString()).time
-
-                          const isTimeInFuture = dateTime.date > currentDate || (dateTime.date === currentDate && time > currentTime);
-                          const isSelect = dateTime.time === time
+                      oneShowtime && oneShowtime.schedules && oneShowtime.schedules.map((schedule, index) => {
+                        const currentDateTime = new Date();
+                        const selectDateTime = parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                        if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                          const isTimeInFuture = isAfter(selectDateTime, currentDateTime);
+                          hasShowtimes = true;
+                          const isSelect = dateTime.time === schedule.startTime
                           return (
-                            <li
+                            <li key={index}
                               onClick={() => {
-                                setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                const updatedDateTime = { ...selectedDateTime, time: time };
+                                setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                const updatedDateTime = { ...selectedDateTime, time: schedule.startTime };
                                 navigate(`/admin/list-showtime/cinema/${cinemaId}/${showtimeId}`, { state: { dateTime: updatedDateTime } });
                               }}
+                              className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                             >
                               <a
                                 className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? 'bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-600 opacity-70'} ${isSelect ? 'bg-green-400' : ''}`}
                               >
-                                {time}
+
+                                {format(
+                                  parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                  "HH:mm"
+                                )}
                               </a>
                             </li>
-                          );
-                        }) || (
-                        <p className='absolute left-20 -top-4 text-center text-lg text-slate-300'>-- Chưa có lịch chiếu --</p>
-                      )}
+                          )
+                        }
+
+                      })
+                    }
                   </ul>
+                  {!hasShowtimes && (
+                    <p className=' text-center text-lg text-slate-400'>-- Chưa có lịch chiếu --</p>
+                  )}
                 </div>
               </div>
 

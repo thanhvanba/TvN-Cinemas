@@ -91,7 +91,7 @@ const AddShowtime = () => {
         listTimeShow: [],
     })
 
-    const [schedule, setSchedule] = useState(oneShowtime.listTimeShow || [{ date: "", time: [] },]);
+    const [schedule, setSchedule] = useState(oneShowtime.schedules || []);
 
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
@@ -499,7 +499,7 @@ const AddShowtime = () => {
                                         <div className='p-8 border-2'>
                                             <h2 className='font-medium text-lg text-gray-900'>Schedule:</h2>
                                             <ul>
-                                                {schedule.map((item, index) => (
+                                                {schedule && schedule.map((item, index) => (
                                                     <li key={item.date}>
                                                         {item.time.length > 0 && (
                                                             <>

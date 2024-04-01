@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import { format, addDays } from 'date-fns';
+import { format, addDays, isAfter, parse } from 'date-fns';
 import { ChevronDownIcon, MapPinIcon, StarIcon as StarOutlineIcon } from "@heroicons/react/24/outline"
 import { StarIcon as StarSolidIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import SelectMenu from '../../components/SelectMenu/SelectMenu';
@@ -137,7 +137,7 @@ const Movie = () => {
         <div className='pt-32 h-auto'>
             <div className='max-w-6xl mx-auto pb-4'>
                 {/* chi tiết phim */}
-                <DetailMovie movie={movie}/>
+                <DetailMovie movie={movie} />
                 {/* ds lịch chiếu */}
                 <div className='py-8'>
                     {/* Tiêu đề */}
@@ -189,21 +189,24 @@ const Movie = () => {
                                                     <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
                                                         {foundShowtime.map((showtimeByRoom, index) => (
                                                             showtimeByRoom.schedules.map((schedule, index) => {
+                                                                console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
                                                                 const currentDateTime = new Date();
-                                                                const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                                                                const currentTime = FormatDataTime(currentDateTime.toISOString()).time
+                                                                const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
                                                                 if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                                                    // console.log("🚀 ~ showtimeByRoom.schedules.map ~ selectedDateTime.date:", selectedDateTime.date)
-                                                                    const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && schedule.startTime > currentTime);
+                                                                    const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
                                                                     hasShowtimes = true;
                                                                     return (
                                                                         <li key={index}
                                                                             onClick={() => {
                                                                                 if (!user.auth) {
                                                                                     handleModalStates();
-                                                                                } else {
+                                                                                } else if (isTimeInFuture) {
                                                                                     setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
-                                                                                    const updatedDateTime = { ...selectedDateTime, time: schedule.startTime };
+                                                                                    const updatedDateTime = {
+                                                                                        ...selectedDateTime, time: schedule.startTime
+                                                                                    };
+                                                                                    
                                                                                     console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
                                                                                     navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                                                 }
@@ -214,7 +217,11 @@ const Movie = () => {
                                                                                 className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
                                                                                 style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                                                             >
-                                                                                {schedule.startTime}
+
+                                                                                {format(
+                                                                                    parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                                                    "HH:mm"
+                                                                                )}
                                                                             </a>
                                                                         </li>
                                                                     )

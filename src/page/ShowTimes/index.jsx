@@ -10,7 +10,7 @@ import ModalComponent from '../../utils/Modal';
 import FormatDataTime from '../../utils/FormatDataTime'
 import TruncatedContent from '../../utils/TruncatedContent';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { format, addDays } from 'date-fns';
+import { format, addDays, parse, isAfter } from 'date-fns';
 
 import { LoginContext } from '../../context/LoginContext';
 import Loading from '../../components/Loading';
@@ -32,7 +32,9 @@ const ShowTimes = () => {
   const [allCinema, setAllCinema] = useState([])
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
+  console.log("🚀 ~ ShowTimes ~ listShowtime:", listShowtime)
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
+  console.log("🚀 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -58,14 +60,9 @@ const ShowTimes = () => {
       case "/showtimes/lichchieuphim":
         {
           let resNowPlayMovie = await NowPlayingMovieApi()
-          let resSpecialMovie = await SpecialMovieApi()
-          if (resNowPlayMovie && resSpecialMovie &&
-            resNowPlayMovie.data && resSpecialMovie.data &&
-            resNowPlayMovie.data.result && resSpecialMovie.data.result
-          ) {
-            let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
-            setAllShowMovie(movie)
-          }
+          resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
+            setAllShowMovie(resNowPlayMovie.data.result)
+
           setCurrentTab("1")
         }
         break;
@@ -81,14 +78,9 @@ const ShowTimes = () => {
       default:
         {
           let resNowPlayMovie = await NowPlayingMovieApi()
-          let resSpecialMovie = await SpecialMovieApi()
-          if (resNowPlayMovie && resSpecialMovie &&
-            resNowPlayMovie.data && resSpecialMovie.data &&
-            resNowPlayMovie.data.result && resSpecialMovie.data.result
-          ) {
-            let movie = [...resNowPlayMovie.data.result, ...resSpecialMovie.data.result]
-            setAllShowMovie(movie)
-          }
+          resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
+
+            setAllShowMovie(resNowPlayMovie.data.result)
           setCurrentTab("1")
         }
     }
@@ -121,7 +113,7 @@ const ShowTimes = () => {
     handleCheckPathname(pathname)
     ListDayShowtime()
   }, [pathname]);
-
+  let hasShowtimes = false;
   return (
     <div className="w-full pt-32 pb-10">
       <Tabs className="content-page">
@@ -234,41 +226,52 @@ const ShowTimes = () => {
                               <div className='block relative'>
                                 <div className='relative md:pl-28 pt-4'>
                                   <ul className='grid grid-cols-4 sm:grid-cols-5 gap-4'>
-                                    {
-                                      foundShowtime.listTimeShow
-                                        .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                        ?.time.map((time, index) => {
-                                          const currentDateTime = new Date();
-                                          const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                                          const currentTime = FormatDataTime(currentDateTime.toISOString()).time
+                                    {foundShowtime.schedules.map((schedule, index) => {
+                                      console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
+                                      const currentDateTime = new Date();
+                                      const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                      if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                        const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
+                                        hasShowtimes = true;
+                                        return (
+                                          <li key={index}
+                                            onClick={() => {
+                                              if (!user.auth) {
+                                                handleModalStates();
+                                              } else if (isTimeInFuture) {
+                                                setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                const updatedDateTime = {
+                                                  ...selectedDateTime, time: schedule.startTime
+                                                };
 
-                                          const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
-                                          return (
-                                            <li
-                                              key={index}
-                                              onClick={() => {
-                                                if (!user.auth) {
-                                                  handleModalStates();
-                                                } else if (isTimeInFuture) {
-                                                  setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                  const updatedDateTime = { ...selectedDateTime, time: time };
-                                                  navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                }
-                                              }}
-                                              className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
+                                                navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                              }
+                                            }}
+                                            className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                          >
+                                            <a
+                                              className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                              style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                             >
-                                              <a
-                                                className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-                                                style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-                                              >
-                                                {time}
-                                              </a>
-                                            </li>
-                                          );
-                                        }) || (
-                                        <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
-                                      )}
+
+                                              {format(
+                                                parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                "HH:mm"
+                                              )}
+                                            </a>
+                                          </li>
+                                        )
+                                      }
+
+                                    })
+
+                                    }
                                   </ul>
+                                  {!hasShowtimes && (
+                                    <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -297,12 +300,12 @@ const ShowTimes = () => {
 
               {/* Lịch chiếu theo rạp */}
               <TabPanel>
-                <div className='max-w-screen-xl mx-auto px-4'>
+                <div className='max-w-screen-xl mx-auto px-4 cursor-pointer'>
                   {/*ds rạp */}
                   <div className={`${allCinema.length >= 4 ? "grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "flex justify-center"} gap-8 mb-16 mx-4`}>
                     {
                       allCinema.map((item, index) => (
-                        <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='bg-slate-700 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
+                        <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='bg-slate-700 hover:bg-slate-600 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
                           <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                         </div>
                       ))
@@ -362,37 +365,52 @@ const ShowTimes = () => {
                                 <div className='block relative'>
                                   <div className='relative md:pl-28 pt-4'>
                                     <ul className='grid grid-cols-4 sm:grid-cols-5 gap-4'>
-                                      {
-                                        foundShowtime.listTimeShow
-                                          .find((item) => FormatDataTime(item.date).date === selectedDateTime.date)
-                                          ?.time.map((time, index) => {
-                                            const currentDateTime = new Date();
-                                            const currentDate = FormatDataTime(currentDateTime.toISOString()).date
-                                            const currentTime = FormatDataTime(currentDateTime.toISOString()).time
-
-                                            const isTimeInFuture = selectedDateTime.date > currentDate || (selectedDateTime.date === currentDate && time > currentTime);
-                                            return (
-                                              <li key={index} onClick={() => {
+                                      {foundShowtime && foundShowtime.schedules.map((schedule, index) => {
+                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
+                                        const currentDateTime = new Date();
+                                        const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                        if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                          const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                          console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
+                                          hasShowtimes = true;
+                                          return (
+                                            <li key={index}
+                                              onClick={() => {
                                                 if (!user.auth) {
                                                   handleModalStates();
                                                 } else if (isTimeInFuture) {
-                                                  setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-                                                  const updatedDateTime = { ...selectedDateTime, time: time };
-                                                  navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                  setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                  const updatedDateTime = {
+                                                    ...selectedDateTime, time: schedule.startTime
+                                                  };
+
+                                                  console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
+                                                  navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                 }
-                                              }} className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}>
-                                                <a
-                                                  className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-                                                  style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-                                                >
-                                                  {time}
-                                                </a>
-                                              </li>
-                                            );
-                                          }) || (
-                                          <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
-                                        )}
+                                              }}
+                                              className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                            >
+                                              <a
+                                                className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                                style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
+                                              >
+
+                                                {format(
+                                                  parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                  "HH:mm"
+                                                )}
+                                              </a>
+                                            </li>
+                                          )
+                                        }
+
+                                      })
+
+                                      }
                                     </ul>
+                                    {!hasShowtimes && (
+                                      <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
+                                    )}
                                   </div>
                                 </div>
                               </div>

@@ -82,6 +82,7 @@ const OrderMovie = () => {
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
     const { dateTime } = location.state || {};
+    console.log("🚀 ~ OrderMovie ~ dateTime:", dateTime)
     const { showtimeId } = useParams();
 
     const steps = [
@@ -323,7 +324,10 @@ const OrderMovie = () => {
                     {/* thông tin */}
                     <div className='text-slate-200'>
                         <h3 className='uppercase font-bold text-emerald-600'>{showtime.movie.title}</h3>
-                        <p>Suất chiếu: <span className='text-emerald-800'>{dateTime.time} - Ngày {dateTime.date}</span></p>
+                        <p>Suất chiếu: <span className='text-emerald-800'>{format(
+                            parse(`${dateTime.time}`, 'HH:mm:ss', new Date()),
+                            "HH:mm"
+                        )} - Ngày {dateTime.date}</span></p>
                         <p>Rạp: <span className='text-emerald-800'>{showtime.room.cinema.cinemaName}</span></p>
                     </div>
                     {/* thời gian */}
