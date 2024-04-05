@@ -12,6 +12,7 @@ import { LoginContext } from '../../../../context/LoginContext'
 import Pagination from '../../../../components/Pagination'
 import ModalComponent from '../../../../utils/Modal';
 import Loading from '../../../../components/Loading';
+import Search from '../../../../components/Search'
 
 const ListMovies = () => {
     const { GetAllMovieApi } = MovieService();
@@ -116,70 +117,73 @@ const ListMovies = () => {
 
                 {
                     !loading && <div className=''>
-                        {
-                            <table className='mt-6 w-full'>
-                                <thead className=''>
-                                    <tr>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.stt}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.movieInfo}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.rating}</th>
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.genres}</th>
-                                        {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.status}</th>}
-                                        <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.releaseDate}</th>
-                                        {user.role === "ADMIN" && <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{listMovie.header.action}</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listMovie.movie.map((item, index) => (
-                                            <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-2 border-slate-200 hover:bg-slate-200'>
-                                                <td className='text-start font-medium px-5 py-4'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
-                                                <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <div div className='pr-2' >
-                                                            <img className="h-20 w-16 text-emerald-600" src={item.poster} alt="" />
-                                                        </div >
-                                                        <div>
-                                                            <h3 className='uppercase'>{item.title}</h3>
-                                                        </div>
+                        <div className='flex justify-end items-center py-4 pr-4'>
+                            <div className="border-2 rounded-xl ">
+                                <Search />
+                            </div>
+                        </div>
+                        <table className='mt-6 w-full'>
+                            <thead className=''>
+                                <tr className='border-b-2 border-slate-200'>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.stt}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.movieInfo}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.rating}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.genres}</th>
+                                    {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.status}</th>}
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-9'>{listMovie.header.releaseDate}</th>
+                                    {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    listMovie.movie.map((item, index) => (
+                                        <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                            <td className='text-center font-medium px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
+                                            <td className='text-start font-medium px-2 py-3'>
+                                                <div className='flex items-center'>
+                                                    <div div className='pr-2' >
+                                                        <img className="h-20 w-16 text-emerald-600" src={item.poster} alt="" />
+                                                    </div >
+                                                    <div>
+                                                        <h3 className='uppercase'>{item.title}</h3>
                                                     </div>
-                                                </td>
-                                                <td className='text-start font-medium px-5 py-4'>{item.rating}</td>
-                                                <td className='text-start font-medium px-5 py-4'>{item.genres}</td>
-                                                {user.role === "ADMIN" && <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-start font-medium px-5 py-4`}>{item.delete ? "Hidden" : "Visible"}</td>}
-                                                <td className='text-start font-medium px-5 py-4'>{FormatDataTime(item.releaseDate).date}</td>
-                                                {user.role === "ADMIN" && <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.movieId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                            <listMovie.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                        </button>
-                                                        <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
-                                                            <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                        </a>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                            <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
-                                                        </button>
-                                                        <div>
-                                                            {modalStates[item.movieId] && (
-                                                                <ModalComponent
-                                                                    isOpen={modalStates[item.movieId]}
-                                                                    onClose={() => handleCloseModal(item.movieId)}
-                                                                    onConfirm={() => handleDeleteMovie(item.movieId)}
-                                                                    onCancel={() => handleCloseModal(item.movieId)}
-                                                                    title='Xóa Phim'
-                                                                    content='Bạn có chắc chắn xóa phim này ???'
-                                                                    buttonName='Delete'
-                                                                />
-                                                            )}
-                                                        </div>
+                                                </div>
+                                            </td>
+                                            <td className='text-center font-medium px-2 py-3'>{item.rating}</td>
+                                            <td className='text-center font-medium px-2 py-3'>{item.genres}</td>
+                                            {user.role === "ADMIN" && <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.delete ? "Hidden" : "Visible"}</td>}
+                                            <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.releaseDate).date}</td>
+                                            {user.role === "ADMIN" && <td className='text-center font-medium px-2 py-3'>
+                                                <div className='flex items-center'>
+                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.movieId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
+                                                        <listMovie.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                    </button>
+                                                    <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
+                                                        <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                    </a>
+                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                        <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
+                                                    </button>
+                                                    <div>
+                                                        {modalStates[item.movieId] && (
+                                                            <ModalComponent
+                                                                isOpen={modalStates[item.movieId]}
+                                                                onClose={() => handleCloseModal(item.movieId)}
+                                                                onConfirm={() => handleDeleteMovie(item.movieId)}
+                                                                onCancel={() => handleCloseModal(item.movieId)}
+                                                                title='Xóa Phim'
+                                                                content='Bạn có chắc chắn xóa phim này ???'
+                                                                buttonName='Delete'
+                                                            />
+                                                        )}
                                                     </div>
-                                                </td>}
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        }
+                                                </div>
+                                            </td>}
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
                         <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllMovie} />
                     </div>
                 }

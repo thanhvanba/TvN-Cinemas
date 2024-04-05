@@ -166,7 +166,7 @@ const AddCinema = () => {
                                                     disabled={loading}
                                                 >
                                                     {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                    &nbsp;{pathname === "/admin/add-item/cinema" ? "Thêm phim" : "Cập nhật"}
+                                                    &nbsp;{pathname === "/admin/add-item/cinema" ? "Thêm rạp phim" : "Cập nhật"}
                                                 </button>
                                             </div>
                                         </form>

@@ -253,7 +253,7 @@ const OrderMovie = () => {
                         price: price,
                         row: row,
                         column: seatNum,
-                        timeShow: format(parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm:ss', new Date()), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                        scheduleId: dateTime.scheduleId
                     }]);
                 }
             }

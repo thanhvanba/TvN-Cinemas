@@ -32,9 +32,7 @@ const Admin = () => {
 
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState(item || '1');
-  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
-  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -44,8 +42,8 @@ const Admin = () => {
     { content: "Phim", icon: FilmIcon, path: "list-movie" },
     { content: "Rạp", icon: CalendarDaysIcon, path: "list-cinema" },
     { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
-    { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-user" },
-    { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-cinemas" },
+    { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
+    { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
     // { content: "Review", icon: StarIcon, path: "list-review" },
     { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
   ]
@@ -74,11 +72,11 @@ const Admin = () => {
         setTabIndex(1);
     }
     {
-      item === "list-user" &&
+      item === "list-personnel" &&
         setTabIndex(3);
     }
     {
-      item === "list-cinemas" &&
+      item === "list-viewer" &&
         setTabIndex(4);
     }
     // {
@@ -182,7 +180,7 @@ const Admin = () => {
               <ListUser />
             </TabPanel>
             <TabPanel>
-              <ListCinema />
+              <ListUser />
             </TabPanel>
             {/* <TabPanel>
               <ListReview />

@@ -379,6 +379,40 @@ const AdminService = () => {
             }
         );
     };
+
+    const getAllPersonnelApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/personnel`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            }
+        );
+    };
+
+
+    const getAllViewerApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/viewers`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            }
+        );
+    };
+
     const getAllShowtimeApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
@@ -518,24 +552,32 @@ const AdminService = () => {
             },
         );
     };
-    const getShowtimeByCinemaApi = async (cinemaId) => {
+    const getShowtimeByCinemaApi = async (cinemaId, pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/showtimes`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };
-    const getShowtimeByRoomApi = async (roomId) => {
+    const getShowtimeByRoomApi = async (roomId, pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}/showtimes`,
             {
                 headers: {
                     "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
                 },
             },
         );
@@ -550,6 +592,79 @@ const AdminService = () => {
                 }
             },
         );
+    };
+    const deleteRoomAdminApi = async (roomId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.patch(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const addRoomAdminApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/room`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const quantitySeatBookedApi = async (showtimeId, scheduleId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/seats-booked/count`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    showtimeId: showtimeId,
+                    scheduleId: scheduleId
+                }
+            },
+        );
+    };
+    const deleteScheduleAdminApi = async (scheduleId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/schedule/${scheduleId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
     };
     return {
         addManagerApi,
@@ -582,7 +697,13 @@ const AdminService = () => {
         getAllMovieApi,
         getShowtimeByCinemaApi,
         getShowtimeByRoomApi,
-        getRoomeByCinemaApi
+        getRoomeByCinemaApi,
+        addRoomAdminApi,
+        deleteRoomAdminApi,
+        quantitySeatBookedApi,
+        deleteScheduleAdminApi,
+        getAllPersonnelApi,
+        getAllViewerApi
     }
 }
 

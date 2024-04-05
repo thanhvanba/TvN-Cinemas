@@ -167,15 +167,12 @@ const UserService = () => {
             },
         );
     }
-    const getSeatBookedApi = async (data) => {
-        return await axios.post(
+    const getSeatBookedApi = async (params) => {
+        return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/seats/booked`,
-            data,
             {
 
-                // headers: {
-                //     "Authorization": bearerToken,
-                // },
+                params: params
             }
 
         );

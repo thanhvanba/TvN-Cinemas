@@ -5,7 +5,7 @@ import { MapPinIcon } from "@heroicons/react/24/outline"
 const Cinema = ({ cinemaName, location, urlLocation }) => {
     return (
         <>
-            <div className='p-6'>
+            <div className='p-6 h-full'>
                 <h4 className='uppercase font-bold text-base text-slate-200'>{cinemaName}</h4>
                 <p className='text-sm text-slate-500'>{location}</p>
             </div>

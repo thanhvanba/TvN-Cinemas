@@ -8,7 +8,6 @@ import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent';
 import Statistical from '../../../utils/Statistical';
 import PieChart from '../../../utils/PieChart'
-import YearPicker from '../../../utils/YearPicker';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useLoadingState from '../../../hook/UseLoadingState'
@@ -22,6 +21,7 @@ import FormatDataTime from '../../../utils/FormatDataTime';
 import { LoginContext } from '../../../context/LoginContext';
 
 import Loading from '../../../components/Loading';
+import YearPicker from '../../../components/YearPicker';
 const Dashboard = () => {
   const { loading, setLoading } = useLoadingState(false);
   const [loading1, setLoading1] = useState(false);

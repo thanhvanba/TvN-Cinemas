@@ -5,14 +5,14 @@ import AdminService from '../../../../service/AdminService';
 import MovieService from '../../../../service/MovieService';
 import UserService from '../../../../service/UserService';
 import { LoginContext } from '../../../../context/LoginContext';
-import { ChevronRightIcon, PencilSquareIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, PencilSquareIcon, PowerIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Pagination from '../../../../components/Pagination';
 import Cinema from '../../../../components/Cinema';
 import Modal from '../../../../utils/Modal';
 import Loading from '../../../../components/Loading';
 
 const ListCinema = () => {
-    const { getAllShowtimeApi, getAllCinemaApi, deleteCinemaApi } = AdminService();
+    const { getAllShowtimeApi, getAllCinemaApi, deleteCinemaApi, changeStatusCinemaApi } = AdminService();
     const { getAllShowtimeByManagerApi, changeStatusShowtimeApi, deleteShowtimeApi } = ManagerService();
 
     const navigate = useNavigate();
@@ -49,7 +49,20 @@ const ListCinema = () => {
         }
         setLoading(false)
     }
+    const handleChangeStatus = async (cinemaId) => {
+        setLoading(true)
+        await changeStatusCinemaApi(cinemaId);
+        handleGetAllItem(pagination.pageNumber);
+        const updateCinemas = allCinema.map((cinema) => {
+            if (cinema.cinemaId === cinemaId) {
+                return { ...cinema, delete: !cinema.delete };
+            }
+            return cinema;
+        });
 
+        setAllCinema(updateCinemas);
+        setLoading(false)
+    };
     const handleDeleteCinema = async (cinemaId) => {
         await deleteCinemaApi(cinemaId);
         handleGetAllItem(pagination.pageNumber);
@@ -94,18 +107,24 @@ const ListCinema = () => {
                     <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-10 mx-4'>
                         {
                             allCinema.map((item, index) => (
-                                <div className='border-2 border-slate-400 rounded-xl w-full' >
-                                    <div className='p-1'>
-                                        <div className='flex'>
+                                <div className='border-2 border-slate-400 rounded-xl h-full w-full' >
+                                    <div className='p-1 h-full'>
+                                        <div className='flex relative h-full'>
                                             <div
                                                 key={`cinema-${index}`}
-                                                className='rounded-xl bg-slate-700 bg-opacity-90 sm:w-80 md:w-[260px] lg:w-64 flex flex-col justify-between'
+                                                className={`rounded-xl bg-slate-700 hover:bg-slate-400 cursor-pointer bg-opacity-90 sm:w-80 md:w-[260px] lg:w-64 flex flex-col justify-between`}
                                                 onClick={() => { navigate(`/admin/cinema/${item.cinemaId}/list-showtime`, { state: { cinemaName: item.cinemaName } }) }}
                                             // onClick={() => { changeTab(`/admin/update-item/cinema/${item.cinemaId}`) }}
                                             >
                                                 <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                                             </div>
+                                            {!item.status && <div className='absolute rounded-xl top-0 right-9 bottom-0 left-0 bg-red-900 bg-opacity-20'>
+                                                <XMarkIcon className='text-slate-700 opacity-70' />
+                                            </div>}
                                             <div className='w-1/6 pl-1'>
+                                                <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.cinemaId) }} className='flex justify-center items-center w-full h-8 mb-2 rounded-lg bg-emerald-100'>
+                                                    <PowerIcon className='h-6 w-6 text-emerald-600' />
+                                                </button>
                                                 <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/cinema/${item.cinemaId}`) }} className='flex justify-center items-center w-full h-8 mb-2 rounded-lg bg-cyan-100 cursor-pointer'>
                                                     <PencilSquareIcon className='h-6 w-6 text-cyan-600' />
                                                 </a>

@@ -10,9 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import ManagerService from '../../../../../service/ManagerService';
 import CinemaService from '../../../../../service/CinemaService';
+import AdminService from '../../../../../service/AdminService';
+import { LoginContext } from '../../../../../context/LoginContext';
 const AddRoom = () => {
     const { addRoomApi } = ManagerService()
+    const { addRoomAdminApi } = AdminService()
     const { getAllCinemaApi } = CinemaService()
+
+    const { user } = useContext(LoginContext);
 
     const [loading, setLoading] = useState(false);
     const [allCinema, setAllCinema] = useState([])
@@ -28,11 +33,17 @@ const AddRoom = () => {
         cinemaId: "",
         roomName: ""
     })
+
+    
+    console.log("🚀 ~ AddRoom ~ room:", room)
     const handleAddRoom = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const params = { roomName: room.roomName };
-        await addRoomApi(params);
+        const data = {
+            cinemaId: room.cinemaId,
+            roomName: room.roomName
+        };
+        user.role === "ADMIN" ? await addRoomAdminApi(data) : await addRoomApi(data);
         changeTab(-1)
         setLoading(false);
     };
@@ -48,12 +59,11 @@ const AddRoom = () => {
     const nameCinema = allCinema.map(item => item.cinemaName)
 
     const handleSelectChange = (selectedValue) => {
-        setFood((prevType) => ({ ...prevType, foodType: selectedValue }));
         const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
         const selectedId = cinema.cinemaId
         setRoom({ ...room, cinemaId: selectedId })
     };
-    
+
     useEffect(() => {
         handleGetCinema()
     }, []);

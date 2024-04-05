@@ -52,11 +52,11 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const changeStatusRoomApi = async (showtimeId) => {
+    const changeStatusRoomApi = async (roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.patch(
-                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${showtimeId}`,
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
                 {},
                 {
                     headers: {
@@ -72,11 +72,11 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const deleteRoomApi = async (showtimeId) => {
+    const deleteRoomApi = async (roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
-                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${showtimeId}`,
+            const response = await axios.patch(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
                 {
                     headers: {
                         "Authorization": bearerToken,
@@ -91,14 +91,13 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const addRoomApi = async (params) => {
+    const addRoomApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
-                null,
+                data,
                 {
-                    params: params,
                     headers: {
                         "Authorization": bearerToken,
                     }

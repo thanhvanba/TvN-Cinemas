@@ -31,7 +31,7 @@ const Movie = () => {
 
     const { id } = useParams();
     const [dateList, setDateList] = useState([]);
-    const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
+    const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
     const [allShowtime, setAllShowtime] = useState([])
@@ -202,11 +202,11 @@ const Movie = () => {
                                                                                 if (!user.auth) {
                                                                                     handleModalStates();
                                                                                 } else if (isTimeInFuture) {
-                                                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
                                                                                     const updatedDateTime = {
-                                                                                        ...selectedDateTime, time: schedule.startTime
+                                                                                        ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                                                     };
-                                                                                    
+
                                                                                     console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
                                                                                     navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                                                 }

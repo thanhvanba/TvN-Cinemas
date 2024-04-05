@@ -215,7 +215,7 @@ const AddMovie = () => {
                                         htmlFor=""
                                         className="block text-lg font-medium leading-6 text-gray-900"
                                     >
-                                        Title
+                                        Tên phim
                                     </label>
                                     <input
                                         onChange={e => setMovie({ ...movie, title: e.target.value })}
@@ -229,7 +229,7 @@ const AddMovie = () => {
                                         htmlFor=""
                                         className="block text-lg font-medium leading-6 text-gray-900"
                                     >
-                                        Description
+                                        Mô tả
                                     </label>
                                     <textarea
                                         onChange={e => setMovie({ ...movie, desc: e.target.value })}
@@ -245,7 +245,7 @@ const AddMovie = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Director
+                                            Đạo diễn
                                         </label>
                                         <input
                                             onChange={e => setMovie({ ...movie, director: e.target.value })}
@@ -259,7 +259,7 @@ const AddMovie = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Actor
+                                            Diễn viên
                                         </label>
 
                                         <input
@@ -274,7 +274,7 @@ const AddMovie = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Release Date
+                                            Ngày phát hành
                                         </label>
                                         <DatePicker
                                             selected={time}
@@ -294,7 +294,7 @@ const AddMovie = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Genres
+                                            Thể loại
                                         </label>
                                         <input
                                             onChange={e => setMovie({ ...movie, genres: e.target.value })}
@@ -310,7 +310,7 @@ const AddMovie = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Duration
+                                            Thời lượng
                                         </label>
                                         <input
                                             onChange={e => setMovie({ ...movie, duration: e.target.value })}

@@ -31,7 +31,7 @@ const ListRoom = () => {
     const [modalStates, setModalStates] = useState({});
     const [allRoom, setAllRoom] = useState([])
 
-    const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi, getRoomeByCinemaApi } = AdminService()
+    const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi, deleteRoomAdminApi, getRoomeByCinemaApi } = AdminService()
     const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
 
 

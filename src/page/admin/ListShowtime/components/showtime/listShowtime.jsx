@@ -12,10 +12,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailShowtime from './detailShowtime';
 import ManagerService from '../../../../../service/ManagerService';
 import Loading from '../../../../../components/Loading';
+import Pagination from '../../../../../components/Pagination';
 
 const ShowtimeByRoom = () => {
   const { getShowtimeByCinemaApi, getShowtimeByRoomApi, getRoomeByCinemaApi } = AdminService();
-  const { deleteShowtimeApi } = ManagerService()
+  const { deleteShowtimeApi, changeStatusShowtimeApi } = ManagerService()
 
   const { pathname } = useLocation()
   const location = useLocation();
@@ -49,20 +50,34 @@ const ShowtimeByRoom = () => {
     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
   }
 
-  const handleGetShowtimeByRoom = async (roomId, cinemaId) => {
+  const handleGetShowtimeByRoom = async (pageNumber, roomId) => {
     setLoading(true)
-    let resST = await getShowtimeByCinemaApi(cinemaId)
+    let resST = await getShowtimeByRoomApi(roomId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
-      const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
-      setAllShowtime(showtimes);
+      // const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
+      setAllShowtime(resST.data.result.content);
+      setPagination(prevPagination => ({
+        ...prevPagination,
+        pageNumber: pageNumber,
+        pageSize: resST.data.result.pageSize,
+        totalPages: resST.data.result.totalPages,
+        totalElements: resST.data.result.totalElements
+      }));
     }
     setLoading(false)
   }
-  const handleGetAllShowtime = async (cinemaId) => {
+  const handleGetAllShowtime = async (pageNumber) => {
     setLoading(true)
-    let resST = await getShowtimeByCinemaApi(cinemaId)
+    let resST = await getShowtimeByCinemaApi(cinemaId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
       setAllShowtime(resST.data.result.content);
+      setPagination(prevPagination => ({
+        ...prevPagination,
+        pageNumber: pageNumber,
+        pageSize: resST.data.result.pageSize,
+        totalPages: resST.data.result.totalPages,
+        totalElements: resST.data.result.totalElements
+      }));
     }
     setLoading(false)
   }
@@ -89,7 +104,20 @@ const ShowtimeByRoom = () => {
   const handleSelectChange = (selectedValue) => {
     setSelectedDateTime({ ...selectedDateTime, date: selectedValue });
   }
+  const handleChangeStatus = async (showTimeId) => {
+    setLoading(true)
+    await changeStatusShowtimeApi(showTimeId);
+    // handleGetAllShowtime(pagination.pageNumber)
+    const updatedShowtimes = allShowtime.map((showtime) => {
+      if (showtime.showtimeId === showTimeId) {
+        return { ...showtime, delete: !showtime.delete };
+      }
+      return showtime;
+    });
 
+    setAllMovie(updatedShowtimes);
+    setLoading(false)
+  };
   const handleDeleteShowtime = async (showtimeId) => {
     await deleteShowtimeApi(showtimeId);
     handleGetItem(currentPage);
@@ -108,7 +136,7 @@ const ShowtimeByRoom = () => {
   useEffect(() => {
     handleGetRoomByCinema(cinemaId)
     ListDayShowtime()
-    handleGetAllShowtime(cinemaId)
+    handleGetAllShowtime(pagination.pageNumber)
   }, [])
   return (
     <div>
@@ -153,7 +181,7 @@ const ShowtimeByRoom = () => {
               </div>)}
           </div> */}
       </div>
-      <div className='border-2 h-screen'>
+      <div className='border-2'>
         <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
           {loading && <Loading />}
         </div>
@@ -167,15 +195,15 @@ const ShowtimeByRoom = () => {
                 <SelectMenu onSelectChange={handleSelectChange} items={dateList} content={selectedDateTime.date} />
               </div>
             </div>
-            <div className='flex justify-between h-[85%]'>
+            <div className='flex justify-between pb-4'>
               <div className='w-[12%] pl-4'>
                 <ul className="flex flex-col">
                   <li
                     onClick={() => {
-                      handleGetAllShowtime(cinemaId);
+                      handleGetAllShowtime(pagination.pageNumber);
                       setSelectedRoom(1); // Update selectedRoom state
                     }}
-                    className={`py-1 pl-2 font-semibold border-l-4 ${selectedRoom === 1 ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
+                    className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === 1 ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                   >
                     Tất cả phòng
                   </li>
@@ -183,10 +211,10 @@ const ShowtimeByRoom = () => {
                     <li
                       key={room.roomId}
                       onClick={() => {
-                        handleGetShowtimeByRoom(room.roomId, room.cinema.cinemaId);
+                        handleGetShowtimeByRoom(pagination.pageNumber, room.roomId);
                         setSelectedRoom(room.roomId); // Update selectedRoom state
                       }}
-                      className={`py-1 pl-2 font-semibold border-l-4 ${selectedRoom === room.roomId ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
+                      className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === room.roomId ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                     >
                       Phòng {room.roomName}
                     </li>
@@ -196,126 +224,139 @@ const ShowtimeByRoom = () => {
 
               <div className='w-[90%] bg-slate-100 shadow-inner mr-4 p-4 rounded-lg'>
                 <div>
-                  <table className='mt-6 w-full'>
-                    <thead className=''>
-                      <tr>
-                        <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-14'>{listShowtime.header.stt}</th>
-                        <th className='text-base text-center font-semibold px-3 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
-                        <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-[124px]'>{listShowtime.header.duration}</th>
-                        <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-2/5'>{listShowtime.header.timeshow}</th>
-                        <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-[110px]'>{listShowtime.header.action}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allShowtime && allShowtime.map((item, index) => (
-                        <tr
-                          onClick={() => {
-                          }}
-                          className='border-b-2 border-slate-200 hover:bg-slate-200'
-                        >
-                          <td className='text-center font-medium px-5 py-4'>{index + 1}</td>
-                          <td className='text-start font-medium px-5 py-4'>
-                            <div className='flex items-center'>
-                              <div div className='pr-2'>
-                                <img className="h-12 w-8 text-emerald-600" src={item.movie.poster} alt="" />
-                              </div>
-                              <div>
-                                <h3>{item.movie.title}</h3>
-                                <p className='font-normal text-sm'>{FormatDataTime(item.timeStart).day} - {FormatDataTime(item.timeEnd).date}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='text-center font-medium px-5 py-4'>
-                            {item.movie.duration}
-                          </td>
-                          <td className='text-center font-medium px-5 py-4'>
-                            <ul className='relative items-center grid grid-cols-3 gap-2'>
-                              {
-                                item.schedules.map((schedule, index) => {
-                                  const currentDateTime = new Date();
-                                  const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
-                                  if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                    const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                    hasShowtimes = true;
-                                    return (
-                                      <li key={index}
-                                        onClick={() => {
-                                          setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
-                                          const updatedDateTime = { ...selectedDateTime, time: schedule.startTime };
-                                          navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
-                                        }}
-                                        className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
-                                      >
-                                        <a
-                                          className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-600 opacity-70'}`}
-                                        >
-
-                                          {format(
-                                            parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
-                                            "HH:mm"
-                                          )}
-                                        </a>
-                                      </li>
-                                    )
-                                  }
-
-                                })
-                              }
-                            </ul>
-                            {!hasShowtimes && (
-                              <p className=' text-center text-lg text-slate-400'>-- Chưa có lịch chiếu --</p>
-                            )}
-                          </td>
-                          <td className='font-medium px-5 py-4'>
-                            {(
-                              <div className='flex items-center justify-center'>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/admin/update-item/showtime/${item.showTimeId}`, { state: { cinemaName: cinemaName } });
-                                  }}
-                                  className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'
-                                  href=''
-                                >
-                                  <listShowtime.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                </button>
-                                <button
-                                  type='button'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenModal(item.showTimeId);
-                                  }}
-                                  className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'
-                                >
-                                  <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
-                                </button>
+                  {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg'>--- Chưa có lịch chiếu ---</p> :
+                    <table className='mt-6 w-full'>
+                      <thead className=''>
+                        <tr>
+                          <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-14'>{listShowtime.header.stt}</th>
+                          <th className='text-base text-center font-semibold px-3 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
+                          <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-[124px]'>{listShowtime.header.duration}</th>
+                          <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-2/5'>{listShowtime.header.timeshow}</th>
+                          <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-[110px]'>{listShowtime.header.action}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allShowtime && allShowtime.map((item, index) => (
+                          <tr
+                            onClick={() => {
+                            }}
+                            className='border-b-2 border-slate-200 hover:bg-slate-200'
+                          >
+                            <td className='text-center font-medium px-5 py-4'>{index + 1}</td>
+                            <td className='text-start font-medium px-5 py-4'>
+                              <div className='flex items-center'>
+                                <div div className='pr-2'>
+                                  <img className="h-12 w-8 text-emerald-600" src={item.movie.poster} alt="" />
+                                </div>
                                 <div>
-                                  {modalStates[item.showTimeId] && (
-                                    <ModalComponent
-                                      isOpen={modalStates[item.showTimeId]}
-                                      onClose={() => handleCloseModal(item.showTimeId)}
-                                      onConfirm={() => handleDeleteShowtime(item.showTimeId)}
-                                      onCancel={() => handleCloseModal(item.showTimeId)}
-                                      title='Xóa Lịch chiếu'
-                                      content='Bạn có chắc chắn xóa lịch chiếu này ???'
-                                      buttonName='Xóa '
-                                    />
-                                  )}
+                                  <h3>{item.movie.title}</h3>
+                                  <p className='font-normal text-sm'>{FormatDataTime(item.timeStart).day} - {FormatDataTime(item.timeEnd).date}</p>
                                 </div>
                               </div>
-                            )}
-                          </td>
-                        </tr>
+                            </td>
+                            <td className='text-center font-medium px-5 py-4'>
+                              {item.movie.duration}
+                            </td>
+                            <td className='text-center font-medium px-5 py-4'>
+                              <ul className='relative items-center grid grid-cols-3 gap-2'>
+                                {
+                                  item.schedules.map((schedule, index) => {
+                                    const currentDateTime = new Date();
+                                    const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                    if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                      const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                      hasShowtimes = true;
+                                      return (
+                                        <li key={index}
+                                          onClick={() => {
+                                            setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
+                                            const updatedDateTime = {
+                                              ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
+                                            };
+
+                                            navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
+                                          }}
+                                          className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                        >
+                                          <a
+                                            className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-600 opacity-70'}`}
+                                          >
+
+                                            {format(
+                                              parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                              "HH:mm"
+                                            )}
+                                          </a>
+                                        </li>
+                                      )
+                                    }
+
+                                  })
+                                }
+                              </ul>
+                              {!hasShowtimes && (
+                                <p className=' text-center text-lg text-slate-400'>-- Chưa có lịch chiếu --</p>
+                              )}
+                            </td>
+                            <td className='font-medium px-5 py-4'>
+                              {(
+                                <div className='flex items-center justify-center'>
+                                  <button
+                                    type='button'
+                                    onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.showTimeId) }}
+                                    className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
+                                  >
+                                    <listShowtime.action.aChange className='h-4 w-4 text-emerald-600' />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(`/admin/update-item/showtime/${item.showTimeId}`, { state: { cinemaName: cinemaName } });
+                                    }}
+                                    className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'
+                                    href=''
+                                  >
+                                    <listShowtime.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                  </button>
+                                  {/* <button
+                                    type='button'
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleOpenModal(item.showTimeId);
+                                    }}
+                                    className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'
+                                  >
+                                    <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
+                                  </button> */}
+                                  <div>
+                                    {modalStates[item.showTimeId] && (
+                                      <ModalComponent
+                                        isOpen={modalStates[item.showTimeId]}
+                                        onClose={() => handleCloseModal(item.showTimeId)}
+                                        onConfirm={() => handleDeleteShowtime(item.showTimeId)}
+                                        onCancel={() => handleCloseModal(item.showTimeId)}
+                                        title='Xóa Lịch chiếu'
+                                        content='Bạn có chắc chắn xóa lịch chiếu này ???'
+                                        buttonName='Xóa '
+                                      />
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
 
 
-                      ))}
-                    </tbody>
-                  </table>
+                        ))}
+                      </tbody>
+                    </table>}
                 </div>
               </div>
 
 
             </div>
+            <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllShowtime} />
+
           </div>
         }
       </div>

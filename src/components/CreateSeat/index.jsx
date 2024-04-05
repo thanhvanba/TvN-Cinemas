@@ -7,16 +7,11 @@ const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
     const { getSeatBookedApi } = UserService();
 
     const handleGetSeatBooked = async () => {
-        const data = {
+        const params = {
             showtimeId: showtimeId,
-            timeShow: dateTime
-                ? format(
-                    parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm:ss', new Date()),
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-                )
-                : null,
+            scheduleId: dateTime.scheduleId 
         };
-        let resSeat = await getSeatBookedApi(data);
+        let resSeat = await getSeatBookedApi(params);
         if (resSeat && resSeat.data && resSeat.data.result) {
             setListSeatBooked(resSeat.data.result);
         }
