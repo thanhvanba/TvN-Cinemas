@@ -208,6 +208,27 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const updateUserApi = async (userId, data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`;
+
+            const response = await axios.put(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    },
+                }
+            );
+
+            if (response.data.success) {
+                toastNotify(response.data.message, "success");
+            }
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
+        }
+    };
     const changeStatusMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -703,7 +724,8 @@ const AdminService = () => {
         quantitySeatBookedApi,
         deleteScheduleAdminApi,
         getAllPersonnelApi,
-        getAllViewerApi
+        getAllViewerApi,
+        updateUserApi
     }
 }
 

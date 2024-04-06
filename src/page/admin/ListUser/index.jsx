@@ -19,6 +19,11 @@ import Search from '../../../components/Search'
 const ListUser = () => {
     const { pathname } = useLocation()
 
+    const navigate = useNavigate();
+    const changeTab = (pathname) => {
+        navigate(pathname);
+    };
+
     const [loading, setLoading] = useState(false);
     const [modalStates, setModalStates] = useState({});
     const [pagination, setPagination] = useState(
@@ -30,7 +35,7 @@ const ListUser = () => {
         }
     );
 
-    const { addManagerApi, getAllPersonnelApi, getAllViewerApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi } = AdminService()
+    const { addManagerApi, getAllPersonnelApi, getAllViewerApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi, getOneUserApi } = AdminService()
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
@@ -43,6 +48,39 @@ const ListUser = () => {
         password: "",
         cinemaId: ""
     })
+    const [userInfo, setUserInfo] = useState({
+        userId: "",
+        address: {
+            street: "",
+            district: "",
+            province: "",
+            country: ""
+        },
+        role: {
+            roleId: "",
+            roleName: "",
+            active: true
+        },
+        userName: "",
+        password: "",
+        email: "",
+        fullName: "",
+        dob: "",
+        phone: "",
+        createdAt: null,
+        updatedAt: "",
+        lastLoginAt: "",
+        cinema: {
+            cinemaId: "",
+            location: "",
+            cinemaName: "",
+            desc: "",
+            status: true,
+            urlLocation: null
+        },
+        active: true,
+        delete: false
+    });
     const listUser = {
         header: { stt: "STT", info: "Thông tin cơ bản", username: "Tên đăng nhập", role: "Chức vụ", status: "Trạng thái", created: "Ngày tạo", login: "Đăng nhập gần đây", action: "actions", cinema: "Rạp" },
         user: allUser,
@@ -63,6 +101,13 @@ const ListUser = () => {
 
         if (res && res.data && res.data.result && res.data.result) {
             setAllCinema(res.data.result)
+        }
+    }
+    const handleGetOneUser = async (userId) => {
+        let res = await getOneUserApi(userId)
+
+        if (res && res.data && res.data.result && res.data.result) {
+            setUserInfo(res.data.result)
         }
     }
     const handleGetUser = async (pageNumber) => {
@@ -91,6 +136,8 @@ const ListUser = () => {
         });
 
         setAllUser(updatedUser);
+
+        setModalStates((prevStates) => ({ ...prevStates, [userId]: false }));
     };
 
     const handleDeleteUser = async (userId) => {
@@ -130,7 +177,7 @@ const ListUser = () => {
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
                         type='submit'
                     >
-                        Add User
+                        Thêm
                     </Popover.Button>
                     <Transition
                         as={Fragment}
@@ -141,93 +188,102 @@ const ListUser = () => {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                     >
-                        <Popover.Panel
-                            className="absolute top-full right-72 z-10 w-1/2 overflow-hidden bg-slate-300 rounded-md">
+                        <Popover.Panel className="absolute top-full right-72 z-10 w-1/2 overflow-hidden bg-slate-300 rounded-md">
                             <div className="px-6 py-3 relative">
                                 <form id='formAddManager' onSubmit={handleAddManager} action="">
-                                    <div className="relative my-4">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Full Name
-                                        </label>
-                                        <input
-                                            // value={account.fullName}
-                                            onChange={e => setAccount({ ...account, fullName: e.target.value })}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
-                                        />
+                                    <div className='text-xl font-semibold'>
+                                        Thông tin cơ bản
                                     </div>
-                                    <div className="relative my-4">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Email
-                                        </label>
-                                        <input
-                                            // value={account.email}
-                                            onChange={e => { setAccount({ ...account, email: e.target.value }); }}
-                                            type="email"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
-                                        />
-                                    </div>
-                                    <div className="relative my-4">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Phone
-                                        </label>
-                                        <input
-                                            // value={account.phone}
-                                            onChange={e => setAccount({ ...account, phone: e.target.value })}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
-                                        />
-                                    </div>
-                                    <div className="relative my-4 z-50">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Cinemas
-                                        </label>
-                                        <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                            <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
+                                    <div className='px-8'>
+                                        <div className="relative my-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Họ và tên
+                                            </label>
+                                            <input
+                                                // value={account.fullName}
+                                                onChange={e => setAccount({ ...account, fullName: e.target.value })}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder=""
+                                            />
+                                        </div>
+                                        <div className="relative my-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Email
+                                            </label>
+                                            <input
+                                                // value={account.email}
+                                                onChange={e => { setAccount({ ...account, email: e.target.value }); }}
+                                                type="email"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder=""
+                                            />
+                                        </div>
+                                        <div className="relative my-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Số điện thoại
+                                            </label>
+                                            <input
+                                                // value={account.phone}
+                                                onChange={e => setAccount({ ...account, phone: e.target.value })}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder=""
+                                            />
+                                        </div>
+                                        <div className="relative my-2 z-50">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Rạp quản lý
+                                            </label>
+                                            <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                                <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="relative my-4">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            User Name
-                                        </label>
-                                        <input
-                                            // value={account.userName}
-                                            onChange={e => setAccount({ ...account, userName: e.target.value })} type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
-                                        />
+                                    <div className='text-xl font-semibold pt-3'>
+                                        Thông tin đăng nhập
                                     </div>
-                                    <div className="relative my-4">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Password
-                                        </label>
-                                        <input
-                                            // value={account.password}
-                                            onChange={e => setAccount({ ...account, password: e.target.value })}
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
-                                        />
+                                    <div className='px-8'>
+                                        <div className="relative my-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Tên đăng nhập
+                                            </label>
+                                            <input
+                                                // value={account.userName}
+                                                onChange={e => setAccount({ ...account, userName: e.target.value })} type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder=""
+                                            />
+                                        </div>
+                                        <div className="relative my-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg leading-6 text-gray-900"
+                                            >
+                                                Mật khẩu
+                                            </label>
+                                            <input
+                                                // value={account.password}
+                                                onChange={e => setAccount({ ...account, password: e.target.value })}
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder=""
+                                            />
+                                        </div>
                                     </div>
                                     <div className='flex justify-end mt-10'>
                                         <button
@@ -255,10 +311,10 @@ const ListUser = () => {
                         {!loading &&
                             <div className=''>
                                 <div className='flex justify-end items-center py-4 pr-4'>
-                                <div className="border-2 rounded-xl ">
-                                    <Search />
+                                    <div className="border-2 rounded-xl ">
+                                        <Search />
+                                    </div>
                                 </div>
-                            </div>
                                 <table className='mt-6 w-full'>
                                     <thead className=''>
                                         <tr className='border-b-2 border-slate-200'>
@@ -274,10 +330,10 @@ const ListUser = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            listUser && listUser.user && listUser.user.map((item, index) => (
+                                            allUser && allUser.map((item, index) => (
                                                 <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
-                                                    <td className='text-center font-medium px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
-                                                    <td className='text-start font-medium px-2 py-3'>
+                                                    <td className='text-center px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
+                                                    <td className='text-start px-2 py-3'>
                                                         <div className='flex items-center'>
                                                             <div div className='pr-2' >
                                                                 <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
@@ -289,12 +345,12 @@ const ListUser = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className='text-center font-medium px-2 py-3'>{item.userName}</td>
-                                                    <td className='text-center font-medium px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : "Quản lý"}</td>
-                                                    {pathname === "/admin/list-personnel" && <td className='text-center font-medium px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
-                                                    <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
-                                                    <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.lastLoginAt).date}</td>
-                                                    <td className='text-center font-medium px-2 py-3'>
+                                                    <td className='text-center px-2 py-3'>{item.userName}</td>
+                                                    <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : "Quản lý"}</td>
+                                                    {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
+                                                    <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
+                                                    <td className='text-center px-2 py-3'>{FormatDataTime(item.lastLoginAt).date}</td>
+                                                    <td className='text-center px-2 py-3'>
                                                         <div className='flex items-center'>
                                                             <button
                                                                 className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
@@ -302,9 +358,9 @@ const ListUser = () => {
                                                             >
                                                                 <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
                                                             </button>
-                                                            <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/user/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                            <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/user/${item.userId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
                                                                 <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                            </a>
+                                                            </button>
                                                             {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                         <listUser.action.aDelete className='h-4 w-4 text-red-600' />
                                                                     </button> */}
@@ -315,15 +371,15 @@ const ListUser = () => {
                                                                         onClose={() => handleCloseModal(item.userId)}
                                                                         onConfirm={() => handleChangeStatus(item.userId)}
                                                                         onCancel={() => handleCloseModal(item.userId)}
-                                                                        title='Xóa Tài khoản'
-                                                                        content='Bạn có chắc chắn xóa tài khoản này ???'
-                                                                        buttonName='Delete'
+                                                                        title={!item.delete ? 'Xóa Tài khoản' : 'Khôi phục'}
+                                                                        content={!item.delete ? 'Bạn có chắc chắn xóa tài khoản này ???' : 'Bạn có muốn khôi phục tài khoản này ???'}
+                                                                        buttonName={!item.delete ? 'Xóa' : 'Khôi phục'}
                                                                     />
                                                                 )}
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center font-medium px-2 py-3`}>{!item.delete ? "Approved" : "Banned"}</td>
+                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center px-2 py-3`}>{!item.delete ? "Khả dụng" : "Bị cấm"}</td>
                                                 </tr>
                                             ))
                                         }

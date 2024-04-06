@@ -23,6 +23,7 @@ import AuthService from '../../service/AuthService'
 import { LoginContext } from '../../context/LoginContext'
 // import DetailShowtime from './ListShowtime/components/detailShowtime';
 import ListProduct from './ListProduct';
+import ProfileDetail from '../Info/components/profileDetail';
 
 const Admin = () => {
   const { item } = useParams()
@@ -50,7 +51,11 @@ const Admin = () => {
   const handleCheckPathname = (pathname) => {
     switch (true) {
       case pathname === "/admin/info":
-        setCurrentTab("5");
+        setCurrentTab("2");
+        break;
+      case /^\/admin\/update-item\/user/.test(pathname):
+        setCurrentTab("3");
+        setTabIndex(tabIndex);
         break;
       default:
         setCurrentTab("1");
@@ -64,7 +69,7 @@ const Admin = () => {
 
   const handleTabChange = () => {
     {
-      /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/ &&
+      /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname) &&
         setTabIndex(0);
     }
     {
@@ -189,12 +194,22 @@ const Admin = () => {
               <Dashboard />
             </TabPanel>
           </div>
-          <div style={{ display: currentTab === '5' ? 'block' : 'none' }}>
+          <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
             <div className=''>
               <div className='h-20 mb-2 absolute flex items-center w-full border-b-2'>
                 <h2 className='text-3xl'>User Info</h2>
               </div>
               <Info />
+            </div>
+          </div>
+          <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
+            <div className=''>
+              <div className='h-20 mb-2  flex items-center w-full border-b-2'>
+                <h2 className='text-3xl'>Update User</h2>
+              </div>
+              <div className='px-10'>
+                <ProfileDetail />
+              </div>
             </div>
           </div>
         </div >

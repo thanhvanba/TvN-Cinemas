@@ -17,6 +17,7 @@ import 'react-tabs/style/react-tabs.css';
 import './info.css'
 import formatPrice from '../../utils/ConvertStringFollowFormat';
 import Loading from '../../components/Loading';
+import ProfileDetail from './components/profileDetail';
 const Info = () => {
     const { user } = useContext(LoginContext)
     const [image, setImage] = useState()
@@ -227,7 +228,7 @@ const Info = () => {
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
                     <div className='grid lg:grid-cols-2 gap-8 px-4'>
                         {/* Thông tin tài khoản */}
-                        <div>
+                        {/* <div>
                             <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>
                             <form id='formUpdateProfile' action="" onSubmit={handleUpdateUserInfo}>
                                 <div className="rounded-md p-8 shadow-lg bg-slate-100">
@@ -267,7 +268,8 @@ const Info = () => {
                                             onChange={e => setAccount({ ...account, fullName: e.target.value })}
                                             type="text"
                                             className="block w-full px-4 py-1 text-[10px] sm:text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder={userInfo.fullName}
+                                            value={account.fullName}
+                                            placeholder='Họ và tên'
                                         />
                                     </div>
                                     <div className='flex justify-between items-center text-[10px] sm:text-lg'>
@@ -284,7 +286,8 @@ const Info = () => {
                                                     setDob(date);
                                                     setAccount({ ...account, dob: date });
                                                 }}
-                                                placeholderText={FormatDataTime(userInfo.dob).date}
+                                                value={FormatDataTime(account.dob).date}
+                                                placeholderText='Ngày sinh'
                                                 className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
                                             />
@@ -301,7 +304,8 @@ const Info = () => {
                                                 onChange={e => setAccount({ ...account, phone: e.target.value })}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder={userInfo.phone}
+                                                value={account.phone}
+                                                placeholder='Số điện thoại'
                                             />
                                         </div>
                                     </div>
@@ -318,7 +322,8 @@ const Info = () => {
                                                 onChange={e => setAccount({ ...account, email: e.target.value })}
                                                 type="email"
                                                 className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder={userInfo.email}
+                                                value={account.email}
+                                                placeholder={"Email"}
                                             />
                                         </div>
                                         {user.role === "MANAGER" && <div className="my-2 w-2/5">
@@ -329,10 +334,11 @@ const Info = () => {
                                                 Cinema
                                             </label>
                                             <input
+                                                value={userInfo.cinema.cinemaName}
                                                 onChange={e => setAccount({ ...account, cinema: { ...account.cinema, cinemaName: e.target.value } })}
                                                 type="email"
                                                 className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
-                                                placeholder={userInfo.cinema.cinemaName}
+                                                placeholder={"Tên rạp"}
                                                 readOnly
                                             />
                                         </div>}
@@ -391,7 +397,8 @@ const Info = () => {
                                                 onChange={e => setAccount({ ...account, userName: e.target.value })}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder={userInfo.userName}
+                                                value={account.userName}
+                                                placeholder='Tên đăng nhập'
                                             />
                                         </div>
                                         <div className="my-2 w-1/3">
@@ -419,7 +426,9 @@ const Info = () => {
                                     &nbsp;Save
                                 </button>
                             </form>
-                        </div>
+                        </div> */}
+
+                        <ProfileDetail userInfo={userInfo} />
                         {/* passwordUpdateInfo */}
                         <div>
                             <h2 className="text-2xl text-emerald-800  font-bold text-center uppercase mb-6">Change password</h2>

@@ -20,9 +20,25 @@ const UserService = () => {
             },
         );
     };
+
+    const convertDataURLtoFile = async (dataURL, filename) => {
+        const response = await fetch(dataURL);
+        const blob = await response.blob();
+        return new File([blob], filename);
+    };
     const updateProfileApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (key === "avatar" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "avatar");
+                        data[key] = file;
+                    }
+                }
+            }
+
             const response = await axios.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/update`,
                 data,

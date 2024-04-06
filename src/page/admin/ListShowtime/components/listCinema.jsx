@@ -118,7 +118,7 @@ const ListCinema = () => {
                                             >
                                                 <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                                             </div>
-                                            {!item.status && <div className='absolute rounded-xl top-0 right-9 bottom-0 left-0 bg-red-900 bg-opacity-20'>
+                                            {!item.status && <div className='absolute rounded-xl top-0 right-9 bottom-0 left-0 bg-red-900 bg-opacity-30'>
                                                 <XMarkIcon className='text-slate-700 opacity-70' />
                                             </div>}
                                             <div className='w-1/6 pl-1'>

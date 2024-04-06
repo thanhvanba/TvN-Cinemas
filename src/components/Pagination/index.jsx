@@ -9,7 +9,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'; // Import useState hook
 
 export default function Pagination({ pageNumber, pageSize, totalPages, totalElements, getItemByPage }) {
-  console.log("🚀 ~ Pagination ~ pageNumber:", pageNumber)
   const [inputValue, setInputValue] = useState(pageNumber); // State to manage input value
 
   const handlePreviousPage = () => {

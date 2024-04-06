@@ -56,6 +56,7 @@ const AdminRouter = () => (
     <Route path="/admin/update-item/room/:roomId" element={<Admin />} />
     <Route path="/admin/update-item/food/:foodId" element={<Admin />} />
     <Route path="/admin/update-item/ticket/:ticketId" element={<Admin />} />
+    <Route path="/admin/update-item/user/:userId" element={<Admin />} />
 
     <Route path="/admin/cinema/:cinemaId/list-showtime" element={<Admin />} />
     <Route path="/admin/list-showtime/showtime/:showtimeId" element={<Admin />} />
@@ -77,6 +78,7 @@ const AdminRouter = () => (
     <Route path="/manager/update-item/cinema/:cinemaId" element={<Admin />} />
     <Route path="/manager/update-item/room/:roomId" element={<Admin />} />
     <Route path="/manager/update-item/ticket/:ticketId" element={<Admin />} />
+    <Route path="/manager/update-item/user/:userId" element={<Admin />} />
 
     <Route path="/manager/cinema/:cinemaId/list-showtime" element={<Admin />} />
     <Route path="/manager/list-showtime/showtime/:showtimeId" element={<Admin />} />
