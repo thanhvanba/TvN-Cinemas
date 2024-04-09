@@ -26,14 +26,17 @@ import AddShowtime from './components/showtime/addShowtime';
 import ListRoom from './components/room/listRoom';
 import AddRoom from './components/room/addRoom';
 import ListCinema from './components/listCinema';
+import AddSchedule from './components/showtime/addSchedule';
 
 const ListShowtime = () => {
   const { pathname } = useLocation()
 
   const { cinemaId, showtimeId } = useParams()
+  console.log("🚀 ~ ListShowtime ~ showtimeId:", showtimeId)
+  console.log("🚀 ~ ListShowtime ~ cinemaId:", cinemaId)
   const location = useLocation();
   const { state } = location;
-  const { dateTime } = state !== null ? state : {};
+  const { idShowtime, dateTime } = state !== null ? state : {};
 
   const { user } = useContext(LoginContext);
 
@@ -43,7 +46,7 @@ const ListShowtime = () => {
         <div className='relative'>
           <div className=''>
             {
-              user.role !== "MANAGER" && !cinemaId && !showtimeId ?
+              user.role !== "MANAGER" && !cinemaId && !showtimeId && !idShowtime ?
                 <>
                   {/^\/(admin|manager)\/add-item\/cinema/.test(pathname) ?
                     <AddCinema /> :
@@ -61,7 +64,7 @@ const ListShowtime = () => {
                     <AddCinema /> :
                     /^\/(admin|manager)\/(update-item)\/showtime/.test(pathname) ?
                       <AddShowtime /> :
-                      /^\/(admin|manager)\/list-showtime\/showtime/.test(pathname) ? <DetailShowtime showtimeId={showtimeId} dateTime={dateTime} /> :
+                      /^\/(admin|manager)\/(list-showtime\/showtime|add-item\/schedule)/.test(pathname) ? <DetailShowtime showtimeId={idShowtime ? idShowtime : showtimeId} dateTime={dateTime} /> :
                         <ShowtimesByRoom />}
                 </>
             }

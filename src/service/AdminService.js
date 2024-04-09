@@ -668,6 +668,26 @@ const AdminService = () => {
             },
         );
     };
+    const addScheduleAdminApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/schedule`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     const deleteScheduleAdminApi = async (scheduleId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -722,6 +742,7 @@ const AdminService = () => {
         addRoomAdminApi,
         deleteRoomAdminApi,
         quantitySeatBookedApi,
+        addScheduleAdminApi,
         deleteScheduleAdminApi,
         getAllPersonnelApi,
         getAllViewerApi,

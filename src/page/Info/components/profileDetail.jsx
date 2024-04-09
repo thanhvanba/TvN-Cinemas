@@ -88,7 +88,7 @@ const ProfileDetail = () => {
         let resInfo = /^\/admin\/update-item\/user/.test(pathname) ? await getOneUserApi(userId) : await getUserInfoApi()
         if (resInfo && resInfo.data && resInfo.data.result) {
             setUserInfo(resInfo.data.result)
-            navigate(-1)
+            // navigate(-1)
         }
         setLoading('hisBooking', false);
     }

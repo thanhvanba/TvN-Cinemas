@@ -22,6 +22,7 @@ import { LoginContext } from '../../../../../context/LoginContext';
 import Loading from '../../../../../components/Loading';
 
 import { Space, TimePicker, DatePicker } from 'antd'
+import dayjs from 'dayjs'
 import { format, parse } from 'date-fns';
 
 const AddShowtime = () => {
@@ -46,7 +47,6 @@ const AddShowtime = () => {
     });
     const [durationMovie, setDurationMovie] = useState(0);
     const [timeOverLap, setTimeOverLap] = useState({ start: "", end: "" });
-    console.log("🚀 ~ AddShowtime ~ timeOverLap:", timeOverLap)
     const [endDate, setEndDate] = useState(null);
     const [selectDateTime, setSelectDateTime] = useState({
         date: "",
@@ -103,13 +103,8 @@ const AddShowtime = () => {
         schedules: [],
     })
 
-    // console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
-    const [schedule, setSchedule] = useState(
-        [{
-            date: "",
-            time: []
-        }]
-    );
+    console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
+    const [schedule, setSchedule] = useState([]);
 
     console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
 
@@ -181,6 +176,8 @@ const AddShowtime = () => {
     };
 
     const handleTimeChange = (date, time) => {
+        console.log("🚀 ~ handleTimeChange ~ time:", time)
+        console.log("🚀 ~ handleTimeChange ~ date:", date)
         const newDate = new Date(date)
         const newDateTime = new Date(`2000-01-01 ${time}`);
         const durationDateTime = new Date(newDateTime); // Tạo một bản sao của newDateTime
@@ -239,7 +236,7 @@ const AddShowtime = () => {
                     ...prevShowtime,
                     schedules: [
                         ...prevShowtime.schedules,
-                        { date: selectDateTime.date, startTime: time }
+                        { date: date, startTime: time }
                     ]
                 }));
             }
@@ -249,6 +246,13 @@ const AddShowtime = () => {
             const updatedSchedule = [...schedule, newDay];
             updatedSchedule.sort((a, b) => new Date(a.date) - new Date(b.date));
             setSchedule(updatedSchedule);
+            setShowtime(prevShowtime => ({
+                ...prevShowtime,
+                schedules: [
+                    ...prevShowtime.schedules,
+                    { date: date, startTime: time }
+                ]
+            }));
         }
     };
 
@@ -355,9 +359,9 @@ const AddShowtime = () => {
         }
     }, [showtimeId]);
     useEffect(() => {
-        setIsChecked(oneShowtime.special)
-        setSchedule(transformData(oneShowtime.schedules))
-        pathname !== "/admin/add-item/showtime" &&
+        if (pathname !== "/admin/add-item/showtime") {
+            setIsChecked(oneShowtime.special);
+            setSchedule(transformData(oneShowtime.schedules));
             setShowtime({
                 ...showtime,
                 roomId: oneShowtime.room.roomId,
@@ -366,7 +370,8 @@ const AddShowtime = () => {
                 timeEnd: oneShowtime.timeEnd,
                 special: oneShowtime.special,
                 schedules: oneShowtime.schedules,
-            })
+            });
+        }
     }, [oneShowtime]);
 
     const handleSelectDate = (date, dateString) => {
@@ -471,7 +476,6 @@ const AddShowtime = () => {
                                                         setStartDate(date);
                                                         setShowtime({ ...showtime, timeStart: date });
                                                     }}
-                                                    placeholderText={FormatDataTime(oneShowtime.timeStart).date}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     dateFormat="yyyy-MM-dd" // Định dạng ngày
                                                 />}
@@ -498,7 +502,6 @@ const AddShowtime = () => {
                                                         setEndDate(date);
                                                         setShowtime({ ...showtime, timeEnd: date });
                                                     }}
-                                                    placeholderText={FormatDataTime(oneShowtime.timeEnd).date}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     dateFormat="yyyy-MM-dd" // Định dạng ngày
                                                 />}
@@ -575,21 +578,6 @@ const AddShowtime = () => {
                                                     Time<br />
                                                     <span className='text-xs font-extralight'>( Thời gian chiếu trong ngày )</span>
                                                 </label>
-                                                {/* <DatePicker
-                                                    selected={selectDate}
-                                                    onChange={e => {
-                                                        handleTimeChange(e, e.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }))
-                                                        const nonEmptySchedule = schedule.filter(item => Object.keys(item).length > 0);
-
-                                                        setShowtime({ ...showtime, schedules: nonEmptySchedule });
-                                                    }}
-                                                    className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                    showTimeSelect
-                                                    showTimeSelectOnly
-                                                    dateFormat="HH:mm"
-                                                    timeFormat="HH:mm"
-                                                /> */}
-
 
                                                 <TimePicker
                                                     format="HH:mm"

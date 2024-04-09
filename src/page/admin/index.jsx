@@ -32,8 +32,10 @@ const Admin = () => {
   const navigate = useNavigate()
 
   const { user } = useContext(LoginContext);
-  const [currentTab, setCurrentTab] = useState(item || '1');
+  const [currentTab, setCurrentTab] = useState('1');
+  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
+  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -73,7 +75,7 @@ const Admin = () => {
         setTabIndex(0);
     }
     {
-      /^\/(admin|manager)\/(add-item\/(cinema|showtime|room)|update-item\/(cinema|showtime|room)|list-cinema|list-room|cinema|list-showtime\/showtime)/.test(pathname) &&
+      /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|cinema|list-showtime\/showtime)/.test(pathname) &&
         setTabIndex(1);
     }
     {
