@@ -23,16 +23,13 @@ const OrderMovie = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [foods, setFoods] = useState([])
-    console.log("🚀 ~ OrderMovie ~ foods:", foods)
     const [listWater, setListWater] = useState([])
-    console.log("🚀 ~ OrderMovie ~ listWater:", listWater)
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
     const [listSnacks, setListSnacks] = useState([])
     const [listSeatBooked, setListSeatBooked] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
     const [listFoodBooking, setListFoodBooking] = useState([])
-    console.log("🚀 ~ OrderMovie ~ listFoodBooking:", listFoodBooking)
     const [selectSeats, setSelectSeats] = useState([])
     const [bookingInfo, setBookingInfo] = useState({})
 
@@ -48,7 +45,9 @@ const OrderMovie = () => {
                 status: null,
                 urlLocation: null
             },
-            roomName: null
+            roomName: null,
+            colSeat: 0,
+            rowSeat: 0
         },
         movie: {
             movieId: null,
@@ -82,7 +81,6 @@ const OrderMovie = () => {
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
     const { dateTime } = location.state || {};
-    console.log("🚀 ~ OrderMovie ~ dateTime:", dateTime)
     const { showtimeId } = useParams();
 
     const steps = [
@@ -107,34 +105,7 @@ const OrderMovie = () => {
             url: '/order/ve'
         },
     ];
-
-    // Hàm tạo danh sách ghế ngồi
-    // const createSeatData = (rows, seatsPerRow) => {
-    //     const seatData = [];
-    //     let type;
-
-    //     for (let row = 1; row <= rows; row++) {
-    //         for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
-    //             const seatLabel = String.fromCharCode(65 + row - 1) + seatNum;
-    //             const isSeatBooked = listSeatBooked.find(
-    //                 item => parseInt(item.row) === row && parseInt(item.column) === seatNum)
-    //             if (isSeatBooked) {
-    //                 type = "booked";
-    //             } else if (row === rows) {
-    //                 type = "COUPLE";
-    //             } else if ((row < 4) || (seatNum < 3 || seatNum > (seatsPerRow - 3))) {
-    //                 type = "NORMAL";
-    //             } else
-    //                 type = "VIP";
-
-    //             seatData.push({ id: seatLabel, label: seatLabel, type: type });
-    //         }
-    //     }
-
-    //     return seatData;
-    // };
-    // const seatData = createSeatData(10, 14);
-    const generateSeatData = CreateSeat(10, 14, showtimeId, dateTime);
+    const generateSeatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, showtimeId, dateTime);
     const seatData = generateSeatData();
 
     const navigate = useNavigate()
@@ -353,7 +324,10 @@ const OrderMovie = () => {
                             <span>&nbsp;{showtime.room.roomName}</span>
                         </div>
                         {/*  Sơ đồ*/}
-                        <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'>
+                        <div className='flex justify-center'>
+                        <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
+                            style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
+                        >
                             {seatData.map(seat => (
                                 <div
                                     key={seat.id}
@@ -363,6 +337,7 @@ const OrderMovie = () => {
                                     {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
                                 </div>
                             ))}
+                        </div>
                         </div>
                     </div>
 

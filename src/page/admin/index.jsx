@@ -75,7 +75,7 @@ const Admin = () => {
         setTabIndex(0);
     }
     {
-      /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|cinema|list-showtime\/showtime)/.test(pathname) &&
+      /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|room|cinema|list-showtime\/showtime)/.test(pathname) &&
         setTabIndex(1);
     }
     {
@@ -110,7 +110,7 @@ const Admin = () => {
         < div className='flex flex-col fixed top-0 bottom-0 right-0 left-0 max-w-xs shadow-right bg-[#F8F4F3]' >
 
           {/* logo */}
-          <div className='flex items-center justify-center px-8 p-3 border-b-2' >
+          <div className='flex items-center justify-center px-8 p-3 border-b-2 outline-none' >
             <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img className="h-14 w-auto" src={logo} alt="" />

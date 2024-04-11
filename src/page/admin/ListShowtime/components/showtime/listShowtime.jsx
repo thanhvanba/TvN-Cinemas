@@ -86,8 +86,8 @@ const ShowtimeByRoom = () => {
   }
   const handleGetRoomByCinema = async (cinemaId) => {
     let resR = await getRoomeByCinemaApi(cinemaId)
-    if (resR && resR.data && resR.data.result) {
-      setAllRoom(resR.data.result);
+    if (resR && resR.data && resR.data.result.content) {
+      setAllRoom(resR.data.result.content);
     }
   }
   const ListDayShowtime = () => {
@@ -217,7 +217,7 @@ const ShowtimeByRoom = () => {
                   >
                     Tất cả phòng
                   </li>
-                  {allRoom.map((room) => (
+                  {allRoom && allRoom.length > 0 && allRoom.map((room) => (
                     <li
                       key={room.roomId}
                       onClick={() => {

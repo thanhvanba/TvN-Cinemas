@@ -225,12 +225,12 @@ const Header = () => {
                 <div className='flex'>
                   <button
                     onClick={() => changeTab("/showtimes")}
-                    className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                    className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none"
                     type='submit'
                   >
                     Mua Vé
                   </button>
-                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-2xl xl:rounded-s-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-2xl xl:rounded-s-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none "
                   >
                     Đăng Nhập
                   </Popover.Button>

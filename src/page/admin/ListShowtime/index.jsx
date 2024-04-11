@@ -26,14 +26,12 @@ import AddShowtime from './components/showtime/addShowtime';
 import ListRoom from './components/room/listRoom';
 import AddRoom from './components/room/addRoom';
 import ListCinema from './components/listCinema';
-import AddSchedule from './components/showtime/addSchedule';
+import DetailRoom from './components/room/detailRoom';
 
 const ListShowtime = () => {
   const { pathname } = useLocation()
 
-  const { cinemaId, showtimeId } = useParams()
-  console.log("🚀 ~ ListShowtime ~ showtimeId:", showtimeId)
-  console.log("🚀 ~ ListShowtime ~ cinemaId:", cinemaId)
+  const { cinemaId, showtimeId, roomId } = useParams()
   const location = useLocation();
   const { state } = location;
   const { idShowtime, dateTime } = state !== null ? state : {};
@@ -46,7 +44,7 @@ const ListShowtime = () => {
         <div className='relative'>
           <div className=''>
             {
-              user.role !== "MANAGER" && !cinemaId && !showtimeId && !idShowtime ?
+              user.role !== "MANAGER" && !cinemaId && !showtimeId && !idShowtime && !roomId ?
                 <>
                   {/^\/(admin|manager)\/add-item\/cinema/.test(pathname) ?
                     <AddCinema /> :
@@ -64,8 +62,11 @@ const ListShowtime = () => {
                     <AddCinema /> :
                     /^\/(admin|manager)\/(update-item)\/showtime/.test(pathname) ?
                       <AddShowtime /> :
-                      /^\/(admin|manager)\/(list-showtime\/showtime|add-item\/schedule)/.test(pathname) ? <DetailShowtime showtimeId={idShowtime ? idShowtime : showtimeId} dateTime={dateTime} /> :
-                        <ShowtimesByRoom />}
+                      /^\/(admin|manager)\/room/.test(pathname) ?
+                        <DetailRoom /> :
+                        /^\/(admin|manager)\/(list-showtime\/showtime|add-item\/schedule)/.test(pathname) ?
+                          <DetailShowtime showtimeId={idShowtime ? idShowtime : showtimeId} dateTime={dateTime} /> :
+                          <ShowtimesByRoom />}
                 </>
             }
           </div>

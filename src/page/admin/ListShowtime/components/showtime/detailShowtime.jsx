@@ -38,7 +38,9 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
         status: null,
         urlLocation: null
       },
-      roomName: null
+      roomName: null,
+      colSeat: 0,
+      rowSeat: 0
     },
     movie: {
       movieId: null,
@@ -65,7 +67,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   })
 
   const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
-  const generateSeatData = CreateSeat(10, 14, showtimeId, dateTime);
+  const generateSeatData = CreateSeat(oneShowtime.room.rowSeat, oneShowtime.room.colSeat, showtimeId, dateTime);
 
   const [schedule, setSchedule] = useState({
     showTimeId: "",
@@ -258,7 +260,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                     disabled={loading['change']}
                     onClick={() => navigate(-1)}
                   >
-                    {loading['change'] && <FotAnwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                    {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                     &nbsp;Thoát
                   </button>
                 </div>
@@ -281,15 +283,19 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                 </div>
               </div>
               {!loading['getItem'] &&
-                <div className='grid grid-cols-14 gap-1 mx-10 py-4'>
-                  {seatData.map(seat => (
-                    <div
-                      key={seat.id}
-                      className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
-                    >
-                      {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                    </div>
-                  ))}
+                <div className='flex justify-center'>
+                  <div className='grid grid-cols-14 gap-1 mx-10 py-4'
+                    style={{ gridTemplateColumns: `repeat(${oneShowtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${36 * oneShowtime.room.colSeat}px` }}
+                  >
+                    {seatData.map(seat => (
+                      <div
+                        key={seat.id}
+                        className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
+                      >
+                        {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               }
             </div>}

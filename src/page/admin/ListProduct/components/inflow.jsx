@@ -85,7 +85,7 @@ const Inflow = () => {
                         </div>
                         <div className='flex justify-end'>
                             <button
-                                className="w-1/4 mr-4 text-[18px] mt-4 rounded-xl hover:bg-red-700 hover:text-cyan-300 text-white bg-red-600 py-2 transition-colors duration-300"
+                                className="w-1/4 mr-4 text-[18px] mt-4 rounded-xl hover:bg-red-700 text-white bg-red-600 py-2 transition-colors duration-300"
                                 type='submit'
                             // disabled={loading}
                             >
