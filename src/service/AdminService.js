@@ -470,6 +470,7 @@ const AdminService = () => {
                     "Authorization": bearerToken,
                 },
                 params: {
+                    type: type,
                     index: pageIndex,
                     size: pageSize,
                 },

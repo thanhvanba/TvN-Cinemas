@@ -31,6 +31,8 @@ const Movie = () => {
 
     const { id } = useParams();
     const [dateList, setDateList] = useState([]);
+    const [cinemaId, setCinemaId] = useState('');
+    console.log("🚀 ~ Movie ~ cinemaId:", cinemaId)
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
@@ -129,6 +131,7 @@ const Movie = () => {
     const handleSelectChange = (selectedValue) => {
         const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
         const selectedId = cinema.cinemaId
+        localStorage.setItem('cinemaId', selectedId);
         FoundShowtime(selectedId)
     };
 
@@ -208,7 +211,7 @@ const Movie = () => {
                                                                                     };
 
                                                                                     console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
-                                                                                    navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                                                    navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
                                                                                 }
                                                                             }}
                                                                             className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}

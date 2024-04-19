@@ -81,6 +81,8 @@ const OrderMovie = () => {
     //dùng location để lấy stateDatime được truyền từ movie
     const location = useLocation();
     const { dateTime } = location.state || {};
+    const cinemaId = localStorage.getItem('cinemaId');
+    // localStorage.removeItem("cinemaId")
     const { showtimeId } = useParams();
 
     const steps = [
@@ -136,10 +138,10 @@ const OrderMovie = () => {
         }
     }
     const handleGetFood = async () => {
-        let resFood = await getFoodApi("BAP")
-        let resFood1 = await getFoodApi("NUOCLOC")
-        let resFood2 = await getFoodApi("NUOCNGOT")
-        let resFood3 = await getFoodApi("ANVAT")
+        let resFood = await getFoodApi("BAP", '', '', cinemaId)
+        let resFood1 = await getFoodApi("NUOCLOC", '', '', cinemaId)
+        let resFood2 = await getFoodApi("NUOCNGOT", '', '', cinemaId)
+        let resFood3 = await getFoodApi("ANVAT", '', '', cinemaId)
         if (resFood && resFood.data && resFood.data.result.content) {
             setListPopcorn(resFood.data.result.content)
         }
@@ -325,19 +327,19 @@ const OrderMovie = () => {
                         </div>
                         {/*  Sơ đồ*/}
                         <div className='flex justify-center'>
-                        <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
-                            style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
-                        >
-                            {seatData.map(seat => (
-                                <div
-                                    key={seat.id}
-                                    className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
-                                    onClick={() => handleSelectSeat(seat.id, seat.type)}
-                                >
-                                    {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                                </div>
-                            ))}
-                        </div>
+                            <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
+                                style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
+                            >
+                                {seatData.map(seat => (
+                                    <div
+                                        key={seat.id}
+                                        className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
+                                        onClick={() => handleSelectSeat(seat.id, seat.type)}
+                                    >
+                                        {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 

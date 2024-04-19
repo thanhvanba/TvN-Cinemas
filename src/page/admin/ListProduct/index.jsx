@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -36,6 +36,7 @@ const ListProduct = () => {
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
+    const [cinemaId, setCinemaId] = useState("")
     const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState(
@@ -56,13 +57,13 @@ const ListProduct = () => {
         price: "",
         foodType: ""
     })
-    const [room, setRoom] = useState({
-        cinemaId: "",
-        roomName: ""
-    })
+    // const [room, setRoom] = useState({
+    //     cinemaId: "",
+    //     roomName: ""
+    // })
 
     const { getAllUserApi, getFoodAdminApi } = AdminService()
-    const { getFoodApi } = UserService()
+    const { getFoodApi, getUserInfoApi } = UserService()
     const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
 
 
@@ -113,7 +114,15 @@ const ListProduct = () => {
     // };
     const handleGetItems = async (pageNumber, foodType) => {
         // setCurrentPage(pageIndex)
-        let resFood = await getFoodAdminApi(foodType, pageNumber, 10)
+        let id = cinemaId && cinemaId
+        if (user.role === "MANAGER" && cinemaId === '') {
+            let resInfo = await getUserInfoApi();
+            if (resInfo && resInfo.data && resInfo.data.result && resInfo.data.result) {
+                setCinemaId(resInfo.data.result.cinema.cinemaId)
+                id = resInfo.data.result.cinema.cinemaId
+            }
+        }
+        let resFood = user.role === "ADMIN" ? await getFoodAdminApi(foodType, pageNumber, 10) : await getFoodApi(foodType, pageNumber, 10, id)
         if (resFood && resFood.data && resFood.data.result.content) {
             setAllFood(resFood.data.result.content)
             setPagination(prevPagination => ({
@@ -140,10 +149,10 @@ const ListProduct = () => {
         //     setAllTicket(resTicket.data.result.content)
         // }
 
-        let resUser = await getAllUserApi()
-        if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-            setAllUser(resUser.data.result.content)
-        }
+        // let resUser = await getAllUserApi()
+        // if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+        //     setAllUser(resUser.data.result.content)
+        // }
     }
     // const handleOpenModal = (itemId) => {
     //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
@@ -151,10 +160,10 @@ const ListProduct = () => {
     // const handleCloseModal = (itemId) => {
     //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
     // };
-    const getNameById = (userId) => {
-        const user = allUser.find((user) => user.userId === userId);
-        return user ? user.userName : null;
-    };
+    // const getNameById = (userId) => {
+    //     const user = allUser.find((user) => user.userId === userId);
+    //     return user ? user.userName : null;
+    // };
 
 
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
@@ -182,7 +191,7 @@ const ListProduct = () => {
                             </div>
                             {!loading &&
                                 <div className='border-2 h-full'>
-                                    <div className='h-full'>
+                                    <div className='h-full relative'>
                                         <div className='relative flex justify-end items-center p-4'>
                                             <div className="border-2 rounded-xl z-10">
                                                 <Search />
@@ -195,15 +204,28 @@ const ListProduct = () => {
                                                 <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
                                             </div>
                                         </div>
-                                        {toggle && <Inflow />}
+
+                                        {toggle &&
+                                            <div className=''>
+                                                <button
+                                                    type="button"
+                                                    className="absolute top-[60px] right-[371px] z-50"
+                                                >
+                                                    <span className="sr-only">Close menu</span>
+                                                    <div className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700' onClick={() => setToggle(false)}>
+                                                        <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                    </div>
+                                                </button>
+                                                <Inflow onToggle={setToggle} />
+                                            </div>
+                                        }
                                         <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
                                             <FoodItems listFood={allFood} />
                                         </div>
                                     </div>
+                                    <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
                                 </div>
                             }
-
-                            <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
                         </div>
 
                 }

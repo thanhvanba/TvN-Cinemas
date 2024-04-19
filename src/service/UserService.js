@@ -174,8 +174,8 @@ const UserService = () => {
             `${process.env.REACT_APP_HOST_API_KEY}/cinemas/${cinemaId}/showtimes`
         );
     };
-    const getFoodApi = async (type, index, size) => {
-        const params = { type: type, index: index, size: size }
+    const getFoodApi = async (type, index, size, cinemaId) => {
+        const params = { type: type, index: index, size: size, cinemaId: cinemaId }
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/foods`,
             {

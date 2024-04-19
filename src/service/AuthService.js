@@ -25,7 +25,7 @@ const AuthService = () => {
             const refreshToken = response.data.result.refreshToken;
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                login(data.credentialId, token, refreshToken, decode.role)
+                login(data.credentialId, token, refreshToken, decode.role, decode.sub)
                 changeTab('/');
             }
         } catch (error) {

@@ -11,6 +11,7 @@ function classNames(...classes) {
 const SelectMenu = ({ onSelectChange, items, content }) => {
 
     const [selected, setSelected] = useState('')
+    console.log("🚀 ~ SelectMenu ~ selected:", selected)
 
     const handleSelectChange = (value) => {
         setSelected(value);

@@ -17,11 +17,12 @@ function App() {
   // effect
   const { info, register } = useContext(RegisterContext);
   const { user, login } = useContext(LoginContext);
+  console.log("🚀 ~ App ~ user:", user)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       const decode = jwtDecode(localStorage.getItem("token"));
-      login(localStorage.getItem("username"), localStorage.getItem("token"), localStorage.getItem("refreshToken"), decode.role)
+      login(localStorage.getItem("username"), localStorage.getItem("token"), localStorage.getItem("refreshToken"), decode.role, decode.sub)
     }
   }, []);
 
@@ -33,20 +34,20 @@ function App() {
   return (
     <div>
       {
-          (user.role === "ADMIN" || user.role === "MANAGER") ? (
-            <AdminRouter />
+        (user.role === "ADMIN" || user.role === "MANAGER") ? (
+          <AdminRouter />
+        ) : (
+          (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
+            <MainRouter />
           ) : (
-            (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
+            <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
+              <Header />
               <MainRouter />
-            ) : (
-              <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
-                <Header />
-                <MainRouter />
-                <Footer />
-              </div>
-            )
+              <Footer />
+            </div>
           )
-        }
+        )
+      }
     </div>
   )
 }

@@ -9,11 +9,12 @@ const LoginContext = createContext({ credentialId: '', auth: false, role: '' });
 const LoginProvider = ({ children }) => {
     const [user, setUser] = useState({ credentialId: '', auth: false, role: '' });
 
-    const login = (credentialId, token, refreshToken, role) => {
+    const login = (credentialId, token, refreshToken, role, userId) => {
         setUser(() => ({
-            credentialId: credentialId,
+            credentialId: credentialId && credentialId,
             auth: true,
-            role: role
+            role: role && role,
+            userId: userId && userId
         }));
 
         localStorage.setItem("token", token)

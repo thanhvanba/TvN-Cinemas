@@ -34,9 +34,7 @@ const Admin = () => {
 
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState('1');
-  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
-  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -73,13 +71,13 @@ const Admin = () => {
 
   const handleTabChange = () => {
 
-    /^\/admin\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname) &&
+    /^\/(admin|manager)\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname) &&
       setTabIndex(0);
 
     /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|room|cinema|list-showtime\/showtime)/.test(pathname) &&
       setTabIndex(1);
 
-    /^\/admin\/(add-item\/food|update-item\/food|list-food)/.test(pathname) &&
+    /^\/(admin|manager)\/(add-item\/food|update-item\/food|list-food)/.test(pathname) &&
       setTabIndex(2);
 
     item === "list-ticket" &&

@@ -228,6 +228,33 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const stockEntryApi = async (req) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const data = {
+                foodId: req.foodId,
+                quantity: req.quantity,
+                purchasePrice: req.purchasePrice,
+                supplier: req.supplier,
+                totalPrice: req.purchasePrice * req.quantity
+            }
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/foods/import`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -252,7 +279,8 @@ const ManagerService = () => {
         deleteRoomApi,
         getTotalRevenueOfManagerApi,
         getRevenueYearApi,
-        getAllTicketByManagerApi
+        getAllTicketByManagerApi,
+        stockEntryApi
     }
 }
 

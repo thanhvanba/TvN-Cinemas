@@ -41,14 +41,14 @@ const ProfileDetail = () => {
         // createdAt: null,
         // updatedAt: "",
         // lastLoginAt: "",
-        // cinema: {
-        //     cinemaId: "",
-        //     location: "",
-        //     cinemaName: "",
-        //     desc: "",
-        //     status: true,
-        //     urlLocation: null
-        // },
+        cinema: {
+            cinemaId: "",
+            location: "",
+            cinemaName: "",
+            desc: "",
+            status: true,
+            urlLocation: null
+        },
     })
     const [userInfo, setUserInfo] = useState({
         userId: "",
@@ -72,14 +72,14 @@ const ProfileDetail = () => {
         createdAt: null,
         updatedAt: "",
         lastLoginAt: "",
-        // cinema: {
-        //     cinemaId: "",
-        //     location: "",
-        //     cinemaName: "",
-        //     desc: "",
-        //     status: true,
-        //     urlLocation: null
-        // },
+        cinema: {
+            cinemaId: "",
+            location: "",
+            cinemaName: "",
+            desc: "",
+            status: true,
+            urlLocation: null
+        },
         active: true,
         delete: false
     });
