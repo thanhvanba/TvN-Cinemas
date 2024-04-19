@@ -18,8 +18,10 @@ import './info.css'
 import formatPrice from '../../utils/ConvertStringFollowFormat';
 import Loading from '../../components/Loading';
 import ProfileDetail from './components/profileDetail';
+import Modal from '../../utils/Modal';
 const Info = () => {
     const { user } = useContext(LoginContext)
+    const [modalStates, setModalStates] = useState({});
     const [image, setImage] = useState()
     const [dob, setDob] = useState(null);
     const [userInfo, setUserInfo] = useState({
@@ -58,7 +60,7 @@ const Info = () => {
     const [bookingUpcoming, setBookingUpcoming] = useState([]);
     const [bookingViewed, setBookingViewed] = useState([]);
     const [ticketDetail, setTicketDetail] = useState([]);
-    const { getUserInfoApi, updateProfileApi, changePasswordApi, getBookingUpcomingApi, getBookingViewedApi, getTicketDetailApi } = UserService();
+    const { getUserInfoApi, updateProfileApi, changePasswordApi, getBookingUpcomingApi, getBookingViewedApi, getTicketDetailApi, cancelTicketApi } = UserService();
 
     const { loading, setLoading } = useLoadingState(false);
     const [toggle, setToggle] = useState(false);
@@ -105,7 +107,7 @@ const Info = () => {
         }
     }
 
-    const handleOpenModal = () => {
+    const handleToggle = () => {
         setToggle(prevToggle => !prevToggle);
     }
     useEffect(() => {
@@ -135,10 +137,24 @@ const Info = () => {
         setLoading('hisBooking', false);
     }
     const handleGetTicketDetail = async (bookingId) => {
+        setLoading('ticket', true);
         let resTicket = await getTicketDetailApi(bookingId)
         if (resTicket && resTicket.data && resTicket.data.result) {
             setTicketDetail(resTicket.data.result)
         }
+        setLoading('ticket', false);
+    }
+
+    const handleOpenModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
+    };
+    const handleCloseModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
+    };
+    const handleCancelTicket = async (bookingId) => {
+        setLoading('cancel', true);
+        await cancelTicketApi(bookingId)
+        setLoading('cancel', false);
     }
     const handleUpdateUserInfo = async (e) => {
         e.preventDefault();
@@ -209,7 +225,7 @@ const Info = () => {
                                 <a
                                     className={`${currentTab === '1' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
                                 >
-                                    Profile
+                                    Hồ sơ
                                 </a>
 
                             </li>
@@ -220,7 +236,7 @@ const Info = () => {
                                 <a
                                     className={`${currentTab === '2' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
                                 >
-                                    History Booking
+                                    Lịch sử vé
                                 </a>
                             </li>
                         </ul>
@@ -503,25 +519,80 @@ const Info = () => {
                             {
                                 loading['hisBooking'] ? <Loading /> :
                                     <>
-                                        {
-                                            bookingUpcoming.length === 0 ?
-                                                <p className='pl-8'>-- Chưa có lịch sử booking nào --</p> :
-                                                bookingUpcoming.map((item) => (
-                                                    <div
-                                                        onClick={() => {
-                                                            handleOpenModal();
-                                                            handleGetTicketDetail(item.bookingId);
-                                                        }}
-                                                        className='flex justify-between border-x-[24px] border-t-[12px] border-b-[12px] border-slate-300 bg-slate-100 px-6'
-                                                    >
-                                                        <div className='py-4'>
-                                                            <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
-                                                            <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
-                                                            <p className='pl-2 text-start font-semibold text-xl'>{FormatDataTime(item.timeShow).time} - Ngày {FormatDataTime(item.timeShow).date}  </p>
-                                                        </div>
-                                                        <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
-                                                    </div>
-                                                ))
+                                        {bookingUpcoming.length === 0 ?
+                                            <p className='pl-8'>-- Chưa có lịch sử booking nào --</p> :
+                                            <table className='mt-6 w-full'>
+                                                <thead className=''>
+                                                    <tr className='border-b-2 border-slate-200'>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>STT</th>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Vé</th>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Trạng thái</th>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Chức năng</th>
+                                                    </tr>
+                                                </thead>
+                                                {
+
+                                                    bookingUpcoming.map((item, index) => (
+                                                        <tbody>
+                                                            <tr
+                                                                onClick={() => {
+                                                                    handleToggle();
+                                                                    handleGetTicketDetail(item.bookingId);
+                                                                }}
+                                                                className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                                                            >
+                                                                <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
+                                                                <td className='text-start font-medium px-2 py-4'>
+                                                                    <div
+                                                                        // onClick={() => {
+                                                                        //     handleOpenModal();
+                                                                        //     handleGetTicketDetail(item.bookingId);
+                                                                        // }}
+                                                                        className='flex justify-between border-[12px] border-slate-300 bg-slate-100 px-6'
+                                                                    >
+                                                                        <div className='py-4'>
+                                                                            <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
+                                                                            <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
+                                                                            <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
+                                                                        </div>
+                                                                        <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
+                                                                    </div>
+                                                                </td>
+                                                                <td className='text-center font-medium px-2 py-4'>
+                                                                    <div className={`${item.ticketStatus === "CANCELLED" ? "bg-red-600" : item.ticketStatus === "UNCONFIRMED" ? "bg-blue-600" : "bg-green-600"} inline-flex px-2 text-slate-50 rounded-lg`}>
+                                                                        {item.ticketStatus === "CANCELLED" ? "Đã hủy" : item.ticketStatus === "UNCONFIRMED" ? "Đợi nhận vé" : "Đã nhận vé"}
+                                                                    </div>
+                                                                </td>
+                                                                <td className='text-center font-medium px-2 py-4'>
+                                                                    <div
+                                                                        className='bg-red-600 text-zinc-200 hover:bg-red-800 inline px-3 py-1 rounded-lg'
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleOpenModal(item.bookingId)
+                                                                            // navigate(`/admin/add-item/schedule`, { state: { dateTime: selectedDateTime, idShowtime: item.showTimeId } });
+                                                                        }}
+                                                                    >
+                                                                        Hủy
+                                                                    </div>
+                                                                </td>
+                                                                <div>
+                                                                    {modalStates[item.bookingId] && (
+                                                                        <Modal
+                                                                            isOpen={modalStates[item.movieId]}
+                                                                            onClose={() => handleCloseModal(item.bookingId)}
+                                                                            onConfirm={() => handleCancelTicket(item.bookingId)}
+                                                                            onCancel={() => handleCloseModal(item.bookingId)}
+                                                                            title='Hủy vé'
+                                                                            content='Bạn có chắc chắn hủy vé này ???'
+                                                                            buttonName='Hủy'
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            </tr>
+                                                        </tbody>
+                                                    ))
+                                                }
+                                            </table>
                                         }
                                     </>
                             }
@@ -533,47 +604,74 @@ const Info = () => {
                                         {
                                             bookingViewed.length === 0 ?
                                                 <p className='pl-8'>-- Chưa có lịch sử booking nào --</p> :
-                                                bookingViewed.map((item) => (
-                                                    <div
-                                                        onClick={() => {
-                                                            handleOpenModal()
-                                                            handleGetTicketDetail(item.bookingId);
-                                                        }}
-                                                        className='flex justify-between border-x-[24px] border-t-[12px] border-b-[12px] border-slate-300 bg-slate-100 px-6'
-                                                    >
-                                                        <div className='py-4'>
-                                                            <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
-                                                            <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
-                                                            <p className='pl-2 text-start font-semibold text-xl'>{FormatDataTime(item.timeShow).time} - Ngày {FormatDataTime(item.timeShow).date}  </p>
-                                                        </div>
-                                                        <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
-                                                    </div>
-                                                ))
+                                                <table className='mt-6 w-full'>
+                                                    <thead className=''>
+                                                        <tr className='border-b-2 border-slate-200'>
+                                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>STT</th>
+                                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Vé</th>
+                                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Trạng thái</th>
+                                                        </tr>
+                                                    </thead>
+                                                    {
+                                                        bookingViewed.map((item, index) => (
+                                                            <tbody>
+                                                                <tr
+                                                                    onClick={() => {
+                                                                        handleOpenModal();
+                                                                        handleGetTicketDetail(item.bookingId);
+                                                                    }}
+                                                                    className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                                                                >
+                                                                    <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
+                                                                    <td className='text-start font-medium px-2 py-4'>
+                                                                        <div
+                                                                            className='flex justify-between border-[12px] border-slate-300 bg-slate-100 px-6 hover:bg-slate-200 cursor-pointer'
+                                                                        >
+                                                                            <div className='py-4'>
+                                                                                <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
+                                                                                <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
+                                                                                <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
+                                                                            </div>
+                                                                            <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className='text-center font-medium px-2 py-4'>
+                                                                        <div className={`${item.ticketStatus === "CANCELLED" ? "bg-red-600" : item.ticketStatus === "UNCONFIRMED" ? "bg-blue-600" : "bg-green-600"} inline-flex px-2 text-slate-50 rounded-lg`}>
+                                                                            {item.ticketStatus === "CANCELLED" ? "Đã hủy" : item.ticketStatus === "UNCONFIRMED" ? "Đợi nhận vé" : "Đã nhận vé"}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+
+                                                        ))
+                                                    }
+                                                </table>
                                         }
                                     </>
                             }
                         </TabPanel>
                     </Tabs>
                 </div>
-
             </div >
-
             {
                 toggle && (
                     <div className='top-0 bottom-0 bg-cover w-full fixed flex justify-center items-center   '>
-                        <div className=" w-[28%] z-10 overflow-hidden bg-slate-300 rounded-md">
-                            <div className="p-4 md:p-6 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
-                                <h4 className="font-bold text-3xl pb-2 border-b-2 border-slate-400">Chi tiết vé</h4>
-                                <div className='px-4  space-y-6'>
+                        <div className=" w-[25%] z-10 overflow-hidden bg-slate-300 rounded-md">
+                            <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
+                            <div className="relative px-4 pb-4 md:px-6 md:pb-6 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                                <div className='flex justify-center absolute mx-auto w-full h-full top-0 right-0 z-10'>
+                                    {loading['ticket'] && <Loading />}
+                                </div>
+                                <div className='space-y-4'>
                                     <div>
                                         <p className="text-3xl pt-4 text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
                                     </div>
                                     <div>
                                         <p className='font-light'>Ngày giờ chiếu</p>
                                         <div className="flex items-center space-x-2 text-xl">
-                                            <span className="font-bold text-orange-500">{FormatDataTime(ticketDetail.timeShow).time}</span>
+                                            <span className="font-bold text-orange-500">{ticketDetail.startTime}</span>
                                             <span>-</span>
-                                            <span className="font-bold">{FormatDataTime(ticketDetail.timeShow).date}</span>
+                                            <span className="font-bold">{FormatDataTime(ticketDetail.date).date}</span>
                                             <span>({ticketDetail.duration} phút)</span>
                                         </div>
 
@@ -583,7 +681,7 @@ const Info = () => {
                                         <p className="font-semibold text-xl">{ticketDetail.cinemaName}</p>
                                     </div>
 
-                                    <div className="flex items-center gap-10">
+                                    <div className="flex gap-10">
                                         <div className="w-3/5">
                                             <p className='font-light'>Ghế</p>
                                             <p className="font-semibold text-xl">{ticketDetail && ticketDetail.seats && ticketDetail.seats.map(seat => (
@@ -595,7 +693,7 @@ const Info = () => {
                                             <p className="font-semibold text-xl">{ticketDetail.roomName}</p>
                                         </div>
                                     </div>
-                                    <div className='flex items-center gap-10'>
+                                    <div className='flex gap-10'>
                                         <div className='w-3/5'>
                                             <p className='font-light'>Bắp nước</p>
                                             <p className="font-semibold text-xl">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
@@ -608,12 +706,15 @@ const Info = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='flex justify-end'>
+                                <div className='pt-4 flex justify-end'>
                                     <button
-                                        className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                        className="w-1/4 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300 z-50"
                                         type='button'
                                         disabled={loading['change']}
-                                        onClick={() => handleOpenModal()}
+                                        onClick={() => {
+                                            handleOpenModal()
+                                            setTicketDetail([])
+                                        }}
                                     >
                                         {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                         &nbsp;OK

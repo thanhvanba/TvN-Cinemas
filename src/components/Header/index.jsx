@@ -155,27 +155,27 @@ const Header = () => {
             <nav className="mx-auto flex max-w-6xl xl:max-w-7xl justify-between lg:px-8">
               <Popover.Group className="hidden lg:flex lg:gap-x-12">
                 <ul className="hidden lg:flex">
-                  <li onClick={() => changeTab("/phim")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/phim")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '1' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Phim
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/rap")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/rap")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '3' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Hệ thống rạp
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/khuyenmai")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/khuyenmai")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '4' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Khuyến mãi
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/lienhe")} className='px-4 py-8 relative'>
+                  <li onClick={() => changeTab("/lienhe")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '5' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Liên hệ
                     </a>
@@ -296,7 +296,7 @@ const Header = () => {
                 </div>
                 : <div>
                   <span
-                    className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
+                    className="cursor-pointer border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
                     onClick={() => { changeTab('/user/info') }}
                   >
                     {user.credentialId}

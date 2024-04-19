@@ -1,4 +1,8 @@
 .shadow-right {
-    box-shadow: 0px 5px 45px -4px rgba(0, 0, 0, 0.2);
-  }
-  
+  box-shadow: 0px 5px 45px -4px rgba(0, 0, 0, 0.2);
+}
+
+.shadow {
+  /* Offset-x, Offset-y, Blur-radius, Spread-radius, và Màu sắc */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -50,6 +50,7 @@ const ListProduct = () => {
     const [allFood, setAllFood] = useState([])
     const [allRoom, setAllRoom] = useState([])
     const [allTicket, setAllTicket] = useState([])
+    const [allUser, setAllUser] = useState([])
     const [food, setFood] = useState({
         name: "",
         price: "",
@@ -60,7 +61,7 @@ const ListProduct = () => {
         roomName: ""
     })
 
-    const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi } = AdminService()
+    const { getAllUserApi, getFoodAdminApi } = AdminService()
     const { getFoodApi } = UserService()
     const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
 
@@ -70,20 +71,20 @@ const ListProduct = () => {
         navigate(pathname)
     }
 
-    const listFood = {
-        header: { stt: "STT", name: "Name", price: "Price", foodType: "Type", status: "Status", action: "Action" },
-        foods: allFood,
-        action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
-    }
-    const listRoom = {
-        header: { stt: "STT", roomName: "Name", cinema: "Cinema Info", status: "Status", action: "Action" },
-        rooms: allRoom,
-        action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
-    }
-    const listTicket = {
-        header: { stt: "STT", movieName: "Movie", cinemaName: "Cinema", showtime: "Showtime", ticketPrice: "Price", createAt: "CreateAt", user: "User" },
-        tickets: allTicket,
-    }
+    // const listFood = {
+    //     header: { stt: "STT", name: "Name", price: "Price", foodType: "Type", status: "Status", action: "Action" },
+    //     foods: allFood,
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
+    // }
+    // const listRoom = {
+    //     header: { stt: "STT", roomName: "Name", cinema: "Cinema Info", status: "Status", action: "Action" },
+    //     rooms: allRoom,
+    //     action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
+    // }
+    // const listTicket = {
+    //     header: { stt: "STT", movieName: "Movie", cinemaName: "Cinema", showtime: "Showtime", ticketPrice: "Price", createAt: "CreateAt", user: "User" },
+    //     tickets: allTicket,
+    // }
     // const handleChangeStatus = async (roomId) => {
     //     await changeStatusRoomApi(roomId);
     //     handleGetItems(currentPage)
@@ -112,7 +113,7 @@ const ListProduct = () => {
     // };
     const handleGetItems = async (pageNumber, foodType) => {
         // setCurrentPage(pageIndex)
-        let resFood = await getFoodApi(foodType, pageNumber, 10)
+        let resFood = await getFoodAdminApi(foodType, pageNumber, 10)
         if (resFood && resFood.data && resFood.data.result.content) {
             setAllFood(resFood.data.result.content)
             setPagination(prevPagination => ({
@@ -133,16 +134,16 @@ const ListProduct = () => {
         // }
 
         // setLoading("ticket", true)
-        // let resTicket = (user.role === "ADMIN") ? await getAllTicketApi(pageIndex, 7) : await getAllTicketByManagerApi(pageIndex, 7)
-        // setLoading("ticket", false)
+        // let resTicket = (user.role === "ADMIN")  await getAllTicketByManagerApi(pageNumber, 7)
+        // // setLoading("ticket", false)
         // if (resTicket && resTicket.data && resTicket.data.result && resTicket.data.result.content) {
         //     setAllTicket(resTicket.data.result.content)
         // }
 
-        // let resUser = await getAllUserApi()
-        // if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-        //     setAllUser(resUser.data.result.content)
-        // }
+        let resUser = await getAllUserApi()
+        if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
+            setAllUser(resUser.data.result.content)
+        }
     }
     // const handleOpenModal = (itemId) => {
     //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
@@ -150,10 +151,10 @@ const ListProduct = () => {
     // const handleCloseModal = (itemId) => {
     //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
     // };
-    // const getNameById = (userId) => {
-    //     const user = allUser.find((user) => user.userId === userId);
-    //     return user ? user.userName : null;
-    // };
+    const getNameById = (userId) => {
+        const user = allUser.find((user) => user.userId === userId);
+        return user ? user.userName : null;
+    };
 
 
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
@@ -345,10 +346,10 @@ const ListProduct = () => {
                                     </>
                             }
                         </div>
-                    </TabPanel>
+                    </TabPanel> */}
 
-                    {user.role === "ADMIN" &&
-                        <TabPanel>
+                {/* {user.role === "ADMIN" &&
+                        <div>
                             <div className='relative'>
                                 {
                                     allTicket.length === 0 ?
@@ -390,8 +391,8 @@ const ListProduct = () => {
                                         </>
                                 }
                             </div>
-                        </TabPanel>}
-                </Tabs> */}
+                        </div>} */}
+                {/* </Tabs> */}
             </div>
         </div >
     )

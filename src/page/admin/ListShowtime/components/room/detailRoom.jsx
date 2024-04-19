@@ -22,6 +22,11 @@ const DetailRoom = () => {
     const [modalStates, setModalStates] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(roomId);
     const [allRoom, setAllRoom] = useState([]);
+    const [seatMap, setSeatmap] = useState({
+        rowSeat: "",
+        colSeat: "",
+    })
+    console.log("🚀 ~ DetailRoom ~ seatMap:", seatMap)
     const [room, setRoom] = useState({
         cinema: {
             cinemaId: "",
@@ -43,10 +48,13 @@ const DetailRoom = () => {
         setLoading(true);
         const data = {
             roomName: room.roomName,
-            rowSeat: room.rowSeat,
-            colSeat: room.colSeat
+            rowSeat: seatMap.rowSeat,
+            colSeat: seatMap.colSeat
         };
         await updateRoomAdminApi(data, roomId)
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000); 
         setModalStates(false)
         setLoading(false);
     };
@@ -56,6 +64,8 @@ const DetailRoom = () => {
         const resRoom = await getOneRoomApi(roomId)
         if (resRoom && resRoom.data && resRoom.data.result) {
             setRoom(resRoom.data.result)
+            setSeatmap(prevState => ({ ...prevState, rowSeat: resRoom.data.result.rowSeat }));
+            setSeatmap(prevState => ({ ...prevState, colSeat: resRoom.data.result.colSeat }));
         }
         setLoading(false)
     }
@@ -126,10 +136,10 @@ const DetailRoom = () => {
                                                             Số hàng
                                                         </label>
                                                         <input
-                                                            onChange={e => setRoom({ ...room, rowSeat: e.target.value })}
+                                                            onChange={e => setSeatmap({ ...seatMap, rowSeat: e.target.value })}
                                                             type="text"
                                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                            value={room.rowSeat}
+                                                            value={seatMap.rowSeat}
                                                         />
                                                     </div>
                                                     <div className="relative my-4">
@@ -140,10 +150,10 @@ const DetailRoom = () => {
                                                             Ghế mỗi hàng
                                                         </label>
                                                         <input
-                                                            onChange={e => setRoom({ ...room, colSeat: e.target.value })}
+                                                            onChange={e => setSeatmap({ ...seatMap, colSeat: e.target.value })}
                                                             type="text"
                                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                            value={room.colSeat}
+                                                            value={seatMap.colSeat}
                                                         />
                                                     </div>
                                                     <div className='flex justify-end'>

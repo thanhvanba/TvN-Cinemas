@@ -346,7 +346,7 @@ const ListUser = () => {
                                                         </div>
                                                     </td>
                                                     <td className='text-center px-2 py-3'>{item.userName}</td>
-                                                    <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : "Quản lý"}</td>
+                                                    <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
                                                     {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
                                                     <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
                                                     <td className='text-center px-2 py-3'>{FormatDataTime(item.lastLoginAt).date}</td>

@@ -331,7 +331,7 @@ const OrderMovie = () => {
                             {seatData.map(seat => (
                                 <div
                                     key={seat.id}
-                                    className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
+                                    className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
                                     onClick={() => handleSelectSeat(seat.id, seat.type)}
                                 >
                                     {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}

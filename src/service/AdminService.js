@@ -149,11 +149,12 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const addPriceSeatApi = async (data) => {
+    const updatePriceSeatApi = async (data, priceId) => {
+        console.log("🚀 ~ addPriceSeatApi ~ data:", data)
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
-                `${process.env.REACT_APP_HOST_API_KEY}/admin/prices/price`,
+            const response = await axios.put(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/prices/price/${priceId}`,
                 data,
                 {
                     headers: {
@@ -460,10 +461,10 @@ const AdminService = () => {
             },
         );
     };
-    const getAllTicketApi = async (pageIndex, pageSize) => {
+    const getFoodAdminApi = async (type, pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            `${process.env.REACT_APP_HOST_API_KEY}/admin/tickets`,
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/foods`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -475,6 +476,41 @@ const AdminService = () => {
             },
         );
     };
+    const getAllTicketApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/tickets`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    type: type,
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            },
+        );
+    };
+
+    const getAllBookingtApi = async (pageIndex, pageSize, status, cinemaId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                    status: status,
+                    cinemaId: cinemaId
+                },
+            },
+        );
+    };
+
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
@@ -731,13 +767,33 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const confirmTicketApi = async (bookingId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.put(
+                `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings/${bookingId}/confirm`,
+                null,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         addManagerApi,
         addCinemaApi,
         updateCinemaApi,
         addFoodApi,
         updateFoodApi,
-        addPriceSeatApi,
+        updatePriceSeatApi,
         deleteMovieApi,
         updateMovieApi,
         addMovieApi,
@@ -758,6 +814,7 @@ const AdminService = () => {
         totalTicketByCinemaApi,
         getCinemasUnmanagedApi,
         getAllTicketApi,
+        getAllBookingtApi,
         getAllCinemaApi,
         getAllMovieApi,
         getShowtimeByCinemaApi,
@@ -771,7 +828,9 @@ const AdminService = () => {
         getAllPersonnelApi,
         getAllViewerApi,
         updateUserApi,
-        updateRoomAdminApi
+        updateRoomAdminApi,
+        confirmTicketApi,
+        getFoodAdminApi
     }
 }
 

@@ -1,0 +1,31 @@
+.ticket-list-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 6px;
+}
+
+.ticket-section {
+    flex: 1;
+    margin: 0 2px;
+}
+
+.scrollable-section {
+    max-height: 85vh;
+    /* Đặt chiều cao tối đa của phần có thể cuộn */
+    overflow-y: auto;
+    /* Thiết lập chiều cuộn */
+}
+
+.scrollable1-section {
+   height: 42vh;
+    /* Đặt chiều cao tối đa của phần có thể cuộn */
+    overflow-y: auto;
+    /* Thiết lập chiều cuộn */
+}
+
+/* Ẩn thanh cuộn trên các trình duyệt WebKit */
+.scrollable-section::-webkit-scrollbar {
+    display: none;
+}
+

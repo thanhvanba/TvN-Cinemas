@@ -31,7 +31,7 @@ const ListRoom = () => {
     const [modalStates, setModalStates] = useState({});
     const [allRoom, setAllRoom] = useState([])
 
-    const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllUserApi, deleteRoomAdminApi, getRoomeByCinemaApi } = AdminService()
+    const { getAllRoomApi, getAllUserApi, deleteRoomAdminApi, getRoomeByCinemaApi } = AdminService()
     const { getAllRoomByManagerApi, changeStatusRoomApi, deleteRoomApi, getAllTicketByManagerApi } = ManagerService()
 
 
@@ -128,11 +128,11 @@ const ListRoom = () => {
                             <table className='mt-6 w-full'>
                                 <thead className=''>
                                     <tr>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase'>{listRoom.header.stt}</th>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase'>{listRoom.header.roomName}</th>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase'>{listRoom.header.cinema}</th>
-                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase w-[120px]'>{listRoom.header.status}</th>}
-                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase'>{listRoom.header.action}</th>}
+                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.stt}</th>
+                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.roomName}</th>
+                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.cinema}</th>
+                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase w-[120px] cursor-default'>{listRoom.header.status}</th>}
+                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.action}</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,7 +140,7 @@ const ListRoom = () => {
                                         listRoom.rooms.map((item, index) => (
                                             <tr
                                                 onClick={() => { navigate(`/admin/room/${item.roomId}`, { state: { cinemaId: item.cinema.cinemaId, cinemaName: cinemaName } }) }}
-                                                className='border-b-2 border-slate-200 hover:bg-slate-200'
+                                                className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
                                                 <td className='text-center font-medium px-5 py-4'>{index + 1}</td>
                                                 <td className='text-center font-medium px-5 py-4'>{item.roomName}</td>
@@ -155,13 +155,13 @@ const ListRoom = () => {
                                                 {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}
                                                 {<td className='text-center font-medium px-5 py-4'>
                                                     <div className='flex items-center'>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                            <listRoom.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-red-100'>
+                                                            <listRoom.action.aChange className='h-4 w-4  text-red-600' />
                                                         </button>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                        {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                             <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
-                                                        </button>
-                                                        <div>
+                                                        </button> */}
+                                                        {/* <div>
                                                             {modalStates[item.roomId] && (
                                                                 <ModalComponent
                                                                     isOpen={modalStates[item.roomId]}
@@ -173,7 +173,7 @@ const ListRoom = () => {
                                                                     buttonName='Delete'
                                                                 />
                                                             )}
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                 </td>}
                                             </tr>

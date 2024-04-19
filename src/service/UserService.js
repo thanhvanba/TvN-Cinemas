@@ -187,7 +187,6 @@ const UserService = () => {
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/seats/booked`,
             {
-
                 params: params
             }
 
@@ -314,6 +313,25 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error");
         }
     }
+    const cancelTicketApi = async (ticketId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.put(
+                `${process.env.REACT_APP_HOST_API_KEY}/viewer/ticket/cancel/${ticketId}`,
+                null,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success");
+            }
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
+        }
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -339,7 +357,8 @@ const UserService = () => {
         getTicketDetailApi,
         getShowtimeByCinemaApi,
         searchMovieApi,
-        reviewMovieApi
+        reviewMovieApi,
+        cancelTicketApi
     }
 }
 
