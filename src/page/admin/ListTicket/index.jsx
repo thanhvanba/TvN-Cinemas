@@ -14,6 +14,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Receipt } from 'lucide-react';
 import Fare from './components/fare';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import TimeAgo from '../../../components/TimeAgo';
 
 
 const ListTicket = () => {
@@ -44,8 +45,8 @@ const ListTicket = () => {
   const handleGetItems = async (pageNumber) => {
     setLoading('loading', true)
     let resTicketC = await getAllBookingtApi(pageNumber, 8, "CONFIRMED")
-    let resTicketU = await getAllBookingtApi(pageNumber, 8, "UNCONFIRMED")
-    let resTicketCa = await getAllBookingtApi(pageNumber, 8, "CANCELLED")
+    let resTicketU = await getAllBookingtApi(null, null, "UNCONFIRMED")
+    let resTicketCa = await getAllBookingtApi(null, null, "CANCELLED")
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
       setAllTicketC(resTicketC.data.result.content.reverse())
       setPagination(prevPagination => ({
@@ -158,7 +159,7 @@ const ListTicket = () => {
                         <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.price}</td>
-                        <td className='text-center font-medium px-2 py-4'>{FormatDataTime(item.createAt).time} {FormatDataTime(item.createAt).date}</td>
+                        <td className='text-center font-medium px-2 py-4'>{TimeAgo(item.createAt)}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.userName}</td>
                       </tr>
                     ))
@@ -329,11 +330,15 @@ const ListTicket = () => {
             <div className='top-0 bottom-0 bg-cover w-4/5 fixed flex justify-center items-center'>
               <button
                 type="button"
-                className="absolute top-1/4 right-52 z-50"  
-                onClick={() => setLoading('fare', false)}
+                className="absolute top-[235px] right-[250px] z-50"
               >
                 <span className="sr-only">Close menu</span>
-                <XMarkIcon className="h-10 w-10 text-gray-700 z-50" aria-hidden="true" />
+                <div
+                  className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
+                  onClick={() => setLoading('fare', false)}
+                >
+                  <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                </div>
               </button>
               <Fare />
             </div>

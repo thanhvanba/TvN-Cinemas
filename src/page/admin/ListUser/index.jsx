@@ -15,6 +15,7 @@ import AdminService from '../../../service/AdminService'
 import ModalComponent from '../../../utils/Modal';
 import Loading from '../../../components/Loading'
 import Search from '../../../components/Search'
+import TimeAgo from '../../../components/TimeAgo'
 
 const ListUser = () => {
     const { pathname } = useLocation()
@@ -172,7 +173,12 @@ const ListUser = () => {
             <div className='px-4'>
                 {/* add manager */}
                 <Popover className='relative h-20 mb-2 flex justify-between items-center border-b-2'>
-                    <h2 className='text-3xl'>Danh sách nhân sự</h2>
+                    <h2 className='text-3xl'>
+                        {pathname === "/admin/list-viewer"
+                            ? <p>Danh sách khách hàng</p>
+                            : <p>Danh sách nhân sự</p>
+                        }
+                    </h2>
                     <Popover.Button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
                         type='submit'
@@ -324,7 +330,7 @@ const ListUser = () => {
                                             <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.role}</th>
                                             {pathname === "/admin/list-personnel" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.cinema}</th>}
                                             <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.created}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-9'>{listUser.header.login}</th>
+                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-28'>{listUser.header.login}</th>
                                             <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.action}</th>
                                         </tr>
                                     </thead>
@@ -349,7 +355,7 @@ const ListUser = () => {
                                                     <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
                                                     {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
                                                     <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
-                                                    <td className='text-center px-2 py-3'>{FormatDataTime(item.lastLoginAt).date}</td>
+                                                    <td className='text-center px-2 py-3'>{TimeAgo(item.lastLoginAt)}</td>
                                                     <td className='text-center px-2 py-3'>
                                                         <div className='flex items-center'>
                                                             <button

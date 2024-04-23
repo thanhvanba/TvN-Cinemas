@@ -255,6 +255,21 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getListReviewApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/reviews`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            },
+        );
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -280,7 +295,8 @@ const ManagerService = () => {
         getTotalRevenueOfManagerApi,
         getRevenueYearApi,
         getAllTicketByManagerApi,
-        stockEntryApi
+        stockEntryApi,
+        getListReviewApi
     }
 }
 
