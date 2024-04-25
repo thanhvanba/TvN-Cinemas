@@ -29,6 +29,8 @@ const ListUser = () => {
         navigate(pathname);
     };
 
+    const cinemaId = localStorage.getItem('cinemaId');
+
     const { loading, setLoading } = useLoadingState(false);
     const [modalStates, setModalStates] = useState({});
     const [pagination, setPagination] = useState(
@@ -52,7 +54,7 @@ const ListUser = () => {
         phone: "",
         userName: "",
         password: "",
-        cinemaId: ""
+        cinemaId: cinemaId || ""
     })
     const [userInfo, setUserInfo] = useState({
         userId: "",

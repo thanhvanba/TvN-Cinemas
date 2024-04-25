@@ -37,7 +37,6 @@ const ListProduct = () => {
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(true);
-    console.log("🚀 ~ ListProduct ~ status:", status)
     const [selectFood, setSelectFood] = useState("")
     const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);

@@ -381,13 +381,7 @@ const ManagerService = () => {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/staff`,
-                {
-                    userName: data.userName,
-                    password: data.password,
-                    email: data.email,
-                    fullName: data.fullName,
-                    phone: data.phone
-                },
+                data,
                 {
                     headers: {
                         "Authorization": bearerToken,
