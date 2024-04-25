@@ -147,14 +147,19 @@ const ManagerService = () => {
             },
         );
     };
-    const getAllRoomByManagerApi = async () => {
+    const getAllRoomByManagerApi = async (pageIndex, pageSize, isDelete) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                    isDelete: isDelete
+                },
             },
         );
     };
@@ -396,6 +401,26 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const changeStatusStaffApi = async (userId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.patch(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/staffs/${userId}`,
+                {},
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -429,7 +454,8 @@ const ManagerService = () => {
         getShowtimeByRoomCinemaApi,
         quantitySeatBookedManagerApi,
         updateRoomManagerApi,
-        addStaffApi
+        addStaffApi,
+        changeStatusStaffApi
     }
 }
 

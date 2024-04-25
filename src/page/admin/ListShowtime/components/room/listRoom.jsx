@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIcon, WrenchScrewdriverIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 
 import AdminService from '../../../../../service/AdminService'
 import ManagerService from '../../../../../service/ManagerService';
@@ -19,6 +19,7 @@ const ListRoom = () => {
     const location = useLocation()
     const { cinemaId, cinemaName } = location.state || {}
     const [loading, setLoading] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState(
         {
@@ -48,6 +49,7 @@ const ListRoom = () => {
     const handleChangeStatus = async (roomId) => {
         await changeStatusRoomApi(roomId);
         handleGetItems(currentPage)
+        handleCloseModal(roomId)
         const updatedRooms = allRoom.map((room) => {
             if (room.roomId === roomId) {
                 return { ...room, delete: !room.delete };
@@ -66,7 +68,7 @@ const ListRoom = () => {
     };
     const handleGetItems = async (pageNumber) => {
         setLoading(true)
-        let resRoom = (user.role === "ADMIN") ? await getRoomeByCinemaApi(cinemaId, pageNumber, 6) : await getAllRoomByManagerApi()
+        let resRoom = (user.role === "ADMIN") ? await getRoomeByCinemaApi(cinemaId, pageNumber, 6, isDelete) : await getAllRoomByManagerApi(pageNumber, 6, isDelete)
         setLoading(false)
         if (resRoom && resRoom.data && resRoom.data.result.content) {
             setAllRoom(resRoom.data.result.content)
@@ -88,7 +90,7 @@ const ListRoom = () => {
 
     useEffect(() => {
         handleGetItems(pagination.pageNumber)
-    }, []);
+    }, [isDelete]);
 
     return (
         <div>
@@ -122,16 +124,29 @@ const ListRoom = () => {
                 </div>
                 {!loading &&
                     <div className='h-full'>
+
+                        <div className='flex justify-end items-center py-4'>
+                            <div className="border-2 rounded-xl mr-4">
+                                <Search />
+                            </div>
+                            <button
+                                type="button"
+                                className=" z-50"
+                            >
+                                <span className="sr-only">Close menu</span>
+                                <div className={`${isDelete ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`} onClick={() => setIsDelete(!isDelete)}>
+                                    {!isDelete ?
+                                        <WrenchScrewdriverIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                    }
+                                </div>
+                            </button>
+                        </div>
                         {
                             allRoom.length === 0 ?
                                 <div className='p-4 text-center text-gray-500'>Chưa có phòng. Tiến hành thêm phòng !!!</div>
                                 :
                                 <>
-                                    <div className='flex justify-end items-center py-4 pr-4'>
-                                        <div className="border-2 rounded-xl ">
-                                            <Search />
-                                        </div>
-                                    </div>
                                     <div>
                                         <table className='mt-6 w-full'>
                                             <thead className=''>
@@ -161,25 +176,25 @@ const ListRoom = () => {
                                                             </td>
                                                             {<td className='flex items-center justify-center font-medium px-5 py-6'>
                                                                 {/* <div className='flex items-center'> */}
-                                                                <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                     <listRoom.action.aChange className='h-4 w-4  text-red-600' />
                                                                 </button>
                                                                 {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                             <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
                                                         </button> */}
-                                                                {/* <div>
-                                                            {modalStates[item.roomId] && (
-                                                                <ModalComponent
-                                                                    isOpen={modalStates[item.roomId]}
-                                                                    onClose={() => handleCloseModal(item.roomId)}
-                                                                    onConfirm={() => handleDeleteRoom(item.roomId)}
-                                                                    onCancel={() => handleCloseModal(item.roomId)}
-                                                                    title='Xóa Phòng'
-                                                                    content='Bạn có chắc chắn xóa phòng này ???'
-                                                                    buttonName='Delete'
-                                                                />
-                                                            )}
-                                                        </div> */}
+                                                                <div>
+                                                                    {modalStates[item.roomId] && (
+                                                                        <ModalComponent
+                                                                            isOpen={modalStates[item.roomId]}
+                                                                            onClose={() => handleCloseModal(item.roomId)}
+                                                                            onConfirm={() => handleChangeStatus(item.roomId)}
+                                                                            onCancel={() => handleCloseModal(item.roomId)}
+                                                                            title={isDelete ? 'Khôi phục phòng' : 'Bảo trì phòng'}
+                                                                            content={isDelete ? 'Bạn có chắc chắn khôi phục phòng này ???' : 'Bạn có chắc chắn bảo trì phòng này ???'}
+                                                                            buttonName={isDelete ? 'Khôi phục' : 'Bảo trì'}
+                                                                        />
+                                                                    )}
+                                                                </div>
                                                                 {/* </div> */}
                                                             </td>}
                                                             {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}

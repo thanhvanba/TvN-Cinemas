@@ -43,7 +43,7 @@ const ListUser = () => {
     );
 
     const { addManagerApi, getAllPersonnelApi, getAllViewerApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi, getOneUserApi } = AdminService()
-    const { getAllPersonnelManagerApi, addStaffApi } = ManagerService()
+    const { getAllPersonnelManagerApi, addStaffApi, changeStatusStaffApi } = ManagerService()
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
@@ -137,7 +137,7 @@ const ListUser = () => {
         }
     }
     const handleChangeStatus = async (userId) => {
-        await changeStatusUserApi(userId);
+        user.role === "ADMIN" ? await changeStatusUserApi(userId) : await changeStatusStaffApi(userId)
         handleGetUser(pagination.pageNumber)
         const updatedUser = allUser.map((user) => {
             if (user.userId === userId) {

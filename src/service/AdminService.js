@@ -414,6 +414,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    sortByRole: sortByRole
                 },
             }
         );
@@ -645,7 +646,7 @@ const AdminService = () => {
             },
         );
     };
-    const getRoomeByCinemaApi = async (cinemaId, pageIndex, pageSize) => {
+    const getRoomeByCinemaApi = async (cinemaId, pageIndex, pageSize, isDelete) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/rooms`,
@@ -656,6 +657,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    isDelete: isDelete
                 },
             },
         );

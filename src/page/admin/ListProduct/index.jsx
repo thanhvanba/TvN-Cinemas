@@ -178,7 +178,6 @@ const ListProduct = () => {
         handleGetItems(pagination.pageNumber)
     }, [status]);
     useEffect(() => {
-        console.log("Vào")
         setLoading(true)
         handleGetItems(pagination.pageNumber)
     }, [pathname]);
