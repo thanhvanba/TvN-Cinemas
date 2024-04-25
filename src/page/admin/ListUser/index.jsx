@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
@@ -16,8 +16,12 @@ import ModalComponent from '../../../utils/Modal';
 import Loading from '../../../components/Loading'
 import Search from '../../../components/Search'
 import TimeAgo from '../../../components/TimeAgo'
+import ManagerService from '../../../service/ManagerService'
+import { LoginContext } from '../../../context/LoginContext'
+import useLoadingState from '../../../hook/UseLoadingState'
 
 const ListUser = () => {
+    const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
 
     const navigate = useNavigate();
@@ -25,7 +29,7 @@ const ListUser = () => {
         navigate(pathname);
     };
 
-    const [loading, setLoading] = useState(false);
+    const { loading, setLoading } = useLoadingState(false);
     const [modalStates, setModalStates] = useState({});
     const [pagination, setPagination] = useState(
         {
@@ -37,6 +41,7 @@ const ListUser = () => {
     );
 
     const { addManagerApi, getAllPersonnelApi, getAllViewerApi, deleteUserApi, changeStatusUserApi, getCinemasUnmanagedApi, getOneUserApi } = AdminService()
+    const { getAllPersonnelManagerApi, addStaffApi } = ManagerService()
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
@@ -92,10 +97,13 @@ const ListUser = () => {
 
     const handleAddManager = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setLoading('add', true);
         const data = account;
-        await addManagerApi(data);
-        setLoading(false);
+        { pathname === "/manager/list-personnel" ? await addStaffApi(data) : await addManagerApi(data); }
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        setLoading('add', false);
     };
     const handleGetItem = async () => {
         let res = await getCinemasUnmanagedApi()
@@ -112,9 +120,9 @@ const ListUser = () => {
         }
     }
     const handleGetUser = async (pageNumber) => {
-        setLoading(true);
-        let ress = pathname === "/admin/list-viewer" ? await getAllViewerApi(pageNumber, 5) : await getAllPersonnelApi(pageNumber, 5)
-        setLoading(false);
+        setLoading('get', true);
+        let ress = pathname === "/admin/list-viewer" ? await getAllViewerApi(pageNumber, 5) : user.role === "ADMIN" ? await getAllPersonnelApi(pageNumber, 5) : await getAllPersonnelManagerApi(pageNumber, 5)
+        setLoading('get', false);
         if (ress && ress.data && ress.data.result && ress.data.result && ress.data.result.content) {
             setAllUser(ress.data.result.content)
             setPagination(prevPagination => ({
@@ -179,12 +187,14 @@ const ListUser = () => {
                             : <p>Danh sách nhân sự</p>
                         }
                     </h2>
-                    <Popover.Button
-                        className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                        type='submit'
-                    >
-                        Thêm
-                    </Popover.Button>
+                    {(pathname === "/admin/list-personnel" || user.role === "MANAGER") &&
+                        <Popover.Button
+                            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                            type='submit'
+                        >
+                            Thêm
+                        </Popover.Button>
+                    }
                     <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
@@ -246,17 +256,19 @@ const ListUser = () => {
                                                 placeholder=""
                                             />
                                         </div>
-                                        <div className="relative my-2 z-50">
-                                            <label
-                                                htmlFor=""
-                                                className="block text-lg leading-6 text-gray-900"
-                                            >
-                                                Rạp quản lý
-                                            </label>
-                                            <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
+                                        {pathname !== "/manager/list-personnel" &&
+                                            <div className="relative my-2 z-50">
+                                                <label
+                                                    htmlFor=""
+                                                    className="block text-lg leading-6 text-gray-900"
+                                                >
+                                                    Rạp quản lý
+                                                </label>
+                                                <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                                                    <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
+                                                </div>
                                             </div>
-                                        </div>
+                                        }
                                     </div>
                                     <div className='text-xl font-semibold pt-3'>
                                         Thông tin đăng nhập
@@ -293,12 +305,12 @@ const ListUser = () => {
                                     </div>
                                     <div className='flex justify-end mt-10'>
                                         <button
-                                            className="w-1/4 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                            className="w-1/3 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                             type='submit'
-                                            disabled={loading}
+                                            disabled={loading['add']}
                                         >
-                                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                            &nbsp;Add Manager
+                                            {loading['add'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                            &nbsp; {pathname !== "/manager/list-personnel" ? "Thêm quản lý" : "Thêm nhân viên"}
                                         </button>
                                     </div>
                                 </form>
@@ -310,11 +322,10 @@ const ListUser = () => {
 
                 <div className='relative'>
                     <div className='px-2'>
-
                         <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
-                            {loading && <Loading />}
+                            {loading['get'] && <Loading />}
                         </div>
-                        {!loading &&
+                        {!loading['get'] &&
                             <div className=''>
                                 <div className='flex justify-end items-center py-4 pr-4'>
                                     <div className="border-2 rounded-xl ">
@@ -355,7 +366,7 @@ const ListUser = () => {
                                                     <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
                                                     {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
                                                     <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
-                                                    <td className='text-center px-2 py-3'>{TimeAgo(item.lastLoginAt)}</td>
+                                                    <td className='text-center px-2 py-3'>{item.lastLoginAt === null ? '-' : TimeAgo(item.lastLoginAt)}</td>
                                                     <td className='text-center px-2 py-3'>
                                                         <div className='flex items-center'>
                                                             <button

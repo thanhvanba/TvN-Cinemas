@@ -5,7 +5,6 @@ import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIco
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import SelectMenu from '../../../../../components/SelectMenu/SelectMenu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import ManagerService from '../../../../../service/ManagerService';
@@ -21,9 +20,8 @@ const AddRoom = () => {
     const { user } = useContext(LoginContext);
 
     const [loading, setLoading] = useState(false);
-    const [allCinema, setAllCinema] = useState([])
     const location = useLocation()
-    const { cinemaName } = location.state || {}
+    const { cinemaId, cinemaName } = location.state || {}
 
     const navigate = useNavigate()
     const changeTab = (pathname) => {
@@ -31,7 +29,7 @@ const AddRoom = () => {
     }
 
     const [room, setRoom] = useState({
-        cinemaId: "",
+        cinemaId: cinemaId || "",
         roomName: "",
         rowSeat: 0,
         colSeat: 0,
@@ -50,34 +48,17 @@ const AddRoom = () => {
         setLoading(false);
     };
 
-
-    const handleGetCinema = async () => {
-        let res = await getAllCinemaApi()
-        if (res && res.data && res.data.result && res.data.result.content) {
-            setAllCinema(res.data.result.content)
-        }
-    }
-
-    const nameCinema = allCinema.map(item => item.cinemaName)
-
-    const handleSelectChange = (selectedValue) => {
-        const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
-        const selectedId = cinema.cinemaId
-        setRoom({ ...room, cinemaId: selectedId })
-    };
-
-    useEffect(() => {
-        handleGetCinema()
-    }, []);
-
     return (
         <div>
             <div className='px-4'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                     <div className='flex items-center'>
-                        <h2 onClick={() => { navigate("/admin/cinema/") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
-                        <ChevronRightIcon className='px-1 h-6' />
-                        <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                        <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
+                        {user.role === "ADMIN" &&
+                            <> <ChevronRightIcon className='px-1 h-6' />
+                                <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                            </>
+                        }
                         <ChevronRightIcon className='px-1 h-6' />
                         <h2 className='cursor-default text-xl'>Thêm phòng</h2>
                     </div>
@@ -86,17 +67,6 @@ const AddRoom = () => {
                     <div className="w-full py-8">
                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
                             <form id='formAddCinema' onSubmit={handleAddRoom} action="">
-                                <div className="relative my-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Tên rạp
-                                    </label>
-                                    <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                        <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"-------Select-------"} />
-                                    </div>
-                                </div>
                                 <div className="relative my-4">
                                     <label
                                         htmlFor=""
@@ -155,7 +125,7 @@ const AddRoom = () => {
 
                                 <div className='flex justify-end'>
                                     <button
-                                        className="w-[12%] mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                        className="w-[12%] mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                         type='submit'
                                         disabled={loading}
                                     >

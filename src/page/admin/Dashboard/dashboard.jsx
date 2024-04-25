@@ -365,10 +365,12 @@ const Dashboard = () => {
           }
         </div>
 
-        <div>
+        <div className='relative'>
           {
             loading1 ?
-              <Loading /> :
+              <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                <Loading />
+              </div> :
               <div className='grid grid-cols-4'>
                 {
                   listStatistical.map((item) => (

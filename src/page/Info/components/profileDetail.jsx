@@ -86,6 +86,7 @@ const ProfileDetail = () => {
     const handleGetItems = async () => {
         setLoading('hisBooking', true);
         let resInfo = /^\/admin\/update-item\/user/.test(pathname) ? await getOneUserApi(userId) : await getUserInfoApi()
+        console.log("Vào đâỳ")
         if (resInfo && resInfo.data && resInfo.data.result) {
             setUserInfo(resInfo.data.result)
             // navigate(-1)

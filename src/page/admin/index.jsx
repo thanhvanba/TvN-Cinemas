@@ -5,51 +5,60 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import logo from "../../images/logo.png"
 import { UserCircleIcon as UserCircleIconSolid, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
 import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
-import './index.css'
 import Dashboard from './Dashboard/dashboard'
 import ListUser from './ListUser'
-import ListCinema from './ListCinema'
 import ListMovie from './ListMovie';
 import ListShowtime from './ListShowtime';
 import ListReview from './ListReview';
-
-import AddItem from './AddItem';
-// import AddMovie from './ListMovie/components/addMovie';
-// import AddShowtime from './AddShowtime';
 import Info from '../Info';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+//  import 'react-tabs/style/react-tabs.css';
+import './index.css'
 import AuthService from '../../service/AuthService'
 import { LoginContext } from '../../context/LoginContext'
 // import DetailShowtime from './ListShowtime/components/detailShowtime';
 import ListProduct from './ListProduct';
 import ProfileDetail from '../Info/components/profileDetail';
 import ListTicket from './ListTicket';
+import UserService from '../../service/UserService';
 
 const Admin = () => {
   const { item } = useParams()
   const { pathname } = useLocation()
-  const { checkPath } = useLocation()
   const navigate = useNavigate()
 
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState('1');
+  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
+  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
   }
 
   const { logoutApi } = AuthService();
-  const items = [
-    { content: "Phim", icon: FilmIcon, path: "list-movie" },
-    { content: "Rạp", icon: CalendarDaysIcon, path: "list-cinema" },
-    { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
-    { content: "Vé", icon: StarIcon, path: "list-ticket" },
-    { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
-    { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
-    { content: "Đánh giá", icon: StarIcon, path: "list-review" },
-    { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
-  ]
+
+  const { getUserInfoApi } = UserService()
+  const items = user.role === "ADMIN" ?
+    [
+      { content: "Phim", icon: FilmIcon, path: "list-movie" },
+      { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
+      { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
+      { content: "Vé", icon: StarIcon, path: "list-ticket" },
+      { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
+      { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
+      { content: "Đánh giá", icon: StarIcon, path: "list-review" },
+      { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
+    ]
+    : [
+      { content: "Phim", icon: FilmIcon, path: "list-movie" },
+      { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
+      { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
+      { content: "Vé", icon: StarIcon, path: "list-ticket" },
+      { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
+      { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
+    ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
       case pathname === "/admin/info":
@@ -74,7 +83,7 @@ const Admin = () => {
     /^\/(admin|manager)\/(add-item\/movie|update-item\/movie|list-movie)/.test(pathname) &&
       setTabIndex(0);
 
-    /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|room|cinema|list-showtime\/showtime)/.test(pathname) &&
+    /^\/(admin|manager)\/(add-item\/(cinema|showtime|room|schedule)|update-item\/(cinema|showtime|room)|list-cinema|list-room|room|cinema|list-showtime)/.test(pathname) &&
       setTabIndex(1);
 
     /^\/(admin|manager)\/(add-item\/food|update-item\/food|list-food)/.test(pathname) &&
@@ -92,13 +101,22 @@ const Admin = () => {
     item === "list-review" &&
       setTabIndex(6);
 
-    item === "dashboard" &&
-      setTabIndex(7);
-
+    if (item === "dashboard") {
+      user.role === "ADMIN" ?
+        setTabIndex(7) : setTabIndex(5);
+    }
   };
+
+  const handleGetItems = async () => {
+    let resInfo = await getUserInfoApi()
+    if (resInfo && resInfo.data && resInfo.data.result) {
+      localStorage.setItem("cinemaId", resInfo.data.result.cinema.cinemaId)
+    }
+  }
   useEffect(() => {
     handleCheckPathname(pathname)
     handleTabChange()
+    user.role === "MANAGER" && !localStorage.getItem("cinemaId") && handleGetItems()
   }, [pathname, item]);
   return (
     <div>
@@ -106,7 +124,7 @@ const Admin = () => {
         {/* sidebar */}
         <div className='flex w-full justify-between pb-4'>
           <div className='flex flex-col'>
-            < div className='fixed shadow-right max-h-screen bg-[#F8F4F3] w-1/5'>
+            < div className='fixed shadow-right h-screen bg-[#F8F4F3] w-1/5'>
               {/* logo */}
               <div className='flex items-center justify-center px-8 p-3 border-b-2 outline-none' >
                 <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
@@ -141,20 +159,17 @@ const Admin = () => {
                   {
                     items.map((item, index) => (
                       <Tab key={index}>
-                        {(user.role === "MANAGER") && (item.content === "User") ?
-                          null :
-                          <li onClick={() => { (user.role === "ADMIN") ? changeTab(`/admin/${item.path}`) : changeTab(`/manager/${item.path}`) }}
-                            className='mb-2'
-                          >
-                            {/* {key = index} */}
-                            {
+                        <li onClick={() => { (user.role === "ADMIN") ? changeTab(`/admin/${item.path}`) : changeTab(`/manager/${item.path}`) }}
+                          className='mb-2'
+                        >
+                          {
 
-                              <a className='font-semibold text-lg flex items-center h-10'>
-                                <item.icon className='h-6 w-6 mr-4 text-emerald-600' />
-                                {item.content}
-                              </a>
-                            }
-                          </li>}
+                            <a className='font-semibold text-lg flex items-center h-10'>
+                              <item.icon className='h-6 w-6 mr-4 text-emerald-600' />
+                              {item.content}
+                            </a>
+                          }
+                        </li>
                       </Tab>
                     ))
                   }
@@ -163,7 +178,7 @@ const Admin = () => {
 
 
               {/* thongtin rạp */}
-              < div className='mt-auto text-xs text-center mb-6 font-bold text-emerald-600' >
+              < div className='absolute bottom-4 w-full text-xs text-center font-bold text-emerald-600' >
                 T&N Cinemas - Nơi Hòa Quyện Giấc Mơ!
               </div >
 
@@ -171,41 +186,49 @@ const Admin = () => {
           </div>
           {/* main */}
           <div className='w-4/5'>
-            <div style={{ display: currentTab === '1' ? 'block' : 'none' }} >
-              <TabPanel>
-                <ListMovie />
-              </TabPanel>
-              <TabPanel>
-                <ListShowtime />
-              </TabPanel>
-              <TabPanel>
-                <ListProduct />
-              </TabPanel>
-              <TabPanel>
-                <ListTicket />
-              </TabPanel>
-              <TabPanel >
-                <ListUser />
-              </TabPanel>
-              <TabPanel>
-                <ListUser />
-              </TabPanel>
-              <TabPanel>
-                <ListReview />
-              </TabPanel>
-              <TabPanel>
-                <Dashboard />
-              </TabPanel>
-            </div>
-            <div style={{ display: currentTab === '2' ? 'block' : 'none' }}>
-              <div className=''>
-                <div className='h-20 mb-2 absolute flex items-center w-full border-b-2'>
-                  <h2 className='text-3xl'>User Info</h2>
-                </div>
-                <Info />
+            {currentTab === '1' &&
+              <div>
+                <TabPanel>
+                  <ListMovie />
+                </TabPanel>
+                <TabPanel>
+                  <ListShowtime />
+                </TabPanel>
+                <TabPanel>
+                  <ListProduct />
+                </TabPanel>
+                <TabPanel>
+                  <ListTicket />
+                </TabPanel>
+                <TabPanel >
+                  <ListUser />
+                </TabPanel>
+                {user.role === "ADMIN" &&
+                  <>
+                    <TabPanel>
+                      <ListUser />
+                    </TabPanel>
+                    <TabPanel>
+                      <ListReview />
+                    </TabPanel>
+                  </>
+                }
+                <TabPanel>
+                  <Dashboard />
+                </TabPanel>
               </div>
-            </div>
-            <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
+            }
+            {currentTab === '2' &&
+              <div>
+                <div className=''>
+                  <div className='h-20 mb-2 absolute flex items-center w-full border-b-2'>
+                    <h2 className='text-3xl'>User Info</h2>
+                  </div>
+                  <Info />
+                </div>
+              </div>
+            }
+            {/* <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
               <div className=''>
                 <div className='h-20 mb-2  flex items-center w-full border-b-2'>
                   <h2 className='text-3xl'>Update User</h2>
@@ -214,7 +237,7 @@ const Admin = () => {
                   <ProfileDetail />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
         </div>

@@ -41,7 +41,7 @@ const ListRoom = () => {
     }
 
     const listRoom = {
-        header: { stt: "STT", roomName: "phòng", cinema: "Thông tin rạp", status: "Trạng thái", action: "Action" },
+        header: { stt: "STT", roomName: "phòng", cinema: "Thông tin rạp", action: "Action" },
         rooms: allRoom,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon },
     }
@@ -95,17 +95,20 @@ const ListRoom = () => {
             <div className='px-4'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                     <div className='flex items-center'>
-                        <h2 onClick={() => { navigate("/admin/cinema/") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
-                        <ChevronRightIcon className='px-1 h-6' />
-                        <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                        <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
+                        {user.role === "ADMIN" &&
+                            <>
+                                <ChevronRightIcon className='px-1 h-6' />
+                                <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                            </>}
                         <ChevronRightIcon className='px-1 h-6' />
                         <h2 className='cursor-default text-xl'>Danh sách phòng</h2>
                     </div>
                     {
                         <div className='flex items-center'>
                             <button
-                                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                                onClick={() => navigate('/admin/add-item/room', { state: { cinemaName: cinemaName } })}
+                                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
+                                onClick={() => navigate('/admin/add-item/room', { state: { cinemaId: cinemaId, cinemaName: cinemaName } })}
                                 type='button'
                             >
                                 Thêm phòng
@@ -119,49 +122,52 @@ const ListRoom = () => {
                 </div>
                 {!loading &&
                     <div className='h-full'>
-                        <div className='flex justify-end items-center py-4 pr-4'>
-                            <div className="border-2 rounded-xl ">
-                                <Search />
-                            </div>
-                        </div>
-                        <div>
-                            <table className='mt-6 w-full'>
-                                <thead className=''>
-                                    <tr>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.stt}</th>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.roomName}</th>
-                                        <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.cinema}</th>
-                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase w-[120px] cursor-default'>{listRoom.header.status}</th>}
-                                        {<th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.action}</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listRoom.rooms.map((item, index) => (
-                                            <tr
-                                                onClick={() => { navigate(`/admin/room/${item.roomId}`, { state: { cinemaId: item.cinema.cinemaId, cinemaName: cinemaName } }) }}
-                                                className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
-                                            >
-                                                <td className='text-center font-medium px-5 py-4'>{index + 1}</td>
-                                                <td className='text-center font-medium px-5 py-4'>{item.roomName}</td>
-                                                <td className='text-start font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <div>
-                                                            <h3>{item.cinema.cinemaName}</h3>
-                                                            <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}
-                                                {<td className='text-center font-medium px-5 py-4'>
-                                                    <div className='flex items-center'>
-                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-red-100'>
-                                                            <listRoom.action.aChange className='h-4 w-4  text-red-600' />
-                                                        </button>
-                                                        {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                        {
+                            allRoom.length === 0 ?
+                                <div className='p-4 text-center text-gray-500'>Chưa có phòng. Tiến hành thêm phòng !!!</div>
+                                :
+                                <>
+                                    <div className='flex justify-end items-center py-4 pr-4'>
+                                        <div className="border-2 rounded-xl ">
+                                            <Search />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <table className='mt-6 w-full'>
+                                            <thead className=''>
+                                                <tr>
+                                                    <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.stt}</th>
+                                                    <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.roomName}</th>
+                                                    <th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.cinema}</th>
+                                                    {<th className='text-sm text-center font-light px-5 pb-4 uppercase cursor-default'>{listRoom.header.action}</th>}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listRoom.rooms.map((item, index) => (
+                                                        <tr
+                                                            onClick={() => { navigate(`/admin/room/${item.roomId}`, { state: { cinemaId: item.cinema.cinemaId, cinemaName: cinemaName } }) }}
+                                                            className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
+                                                        >
+                                                            <td className='text-center font-medium px-5 py-4'>{index + 1}</td>
+                                                            <td className='text-center font-medium px-5 py-4'>{item.roomName}</td>
+                                                            <td className='text-start font-medium px-5 py-4'>
+                                                                <div className='flex items-center'>
+                                                                    <div>
+                                                                        <h3>{item.cinema.cinemaName}</h3>
+                                                                        <p className='font-normal'><TruncatedContent content={item.cinema.location} maxLength={255} /></p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            {<td className='flex items-center justify-center font-medium px-5 py-6'>
+                                                                {/* <div className='flex items-center'> */}
+                                                                <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                                    <listRoom.action.aChange className='h-4 w-4  text-red-600' />
+                                                                </button>
+                                                                {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.roomId) }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                             <listRoom.action.aDelete className='h-4 w-4 text-red-600' />
                                                         </button> */}
-                                                        {/* <div>
+                                                                {/* <div>
                                                             {modalStates[item.roomId] && (
                                                                 <ModalComponent
                                                                     isOpen={modalStates[item.roomId]}
@@ -174,15 +180,18 @@ const ListRoom = () => {
                                                                 />
                                                             )}
                                                         </div> */}
-                                                    </div>
-                                                </td>}
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
+                                                                {/* </div> */}
+                                                            </td>}
+                                                            {<td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center font-medium px-5 py-4`}>{!item.delete ? "Sẵn sàng" : "Bảo trì"}</td>}
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
+                                </>
+                        }
                     </div>
                 }
             </div>

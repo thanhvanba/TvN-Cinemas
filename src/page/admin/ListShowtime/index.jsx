@@ -44,30 +44,40 @@ const ListShowtime = () => {
         <div className='relative'>
           <div className=''>
             {
-              user.role !== "MANAGER" && !cinemaId && !showtimeId && !idShowtime && !roomId ?
-                <>
-                  {/^\/(admin|manager)\/add-item\/cinema/.test(pathname) ?
-                    <AddCinema /> :
-                    /^\/(admin|manager)\/add-item\/showtime/.test(pathname) ?
-                      <AddShowtime /> :
-                      /^\/(admin|manager)\/(add-item|update-item)\/room/.test(pathname) ?
-                        <AddRoom />
-                        :
-                        /^\/(admin|manager)\/list-room/.test(pathname) ? <ListRoom /> :
-                          <ListCinema />
-                  }
-                </> :
-                <>
-                  {/^\/(admin|manager)\/update-item\/cinema/.test(pathname) ?
-                    <AddCinema /> :
-                    /^\/(admin|manager)\/(update-item)\/showtime/.test(pathname) ?
-                      <AddShowtime /> :
-                      /^\/(admin|manager)\/room/.test(pathname) ?
-                        <DetailRoom /> :
-                        /^\/(admin|manager)\/(list-showtime\/showtime|add-item\/schedule)/.test(pathname) ?
-                          <DetailShowtime showtimeId={idShowtime ? idShowtime : showtimeId} dateTime={dateTime} /> :
-                          <ShowtimesByRoom />}
-                </>
+              /^\/(admin|manager)\/list-room/.test(pathname) ?
+                <ListRoom />
+                : /^\/(admin|manager)\/add-item\/showtime/.test(pathname) ?
+                  <AddShowtime />
+                  : /^\/(admin|manager)\/(add-item)\/room/.test(pathname) ?
+                    <AddRoom />
+                    : /^\/(admin|manager)\/room/.test(pathname) ?
+                      <DetailRoom />
+                      : /^\/(admin|manager)\/(list-showtime\/showtime|add-item\/schedule)/.test(pathname) ?
+                        <DetailShowtime showtimeId={idShowtime ? idShowtime : showtimeId} dateTime={dateTime} /> :
+                        /^\/(admin|manager)\/(cinema|list-showtime)/.test(pathname) ?
+                          <ShowtimesByRoom />
+                          : user.role === "ADMIN" ?
+                            <>
+                              {/^\/(admin)\/add-item\/cinema/.test(pathname) ?
+                                <AddCinema /> :
+                                /^\/(admin|manager)\/update-item\/cinema/.test(pathname) ?
+                                  <AddCinema />
+                                  : <ListCinema />
+                              }
+                            </> :
+                            <>
+                              {
+                                showtimeId && idShowtime && roomId &&
+                                <>
+                                  {
+                                    /^\/(admin|manager)\/(update-item)\/showtime/.test(pathname) ?
+                                      <AddShowtime /> :
+                                      /^\/(admin|manager)\/(update-item)\/room/.test(pathname) &&
+                                      <AddRoom />
+                                  }
+                                </>
+                              }
+                            </>
             }
           </div>
         </div>

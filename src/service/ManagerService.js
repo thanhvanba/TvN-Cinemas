@@ -131,7 +131,7 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const getAllShowtimeByManagerApi = async (pageIndex, pageSize) => {
+    const getAllShowtimeByManagerApi = async (pageIndex, pageSize, date) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes`,
@@ -142,6 +142,7 @@ const ManagerService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    date: date
                 },
             },
         );
@@ -172,7 +173,7 @@ const ManagerService = () => {
             },
         );
     };
-    const getOneRoomApi = async (roomId) => {
+    const getOneRoomManagerApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
@@ -270,6 +271,137 @@ const ManagerService = () => {
             },
         );
     };
+    const addScheduleManagerApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/schedule`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const deleteScheduleManagerApi = async (scheduleId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.delete(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/schedule/${scheduleId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const getAllPersonnelManagerApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/personnel`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            }
+        );
+    };
+    const getShowtimeByRoomCinemaApi = async (roomId, pageIndex, pageSize, date) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}/showtimes`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                    date: date
+                },
+            },
+        );
+    };
+    const quantitySeatBookedManagerApi = async (showtimeId, scheduleId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/seats-booked/count`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    showtimeId: showtimeId,
+                    scheduleId: scheduleId
+                }
+            },
+        );
+    };
+    const updateRoomManagerApi = async (data, roomId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.put(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const addStaffApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axios.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/staff`,
+                {
+                    userName: data.userName,
+                    password: data.password,
+                    email: data.email,
+                    fullName: data.fullName,
+                    phone: data.phone
+                },
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -289,14 +421,21 @@ const ManagerService = () => {
         updateShowTimeApi,
         changeStatusShowtimeApi,
         deleteShowtimeApi,
-        getOneRoomApi,
+        getOneRoomManagerApi,
         changeStatusRoomApi,
         deleteRoomApi,
         getTotalRevenueOfManagerApi,
         getRevenueYearApi,
         getAllTicketByManagerApi,
         stockEntryApi,
-        getListReviewApi
+        getListReviewApi,
+        addScheduleManagerApi,
+        deleteScheduleManagerApi,
+        getAllPersonnelManagerApi,
+        getShowtimeByRoomCinemaApi,
+        quantitySeatBookedManagerApi,
+        updateRoomManagerApi,
+        addStaffApi
     }
 }
 

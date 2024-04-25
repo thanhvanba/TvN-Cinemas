@@ -31,9 +31,9 @@ const AddShowtime = () => {
 
     const navigate = useNavigate()
     const location = useLocation();
-    const { cinemaName } = location.state || {};
+    const { cinemaId, cinemaName } = location.state || {};
 
-    const { getAllRoomApi } = AdminService()
+    const { getAllRoomApi, getRoomeByCinemaApi } = AdminService()
     const { addShowtimeApi, updateShowTimeApi, getAllRoomByManagerApi } = ManagerService()
     const { getOneShowtimeApi } = UserService()
     const { GetAllMovieApi } = MovieService()
@@ -85,12 +85,7 @@ const AddShowtime = () => {
         timeStart: "",
         timeEnd: "",
         status: true,
-        schedules: [
-            {
-                date: "",
-                startTime: "",
-            },
-        ],
+        schedules: [],
         seats: null,
         special: false
     })
@@ -112,7 +107,7 @@ const AddShowtime = () => {
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
     const handleGetAllItem = async (pathname) => {
-        if (pathname === "/admin/add-item/showtime") {
+        if (pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime") {
             let resMovie = await GetAllMovieApi()
             if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
                 setAllMovie(resMovie.data.result.content)
@@ -120,10 +115,10 @@ const AddShowtime = () => {
         }
 
         let resRoom = (user.role === "ADMIN") ?
-            await getAllRoomApi() : await getAllRoomByManagerApi()
+            await getRoomeByCinemaApi(cinemaId) : await getAllRoomByManagerApi()
 
         if (resRoom && resRoom.data && resRoom.data.result && resRoom.data.result.content) {
-            setAllRoom(resRoom.data.result.content)
+            setAllRoom(resRoom.data.result.content.reverse())
         }
     }
     const handleAddShowtime = async (e) => {
@@ -146,6 +141,7 @@ const AddShowtime = () => {
         setLoading(false);
     };
     const hadleGetOneShowtime = async () => {
+        console.log("Vào2")
         let resShowtime = await getOneShowtimeApi(showtimeId)
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             setOneShowtime(resShowtime.data.result)
@@ -176,8 +172,6 @@ const AddShowtime = () => {
     };
 
     const handleTimeChange = (date, time) => {
-        console.log("🚀 ~ handleTimeChange ~ time:", time)
-        console.log("🚀 ~ handleTimeChange ~ date:", date)
         const newDate = new Date(date)
         const newDateTime = new Date(`2000-01-01 ${time}`);
         const durationDateTime = new Date(newDateTime); // Tạo một bản sao của newDateTime
@@ -227,6 +221,7 @@ const AddShowtime = () => {
                 // Hiển thị thông báo nếu có trùng khớp
             } else {
                 // Nếu không có trùng khớp, cập nhật lịch và prevShowtime
+                console.log("Vào3")
                 const updatedSchedule = [...schedule];
                 const updatedTime = [...existingDay.time, time].sort();
                 updatedSchedule[existingDayIndex].time = updatedTime;
@@ -242,6 +237,7 @@ const AddShowtime = () => {
             }
         } else {
             // Nếu ngày không tồn tại trong lịch, thêm ngày mới
+            console.log("Vào4")
             const newDay = { date: date, time: [time] };
             const updatedSchedule = [...schedule, newDay];
             updatedSchedule.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -261,23 +257,24 @@ const AddShowtime = () => {
         let currentDate = '';
         let currentStartTimes = [];
 
-        initialData.forEach(item => {
-            if (item.date !== currentDate) {
-                if (currentDate !== '') {
-                    transformedData.push({ "date": currentDate, "time": currentStartTimes });
+        if (initialData.lenght > 0) {
+            initialData.forEach(item => {
+                if (item.date !== currentDate) {
+                    if (currentDate !== '') {
+                        transformedData.push({ "date": currentDate, "time": currentStartTimes });
+                    }
+                    currentDate = item.date;
+                    currentStartTimes = [];
                 }
-                currentDate = item.date;
-                currentStartTimes = [];
-            }
-            item.startTime &&
-                currentStartTimes.push(format(
-                    parse(`${item.startTime}`, 'HH:mm:ss', new Date()),
-                    "HH:mm"
-                ));
-        });
+                item.startTime &&
+                    currentStartTimes.push(format(
+                        parse(`${item.startTime}`, 'HH:mm:ss', new Date()),
+                        "HH:mm"
+                    ));
+            });
 
-        transformedData.push({ "date": currentDate, "time": currentStartTimes });
-
+            transformedData.push({ "date": currentDate, "time": currentStartTimes });
+        }
         return transformedData
     }
 
@@ -291,7 +288,7 @@ const AddShowtime = () => {
 
             let filteredShowtime = showtime.schedules.filter(item => !(item.date === date && item.startTime === selectedTime));
             setShowtime({ ...showtime, schedules: filteredShowtime });
-
+            console.log("Vào5")
             // Cập nhật mảng lịch với thời gian mới
             setSchedule((prevSchedule) => {
                 const newSchedule = [...prevSchedule];
@@ -303,7 +300,7 @@ const AddShowtime = () => {
     };
 
     useEffect(() => {
-        if (pathname === "/admin/add-item/showtime") {
+        if (pathname === "/(admin|manager)/add-item/showtime") {
             setShowtime({
                 roomId: "",
                 movieId: "",
@@ -359,8 +356,9 @@ const AddShowtime = () => {
         }
     }, [showtimeId]);
     useEffect(() => {
-        if (pathname !== "/admin/add-item/showtime") {
+        if (pathname !== "/admin/add-item/showtime" || pathname !== "/manager/add-item/showtime") {
             setIsChecked(oneShowtime.special);
+            console.log("Vào6")
             setSchedule(transformData(oneShowtime.schedules));
             setShowtime({
                 ...showtime,
@@ -392,11 +390,15 @@ const AddShowtime = () => {
         <div>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                 <div className='flex items-center'>
-                    <h2 onClick={() => { navigate("/admin/cinema/") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
+                    <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
                     <ChevronRightIcon className='px-1 h-6' />
-                    <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
-                    <ChevronRightIcon className='px-1 h-6' />
-                    {/^\/admin\/add-item\/showtime/.test(pathname) ?
+                    {user.role === "ADMIN" &&
+                        <>
+                            <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                            <ChevronRightIcon className='px-1 h-6' />
+                        </>
+                    }
+                    {/^\/(admin|manager)\/add-item\/showtime/.test(pathname) ?
                         <h2 className='cursor-default text-xl'>Thêm lịch chiếu</h2>
                         : <h2 className='cursor-default text-xl'>Chỉnh sửa lịch chiếu</h2>
                     }
@@ -409,7 +411,7 @@ const AddShowtime = () => {
                 {!loading1 &&
                     <div className='pt-8'>
                         <div className='border p-8'>
-                            <form id='formAddCinema' onSubmit={pathname === "/admin/add-item/showtime" ? handleAddShowtime : handleUpdateShowtime} action="">
+                            <form id='formAddCinema' onSubmit={pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ? handleAddShowtime : handleUpdateShowtime} action="">
                                 <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
                                     <div className="relative my-4">
                                         <label
@@ -420,7 +422,7 @@ const AddShowtime = () => {
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
-                                                pathname === "/admin/add-item/showtime" ?
+                                                pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
                                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} content={"-------Select-------"} /> :
                                                     <input
                                                         type="text"
@@ -440,9 +442,9 @@ const AddShowtime = () => {
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
-                                                pathname === "/admin/add-item/showtime" ?
+                                                pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
                                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom} content={"-------Select-------"} /> :
-                                                    pathname === `/ admin / showtime / ${showtimeId} ` ?
+                                                    pathname === `/admin/showtime/${showtimeId} ` || pathname === `/manager/showtime/${showtimeId} ` ?
                                                         <input
                                                             type="text"
                                                             className="placeholder-neutral-900 w-full text-lg focus:outline-none"
@@ -461,7 +463,7 @@ const AddShowtime = () => {
                                             >
                                                 Time Start
                                             </label>
-                                            {pathname === `/ admin / showtime / ${showtimeId} ` ?
+                                            {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
                                                 <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                                     <input
                                                         type="text"
@@ -487,7 +489,7 @@ const AddShowtime = () => {
                                             >
                                                 Time End
                                             </label>
-                                            {pathname === `/ admin / showtime / ${showtimeId} ` ?
+                                            {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
                                                 <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                                     <input
                                                         type="text"
@@ -515,7 +517,7 @@ const AddShowtime = () => {
                                             </label>
                                             <label className="inline-flex items-center mt-4">
                                                 {
-                                                    pathname === "/admin/add-item/showtime" ?
+                                                    pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
                                                         <input
                                                             type="checkbox"
                                                             className="form-checkbox text-indigo-600 h-5 w-5"
@@ -524,7 +526,7 @@ const AddShowtime = () => {
                                                                 handleCheckboxChange(e);
                                                                 setShowtime({ ...showtime, special: e.target.checked });
                                                             }}
-                                                        /> : pathname === `/ admin / showtime / ${showtimeId} ` ?
+                                                        /> : pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
                                                             <input
                                                                 type="checkbox"
                                                                 className="form-checkbox text-indigo-600 h-5 w-5"
@@ -605,7 +607,7 @@ const AddShowtime = () => {
                                                                     <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
                                                                         <span className='p-2'>{time}</span>
                                                                         {
-                                                                            pathname !== `/admin/showtime/${showtimeId} ` &&
+                                                                            pathname !== `/(admin|manager)/showtime/${showtimeId} ` &&
                                                                             <button className='text-red-400 pr-2'
                                                                                 onClick={() => {
                                                                                     handleRemoveTime(item.date, time)
@@ -626,7 +628,7 @@ const AddShowtime = () => {
 
                                     </div>
                                 </div>
-                                {pathname !== `/ admin / showtime / ${showtimeId} ` &&
+                                {
                                     <div className='flex justify-end'>
 
                                         <button
@@ -635,7 +637,7 @@ const AddShowtime = () => {
                                             disabled={loading}
                                         >
                                             {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                            &nbsp;{pathname === "/admin/add-item/showtime" ? "Add Showtime" : "Update Showtime"}
+                                            &nbsp;{pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ? "Add Showtime" : "Update Showtime"}
                                         </button>
                                     </div>}
                             </form>

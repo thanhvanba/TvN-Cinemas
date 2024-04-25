@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, XMarkIcon, ArrowUturnLeftIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -36,7 +36,9 @@ const ListProduct = () => {
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
-    const [cinemaId, setCinemaId] = useState("")
+    const [status, setStatus] = useState(true);
+    console.log("🚀 ~ ListProduct ~ status:", status)
+    const [selectFood, setSelectFood] = useState("")
     const [toggle, setToggle] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState(
@@ -114,15 +116,15 @@ const ListProduct = () => {
     // };
     const handleGetItems = async (pageNumber, foodType) => {
         // setCurrentPage(pageIndex)
-        let id = cinemaId && cinemaId
-        if (user.role === "MANAGER" && cinemaId === '') {
-            let resInfo = await getUserInfoApi();
-            if (resInfo && resInfo.data && resInfo.data.result && resInfo.data.result) {
-                setCinemaId(resInfo.data.result.cinema.cinemaId)
-                id = resInfo.data.result.cinema.cinemaId
-            }
-        }
-        let resFood = user.role === "ADMIN" ? await getFoodAdminApi(foodType, pageNumber, 10) : await getFoodApi(foodType, pageNumber, 10, id)
+        // let id = cinemaId && cinemaId
+        // if (user.role === "MANAGER" && cinemaId === '') {
+        //     let resInfo = await getUserInfoApi();
+        //     if (resInfo && resInfo.data && resInfo.data.result && resInfo.data.result) {
+        //         setCinemaId(resInfo.data.result.cinema.cinemaId)
+        //         id = resInfo.data.result.cinema.cinemaId
+        //     }
+        // }
+        let resFood = user.role === "ADMIN" ? await getFoodAdminApi(foodType, pageNumber, 10, status) : await getFoodApi(foodType, pageNumber, 10, localStorage.getItem("cinemaId"))
         if (resFood && resFood.data && resFood.data.result.content) {
             setAllFood(resFood.data.result.content)
             setPagination(prevPagination => ({
@@ -168,13 +170,19 @@ const ListProduct = () => {
 
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
     const handleSelectChange = (selectedValue) => {
+        setSelectFood(selectedValue)
         selectedValue === "ALL" ? handleGetItems(pagination.pageNumber) : handleGetItems(pagination.pageNumber, selectedValue)
     }
 
     useEffect(() => {
         setLoading(true)
         handleGetItems(pagination.pageNumber)
-    }, [item]);
+    }, [status]);
+    useEffect(() => {
+        console.log("Vào")
+        setLoading(true)
+        handleGetItems(pagination.pageNumber)
+    }, [pathname]);
 
     return (
         <div>
@@ -200,9 +208,26 @@ const ListProduct = () => {
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
                                             </div>
                                             <div className='flex justify-center absolute top-0 w-full p-3'>
-                                                <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
-                                                <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                                {!status ?
+                                                    <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
+                                                    : <>
+                                                        <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
+                                                        <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                                    </>
+                                                }
                                             </div>
+                                            <button
+                                                type="button"
+                                                className="absolute top-4 left-4 z-50"
+                                            >
+                                                <span className="sr-only">Close menu</span>
+                                                <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`} onClick={() => setStatus(!status)}>
+                                                    {status ?
+                                                        <WrenchScrewdriverIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                    }
+                                                </div>
+                                            </button>
                                         </div>
 
                                         {toggle &&
@@ -220,7 +245,7 @@ const ListProduct = () => {
                                             </div>
                                         }
                                         <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
-                                            <FoodItems listFood={allFood} />
+                                            <FoodItems listFood={allFood} onChange={() => handleGetItems(pagination.pageNumber, selectFood)} />
                                         </div>
                                     </div>
                                     <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />

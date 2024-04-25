@@ -9,7 +9,7 @@ const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
     const handleGetSeatBooked = async () => {
         const params = {
             showtimeId: showtimeId,
-            scheduleId: dateTime.scheduleId
+            scheduleId: dateTime.scheduleId || ""
         };
         let resSeat = await getSeatBookedApi(params);
         if (resSeat && resSeat.data && resSeat.data.result) {
@@ -30,10 +30,10 @@ const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
                 const isSeatBooked = listSeatBooked.find(
                     item => parseInt(item.row) === row && parseInt(item.column) === seatNum
                 );
-                if (row == rows) {
-                    type = "COUPLE";
-                } else if (isSeatBooked) {
+                if (isSeatBooked) {
                     type = "booked";
+                } else if (row == rows) {
+                    type = "COUPLE";
                 } else if (row < 4 || seatNum < 4 || seatNum > seatsPerRow - 3) {
                     type = "NORMAL";
                 } else {

@@ -26,6 +26,7 @@ const LoginProvider = ({ children }) => {
         localStorage.removeItem("token")
         localStorage.removeItem("refreshToken")
         localStorage.removeItem("username")
+        localStorage.getItem("cinemaId") && localStorage.removeItem("cinemaId")
         setUser(() => ({
             credentialId: '',
             auth: false,

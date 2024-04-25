@@ -19,6 +19,8 @@ import formatPrice from '../../utils/ConvertStringFollowFormat';
 import Loading from '../../components/Loading';
 import ProfileDetail from './components/profileDetail';
 import Modal from '../../utils/Modal';
+import Ticket from '../../components/Ticket';
+import TimeAgo from '../../components/TimeAgo';
 const Info = () => {
     const { user } = useContext(LoginContext)
     const [modalStates, setModalStates] = useState({});
@@ -179,7 +181,9 @@ const Info = () => {
     }
 
     useEffect(() => {
-        handleGetItems()
+        if (pathname === "/admin/info" || pathname === "/user/info" || pathname === "/user/history-booking") {
+            handleGetItems()
+        }
     }, []);
 
     useEffect(() => {
@@ -526,8 +530,8 @@ const Info = () => {
                                                     <tr className='border-b-2 border-slate-200'>
                                                         <th className='text-sm text-center font-light px-2 pb-4 uppercase'>STT</th>
                                                         <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Vé</th>
-                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Trạng thái</th>
-                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase'>Chức năng</th>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-44'>Trạng thái</th>
+                                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Chức năng</th>
                                                     </tr>
                                                 </thead>
                                                 {
@@ -544,18 +548,18 @@ const Info = () => {
                                                                 <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
                                                                 <td className='text-start font-medium px-2 py-4'>
                                                                     <div
-                                                                        // onClick={() => {
-                                                                        //     handleOpenModal();
-                                                                        //     handleGetTicketDetail(item.bookingId);
-                                                                        // }}
-                                                                        className='flex justify-between border-[12px] border-slate-300 bg-slate-100 px-6'
+                                                                        className='relative flex flex-col border-[12px] border-slate-300 bg-slate-100 px-6 pb-4 hover:bg-slate-200 cursor-pointer'
                                                                     >
-                                                                        <div className='py-4'>
-                                                                            <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
-                                                                            <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
-                                                                            <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
-                                                                        </div>
-                                                                        <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
+                                                                        <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
+                                                                        <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
+                                                                        <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
+                                                                        <p className='absolute bottom-3 right-6 font-medium text-5xl text-zinc-500'>
+                                                                            <span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup>
+                                                                        </p>
+                                                                        <p className='absolute top-3 right-6 font-medium text-sm text-orange-500'>
+                                                                            {/* <div className='text-xl text-center text-slate-800'>Giá:</div> */}
+                                                                            <div>{TimeAgo(item.createAt)}</div>
+                                                                        </p>
                                                                     </div>
                                                                 </td>
                                                                 <td className='text-center font-medium px-2 py-4'>
@@ -617,7 +621,7 @@ const Info = () => {
                                                             <tbody>
                                                                 <tr
                                                                     onClick={() => {
-                                                                        handleOpenModal();
+                                                                        handleToggle();
                                                                         handleGetTicketDetail(item.bookingId);
                                                                     }}
                                                                     className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
@@ -625,19 +629,23 @@ const Info = () => {
                                                                     <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
                                                                     <td className='text-start font-medium px-2 py-4'>
                                                                         <div
-                                                                            className='flex justify-between border-[12px] border-slate-300 bg-slate-100 px-6 hover:bg-slate-200 cursor-pointer'
+                                                                            className='relative flex flex-col border-[12px] border-slate-300 bg-slate-100 px-6 pb-4 hover:bg-slate-200 cursor-pointer'
                                                                         >
-                                                                            <div className='py-4'>
-                                                                                <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
-                                                                                <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
-                                                                                <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
-                                                                            </div>
-                                                                            <p className='text-start font-medium pt-20 text-5xl text-zinc-500'><span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup></p>
+                                                                            <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
+                                                                            <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
+                                                                            <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
+                                                                            <p className='absolute bottom-3 right-6 font-medium text-5xl text-zinc-500'>
+                                                                                <span className='text-3xl text-slate-800'>Giá:</span> {formatPrice(item.price)}<sup>đ</sup>
+                                                                            </p>
+                                                                            <p className='absolute top-3 right-6 font-medium text-sm text-orange-500'>
+                                                                                {/* <div className='text-xl text-center text-slate-800'>Giá:</div> */}
+                                                                                <div>{TimeAgo(item.createAt)}</div>
+                                                                            </p>
                                                                         </div>
                                                                     </td>
                                                                     <td className='text-center font-medium px-2 py-4'>
                                                                         <div className={`${item.ticketStatus === "CANCELLED" ? "bg-red-600" : item.ticketStatus === "UNCONFIRMED" ? "bg-blue-600" : "bg-green-600"} inline-flex px-2 text-slate-50 rounded-lg`}>
-                                                                            {item.ticketStatus === "CANCELLED" ? "Đã hủy" : item.ticketStatus === "UNCONFIRMED" ? "Đợi nhận vé" : "Đã nhận vé"}
+                                                                            {item.ticketStatus === "CANCELLED" ? "Đã hủy" : item.ticketStatus === "UNCONFIRMED" ? "Bỏ lỡ vé" : "Đã xem"}
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -697,7 +705,7 @@ const Info = () => {
                                         <div className='w-3/5'>
                                             <p className='font-light'>Bắp nước</p>
                                             <p className="font-semibold text-xl">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                                                <span key={index}>&nbsp;{food.food.name},</span>
+                                                <span key={index}>&nbsp;{food},</span>
                                             ))}</p>
                                         </div>
                                         <div className='w-2/5'>
@@ -712,7 +720,7 @@ const Info = () => {
                                         type='button'
                                         disabled={loading['change']}
                                         onClick={() => {
-                                            handleOpenModal()
+                                            handleToggle();
                                             setTicketDetail([])
                                         }}
                                     >

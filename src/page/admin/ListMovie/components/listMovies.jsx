@@ -63,7 +63,7 @@ const ListMovies = () => {
             }
             return movie;
         });
-
+        handleCloseModal(movieId)
         setAllMovie(updateMovies);
         setLoading(false)
     };
@@ -87,7 +87,7 @@ const ListMovies = () => {
         handleGetAllMovie(pagination.pageNumber)
     }, []);
     const listMovie = {
-        header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", status: "Trạng thái", releaseDate: "Ngày phát hành", action: "actions" },
+        header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", releaseDate: "Ngày phát hành", action: "actions" },
         movie: allMovie,
         action: { aChange: PowerIcon, aEdit: PencilSquareIcon, aDelete: TrashIcon }
     }
@@ -99,16 +99,14 @@ const ListMovies = () => {
                     <h2 className='text-3xl cursor-default'>Quản lý phim</h2>
 
                     {
-                        (user.role === "ADMIN" && /^\/(admin|manager)\/list-movie/.test(pathname)) ?
-                            <button
-                                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                                type='submit'
-                                onClick={() => changeTab("/admin/add-item/movie")}
-                            >
-                                Thêm phim
-                            </button>
-                            :
-                            <div></div>
+                        user.role === "ADMIN" &&
+                        <button
+                            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
+                            type='submit'
+                            onClick={() => changeTab("/admin/add-item/movie")}
+                        >
+                            Thêm phim
+                        </button>
                     }
                 </div>
                 <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
@@ -129,7 +127,6 @@ const ListMovies = () => {
                                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.movieInfo}</th>
                                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.rating}</th>
                                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.genres}</th>
-                                    {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.status}</th>}
                                     <th className='text-sm text-center font-light px-2 pb-4 uppercase w-9'>{listMovie.header.releaseDate}</th>
                                     {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>}
                                 </tr>
@@ -151,34 +148,32 @@ const ListMovies = () => {
                                             </td>
                                             <td className='text-center font-medium px-2 py-3'>{item.rating}</td>
                                             <td className='text-center font-medium px-2 py-3'>{item.genres}</td>
-                                            {user.role === "ADMIN" && <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.delete ? "Hidden" : "Visible"}</td>}
                                             <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.releaseDate).date}</td>
-                                            {user.role === "ADMIN" && <td className='text-center font-medium px-2 py-3'>
-                                                <div className='flex items-center'>
-                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.movieId) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'>
-                                                        <listMovie.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                    </button>
-                                                    <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
-                                                        <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                    </a>
-                                                    <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
-                                                        <listMovie.action.aDelete className='h-4 w-4 text-red-600' />
-                                                    </button>
-                                                    <div>
-                                                        {modalStates[item.movieId] && (
-                                                            <ModalComponent
-                                                                isOpen={modalStates[item.movieId]}
-                                                                onClose={() => handleCloseModal(item.movieId)}
-                                                                onConfirm={() => handleDeleteMovie(item.movieId)}
-                                                                onCancel={() => handleCloseModal(item.movieId)}
-                                                                title='Xóa Phim'
-                                                                content='Bạn có chắc chắn xóa phim này ???'
-                                                                buttonName='Delete'
-                                                            />
-                                                        )}
+                                            {user.role === "ADMIN" &&
+                                                <td className='text-center font-medium px-2 py-3'>
+                                                    <div className='flex items-center justify-center'>
+                                                        <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/movie/${item.movieId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
+                                                            <listMovie.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                        </a>
+                                                        <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                                            <listMovie.action.aChange className='h-4 w-4 text-red-600' />
+                                                        </button>
+                                                        <div>
+                                                            {modalStates[item.movieId] && (
+                                                                <ModalComponent
+                                                                    isOpen={modalStates[item.movieId]}
+                                                                    onClose={() => handleCloseModal(item.movieId)}
+                                                                    onConfirm={() => handleChangeStatus(item.movieId)}
+                                                                    onCancel={() => handleCloseModal(item.movieId)}
+                                                                    title='Chuyển trạng  thái'
+                                                                    content='Bạn có chắc chắn đổi trạng thái phim này ???'
+                                                                    buttonName='Thay đổi'
+                                                                />
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>}
+                                                </td>}
+                                            {user.role === "ADMIN" && <td className={`${item.delete ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.delete ? "Đã xóa" : "Sẵn sàng"}</td>}
                                         </tr>
                                     ))
                                 }

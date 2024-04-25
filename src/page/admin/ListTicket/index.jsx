@@ -24,7 +24,6 @@ const ListTicket = () => {
   const [allTicketC, setAllTicketC] = useState([])
   const [allTicketU, setAllTicketU] = useState([])
   const [allTicketCa, setAllTicketCa] = useState([])
-  const [allUser, setAllUser] = useState([])
   const { loading, setLoading } = useLoadingState(false)
   const [toggle, setToggle] = useState(false);
   const [ticketDetail, setTicketDetail] = useState({});
@@ -44,11 +43,11 @@ const ListTicket = () => {
 
   const handleGetItems = async (pageNumber) => {
     setLoading('loading', true)
-    let resTicketC = await getAllBookingtApi(pageNumber, 8, "CONFIRMED")
-    let resTicketU = await getAllBookingtApi(null, null, "UNCONFIRMED")
-    let resTicketCa = await getAllBookingtApi(null, null, "CANCELLED")
+    let resTicketC = await getAllBookingtApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
+    let resTicketU = await getAllBookingtApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
+    let resTicketCa = await getAllBookingtApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
-      setAllTicketC(resTicketC.data.result.content.reverse())
+      setAllTicketC(resTicketC.data.result.content)
       setPagination(prevPagination => ({
         ...prevPagination,
         pageNumber: pageNumber,
@@ -59,16 +58,11 @@ const ListTicket = () => {
     }
 
     if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
-      setAllTicketU(resTicketU.data.result.content.reverse())
+      setAllTicketU(resTicketU.data.result.content)
     }
 
     if (resTicketCa && resTicketCa.data && resTicketCa.data.result && resTicketCa.data.result.content) {
-      setAllTicketCa(resTicketCa.data.result.content.reverse())
-    }
-
-    let resUser = await getAllUserApi()
-    if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-      setAllUser(resUser.data.result.content)
+      setAllTicketCa(resTicketCa.data.result.content)
     }
     setLoading('loading', false)
   }
@@ -268,7 +262,7 @@ const ListTicket = () => {
                       <div className='w-3/5'>
                         <p className='font-light'>Bắp nước</p>
                         <p className="font-semibold text-xl">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                          <span key={index}>&nbsp;{food.food.name},</span>
+                          <span key={index}>&nbsp;{food},</span>
                         ))}</p>
                       </div>
                       <div className='w-2/5'>

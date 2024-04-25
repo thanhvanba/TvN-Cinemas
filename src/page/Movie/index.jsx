@@ -192,12 +192,10 @@ const Movie = () => {
                                                     <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
                                                         {foundShowtime.map((showtimeByRoom, index) => (
                                                             showtimeByRoom.schedules.map((schedule, index) => {
-                                                                console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
                                                                 const currentDateTime = new Date();
                                                                 const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
                                                                 if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
                                                                     const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
                                                                     hasShowtimes = true;
                                                                     return (
                                                                         <li key={index}

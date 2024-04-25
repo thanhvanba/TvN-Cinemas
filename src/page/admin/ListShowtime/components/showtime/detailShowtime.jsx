@@ -1,5 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CreateSeat from '../../../../../components/CreateSeat'
 import './detailShowtime.css'
 import UserService from '../../../../../service/UserService'
@@ -12,14 +12,17 @@ import useLoadingState from '../../../../../hook/UseLoadingState'
 import { format, isAfter, parse } from 'date-fns'
 import AdminService from '../../../../../service/AdminService'
 import { Space, TimePicker, DatePicker } from 'antd'
+import { LoginContext } from '../../../../../context/LoginContext'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
   console.log("🚀 ~ DetailShowtime ~ showtimeId:", showtimeId)
   const navigate = useNavigate();
+
+  const { user } = useContext(LoginContext)
   const { pathname } = useLocation()
 
   const { getOneShowtimeApi } = UserService()
-  const { updateShowTimeApi } = ManagerService()
+  const { updateShowTimeApi, addScheduleManagerApi, deleteScheduleManagerApi, quantitySeatBookedManagerApi } = ManagerService()
   const { quantitySeatBookedApi, deleteScheduleAdminApi, addScheduleAdminApi } = AdminService()
   const { loading, setLoading } = useLoadingState(false)
   const [countSeatBooked, setCountSeatBooked] = useState({
@@ -74,7 +77,6 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     date: "",
     startTime: ""
   });
-  console.log("🚀 ~ DetailShowtime ~ schedule:", schedule)
   const seatData = generateSeatData();
   const hadleGetItem = async (showtimeId) => {
     let resShowtime = await getOneShowtimeApi(showtimeId)
@@ -88,7 +90,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
         }
       ))
     }
-    let resCount = await quantitySeatBookedApi(showtimeId, dateTime.scheduleId)
+    let resCount = user.role === "ADMIN" ? await quantitySeatBookedApi(showtimeId, dateTime.scheduleId) : await quantitySeatBookedManagerApi(showtimeId, dateTime.scheduleId)
     if (resCount && resCount.data && resCount.data.result) {
       setCountSeatBooked(resCount.data.result)
     }
@@ -107,12 +109,12 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   // };
   const handleDeleteSchedule = async () => {
     setLoading('deleteSchedule', true);
-    await deleteScheduleAdminApi(dateTime.scheduleId);
+    user.role === "ADMIN" ? await deleteScheduleAdminApi(dateTime.scheduleId) : await deleteScheduleManagerApi(dateTime.scheduleId)
     setLoading('deleteSchedule', false);
   };
   const handleAddSchedule = async () => {
     setLoading('addSchedule', true);
-    await addScheduleAdminApi(schedule);
+    { user.role === "ADMIN" ? await addScheduleAdminApi(schedule) : await addScheduleManagerApi(schedule) }
     setLoading('addSchedule', false);
   };
 

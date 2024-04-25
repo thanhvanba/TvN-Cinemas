@@ -338,7 +338,7 @@ const AddMovie = () => {
                         </div>
                         <div className='flex justify-end'>
                             <button
-                                className="w-1/6 mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                className="w-1/6 mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                 type='submit'
                                 disabled={loading}
                                 onClick={pathname === "/admin/add-item/movie" ? handleAddMovie : handleUpdateMovie}

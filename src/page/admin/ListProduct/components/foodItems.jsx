@@ -6,7 +6,7 @@ import Modal from '../../../../utils/Modal'
 import AdminService from '../../../../service/AdminService'
 import { useNavigate } from 'react-router-dom'
 
-const FoodItems = ({ listFood }) => {
+const FoodItems = ({ listFood, onChange }) => {
     const { deleteFoodApi } = AdminService()
 
     const [modalStates, setModalStates] = useState({});
@@ -23,12 +23,17 @@ const FoodItems = ({ listFood }) => {
     const handleCloseModal = (itemId) => {
         setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
     };
-    const handleDeleteFood = async (foodId) => {
+    const handleChangeStatus = async (foodId) => {
         await deleteFoodApi(foodId);
-        // handleGetItems(currentPage)
-        const updatedFoods = allFood.filter((food) => food.foodId !== foodId);
-        setModalStates((prevStates) => ({ ...prevStates, [foodId]: false }));
-        setAllFood(updatedFoods);
+        onChange()
+        // const updatedFoods = allFood.map((food) => {
+        //     if (food.foodId === foodId) {
+        //         return { ...food, status: !food.status };
+        //     }
+        //     return food;
+        // });
+        // handleCloseModal(foodId)
+        // setAllFood(updatedFoods);
     };
     // const handleGetItems = async (pageIndex) => {
     //     // setCurrentPage(pageIndex)
@@ -54,18 +59,18 @@ const FoodItems = ({ listFood }) => {
                                         <PencilSquareIcon className='h-6 w-6 text-cyan-600' />
                                     </a>
                                     <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.foodId) }} className='flex justify-center items-center w-full h-8 rounded-lg bg-red-100'>
-                                        <TrashIcon className='h-6 w-6 text-red-600' />
+                                        <PowerIcon className='h-6 w-6 text-red-600' />
                                     </button>
                                     <div>
                                         {modalStates[item.foodId] && (
                                             <Modal
                                                 isOpen={modalStates[item.foodId]}
                                                 onClose={() => handleCloseModal(item.foodId)}
-                                                onConfirm={() => handleDeleteFood(item.foodId)}
+                                                onConfirm={() => handleChangeStatus(item.foodId)}
                                                 onCancel={() => handleCloseModal(item.foodId)}
-                                                title='Xóa Bắp Nước'
-                                                content='Bạn có chắc chắn xóa đồ dùng này ???'
-                                                buttonName='Delete'
+                                                title={item.status ? 'Xóa sản phẩm' : 'Khôi phục sản phẩm'}
+                                                content={item.status ? 'Bạn có chắc chắn xóa sản phẩm này ???' : 'Bạn có chắc chắn khôi phục sản phẩm này ???'}
+                                                buttonName={item.status ? 'Xóa' : 'Khôi phục'}
                                             />
                                         )}
                                     </div>

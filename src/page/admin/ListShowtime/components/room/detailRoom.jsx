@@ -11,7 +11,7 @@ import { LoginContext } from '../../../../../context/LoginContext';
 
 const DetailRoom = () => {
     const { getOneRoomApi, getRoomeByCinemaApi, addRoomAdminApi, updateRoomAdminApi } = AdminService()
-    const { addRoomApi } = ManagerService()
+    const { addRoomApi, getOneRoomManagerApi, getAllRoomByManagerApi, updateRoomManagerApi } = ManagerService()
 
     const { user } = useContext(LoginContext);
     const location = useLocation()
@@ -19,6 +19,7 @@ const DetailRoom = () => {
     const { roomId } = useParams()
     const { cinemaId, cinemaName } = location.state || {}
     const [loading, setLoading] = useState(false);
+    const [toggle, setToggle] = useState(false);
     const [modalStates, setModalStates] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(roomId);
     const [allRoom, setAllRoom] = useState([]);
@@ -26,7 +27,6 @@ const DetailRoom = () => {
         rowSeat: "",
         colSeat: "",
     })
-    console.log("🚀 ~ DetailRoom ~ seatMap:", seatMap)
     const [room, setRoom] = useState({
         cinema: {
             cinemaId: "",
@@ -51,17 +51,17 @@ const DetailRoom = () => {
             rowSeat: seatMap.rowSeat,
             colSeat: seatMap.colSeat
         };
-        await updateRoomAdminApi(data, roomId)
+        await updateRoomManagerApi(data, roomId)
         setTimeout(() => {
             window.location.reload();
-        }, 2000); 
+        }, 2000);
         setModalStates(false)
         setLoading(false);
     };
     const handleGetOneRoom = async (roomId) => {
 
         setLoading(true)
-        const resRoom = await getOneRoomApi(roomId)
+        const resRoom = user.role === "ADMIN" ? await getOneRoomApi(roomId) : await getOneRoomManagerApi(roomId)
         if (resRoom && resRoom.data && resRoom.data.result) {
             setRoom(resRoom.data.result)
             setSeatmap(prevState => ({ ...prevState, rowSeat: resRoom.data.result.rowSeat }));
@@ -71,9 +71,9 @@ const DetailRoom = () => {
     }
 
     const handleGetRoomByCinema = async () => {
-        let resR = await getRoomeByCinemaApi(cinemaId)
+        let resR = user.role === "ADMIN" ? await getRoomeByCinemaApi(cinemaId) : await getAllRoomByManagerApi()
         if (resR && resR.data && resR.data.result.content) {
-            setAllRoom(resR.data.result.content);
+            setAllRoom(resR.data.result.content.reverse());
         }
     }
 
@@ -86,9 +86,13 @@ const DetailRoom = () => {
         <div className='px-4'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                 <div className='flex items-center'>
-                    <h2 onClick={() => { navigate("/admin/list-room") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
-                    <ChevronRightIcon className='px-1 h-6' />
-                    <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                    <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
+                    {user.role === "ADMIN" &&
+                        <>
+                            <ChevronRightIcon className='px-1 h-6' />
+                            <h2 onClick={() => { navigate(-1) }} className='cursor-pointer font-medium text-2xl'>{cinemaName}</h2>
+                        </>
+                    }
                     <ChevronRightIcon className='px-1 h-6' />
                     <h2 className='cursor-default text-xl'>Chi tiết phòng</h2>
                 </div>
@@ -100,7 +104,7 @@ const DetailRoom = () => {
                 <div className='flex'>
                     <div className='w-11/12 mr-4'>
                         <div className='bg-slate-100 shadow-inner p-4 rounded-lg'>
-                            <div className='font-semibold text-2xl pb-2'>{room.cinema && room.cinema.cinemaName && room.cinema.cinemaName}</div>
+                            <div className='font-semibold text-4xl pb-2 text-emerald-600'>{room.cinema && room.cinema.cinemaName && room.cinema.cinemaName}</div>
                             <div className='flex'>
                                 <p className='pr-4 font-medium'>Địa chỉ:</p>
                                 <span>{room.cinema.location}</span>
@@ -111,7 +115,30 @@ const DetailRoom = () => {
                             </div>
                             <div className='flex'>
                                 <p className='pr-4 font-medium'>Phòng:</p>
-                                <span>{room.roomName} - {room.rowSeat * room.colSeat} ghế</span>
+                                {toggle ?
+                                    <input
+                                        onChange={e => setRoom({ ...room, roomName: e.target.value })}
+                                        type="text"
+                                        className="inline px-2 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                        value={room.roomName}
+                                    />
+                                    : <span>{room.roomName}</span>
+                                }
+                                <span className='pl-2'> - {room.rowSeat * room.colSeat} ghế</span>
+                                {!toggle ?
+                                    <p
+                                        className='underline decoration-solid cursor-pointer hover:text-blue-500 px-4'
+                                        onClick={() => setToggle(true)}
+                                    >
+                                        Chỉnh sửa
+                                    </p>
+                                    : <p
+                                        className='underline decoration-solid cursor-pointer hover:text-blue-500 px-4'
+                                        onClick={handleCreateRoom}
+                                    >
+                                        Lưu
+                                    </p>
+                                }
                             </div>
                         </div>
 
