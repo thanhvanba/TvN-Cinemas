@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import logo from "../../images/logo.png"
 import { UserCircleIcon as UserCircleIconSolid, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
-import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
+import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import Dashboard from './Dashboard/dashboard'
 import ListUser from './ListUser'
 import ListMovie from './ListMovie';
@@ -30,11 +30,14 @@ const Admin = () => {
 
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState('1');
-  console.log("🚀 ~ Admin ~ currentTab:", currentTab)
   const [tabIndex, setTabIndex] = useState(0);
-  console.log("🚀 ~ Admin ~ tabIndex:", tabIndex)
   const changeTab = (pathname) => {
     navigate(pathname)
+  }
+  const [show, setShow] = useState(false);
+
+  const showService = () => {
+    setShow(!show)
   }
 
   const { logoutApi } = AuthService();
@@ -49,7 +52,6 @@ const Admin = () => {
       { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
       { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
       { content: "Đánh giá", icon: StarIcon, path: "list-review" },
-      { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
     ]
     : [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
@@ -57,7 +59,6 @@ const Admin = () => {
       { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
       { content: "Vé", icon: StarIcon, path: "list-ticket" },
       { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
-      { content: "Thống kê", icon: Squares2X2Icon, path: "dashboard" }
     ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
@@ -173,6 +174,32 @@ const Admin = () => {
                       </Tab>
                     ))
                   }
+                  <Tab>
+                    <li onClick={() => { (user.role === "ADMIN") ? changeTab(`/admin/dashboard`) : changeTab(`/manager/dashboard`) }}
+                      className='mb-2'
+                    >
+                      <div className='flex items-center justify-between'>
+                        <a className='font-semibold text-lg flex items-center h-10'>
+                          <Squares2X2Icon className='h-6 w-6 mr-4 text-emerald-600' />
+                          {"Thống kê"}
+                        </a>
+                        <div className='w-11 h-10 relative'>
+                          <ChevronUpDownIcon onClick={showService} className='w-6 h-6 absolute top-1 left-2 font-normal' />
+                        </div>
+                      </div>
+                    </li>
+                  </Tab>
+                  <ul className={`${show ? '' : 'hidden'} pb-[30px]`}>
+                    <li className="pl-2">
+                      <a href="/thiet-ke-thuong-hieu" className='pl-5 py-[5px] flex'>Thiết kế thương hiệu</a>
+                    </li>
+                    <li className="pl-2">
+                      <a href="/thiet-ke-bao-bi" className='pl-5 py-[5px] flex'>Thiết kế bao bì</a>
+                    </li>
+                    <li className="pl-2">
+                      <a href="/san-xuat-in-an" className='pl-5 py-[5px] flex'>In ấn sản xuất</a>
+                    </li>
+                  </ul>
                 </ul >
               </TabList>
 

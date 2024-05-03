@@ -146,7 +146,7 @@ const Header = () => {
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
-              <a onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5">
+              <a onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5 outline-none ">
                 <span className="sr-only">Your Company</span>
                 <img className="h-[60px] md:h-[80px] w-auto" src={logo} alt="" />
               </a>
