@@ -1,5 +1,6 @@
 import React from "react";
 import { createContext, useState } from "react";
+import UserService from "../service/UserService";
 
 // @function  UserContext
 const LoginContext = createContext({ credentialId: '', auth: false, role: '' });
@@ -8,18 +9,19 @@ const LoginContext = createContext({ credentialId: '', auth: false, role: '' });
 // Create function to provide UserContext
 const LoginProvider = ({ children }) => {
     const [user, setUser] = useState({ credentialId: '', auth: false, role: '' });
-
-    const login = (credentialId, token, refreshToken, role, userId) => {
+    const { getUserInfoApi } = UserService()
+    const login = async (credentialId, token, refreshToken, role, userId) => {
+        localStorage.setItem("token", token)
+        localStorage.setItem("refreshToken", refreshToken)
+        localStorage.setItem("username", credentialId)
+        let resInfo = await getUserInfoApi()
         setUser(() => ({
             credentialId: credentialId && credentialId,
             auth: true,
             role: role && role,
-            userId: userId && userId
+            userId: userId && userId,
+            fullName: resInfo.data.result.fullName
         }));
-
-        localStorage.setItem("token", token)
-        localStorage.setItem("refreshToken", refreshToken)
-        localStorage.setItem("username", credentialId)
     };
 
     const logout = () => {

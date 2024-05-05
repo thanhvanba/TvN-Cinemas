@@ -137,10 +137,6 @@ const AddItem = () => {
                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
                             <div className="flex">
                                 <div>
-                                    {/* {pathname !== `/admin/movie/${movieId}` ?
-                                                    <div className="my-4 border">
-                                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
-                                                    </div> : */}
                                     <div className='my-4 border'>
                                         <img
                                             className='w-96 h-80'
@@ -157,7 +153,7 @@ const AddItem = () => {
                                         />
                                         <label
                                             htmlFor="form_img-upload"
-                                            className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                            className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
                                         >
                                             Chọn một tập tin
                                         </label>

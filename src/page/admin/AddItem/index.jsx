@@ -371,7 +371,7 @@ const AddItem = () => {
                                                         />
                                                         <label
                                                             htmlFor="form_img-upload"
-                                                            className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                                            className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
                                                         >
                                                             Chọn một tập tin
                                                         </label>
@@ -548,7 +548,7 @@ const AddItem = () => {
                                                             />
                                                             <label
                                                                 htmlFor="form_img-upload"
-                                                                className="bg-slate-100 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                                                className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
                                                             >
                                                                 Chọn một tập tin
                                                             </label>

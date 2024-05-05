@@ -5,10 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { AxiosService } from './AxiosService'
 
 const UserService = () => {
-    const navigate = useNavigate()
-    const changeTab = (pathname) => {
-        navigate(pathname)
-    }
+  
     const getUserInfoApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
@@ -32,8 +29,8 @@ const UserService = () => {
 
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
-                    if (key === "avatar" && typeof data[key] === "string") {
-                        const file = await convertDataURLtoFile(data[key], "avatar");
+                    if (key === "image" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "image");
                         data[key] = file;
                     }
                 }
@@ -45,6 +42,7 @@ const UserService = () => {
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     }
                 },
             );
@@ -120,6 +118,10 @@ const UserService = () => {
         }
     }
     const resetPasswordApi = async (token, data) => {
+        const navigate = useNavigate()
+        const changeTab = (pathname) => {
+            navigate(pathname)
+        }
         try {
             const response = await axios.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/reset-password`,

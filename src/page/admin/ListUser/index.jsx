@@ -355,7 +355,7 @@ const ListUser = () => {
                                                     <td className='text-start px-2 py-3'>
                                                         <div className='flex items-center'>
                                                             <div div className='pr-2' >
-                                                                <listUser.iAvatar className="h-16 w-16 text-emerald-600" />
+                                                                {item.avatar ? <img className='rounded-full w-14 h-14 border-2' src={item.avatar} alt="" /> : <listUser.iAvatar className="h-16 w-16 text-emerald-600" />}
                                                             </div >
                                                             <div>
                                                                 <h3>{item.fullName}</h3>

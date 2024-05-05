@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import UserService from '../../../service/UserService';
 import useLoadingState from '../../../hook/UseLoadingState';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+// import DatePicker from 'react-datepicker';
+// import 'react-datepicker/dist/react-datepicker.css';
+import { Space, TimePicker, DatePicker } from 'antd'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
@@ -12,6 +14,7 @@ import { useContext } from 'react';
 import AdminService from '../../../service/AdminService';
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import Loading from '../../../components/Loading';
+import dayjs from 'dayjs';
 
 const ProfileDetail = () => {
     const { updateProfileApi, getUserInfoApi } = UserService();
@@ -23,33 +26,33 @@ const ProfileDetail = () => {
     const { user } = useContext(LoginContext)
 
     const { loading, setLoading } = useLoadingState(false);
-    const [image, setImage] = useState()
+    const [imageURL, setImageURL] = useState()
     const [dob, setDob] = useState(null);
     const [account, setAccount] = useState({
-        address: {
-            street: "",
-            district: "",
-            province: "",
-            country: ""
-        },
-        role: "",
-        userName: "",
-        email: "",
-        fullName: "",
-        dob: "",
-        phone: "",
-        // createdAt: null,
-        // updatedAt: "",
-        // lastLoginAt: "",
-        cinema: {
-            cinemaId: "",
-            location: "",
-            cinemaName: "",
-            desc: "",
-            status: true,
-            urlLocation: null
-        },
+        // street: "",
+        // district: "",
+        // province: "",
+        // country: "",
+        // role: "",
+        // userName: "",
+        // email: "",
+        // fullName: "",
+        // dob: null,
+        // phone: "",
+        // // createdAt: null,
+        // // updatedAt: "",
+        // // lastLoginAt: "",
+        // cinema: {
+        //     cinemaId: "",
+        //     location: "",
+        //     cinemaName: "",
+        //     desc: "",
+        //     status: true,
+        //     urlLocation: null
+        // },
+        // image: ""
     })
+    console.log("🚀 ~ ProfileDetail ~ account:", account.dob)
     const [userInfo, setUserInfo] = useState({
         userId: "",
         address: {
@@ -81,8 +84,11 @@ const ProfileDetail = () => {
             urlLocation: null
         },
         active: true,
-        delete: false
+        delete: false,
+        avatar: ""
     });
+
+    console.log("🚀 ~ ProfileDetail ~ userInfo:", userInfo.dob)
     const handleGetItems = async () => {
         setLoading('hisBooking', true);
         let resInfo = /^\/admin\/update-item\/user/.test(pathname) ? await getOneUserApi(userId) : await getUserInfoApi()
@@ -102,48 +108,58 @@ const ProfileDetail = () => {
         setLoading('account', false);
     }
 
-    const handlePreviewImage = (e) => {
-        const img = e.target.files[0]
-        img.preview = URL.createObjectURL(img)
-        setImage(img)
-        setMovie({ ...movie, poster: img.preview })
-    }
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        readAndDisplayFile(selectedFile);
+    };
 
+    const readAndDisplayFile = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageURL(reader.result);
+            setAccount((prevAccount) => ({
+                ...prevAccount,
+                image: file,
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+    const handleSelectDate = (date, dateString) => {
+        setAccount({ ...account, dob: dateString });
+    };
     useEffect(() => {
         handleGetItems()
     }, [userId]);
 
-    useEffect(() => {
-        if (userInfo && (user.role === "MANAGER" ? userInfo.cinema : true)) {
-            setAccount({
-                ...account,
-                fullName: userInfo.fullName,
-                dob: userInfo.dob,
-                address: {
-                    ...account.address,
-                    street: (userInfo && userInfo.address && userInfo.address.street) ? userInfo.address.street : '',
-                    district: (userInfo && userInfo.address && userInfo.address.district) ? userInfo.address.district : '',
-                    province: (userInfo && userInfo.address && userInfo.address.province) ? userInfo.address.province : '',
-                    country: (userInfo && userInfo.address && userInfo.address.country) ? userInfo.address.country : ''
-                },
-                email: userInfo.email,
-                phone: userInfo.phone,
-                userName: userInfo.userName,
-                role: userInfo.role.roleName,
-                // ...(user.role === "MANAGER" && {
-                //     cinema: {
-                //         ...account.cinema,
-                //         cinemaId: userInfo.cinema.cinemaId || "",
-                //         location: userInfo.cinema.location || "",
-                //         cinemaName: userInfo.cinema.cinemaName || "",
-                //         desc: userInfo.cinema.desc || "",
-                //         status: userInfo.cinema.status || true,
-                //         urlLocation: userInfo.cinema.urlLocation || null
-                //     }
-                // }),
-            });
-        }
-    }, [userInfo]);
+    // useEffect(() => {
+    //     if (userInfo && (user.role === "MANAGER" ? userInfo.cinema : true)) {
+    //         setAccount({
+    //             ...account,
+    //             fullName: userInfo.fullName,
+    //             dob: userInfo.dob,
+    //             street: (userInfo && userInfo.address && userInfo.address.street) ? userInfo.address.street : '',
+    //             district: (userInfo && userInfo.address && userInfo.address.district) ? userInfo.address.district : '',
+    //             province: (userInfo && userInfo.address && userInfo.address.province) ? userInfo.address.province : '',
+    //             country: (userInfo && userInfo.address && userInfo.address.country) ? userInfo.address.country : '',
+    //             email: userInfo.email,
+    //             phone: userInfo.phone,
+    //             userName: userInfo.userName,
+    //             role: userInfo.role.roleName,
+    //             ...(user.role === "MANAGER" && {
+    //                 cinema: {
+    //                     ...account.cinema,
+    //                     cinemaId: userInfo.cinema.cinemaId || "",
+    //                     location: userInfo.cinema.location || "",
+    //                     cinemaName: userInfo.cinema.cinemaName || "",
+    //                     desc: userInfo.cinema.desc || "",
+    //                     status: userInfo.cinema.status || true,
+    //                     urlLocation: userInfo.cinema.urlLocation || null
+    //                 }
+    //             }),
+    //             image: userInfo.avatar
+    //         });
+    //     }
+    // }, [userInfo]);
     return (
         <div className='relative'>
             <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
@@ -151,29 +167,29 @@ const ProfileDetail = () => {
             </div>
             {!loading['hisBooking'] &&
                 <>
-                    {!userId && <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>}
+                    {!userId && <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Thông tin cá nhân</h2>}
                     <form id='formUpdateProfile' action="" onSubmit={handleUpdateUserInfo}>
                         <div className="rounded-md p-8 shadow-lg bg-slate-100">
                             {!userId && <div className='pb-8 mb-2 border-b border-b-slate-400 flex justify-center items-center'>
-                                <div className=''>
-                                    <div className='flex justify-center h-24 text-center rounded-sm'>
+                                <div>
+                                    <div className="flex justify-center my-4">
+                                        <img src={imageURL ? imageURL : userInfo.avatar} alt="Ảnh đại diện" className="md:w-32 md:h-32 lg:h-40 lg:w-40 rounded-full border-2 text-center" />
+                                    </div>
+
+                                    <div className='px-4'>
                                         <input
-                                            onChange={handlePreviewImage}
+                                            onChange={handleFileChange}
                                             type="file"
-                                            className="hidden" // Ẩn input mặc định
+                                            className="hidden"
                                             id="form_img-upload"
                                         />
-                                        <UserCircleIcon className="h-20 w-20 text-emerald-600 bg-slate-200 rounded-full" />
-                                        {image && (
-                                            <img className='absolute top-0 left-0 h-full' src={image.preview} alt="" />
-                                        )}
+                                        <label
+                                            htmlFor="form_img-upload"
+                                            className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                        >
+                                            Chọn một tập tin
+                                        </label>
                                     </div>
-                                    <label
-                                        htmlFor="form_img-upload" // Liên kết label với input
-                                        className="bg-slate-200 px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
-                                    >
-                                        Choose a File
-                                    </label>
                                 </div>
 
 
@@ -183,14 +199,14 @@ const ProfileDetail = () => {
                                     htmlFor=""
                                     className="w-24 font-bold leading-9 text-gray-900"
                                 >
-                                    Full Name
+                                    Họ tên
                                 </label>
                                 <input
-                                    //value={userInfo.fullName}
+                                    defaultValue={userInfo.fullName}
                                     onChange={e => setAccount({ ...account, fullName: e.target.value })}
                                     type="text"
                                     className="block w-full px-4 py-1 text-[10px] sm:text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                    value={account.fullName}
+                                    // defaultValue={account.fullName}
                                     placeholder='Họ và tên'
                                 />
                             </div>
@@ -200,15 +216,13 @@ const ProfileDetail = () => {
                                         htmlFor=""
                                         className="block w-24 font-bold leading-9 text-gray-900"
                                     >
-                                        Birth
+                                        Ngày sinh
                                     </label>
+
                                     <DatePicker
-                                        selected={dob}
-                                        onChange={date => {
-                                            setDob(date);
-                                            setAccount({ ...account, dob: date });
-                                        }}
-                                        value={FormatDataTime(account.dob).date}
+                                        // selected={dob}
+                                        onChange={handleSelectDate}
+                                        defaultValue={dayjs(userInfo.dob && userInfo.dob, "YYYY-MM-DD")}
                                         placeholderText='Ngày sinh'
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                         dateFormat="yyyy-MM-dd" // Định dạng ngày
@@ -219,14 +233,13 @@ const ProfileDetail = () => {
                                         htmlFor=""
                                         className="w-24 font-bold leading-9 text-gray-900"
                                     >
-                                        Phone
+                                        Số điện thoại
                                     </label>
                                     <input
-                                        // value={account.fullName}
                                         onChange={e => setAccount({ ...account, phone: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        value={account.phone}
+                                        defaultValue={userInfo.phone}
                                         placeholder='Số điện thoại'
                                     />
                                 </div>
@@ -240,11 +253,10 @@ const ProfileDetail = () => {
                                         Email
                                     </label>
                                     <input
-                                        // value={account.fullName}
                                         onChange={e => setAccount({ ...account, email: e.target.value })}
                                         type="email"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        value={account.email}
+                                        defaultValue={userInfo.email}
                                         placeholder={"Email"}
                                     />
                                 </div>
@@ -253,10 +265,10 @@ const ProfileDetail = () => {
                                         htmlFor=""
                                         className="w-24 font-bold leading-9 text-gray-900"
                                     >
-                                        Cinema
+                                        Rạp
                                     </label>
                                     <input
-                                        value={account.cinema.cinemaName}
+                                        defaultValue={userInfo.cinema.cinemaName}
                                         onChange={e => setAccount({ ...account, cinema: { ...account.cinema, cinemaName: e.target.value } })}
                                         type="email"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
@@ -270,19 +282,19 @@ const ProfileDetail = () => {
                                     htmlFor=""
                                     className="w-24 font-bold leading-9 text-gray-900"
                                 >
-                                    Address
+                                    Địa chỉ
                                 </label>
                                 <div className='flex justify-between w-full'>
                                     <input
-                                        value={account.address ? account.address.street : ''}
-                                        onChange={e => setAccount({ ...account, address: { ...account.address, street: e.target.value } })}
+                                        defaultValue={userInfo.address.street}
+                                        onChange={e => setAccount({ ...account, street: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                         placeholder={"Wards (Xã, Phường)"}
                                     />
                                     <input
-                                        value={account.address ? account.address.district : ''}
-                                        onChange={e => setAccount({ ...account, address: { ...account.address, district: e.target.value } })}
+                                        defaultValue={userInfo.address.district}
+                                        onChange={e => setAccount({ ...account, district: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                         placeholder={"District (Quận, Huyện)"}
@@ -290,15 +302,15 @@ const ProfileDetail = () => {
                                 </div>
                                 <div className='flex justify-between w-full'>
                                     <input
-                                        value={account.address ? account.address.province : ''}
-                                        onChange={e => setAccount({ ...account, address: { ...account.address, province: e.target.value } })}
+                                        defaultValue={userInfo.address.province}
+                                        onChange={e => setAccount({ ...account, province: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                         placeholder={"Province (Thành phố, Tỉnh)"}
                                     />
                                     <input
-                                        value={account.address ? account.address.country : ''}
-                                        onChange={e => setAccount({ ...account, address: { ...account.address, country: e.target.value } })}
+                                        defaultValue={userInfo.address.country}
+                                        onChange={e => setAccount({ ...account, country: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                         placeholder={"Country (Quốc gia)"}
@@ -315,11 +327,10 @@ const ProfileDetail = () => {
                                         User Name
                                     </label>
                                     <input
-                                        // value={account.fullName}
                                         onChange={e => setAccount({ ...account, userName: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        value={account.userName}
+                                        defaultValue={userInfo.userName}
                                         placeholder='Tên đăng nhập'
                                     />
                                 </div>
@@ -328,24 +339,24 @@ const ProfileDetail = () => {
                                         htmlFor=""
                                         className="w-24 font-bold leading-9 text-gray-900"
                                     >
-                                        Role
+                                        Chức vụ
                                     </label>
                                     <input
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
-                                        placeholder={account.role && account.role}
+                                        placeholder={userInfo.role && userInfo.role.roleName}
                                         readOnly
                                     />
                                 </div>
                             </div>
                         </div>
                         <button
-                            className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                            className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                             type='submit'
                             disabled={loading['account']}
                         >
                             {loading['account'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                            &nbsp;Save
+                            &nbsp;Lưu
                         </button>
                     </form>
                 </>

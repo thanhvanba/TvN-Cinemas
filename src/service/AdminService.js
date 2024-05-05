@@ -8,8 +8,6 @@ import { LoginContext } from '../context/LoginContext'
 
 const AdminService = () => {
     const navigate = useNavigate()
-    const { register } = useContext(RegisterContext);
-    const { login, logout } = useContext(LoginContext);
     const changeTab = (pathname) => {
         navigate(pathname)
     }
@@ -414,7 +412,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
-                    sortByRole: sortByRole
+                    // sortByRole: sortByRole
                 },
             }
         );

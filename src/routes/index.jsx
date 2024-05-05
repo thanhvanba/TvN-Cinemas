@@ -12,6 +12,7 @@ import Navigate from '../utils/Navigate';
 import Movies from '../page/Movies';
 import Cinemas from '../page/Cinemas';
 import ListShowtime from '../page/admin/ListShowtime';
+import Staff from '../page/Staff';
 
 const MainRouter = () => (
   <Routes>
@@ -95,6 +96,13 @@ const AdminRouter = () => (
   </Routes>
 );
 
+const StaffRouter = () => (
+  <Routes>
+    <Route path="/" element={<Staff />} />
+    <Route path="/staff/info" element={<Info />} />
+  </Routes>
+);
+
 const AppRouter = () => (
   <Router>
     <Routes>
@@ -105,4 +113,4 @@ const AppRouter = () => (
   </Router>
 );
 
-export { AppRouter, AdminRouter, MainRouter };
+export { AppRouter, AdminRouter, MainRouter, StaffRouter };

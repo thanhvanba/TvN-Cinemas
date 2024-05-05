@@ -9,7 +9,7 @@
 
 .react-tabs__tab--selected {
   border: none;
-  background-color: #F8F4F3;
+  background-color: #F1F5F9;
   /* Thay đổi màu và độ dày của border-bottom nếu cần */
   color: rgb(5 150 105);
   /* Màu chữ của tab hiện tại */

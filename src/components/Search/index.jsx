@@ -33,13 +33,13 @@ const Search = ({ searchFunction, resultList }) => {
         <div className='relative'>
             <input
                 onChange={(e) => handleChange(e.target.value)}
-                className='h-10 xl:w-full w-32 rounded-2xl px-4 text-black focus:outline-none'
+                className='h-8 xl:w-full w-32 rounded-2xl px-4 text-black focus:outline-none'
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 value={inputSearch}
                 placeholder='Tìm kiếm' />
             <button
-                className='absolute right-0 top-0 m-3'>
+                className='absolute right-0 top-0 m-2'>
                 <MagnifyingGlassIcon
                     onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
                     className="h-5 w-5 text-gray-400" />

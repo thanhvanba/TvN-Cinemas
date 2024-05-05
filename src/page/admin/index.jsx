@@ -21,6 +21,7 @@ import { LoginContext } from '../../context/LoginContext'
 import ListProduct from './ListProduct';
 import ProfileDetail from '../Info/components/profileDetail';
 import ListTicket from './ListTicket';
+import Header from '../Staff/components/header';
 import UserService from '../../service/UserService';
 
 const Admin = () => {
@@ -47,22 +48,22 @@ const Admin = () => {
     [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
       { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
-      { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
+      { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
       { content: "Vé", icon: StarIcon, path: "list-ticket" },
-      { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
+      { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
       { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
       { content: "Đánh giá", icon: StarIcon, path: "list-review" },
     ]
     : [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
       { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
-      { content: "Sản phẩm - Khác", icon: StarIcon, path: "list-food" },
+      { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
       { content: "Vé", icon: StarIcon, path: "list-ticket" },
-      { content: "Nhân sự - Người Dùng", icon: UserCircleIconOutline, path: "list-personnel" },
+      { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
     ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
-      case pathname === "/admin/info":
+      case (pathname === "/admin/info" || pathname === "/manager/info"):
         setCurrentTab("2");
         break;
       case /^\/admin\/update-item\/user/.test(pathname):
@@ -73,11 +74,6 @@ const Admin = () => {
         setCurrentTab("1");
     }
   };
-
-  const handleLogoutApi = async (e) => {
-    e.preventDefault();
-    await logoutApi()
-  }
 
   const handleTabChange = () => {
 
@@ -111,13 +107,13 @@ const Admin = () => {
   const handleGetItems = async () => {
     let resInfo = await getUserInfoApi()
     if (resInfo && resInfo.data && resInfo.data.result) {
-      localStorage.setItem("cinemaId", resInfo.data.result.cinema.cinemaId)
+      user.role === "MANAGER" && !localStorage.getItem("cinemaId") && localStorage.setItem("cinemaId", resInfo.data.result.cinema.cinemaId)
     }
   }
   useEffect(() => {
     handleCheckPathname(pathname)
     handleTabChange()
-    user.role === "MANAGER" && !localStorage.getItem("cinemaId") && handleGetItems()
+    handleGetItems()
   }, [pathname, item]);
   return (
     <div>
@@ -125,7 +121,7 @@ const Admin = () => {
         {/* sidebar */}
         <div className='flex w-full justify-between pb-4'>
           <div className='flex flex-col'>
-            < div className='fixed shadow-right h-screen bg-[#F8F4F3] w-1/5'>
+            < div className='fixed shadow-right h-screen bg-slate-100 w-1/5'>
               {/* logo */}
               <div className='flex items-center justify-center px-8 p-3 border-b-2 outline-none' >
                 <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">
@@ -134,29 +130,8 @@ const Admin = () => {
                 </a>
               </div >
 
-              {/* thong tin admin */}
-              < div className='flex px-8 py-6 border-b-2' >
-                {/* avatar */}
-                <div onClick={() => { changeTab('/admin/info') }} className='pr-4'>
-                  <UserCircleIconSolid className="h-12 w-12 text-emerald-600" />
-                </div >
-                <div>
-                  <p>
-                    <span>Xin chào</span>
-                    <br />
-                    <span className='text-lg text-cyan-600 font-bold'>{user.credentialId}</span>
-                  </p>
-                </div>
-                {/* logout */}
-                <button onClick={handleLogoutApi} className='ml-auto bg-slate-200 h-10 w-10 rounded-xl flex justify-center items-center'>
-                  <ArrowRightOnRectangleIcon className="h-6 w-6 text-emerald-600" />
-                </button>
-              </div >
-
-              {/* sidebar_nav */}
-
               <TabList>
-                <ul className='flex flex-col p-8 overflow-y-auto max-h-[70vh]' >
+                <ul className='flex flex-col p-8 overflow-y-auto max-h-[90vh]' >
                   {
                     items.map((item, index) => (
                       <Tab key={index}>
@@ -164,7 +139,6 @@ const Admin = () => {
                           className='mb-2'
                         >
                           {
-
                             <a className='font-semibold text-lg flex items-center h-10'>
                               <item.icon className='h-6 w-6 mr-4 text-emerald-600' />
                               {item.content}
@@ -213,6 +187,7 @@ const Admin = () => {
           </div>
           {/* main */}
           <div className='w-4/5'>
+            <Header />
             {currentTab === '1' &&
               <div>
                 <TabPanel>
@@ -247,9 +222,9 @@ const Admin = () => {
             }
             {currentTab === '2' &&
               <div>
-                <div className=''>
-                  <div className='h-20 mb-2 absolute flex items-center w-full border-b-2'>
-                    <h2 className='text-3xl'>User Info</h2>
+                <div className='px-4'>
+                  <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                    <h2 className='text-3xl cursor-default'>Hồ sơ</h2>
                   </div>
                   <Info />
                 </div>

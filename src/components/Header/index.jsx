@@ -141,6 +141,116 @@ const Header = () => {
   }, [pathname]);
   return (
     <header className="header">
+      <Dialog as="div" className="lg:hidden z-10" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <div className="fixed inset-0 z-10" />
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-[100] w-full overflow-y-auto bg-[#312b2b] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="flex items-center justify-between">
+            <a href="" className="-mt-1">
+              <span className="sr-only">Your Company</span>
+              <img className="h-[60px] w-auto" src={logo} alt="" />
+            </a>
+            <button
+              type="button"
+              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="mt-6 flow-root pt-8">
+            <div className="-my-6 divide-y divide-gray-500/10">
+              <div className="space-y-2 py-10">
+                <div className='relative mr-2'>
+                  <div className=''>
+                    <input
+                      onChange={(e) => handleChange(e.target.value)}
+                      className='h-10 w-full rounded-2xl px-4 text-black focus:outline-none'
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      value={inputSearch}
+                      placeholder='Tìm kiếm' />
+                  </div>
+                  <button
+                    className='absolute right-0 top-0 m-3'>
+                    <MagnifyingGlassIcon
+                      onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
+                      className="h-5 w-5 text-gray-400" />
+                  </button>
+                  {showMovieList && listMovieFound.length !== 0 &&
+                    <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
+                      {listMovieFound.map(movie => (
+                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                          <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
+                            <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                            <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
+                          </div>
+                        </div>
+                      ))
+
+                      }
+                    </div>
+                  }
+                </div>
+                <ul className="text-white">
+                  <li onClick={() => changeTab("/phim")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '1' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Phim
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/showtimes")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Lịch Chiếu
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/rap")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '3' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Hệ thống rạp
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/khuyenmai")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '4' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Khuyến mãi
+                    </a>
+                  </li>
+                  <li onClick={() => changeTab("/lienhe")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                    <a className={`${currentTab === '5' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
+                      Liên hệ
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="py-6">
+
+                {
+                  user && user.auth === false ?
+                    <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                    >
+                      Đăng ký thành viên
+                    </button>
+                    : <div className='flex justify-center items-center'>
+                      <span
+                        className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
+                        onClick={() => { changeTab('/user/info') }}
+                      >
+                        {user.credentialId}
+                      </span>
+                      <button
+                        onClick={handleLogoutApi}
+                        className="ml-2 p-2 text-sm font-bold uppercase rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                        type='submit'
+                      >
+                        {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                        &nbsp;Đăng xuất
+                      </button>
+                    </div>
+                }
+              </div>
+            </div>
+          </div>
+        </Dialog.Panel>
+      </Dialog>
       <div className='top-menu'>
         <div className='mx-auto h-full flex max-w-5xl xl:max-w-7xl justify-between lg:px-8 top-menu-container'>
           <div className="flex lg:flex-auto">
@@ -353,116 +463,6 @@ const Header = () => {
         </div>
       </div>
 
-      <Dialog as="div" className="lg:hidden z-10" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-        <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-[#312b2b] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="" className="-mt-1">
-              <span className="sr-only">Your Company</span>
-              <img className="h-[60px] w-auto" src={logo} alt="" />
-            </a>
-            <button
-              type="button"
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root pt-8">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-10">
-                <div className='relative mr-2'>
-                  <div className=''>
-                    <input
-                      onChange={(e) => handleChange(e.target.value)}
-                      className='h-10 w-full rounded-2xl px-4 text-black focus:outline-none'
-                      onFocus={handleInputFocus}
-                      onBlur={handleInputBlur}
-                      value={inputSearch}
-                      placeholder='Tìm kiếm' />
-                  </div>
-                  <button
-                    className='absolute right-0 top-0 m-3'>
-                    <MagnifyingGlassIcon
-                      onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
-                      className="h-5 w-5 text-gray-400" />
-                  </button>
-                  {showMovieList && listMovieFound.length !== 0 &&
-                    <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
-                      {listMovieFound.map(movie => (
-                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
-                          <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
-                            <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
-                            <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
-                          </div>
-                        </div>
-                      ))
-
-                      }
-                    </div>
-                  }
-                </div>
-                <ul className="text-white">
-                  <li onClick={() => changeTab("/phim")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
-                    <a className={`${currentTab === '1' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
-                      Phim
-                    </a>
-                  </li>
-                  <li onClick={() => changeTab("/showtimes")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
-                    <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
-                      Lịch Chiếu
-                    </a>
-                  </li>
-                  <li onClick={() => changeTab("/rap")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
-                    <a className={`${currentTab === '3' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
-                      Hệ thống rạp
-                    </a>
-                  </li>
-                  <li onClick={() => changeTab("/khuyenmai")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
-                    <a className={`${currentTab === '4' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
-                      Khuyến mãi
-                    </a>
-                  </li>
-                  <li onClick={() => changeTab("/lienhe")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
-                    <a className={`${currentTab === '5' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
-                      Liên hệ
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="py-6">
-
-                {
-                  user && user.auth === false ?
-                    <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
-                    >
-                      Đăng ký thành viên
-                    </button>
-                    : <div className='flex justify-center items-center'>
-                      <span
-                        className="border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
-                        onClick={() => { changeTab('/user/info') }}
-                      >
-                        {user.credentialId}
-                      </span>
-                      <button
-                        onClick={handleLogoutApi}
-                        className="ml-2 p-2 text-sm font-bold uppercase rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
-                        type='submit'
-                      >
-                        {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                        &nbsp;Đăng xuất
-                      </button>
-                    </div>
-                }
-              </div>
-            </div>
-          </div>
-        </Dialog.Panel>
-      </Dialog>
     </header >
   )
 }

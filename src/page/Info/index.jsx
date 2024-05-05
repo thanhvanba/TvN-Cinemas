@@ -13,7 +13,7 @@ import FormatDataTime from '../../utils/FormatDataTime';
 import { LoginContext } from '../../context/LoginContext';
 import UserService from '../../service/UserService';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+// import 'react-tabs/style/react-tabs.css';
 import './info.css'
 import formatPrice from '../../utils/ConvertStringFollowFormat';
 import Loading from '../../components/Loading';
@@ -451,7 +451,7 @@ const Info = () => {
                         <ProfileDetail userInfo={userInfo} />
                         {/* passwordUpdateInfo */}
                         <div>
-                            <h2 className="text-2xl text-emerald-800  font-bold text-center uppercase mb-6">Change password</h2>
+                            <h2 className="text-2xl text-emerald-800  font-bold text-center uppercase mb-6">Đổi mật khẩu</h2>
                             <form onSubmit={handleChangePassword} className="rounded-md p-8 shadow-lg bg-slate-100">
                                 <div className='grid grid-cols-2 gap-4 text-[10px] sm:text-lg'>
                                     <div>
@@ -459,7 +459,7 @@ const Info = () => {
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
                                         >
-                                            Old Password
+                                            Mật khẩu cũ
                                         </label>
                                         <input
                                             // value={account.fullName}
@@ -474,7 +474,7 @@ const Info = () => {
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
                                         >
-                                            New Password
+                                            Mật khẩu mới
                                         </label>
                                         <input
                                             // value={account.fullName}
@@ -489,7 +489,7 @@ const Info = () => {
                                             htmlFor=""
                                             className="w-24 font-bold leading-9 text-gray-900"
                                         >
-                                            Confirm New Password
+                                            Xác nhận mật khẩu
                                         </label>
                                         <input
                                             // value={account.fullName}
@@ -505,7 +505,7 @@ const Info = () => {
                                         disabled={loading['change']}
                                     >
                                         {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                        &nbsp;Change
+                                        &nbsp;Thay đổi
                                     </button>
                                 </div>
                             </form>
@@ -514,7 +514,7 @@ const Info = () => {
                 </div>
                 <div style={{ display: currentTab === '2' ? 'block' : 'none' }} className='px-4'>
                     <Tabs className='bg-white rounded-xl border-b-[12px] border-slate-300'>
-                        <TabList className='py-2 px-8  border-b-[12px] border-slate-300'>
+                        <TabList className='py-2 px-8 border-b-[12px] border-slate-300'>
                             <Tab>Phim sắp xem</Tab>
                             <Tab>Phim đã xem</Tab>
                         </TabList>
