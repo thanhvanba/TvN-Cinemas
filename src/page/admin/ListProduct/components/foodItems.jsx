@@ -17,33 +17,16 @@ const FoodItems = ({ listFood, onChange }) => {
         navigate(pathname)
     }
 
-    const handleOpenModal = (itemId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
-    };
-    const handleCloseModal = (itemId) => {
-        setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
-    };
-    const handleChangeStatus = async (foodId) => {
-        await deleteFoodApi(foodId);
-        onChange()
-        // const updatedFoods = allFood.map((food) => {
-        //     if (food.foodId === foodId) {
-        //         return { ...food, status: !food.status };
-        //     }
-        //     return food;
-        // });
-        // handleCloseModal(foodId)
-        // setAllFood(updatedFoods);
-    };
-    // const handleGetItems = async (pageIndex) => {
-    //     // setCurrentPage(pageIndex)
-    //     setLoading("food", true)
-    //     let resFood = await getFoodApi()
-    //     setLoading("food", false)
-    //     if (resFood && resFood.data && resFood.data.result) {
-    //         setAllFood(resFood.data.result)
-    //     }
-    // }
+    // const handleOpenModal = (itemId) => {
+    //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
+    // };
+    // const handleCloseModal = (itemId) => {
+    //     setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
+    // };
+    // const handleChangeStatus = async (foodId) => {
+    //     await deleteFoodApi(foodId);
+    //     onChange()
+    // };
     return (
         <>
             {

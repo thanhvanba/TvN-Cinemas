@@ -7,14 +7,14 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* .react-tabs__tab {
+.react-tabs__tab {
   border: none;
-  color: rgb(0, 0, 0);
-} */
+  color: rgb(91, 91, 91);
+}
 
 .react-tabs__tab--selected {
   border: none;
-  background-color: #F1F5F9;
+  background-color: transparent;
   /* Thay đổi màu và độ dày của border-bottom nếu cần */
   color: rgb(5 150 105);
   /* Màu chữ của tab hiện tại */
@@ -30,3 +30,21 @@
 .react-tabs__tab-list {
   border: none;
 }
+
+
+.loader1 {
+  width: calc(90px / 0.707);
+  height: 20px;
+  background: repeating-linear-gradient(135deg, #766DF4 0 15px,#0000 0 20px) left top,
+    repeating-linear-gradient( 45deg, #766DF4 0 15px,#0000 0 20px) left bottom;
+  background-size: 300% 50%;
+  background-repeat: no-repeat;
+  animation: i4 18s infinite linear;
+}
+
+@keyframes i4 {
+  100% {
+    background-position: top right,bottom right
+  }
+}
+

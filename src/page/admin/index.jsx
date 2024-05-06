@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import logo from "../../images/logo.png"
 import { UserCircleIcon as UserCircleIconSolid, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
-import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
+import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import Dashboard from './Dashboard/dashboard'
 import ListUser from './ListUser'
 import ListMovie from './ListMovie';

@@ -99,6 +99,9 @@ const AdminRouter = () => (
 const StaffRouter = () => (
   <Routes>
     <Route path="/" element={<Staff />} />
+    <Route path="/staff/sell-ticket" element={<Staff />} />
+    <Route path="/staff/sell-ticket/:movieId" element={<Staff />} />
+    <Route path="/staff/confirm-ticket" element={<Staff />} />
     <Route path="/staff/info" element={<Info />} />
   </Routes>
 );

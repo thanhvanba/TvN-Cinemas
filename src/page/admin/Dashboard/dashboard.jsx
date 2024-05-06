@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import format from "../../../utils/ConvertStringFollowFormat"
 import TruncatedContent from '../../../utils/TruncatedContent';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import useLoadingState from '../../../hook/UseLoadingState'
 
 import AdminService from '../../../service/AdminService';
@@ -21,7 +19,7 @@ import Loading from '../../../components/Loading';
 import YearPicker from '../../../components/YearPicker';
 import CardItem from './components/cardItem';
 import RevenueStatistics from './components/revenueStatistics';
-import PieChart from './components/PieChart'
+import PieChart from './components/pieChart'
 import ApexChart from './components/TextStatistic';
 import OptionsStatistics from './components/optionsStatistics';
 import SelectMenu from '../../../components/SelectMenu/SelectMenu';

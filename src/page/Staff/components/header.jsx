@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import UserService from '../../../service/UserService';
 import { useEffect } from 'react';
 
+import bg from "../../../images/bg-cinema-10.png"
+
 
 function Header() {
     const { logoutApi } = AuthService();
@@ -43,14 +45,18 @@ function Header() {
         handleGetItems()
     }, []);
     return (
-        <div className='flex justify-end items-center h-20 bg-slate-100 px-4'>
+        <div
+            className={`${user.role === "STAFF" ? "fixed top-0 left-0 right-0 bottom-0 z-50" : "bg-slate-100"
+                } flex justify-end items-center h-20 px-4`}
+            style={user.role === "STAFF" ? { backgroundImage: `url(${bg})`} : {}}
+        >
             <div className='flex px-3 items-center'>
                 <div className='pr-4'>
-                    <div className="border-2 rounded-xl ">
+                    <div className="border-2 rounded-2xl ">
                         <Search />
                     </div>
                 </div>
-                <div className='flex flex-col relative px-4'>
+                <div className={`${user.role === "STAFF" ? "text-white" : ""} flex flex-col relative px-4`}>
                     <BellIcon className='h-6' />
                     <span className='text-xs'>Thông báo</span>
                     <span className='absolute text-center -top-3 right-6 rounded-full bg-red-600 text-white h-5 w-5 text-[12px] leading-5'>2</span>
@@ -61,10 +67,12 @@ function Header() {
                         className='flex items-center cursor-pointer'
                     >
                         <div className='ml-3 flex flex-col'>
-                            <span className='flex justify-end text-sm'>Xin chào</span>
+                            <span className={`${user.role === "STAFF" ? "text-white" : ""} flex justify-end text-sm`}>
+                                Xin chào
+                            </span>
                             <span className='flex justify-end text-xl text-cyan-600 font-bold'>{user.fullName}</span>
                         </div>
-                        <div className=''>
+                        <div className='ml-2'>
                             {avatar ? <img className='rounded-full w-14 h-14 border-2' src={avatar} alt="" /> : <UserCircleIcon className="h-16 w-16 text-emerald-600" />}
                         </div>
                     </div>

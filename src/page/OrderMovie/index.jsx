@@ -334,7 +334,7 @@ const OrderMovie = () => {
                             </div>
                             {/*  Sơ đồ*/}
                             <div className='flex justify-center'>
-                                <div className='grid grid-cols-14 gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
+                                <div className='grid gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
                                     style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
                                 >
                                     {seatData.map(seat => (

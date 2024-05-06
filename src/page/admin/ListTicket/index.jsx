@@ -261,8 +261,8 @@ const ListTicket = () => {
                     <div className='flex gap-10'>
                       <div className='w-3/5'>
                         <p className='font-light'>Bắp nước</p>
-                        <p className="font-semibold text-xl">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                          <span key={index}>&nbsp;{food},</span>
+                        <p className="font-semibold text-xl w-full inline-block">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
+                          <p key={index}>&nbsp;{food},</p>
                         ))}</p>
                       </div>
                       <div className='w-2/5'>
