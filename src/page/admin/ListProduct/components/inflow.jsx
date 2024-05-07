@@ -1,6 +1,6 @@
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import React, { useContext, useState } from 'react'
 import SelectMenu from '../../../../components/SelectMenu/SelectMenu'
 import UserService from '../../../../service/UserService'
@@ -56,8 +56,20 @@ const Inflow = ({ onToggle }) => {
         setProduct({ ...product, foodId: food.foodId, imgProduct: food.image })
     }
     return (
-        <div className='flex justify-center items-center bg-black bg-opacity-20 w-full h-screen right-0 bottom-0 fixed z-10'>
-            <div className='rounded-xl bg-slate-100 w-1/2 z-10'>
+        <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
+            <div className='relative rounded-xl bg-slate-100 w-1/2 z-10'>
+                <button
+                    type="button"
+                    className="absolute top-1 right-1 z-50"
+                >
+                    <span className="sr-only">Close menu</span>
+                    <div
+                        className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
+                        onClick={() => onToggle(false)}
+                    >
+                        <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                    </div>
+                </button>
                 <h2 className='text-xl font-medium opacity-90 uppercase border-b-2 border-gray-950 py-2 px-4'>Nhập sản phẩm</h2>
                 <div className='flex px-8 py-2'>
                     <div className="my-4">

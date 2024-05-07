@@ -216,7 +216,7 @@ const ListTicket = () => {
         }
         {
           toggle && (
-            <div className='top-0 bottom-0 bg-cover w-4/5 fixed flex justify-center items-center'>
+            <div className='top-8 bottom-0 bg-cover w-5/6 fixed flex justify-center items-center'>
               <div className=" w-[30%] z-10 overflow-hidden bg-slate-300 rounded-md right-1/2 ">
                 <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
 
@@ -261,9 +261,11 @@ const ListTicket = () => {
                     <div className='flex gap-10'>
                       <div className='w-3/5'>
                         <p className='font-light'>Bắp nước</p>
-                        <p className="font-semibold text-xl w-full inline-block">{ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                          <p key={index}>&nbsp;{food},</p>
-                        ))}</p>
+                        <p className="font-semibold text-xl w-full inline-block">
+                          {ticketDetail.foods && ticketDetail.foods.map((food, index) => (
+                            <p key={index}>&nbsp;{food},</p>
+                          ))}
+                        </p>
                       </div>
                       <div className='w-2/5'>
                         <p className='font-light'>Giá tiền</p>

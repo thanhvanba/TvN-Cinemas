@@ -165,6 +165,7 @@ const ListMovies = () => {
                                                                 title='Chuyển trạng  thái'
                                                                 content='Bạn có chắc chắn đổi trạng thái phim này ???'
                                                                 buttonName='Thay đổi'
+                                                                buttonCancel='Thoát'
                                                             />
                                                         )}
                                                     </div>

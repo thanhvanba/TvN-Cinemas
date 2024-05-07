@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
-function Modal({ title, content, buttonName, onConfirm, onCancel }) {
+function Modal({ title, content, buttonName, buttonCancel, onConfirm, onCancel, onClose }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 
@@ -78,7 +78,7 @@ function Modal({ title, content, buttonName, onConfirm, onCancel }) {
                     onClick={handleCancel}
                     ref={cancelButtonRef}
                   >
-                    Cancel
+                    {buttonCancel}
                   </button>
                 </div>
               </Dialog.Panel>

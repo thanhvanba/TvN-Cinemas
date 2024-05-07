@@ -15,6 +15,7 @@ import NumberSpinner from '../../utils/NumberSpinner';
 import { LoginContext } from '../../context/LoginContext';
 import CreateSeat from '../../components/CreateSeat';
 import Loading from '../../components/Loading';
+import ChairType from '../../components/ChairType';
 
 const OrderMovie = () => {
     const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
@@ -351,30 +352,7 @@ const OrderMovie = () => {
                         </div>
 
                         {/* Loại ghế */}
-                        <div className='mt-10 grid grid-cols-3 lg:grid-cols-5 justify-center'>
-                            <div className='relative flex'>
-                                <div className='absolute left-4 h-8 w-8 lg:h-10 lg:w-10 bg-slate-800 rounded-xl'>
-                                    <XMarkIcon className='text-slate-400' />
-                                </div>
-                                <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đã đặt</p>
-                            </div>
-                            <div className='relative flex'>
-                                <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-slate-800 rounded-xl' />
-                                <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế thường</p>
-                            </div>
-                            <div className='relative flex'>
-                                <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-orange-500 rounded-xl' />
-                                <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế VIP</p>
-                            </div>
-                            <div className='relative flex'>
-                                <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-pink-700 rounded-xl' />
-                                <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đôi</p>
-                            </div>
-                            <div className='relative flex'>
-                                <div className='absolute left-4 lg:h-10 lg:w-10 h-8 w-8 bg-green-500 rounded-xl border-2 border-[#00e608]' />
-                                <p className='text-slate-200 font-bold py-2 pl-16 text-xs sm:text-base'>Ghế đang chọn</p>
-                            </div>
-                        </div>
+                        <ChairType />
 
                         <div className='relative flex justify-end pt-4 top-16 pr-4 sm:pr-0 text-xs sm:text-2xl'>
                             <button

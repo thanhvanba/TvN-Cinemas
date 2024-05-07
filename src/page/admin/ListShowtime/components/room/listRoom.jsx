@@ -192,6 +192,7 @@ const ListRoom = () => {
                                                                             title={isDelete ? 'Khôi phục phòng' : 'Bảo trì phòng'}
                                                                             content={isDelete ? 'Bạn có chắc chắn khôi phục phòng này ???' : 'Bạn có chắc chắn bảo trì phòng này ???'}
                                                                             buttonName={isDelete ? 'Khôi phục' : 'Bảo trì'}
+                                                                            buttonCancel='Thoát'
                                                                         />
                                                                     )}
                                                                 </div>

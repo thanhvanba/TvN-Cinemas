@@ -148,6 +148,7 @@ const ReviewMovie = ({ movie, onToggle }) => {
                         title='Đăng nhập để trải nghiệm chức năng đánh giá'
                         content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
                         buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                        buttonCancel='Thoát'
                     />
                 )}
             </div>

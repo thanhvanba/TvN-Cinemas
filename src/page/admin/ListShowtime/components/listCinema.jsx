@@ -147,6 +147,7 @@ const ListCinema = () => {
                                                             title={item.status ? 'Bảo trì rạp' : 'Khôi phục rạp'}
                                                             content={item.status ? 'Bạn có chắc chắn bảo trì rạp phim này ???' : 'Bạn có chắc chắn khôi rạp phim này ???'}
                                                             buttonName={item.status ? 'Bảo trì' : 'Khôi phục'}
+                                                            buttonCancel='Thoát'
                                                         />
                                                     )}
                                                 </div>

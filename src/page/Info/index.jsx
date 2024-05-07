@@ -589,6 +589,7 @@ const Info = () => {
                                                                             title='Hủy vé'
                                                                             content='Bạn có chắc chắn hủy vé này ???'
                                                                             buttonName='Hủy'
+                                                                            buttonCancel='Thoát'
                                                                         />
                                                                     )}
                                                                 </div>

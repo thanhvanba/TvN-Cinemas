@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom';
 
 const MovieSlider = ({ movies }) => {
     const navigate = useNavigate()
-    const [imageIndex, setImageIndex] = useState(0)
-    console.log("🚀 ~ MovieSlider ~ imageIndex:", imageIndex)
     function SampleNextArrow(props) {
         const { className, style, onClick } = props;
         return (
@@ -80,7 +78,7 @@ const MovieSlider = ({ movies }) => {
                         key={movie.id}
                     >
                         <img className='h-96 w-56' src={movie.poster} alt={movie.title} />
-                        <h3 className='text-gray-800 uppercase font-bold'><TruncatedContent content={movie.title} maxLength={18} /></h3>
+                        <h3 className='text-yellow-50 uppercase font-bold'><TruncatedContent content={movie.title} maxLength={18} /></h3>
                     </div>
                 ))}
             </Slider>

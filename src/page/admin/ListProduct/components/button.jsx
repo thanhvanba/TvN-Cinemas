@@ -3,7 +3,7 @@ import React from 'react'
 const Button = ({ click, img, title }) => {
     return (
         <div
-            className='w-24 h-16 shadow-inner border-2 border-sky-400 rounded-lg mx-2 hover:bg-slate-100 cursor-pointer'
+            className='w-full h-full shadow-inner rounded-lg cursor-pointer'
             onClick={() => { click() }}
         >
             <div className='flex items-center justify-center py-1'>

@@ -209,20 +209,24 @@ const ListProduct = () => {
                                                 {!status ?
                                                     <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
                                                     : <>
-                                                        <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
-                                                        <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                                        <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
+                                                            <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
+                                                        </div>
+                                                        <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100border-2 rounded-lg'>
+                                                            <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
+                                                        </div>
                                                     </>
                                                 }
                                             </div>
                                             <button
                                                 type="button"
-                                                className="absolute top-4 left-4 z-50"
+                                                className="absolute top-4 left-4 z-10"
                                             >
                                                 <span className="sr-only">Close menu</span>
                                                 <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`} onClick={() => setStatus(!status)}>
                                                     {status ?
-                                                        <WrenchScrewdriverIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
-                                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                        <WrenchScrewdriverIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
                                                     }
                                                 </div>
                                             </button>
@@ -230,15 +234,6 @@ const ListProduct = () => {
 
                                         {toggle &&
                                             <div className=''>
-                                                <button
-                                                    type="button"
-                                                    className="absolute top-[60px] right-[371px] z-50"
-                                                >
-                                                    <span className="sr-only">Close menu</span>
-                                                    <div className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700' onClick={() => setToggle(false)}>
-                                                        <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
-                                                    </div>
-                                                </button>
                                                 <Inflow onToggle={setToggle} />
                                             </div>
                                         }
@@ -315,6 +310,7 @@ const ListProduct = () => {
                                                                                 title='Xóa Phòng'
                                                                                 content='Bạn có chắc chắn xóa phòng này ???'
                                                                                 buttonName='Delete'
+                                                                                buttonCancel='Thoát'
                                                                             />
                                                                         )}
                                                                     </div>
@@ -377,6 +373,7 @@ const ListProduct = () => {
                                                                                 title='Xóa Bắp Nước'
                                                                                 content='Bạn có chắc chắn xóa đồ dùng này ???'
                                                                                 buttonName='Delete'
+                                                                                buttonCancel='Thoát'
                                                                             />
                                                                         )}
                                                                     </div>

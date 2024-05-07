@@ -393,6 +393,7 @@ const ListUser = () => {
                                                                         title={!item.delete ? 'Xóa Tài khoản' : 'Khôi phục'}
                                                                         content={!item.delete ? 'Bạn có chắc chắn xóa tài khoản này ???' : 'Bạn có muốn khôi phục tài khoản này ???'}
                                                                         buttonName={!item.delete ? 'Xóa' : 'Khôi phục'}
+                                                                        buttonCancel='Thoát'
                                                                     />
                                                                 )}
                                                             </div>

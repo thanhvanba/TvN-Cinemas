@@ -54,6 +54,7 @@ const FoodItems = ({ listFood, onChange }) => {
                                                 title={item.status ? 'Xóa sản phẩm' : 'Khôi phục sản phẩm'}
                                                 content={item.status ? 'Bạn có chắc chắn xóa sản phẩm này ???' : 'Bạn có chắc chắn khôi phục sản phẩm này ???'}
                                                 buttonName={item.status ? 'Xóa' : 'Khôi phục'}
+                                                buttonCancel='Thoát'
                                             />
                                         )}
                                     </div>

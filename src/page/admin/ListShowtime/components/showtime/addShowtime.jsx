@@ -630,14 +630,13 @@ const AddShowtime = () => {
                                 </div>
                                 {
                                     <div className='flex justify-end'>
-
                                         <button
                                             className="w-1/6 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                             type='submit'
                                             disabled={loading}
                                         >
                                             {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                            &nbsp;{pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ? "Add Showtime" : "Update Showtime"}
+                                            &nbsp;{pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ? "Thêm lịch chiếu" : "Cập nhật lịch chiếu"}
                                         </button>
                                     </div>}
                             </form>

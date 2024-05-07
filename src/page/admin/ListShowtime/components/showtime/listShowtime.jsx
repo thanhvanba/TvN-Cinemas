@@ -370,6 +370,7 @@ const ShowtimeByRoom = () => {
                                                 title='Xóa Lịch chiếu'
                                                 content='Bạn có chắc chắn xóa lịch chiếu này ???'
                                                 buttonName='Xóa '
+                                                buttonCancel='Thoát'
                                               />
                                             )}
                                           </div>

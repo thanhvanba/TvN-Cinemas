@@ -17,6 +17,7 @@ import slider2 from "../../images/slider.jpg"
 import slider1 from "../../images/slider-1.jpg"
 import slider3 from "../../images/slider-2.jpg"
 import bg from "../../images/bg-cinema-10.png"
+import background from "../../images/movie-details-bg.jpg"
 
 import './index.css'
 import SellTicket from './components/sellTicket';
@@ -104,10 +105,10 @@ function Staff() {
                 </div>
                 <div className='w-5/6'>
                     <Header />
-                    <div className='pt-20'
-                    // style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
-                    >
-                        <TabPanel className="bg-slate-100">
+                    <div className='pt-20'>
+                        <TabPanel className="bg-slate-400"
+                            style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
+                        >
                             {movieId ? <DetailSales /> : <SellTicket images={IMAGES} nowPlayingMovie={nowPlayingMovie} />}
                         </TabPanel>
                         <TabPanel>

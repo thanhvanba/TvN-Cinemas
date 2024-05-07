@@ -291,6 +291,7 @@ const ShowTimes = () => {
                         title='Đăng nhập để trải nghiệm đặt vé'
                         content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
                         buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                        buttonCancel='Thoát'
                       />
                     )}
                   </div>
@@ -431,6 +432,7 @@ const ShowTimes = () => {
                         title='Đăng nhập để trải nghiệm đặt vé'
                         content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
                         buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                        buttonCancel='Thoát'
                       />
                     )}
                   </div>
