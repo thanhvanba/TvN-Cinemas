@@ -1,8 +1,10 @@
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import Search from '../../../components/Search'
+import { useNavigate } from 'react-router-dom'
 
-function SearchUser({onToggle}) {
+function SearchUser({ onToggle }) {
+    const navigate = useNavigate()
     return (
         <div className='flex justify-center items-start bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
             <div className='w-1/3 relative pt-24'>
@@ -33,6 +35,7 @@ function SearchUser({onToggle}) {
                             <button
                                 className="px-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300 mr-2"
                                 type='submit'
+                                onClick={() => navigate('/staff/info-ticket')}
                             // disabled={loading}
                             >
                                 {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
@@ -41,6 +44,7 @@ function SearchUser({onToggle}) {
                             <button
                                 className="px-4 rounded-xl hover:bg-red-800 text-white bg-red-600 py-2 transition-colors duration-300"
                                 type='submit'
+                                onClick={() => navigate('/staff/info-ticket')}
                             // disabled={loading}
                             >
                                 {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}

@@ -32,12 +32,10 @@ const Movie = () => {
     const { id } = useParams();
     const [dateList, setDateList] = useState([]);
     const [cinemaId, setCinemaId] = useState('');
-    console.log("🚀 ~ Movie ~ cinemaId:", cinemaId)
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
     const [allShowtime, setAllShowtime] = useState([])
-    console.log("🚀 ~ Movie ~ allShowtime:", allShowtime)
     // const [foundShowtime, setFoundShowtime] = useState({
     //     showTimeId: null,
     //     room: {

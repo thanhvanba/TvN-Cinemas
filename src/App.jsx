@@ -41,13 +41,14 @@ function App() {
             <StaffRouter /> : (
               (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
                 <MainRouter />
-              ) : (
-                <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
-                  <Header />
-                  <MainRouter />
-                  <Footer />
-                </div>
-              )
+              ) :
+               (
+                  <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
+                    <Header />
+                    <MainRouter />
+                    <Footer />
+                  </div>
+                )
             )
       }
     </div>

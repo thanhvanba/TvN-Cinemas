@@ -102,7 +102,8 @@ const StaffRouter = () => (
     <Route path="/staff/sell-ticket" element={<Staff />} />
     <Route path="/staff/sell-ticket/:movieId" element={<Staff />} />
     <Route path="/staff/confirm-ticket" element={<Staff />} />
-    <Route path="/staff/info" element={<Info />} />
+    <Route path="/staff/info" element={<Staff />} />
+    <Route path="/staff/info-ticket" element={<Staff />} />
   </Routes>
 );
 

@@ -22,6 +22,8 @@ import background from "../../images/movie-details-bg.jpg"
 import './index.css'
 import SellTicket from './components/sellTicket';
 import DetailSales from './components/detailSales';
+import InfoTicket from '../../components/InfoTicket';
+import Info from '../Info';
 function Staff() {
     const { movieId } = useParams()
     const { getUserInfoApi } = UserService()
@@ -105,16 +107,24 @@ function Staff() {
                 </div>
                 <div className='w-5/6'>
                     <Header />
-                    <div className='pt-20'>
-                        <TabPanel className="bg-slate-400"
-                            style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
-                        >
-                            {movieId ? <DetailSales /> : <SellTicket images={IMAGES} nowPlayingMovie={nowPlayingMovie} />}
-                        </TabPanel>
-                        <TabPanel>
-                            <ListTicket />
-                        </TabPanel>
-                    </div>
+                    {/^\/staff\/info-ticket/.test(pathname) ?
+                        <InfoTicket /> :
+                        /^\/staff\/info/.test(pathname) ?
+                            <Info /> :
+                            <div className='pt-20 relative'>
+                                <TabPanel style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
+                                    className="bg-slate-300 z-50 w-full"
+
+                                >
+                                    <div className="absolute top-0 left-0 w-full h-full bg-slate-400 opacity-20"></div>
+
+                                    {movieId ? <DetailSales /> : <SellTicket images={IMAGES} nowPlayingMovie={nowPlayingMovie} />}
+                                </TabPanel>
+                                <TabPanel>
+                                    <ListTicket />
+                                </TabPanel>
+                            </div>
+                    }
                 </div>
             </div>
         </Tabs>

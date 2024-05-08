@@ -80,7 +80,7 @@ function Header() {
                         <ul className='absolute top-20 right-0 bg-slate-50 border-2 rounded-md text-slate-500 z-50'>
                             <li
                                 onClick={() => {
-                                    navigate(user.role === "ADMIN" ? `/admin/info` : user.role === "MANAGER" ? `/manager/info` : `staff/info`)
+                                    navigate(user.role === "ADMIN" ? `/admin/info` : user.role === "MANAGER" ? `/manager/info` : `/staff/info`)
                                     setToggle(!toggle)
                                 }}
                                 className='py-1 cursor-pointer'

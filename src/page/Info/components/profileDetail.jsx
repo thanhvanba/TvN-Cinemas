@@ -222,10 +222,11 @@ const ProfileDetail = () => {
                                     <DatePicker
                                         // selected={dob}
                                         onChange={handleSelectDate}
-                                        defaultValue={dayjs(userInfo.dob && userInfo.dob, "YYYY-MM-DD")}
-                                        placeholderText='Ngày sinh'
+                                        defaultValue={userInfo.dob &&  dayjs(userInfo.dob, "YYYY-MM-DD")}
+                                        // placeholderText='Ngày sinh'
+                                        placeholder='Ngày sinh'
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        dateFormat="yyyy-MM-dd" // Định dạng ngày
+                                        format='DD/MM/YYYY'
                                     />
                                 </div>
                                 <div className="my-2">
@@ -286,14 +287,14 @@ const ProfileDetail = () => {
                                 </label>
                                 <div className='flex justify-between w-full'>
                                     <input
-                                        defaultValue={userInfo.address.street}
+                                        defaultValue={userInfo.address && userInfo.address.street}
                                         onChange={e => setAccount({ ...account, street: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                         placeholder={"Wards (Xã, Phường)"}
                                     />
                                     <input
-                                        defaultValue={userInfo.address.district}
+                                        defaultValue={userInfo.address && userInfo.address.district}
                                         onChange={e => setAccount({ ...account, district: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
@@ -302,14 +303,14 @@ const ProfileDetail = () => {
                                 </div>
                                 <div className='flex justify-between w-full'>
                                     <input
-                                        defaultValue={userInfo.address.province}
+                                        defaultValue={userInfo.address && userInfo.address.province}
                                         onChange={e => setAccount({ ...account, province: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
                                         placeholder={"Province (Thành phố, Tỉnh)"}
                                     />
                                     <input
-                                        defaultValue={userInfo.address.country}
+                                        defaultValue={userInfo.address && userInfo.address.country}
                                         onChange={e => setAccount({ ...account, country: e.target.value })}
                                         type="text"
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"

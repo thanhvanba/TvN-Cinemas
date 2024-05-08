@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import UserService from '../../service/UserService';
 
 const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
+    console.log("🚀 ~ CreateSeat ~ rows, seatsPerRow, showtimeId, dateTime:", rows, seatsPerRow, showtimeId, dateTime)
+    console.log("🚀 ~ CreateSeat ~ dateTime:", dateTime)
     const [listSeatBooked, setListSeatBooked] = useState([]);
     const { getSeatBookedApi } = UserService();
 
@@ -18,7 +20,8 @@ const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
     };
 
     useEffect(() => {
-        handleGetSeatBooked();
+        showtimeId && dateTime.scheduleId &&
+            handleGetSeatBooked();
     }, [dateTime]); // Theo dõi sự thay đổi của showtimeId và dateTime
 
     const generateSeatData = () => {

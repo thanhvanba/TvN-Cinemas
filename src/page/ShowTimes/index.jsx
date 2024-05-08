@@ -100,8 +100,8 @@ const ShowTimes = () => {
 
   const hadnleGetShowtimeByCinema = async (cinemaId) => {
     let resShowtimes = await getShowtimeByCinemaApi(cinemaId)
-    if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
-      setListShowtimeCinema(resShowtimes.data.result)
+    if (resShowtimes && resShowtimes.data && resShowtimes.data.result && resShowtimes.data.result.content) {
+      setListShowtimeCinema(resShowtimes.data.result.content)
     }
   }
 
