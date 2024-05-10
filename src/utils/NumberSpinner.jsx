@@ -3,8 +3,8 @@ import { XMarkIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/ou
 import formatPrice from '../utils/ConvertStringFollowFormat'
 import UserService from '../service/UserService'
 // component number spiner
-const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBooking, foods, setFoods }) => {
-    const [quantity, setQuantity] = useState(0);
+const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBooking, foods, setFoods, count }) => {
+    const [quantity, setQuantity] = useState(count || 0);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const { getFoodByIdApi } = UserService()
@@ -18,10 +18,7 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
         const newQuantity = quantity - 1
         if (newQuantity >= 0) {
             const indexToRemove = listFoodBooking.indexOf(idPerItem);
-            let food = await handleGetFoodById(idPerItem)
-            console.log("🚀 ~ decreaseQuantity ~ food:", food)
             const indexFoodToRemove = foods.findIndex(item => item.foodId === idPerItem);
-            console.log("🚀 ~ decreaseQuantity ~ indexFoodToRemove:", indexFoodToRemove)
             setQuantity(newQuantity)
             setTotalPrice(newQuantity * pricePerItem)
             if (indexToRemove !== -1) {
@@ -31,25 +28,35 @@ const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBo
             }
             if (indexFoodToRemove !== -1) {
                 const updatedFoods = [...foods];
-
-                console.log("🚀 ~ decreaseQuantity ~ updatedFoods:", updatedFoods)
-                updatedFoods.splice(indexFoodToRemove, 1);
+                // Giảm count của food nếu newQuantity > 0
+                if (newQuantity > 0) {
+                    updatedFoods[indexFoodToRemove].count--;
+                } else { // Xóa food khỏi mảng nếu newQuantity = 0
+                    updatedFoods.splice(indexFoodToRemove, 1);
+                }
                 setFoods(updatedFoods);
             }
         }
     }
     const increaseQuantity = async () => {
         const newQuantity = quantity + 1
-        console.log("New Quantity:", newQuantity); // Thêm dòng này để kiểm tra giá trị mới
         if (newQuantity >= 0) {
             setQuantity(newQuantity)
             setTotalPrice(newQuantity * pricePerItem)
             if (idPerItem) {
                 setListFoodBooking((listFoodBooking) => [...listFoodBooking, idPerItem]);
-                let food = await handleGetFoodById(idPerItem)
-                foods.push(food)
-                console.log("🚀 ~ increaseQuantity ~ foods:", foods)
-                setFoods(foods)
+
+                const indexFoodToAdd = foods.findIndex(item => item.foodId === idPerItem);
+
+                if (indexFoodToAdd === -1) {
+                    let food = await handleGetFoodById(idPerItem)
+                    food.count = 1
+                    foods.push(food)
+                    setFoods(foods)
+                } else {
+                    foods[indexFoodToAdd].count++;
+                    setFoods([...foods]);
+                }
             }
         }
     }

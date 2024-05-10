@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import UserService from '../../service/UserService';
 
 const CreateSeat = (rows, seatsPerRow, showtimeId, dateTime) => {
-    console.log("🚀 ~ CreateSeat ~ rows, seatsPerRow, showtimeId, dateTime:", rows, seatsPerRow, showtimeId, dateTime)
-    console.log("🚀 ~ CreateSeat ~ dateTime:", dateTime)
     const [listSeatBooked, setListSeatBooked] = useState([]);
     const { getSeatBookedApi } = UserService();
 

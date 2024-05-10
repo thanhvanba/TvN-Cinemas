@@ -22,8 +22,8 @@ import background from "../../images/movie-details-bg.jpg"
 import './index.css'
 import SellTicket from './components/sellTicket';
 import DetailSales from './components/detailSales';
-import InfoTicket from '../../components/InfoTicket';
 import Info from '../Info';
+import InfoTicket from './components/infoTicket';
 function Staff() {
     const { movieId } = useParams()
     const { getUserInfoApi } = UserService()

@@ -22,7 +22,6 @@ import { LoginContext } from '../../../../../context/LoginContext';
 import Loading from '../../../../../components/Loading';
 
 import { Space, TimePicker, DatePicker } from 'antd'
-import dayjs from 'dayjs'
 import { format, parse } from 'date-fns';
 
 const AddShowtime = () => {

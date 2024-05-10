@@ -706,8 +706,6 @@ const OrderMovie = () => {
                             <p>
                                 Kèm theo:
                                 {
-                                }
-                                {
                                     foods.map(food => (<span>&nbsp;{food.name},</span>))
                                 }
 

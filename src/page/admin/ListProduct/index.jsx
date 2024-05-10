@@ -212,7 +212,7 @@ const ListProduct = () => {
                                                         <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
                                                             <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
                                                         </div>
-                                                        <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100border-2 rounded-lg'>
+                                                        <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
                                                             <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
                                                         </div>
                                                     </>

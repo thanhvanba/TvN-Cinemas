@@ -1,5 +1,5 @@
 import React from 'react'
-import img from '../../images/logo.jpg'
+import img from '../../../images/logo.jpg'
 function InfoTicket() {
     return (
         <div className='pt-20 px-12'>
