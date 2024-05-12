@@ -36,7 +36,7 @@ const MovieSlider = ({ movies }) => {
         slidesToScroll: 1,
         autoplay: true,
         speed: 2000,
-        autoplaySpeed: 1000,
+        autoplaySpeed: 1,
         cssEase: "linear",
         prevArrow: <SamplePrevArrow />,
         nextArrow: <SampleNextArrow />,

@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import Loading from '../../../components/Loading'
 import background from "../../../images/movie-details-bg.jpg"
 import NumberSpinner from '../../../utils/NumberSpinner';
+import { list } from '@material-tailwind/react';
 
 function DetailSales() {
     const { movieId } = useParams()
@@ -27,7 +28,6 @@ function DetailSales() {
     const [createSeatData, setCreateSeatData] = useState({})
     const [loading, setLoading] = useState(false)
     const [allShowtime, setAllShowtime] = useState([])
-    console.log("🚀 ~ DetailSales ~ allShowtime:", allShowtime)
     const [selectSeats, setSelectSeats] = useState([])
     const [toggle, setToggle] = useState(false)
     const [openProduct, setOpenProduct] = useState(false)
@@ -38,10 +38,8 @@ function DetailSales() {
     const [listSnacks, setListSnacks] = useState([])
 
     const [foods, setFoods] = useState([])
-    console.log("🚀 ~ DetailSales ~ foods:", foods)
     const [listSeatBooking, setListSeatBooking] = useState([])
     const [listFoodBooking, setListFoodBooking] = useState([])
-    console.log("🚀 ~ DetailSales ~ listFoodBooking:", listFoodBooking)
     const [bookingInfo, setBookingInfo] = useState({})
     const currentDateTime = dayjs(new Date());
     const [selectDateTime, setSelectDateTime] = useState(currentDateTime);
@@ -76,7 +74,11 @@ function DetailSales() {
 
     const handleSelectSeatApi = async () => {
         setLoading(true);
-
+        const data = selectSeats;
+        let res = await selectSeatApi(data, createSeatData.showTimeId)
+        if (res && res.data && res.data.result) {
+            setListSeatBooking(res.data.result.seatIds)
+        }
         setLoading(false);
     }
     const handleBookingTicket = async () => {
@@ -128,6 +130,9 @@ function DetailSales() {
                                 endTime: schedule.endTime,
                                 roomName: item.room.roomName,
                                 cinemaName: item.room.cinema.cinemaName,
+                                poster: item.movie.poster,
+                                movieName: item.movie.title,
+                                duration: item.movie.duration
                             });
                         }
                     });
@@ -175,7 +180,7 @@ function DetailSales() {
 
     const handleCancel = () => {
         setModalStates(false)
-        navigate('/staff/info-ticket')
+        navigate('/staff/info-ticket', { state: { infoSchedule: createSeatData, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods } })
     }
     useEffect(() => {
         hadleGetItem(movieId)
@@ -467,7 +472,10 @@ function DetailSales() {
                         </div>
                         <div className='absolute flex justify-center w-full bottom-4'>
                             <button
-                                onClick={() => setModalStates(true)}
+                                onClick={() => {
+                                    setModalStates(true)
+                                    handleSelectSeatApi()
+                                }}
                                 className="w-1/6 text-slate-200 p-4 rounded-xl hover:bg-emerald-800 bg-emerald-600 outline-none"
                                 type="button"
                             // disabled={loading}
@@ -496,7 +504,7 @@ function DetailSales() {
                     </div>
                 </div>
             }
-        </div>
+        </div >
     )
 }
 

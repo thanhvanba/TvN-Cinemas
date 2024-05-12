@@ -1,14 +1,19 @@
 import React from 'react'
 import img from '../../../images/logo.jpg'
+import { useLocation } from 'react-router-dom'
+import { format, parse } from 'date-fns'
+import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat'
 function InfoTicket() {
+    const location = useLocation()
+    const { infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods } = location.state || {}
     return (
         <div className='pt-20 px-12'>
             <h2 className='font-medium uppercase text-xl text-center py-4'>Thông tin đặt vé</h2>
             <div className='flex'>
                 <div className='hidden sm:block w-1/3 px-4'>
                     <img
-                        className='w-full h-5/6'
-                        src={img}
+                        className='w-full h-full'
+                        src={infoSchedule.poster}
                     />
                 </div>
                 <div className='w-full sm:w-2/3 px-4 relative'>
@@ -17,29 +22,33 @@ function InfoTicket() {
                                 {loading['ticket'] && <Loading />}
                             </div> */}
                         <div className='space-y-4'>
-                            <p className="text-3xl text-emerald-600 font-semibold">{`Đồ án tốt nghiệp`}</p>
+                            <p className="text-3xl text-emerald-600 font-semibold">{infoSchedule.movieName}</p>
 
                             <div>
                                 <p className='font-light'>Suất chiếu</p>
                                 <div className="flex items-center space-x-2 text-xl">
-                                    <span className="font-bold text-orange-500">{`09:05`}</span>
+                                    <span className="font-bold text-orange-500">{format(
+                                        parse(`${infoSchedule.dataTime.time}`, 'HH:mm:ss', new Date()),
+                                        "HH:mm"
+                                    )}</span>
                                     <span>-</span>
                                     <span className="font-bold">{`01/02/2024`}</span>
-                                    <span>({`90`} phút)</span>
+                                    <span>({infoSchedule.duration} phút)</span>
                                 </div>
                             </div>
 
                             <div>
                                 <p className='font-light'>Rạp chiếu</p>
-                                <p className="font-semibold text-xl">{`Quận 9`}</p>
+                                <p className="font-semibold text-xl">{infoSchedule.cinemaName}</p>
                             </div>
 
                             <div className="flex gap-10">
                                 <div className="w-3/5">
                                     <p className='font-light'>Ghế</p>
-                                    {/* <p className="font-semibold text-xl">{ticketDetail && ticketDetail.seats && ticketDetail.seats.map(seat => (
+                                    <p className="font-semibold text-xl">
+                                        {selectSeats && selectSeats.map(seat => (
                                             <span>&nbsp;{String.fromCharCode(65 + parseInt(seat.row, 10) - 1) + seat.column},</span>
-                                        ))}</p> */}
+                                        ))}</p>
                                 </div>
 
                                 <div className='w-2/5'>
@@ -51,15 +60,22 @@ function InfoTicket() {
                             <div className='flex gap-10'>
                                 <div className='w-3/5'>
                                     <p className='font-light'>Bắp nước</p>
-                                    {/* <p className="font-semibold text-xl w-full inline-block">
-                                            {ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                                                <p key={index}>&nbsp;{food},</p>
-                                            ))}
-                                        </p> */}
+                                    <p className="font-semibold text-xl w-full inline-block">
+                                        {foods && foods.map((food, index) => (
+                                            <p key={index}>&nbsp;{food.name},</p>
+                                        ))}
+                                    </p>
                                 </div>
                                 <div className='w-2/5'>
-                                    <p className='font-light'>Giá tiền</p>
-                                    <p className="font-semibold text-3xl text-cyan-600">{`908000`}</p>
+                                    <p className='font-light'>Tổng tiền</p>
+                                    <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(
+                                        selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
+                                        foods.reduce((total, food) => {
+                                            return total + (food.price * food.count);
+                                        }, 0)
+                                    )}
+                                        <sup>đ</sup>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +134,7 @@ function InfoTicket() {
                         <button
                             className="px-4 rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 mr-2"
                             type='submit'
-                                // onClick={() => navigate('/staff/info-ticket')}
+                        // onClick={() => navigate('/staff/info-ticket')}
                         // disabled={loading}
                         >
                             {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
@@ -127,7 +143,7 @@ function InfoTicket() {
                         <button
                             className="px-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                             type='submit'
-                            // onClick={() => navigate('/staff/info-ticket')}
+                        // onClick={() => navigate('/staff/info-ticket')}
                         // disabled={loading}
                         >
                             {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}

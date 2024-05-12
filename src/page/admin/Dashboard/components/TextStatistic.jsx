@@ -3,8 +3,9 @@ import ReactApexChart from 'react-apexcharts';
 import { LoginContext } from '../../../../context/LoginContext';
 
 function ApexChart({ revenueByYear, categoriesArr }) {
+    console.log("🚀 ~ ApexChart ~ revenueByYear:", revenueByYear)
     const { user } = useContext(LoginContext);
-   
+
     let chartData = (user.role === "ADMIN") ?
         {
             type: "line",
@@ -20,8 +21,8 @@ function ApexChart({ revenueByYear, categoriesArr }) {
             ] || [],
         };
 
-   
-    const [options, setOptions] = useState({
+
+    const [options] = useState({
         chart: {
             height: 350,
             type: chartData.type,

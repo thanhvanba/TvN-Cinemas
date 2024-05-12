@@ -535,14 +535,15 @@ const AdminService = () => {
             },
         );
     };
-    const getTotalRevenueApi = async () => {
+    const getTotalRevenueApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/total-revenue`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: params,
             },
         );
     };
@@ -793,6 +794,41 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getStatisticsOverviewApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/stats/overview`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            },
+        );
+    };
+    const getTopUsersApi = async (params) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/top-users`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: params
+            },
+        );
+    };
+    const getTopMovieRatingApi = async (params) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/top-rated-movies`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: params
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -836,7 +872,10 @@ const AdminService = () => {
         updateUserApi,
         updateRoomAdminApi,
         confirmTicketApi,
-        getFoodAdminApi
+        getFoodAdminApi,
+        getStatisticsOverviewApi,
+        getTopUsersApi,
+        getTopMovieRatingApi
     }
 }
 

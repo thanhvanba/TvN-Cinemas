@@ -26,10 +26,14 @@ import SelectMenu from '../../../components/SelectMenu/SelectMenu';
 import ColumnChart from './components/columnChart';
 import BarChart from './components/barChart';
 import RevenueCinema from './RevenueCinema/revenueCinema';
+
+import { ListDayOfMonth } from '../../../utils/ListDayOfMonth';
+
 const Dashboard = () => {
   // const { loading, setLoading } = useLoadingState(false);
-  const [loading1, setLoading1] = useState(false);
-  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState('TOP 5');
+  console.log("🚀 ~ Dashboard ~ selected:", selected)
   const { user } = useContext(LoginContext);
   // const navigate = useNavigate()
   // const changeTab = (pathname) => {
@@ -38,7 +42,7 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi } = AdminService()
+  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi } = AdminService()
   const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
@@ -63,13 +67,17 @@ const Dashboard = () => {
     qCinema: "",
     qUser: ""
   })
+
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  console.log("🚀 ~ Dashboard ~ selectedYear:", selectedYear)
+  const [selectedMonth, setSelectedMonth] = useState((new Date()).getMonth() + 1);
+  console.log("🚀 ~ Dashboard ~ selectedMonth:", selectedMonth)
+  const [selectedOptions, setSelectedOptions] = useState(1);
+  const [toggleStatic, setToggleStatic] = useState(false);
+  const [totalRevenue, setTotalRevenue] = useState()
+  const [topUsers, setTopUsers] = useState()
+  const [topMovies, setTopMovies] = useState()
   // //Test
-  const statistical1 = {
-    qRevenue: 45555,
-    qMovieOfMonth: 7,
-    qCinema: 9,
-    qUser: 25
-  }
 
   const getTotalByName = (name) => {
     const cinema = revenueOfCinema.find(item => item.name === name);
@@ -113,223 +121,64 @@ const Dashboard = () => {
     },
   ]
 
+  const handleToggle = () => {
+    setToggleStatic(!toggleStatic)
+  }
   const handleGetAllItem = async () => {
-    let resTotalRevenue = (user.role === "MANAGER") ?
-      await getTotalRevenueOfManagerApi() : await getTotalRevenueApi()
-    let resMovie = await GetAllMovieApi()
-    if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
-      const updatedMovies = resMovie.data.result.content.map((movie) => ({
-        ...movie,
-        rating: movie.rating === "null" ? "0" : movie.rating,
-      }));
 
-      setAllMovie(updatedMovies);
+    console.log("VÀO ĐÂY")
+    setLoading(true)
+    let resOverview = await getStatisticsOverviewApi()
+    if (resOverview && resOverview.data && resOverview.data.result) {
+      setStatistical(resOverview.data.result)
     }
-
-    let resCinema = await getAllCinemaApi()
-    if (resCinema && resCinema.data && resCinema.data.result && resCinema.data.result.content) {
-      setAllCinema(resCinema.data.result.content)
-    }
-
-    let resUser = (user.role === "ADMIN") && await getAllUserApi()
-    if (resUser && resUser.data && resUser.data.result && resUser.data.result.content) {
-      const lastFourUsers = resUser.data.result.content.slice().reverse().slice(0, 5);
-      setAllUser(lastFourUsers)
-    }
-
-    let resShowtime = (user.role === "ADMIN") ?
-      await getAllShowtimeApi() : await getAllShowtimeByManagerApi()
-
-    const currentMonth = new Date().getMonth() + 1;
-    const currentYear = new Date().getFullYear();
-
-    const totalMovies = resShowtime.data.result.content.filter((showtime) => {
-      const startTime = new Date(showtime.timeStart);
-      const endTime = new Date(showtime.timeEnd);
-
-      const isShowtimeInCurrentMonth =
-        (startTime < endTime) &&
-        (
-          (startTime.getFullYear() < currentYear || (startTime.getFullYear() === currentYear && startTime.getMonth() + 1 <= currentMonth)) &&
-          (endTime.getFullYear() > currentYear || (endTime.getFullYear() === currentYear && endTime.getMonth() + 1 >= currentMonth))
-        );
-
-      return isShowtimeInCurrentMonth;
-    }).length;
-
-    (user.role === "ADMIN") ?
-      setStatistical({ ...statistical, qRevenue: resTotalRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements, qUser: resUser.data.result.totalElements })
-      :
-      setStatistical({ ...statistical, qRevenue: resTotalRevenue.data.result, qMovieOfMonth: totalMovies, qCinema: resCinema.data.result.totalElements })
-    // setStatistical({...statistical})
-
-    let resRevenueOfManager = (user.role === "ADMIN") && await totalRevenueOfCinema()
-    if (resRevenueOfManager && resRevenueOfManager.data && resRevenueOfManager.data && resRevenueOfManager.data.result) {
-      setRevenueOfCinema(resRevenueOfManager.data.result)
-    }
-
-    setLoading1(false)
+    setLoading(false)
   }
 
-  const handleStatisticalOfYear = async (year) => {
-    // Sử dụng tham số year nếu nó đã được truyền vào, nếu không thì sử dụng năm hiện tại
-    const selectedYear = year || new Date().getFullYear();
-    // setLoading('revenueYear', true);
-    setLoading1(true)
-    // let resRevenue = (user.role === "ADMIN") ?
-    //   await totalRevenueOfYearApi(selectedYear) :
-    //   await getRevenueYearApi(selectedYear)
-    // // setLoading('revenueYear', false);
-    // setLoading1(false)
-    // if (resRevenue && resRevenue.data && resRevenue.data.result) {
-    //   setRevenueByYear(resRevenue.data.result);
-    // }
-    // setLoading('ticketYear', true);
-    setLoading1(true)
+  const handleStatistic = async () => {
+    console.log("VÀO ĐÂY NÈ")
+    setLoading(true)
+    let params = selectedOptions === 1 ? { year: selectedYear } : { year: selectedYear, month: selectedMonth }
+    let resTotalRevenue = await getTotalRevenueApi(params)
+    if (resTotalRevenue && resTotalRevenue.data && resTotalRevenue.data.result) {
+      setTotalRevenue(resTotalRevenue.data.result)
+    }
+
     let resTicket = await totalTicketByCinemaApi(selectedYear);
-    // setLoading('ticketYear', false);
-    setLoading1(false)
     if (resTicket && resTicket.data && resTicket.data.result) {
       setTicketByYear(resTicket.data.result);
     }
+
+    let paramsTopUser
+    let resTopUsers = await getTopUsersApi(paramsTopUser)
+    if (resTopUsers && resTopUsers.data && resTopUsers.data.result) {
+      setTopUsers(resTopUsers.data.result)
+    }
+
+    let paramsTopMovie
+    let resTopMovies = await getTopMovieRatingApi(paramsTopMovie)
+    if (resTopMovies && resTopMovies.data && resTopMovies.data.result) {
+      setTopMovies(resTopMovies.data.result)
+    }
+    // let updatedParams = { ...params }
+    // updatedParams.isTicket = true
+    // let resTicket = await getTotalRevenueApi(updatedParams);
+    // if (resTicket && resTicket.data && resTicket.data.result) {
+    //   setTicketByYear(resTicket.data.result);
+    // }
+    setLoading(false)
   }
-  const [selectedYear, setSelectedYear] = useState(null);
-
-  const handleYearChange = (selectedYear) => {
-
-    setSelectedYear(selectedYear);
-  };
 
   useEffect(() => {
-    setLoading1(true)
     handleGetAllItem()
   }, []);
 
   useEffect(() => {
-    handleStatisticalOfYear(selectedYear)
-    // setRevenueByYear([])
-  }, [selectedYear]);
+    handleStatistic()
+  }, [toggleStatic]);
 
-  // // Hàm tạo mảng màu dựa trên số lượng giá trị trong series
-  // const generateColors = (count) => {
-  //   const defaultColors = ["#0000FF", "#FF0000"]; // Màu mặc định
-
-  //   // Nếu có nhiều hơn 2 giá trị, tạo thêm màu ngẫu nhiên
-  //   if (count > 2) {
-  //     const additionalColors = Array.from({ length: count - 2 }, () => getRandomColor());
-  //     return [...defaultColors, ...additionalColors];
-  //   }
-
-  //   return defaultColors;
-  // };
-  // // Hàm tạo màu ngẫu nhiên
-  // const getRandomColor = () => {
-  //   return '#' + Math.floor(Math.random() * 16777215).toString(16);
-  // };
-
-  // let chartData = (user.role === "ADMIN") ?
-  //   {
-  //     type: "line",
-  //     series: revenueByYear1
-  //   } :
-  //   {
-  //     type: "area",
-  //     series: [
-  //       {
-  //         name: revenueByYear1.name,
-  //         data: revenueByYear1.data,
-  //       },
-  //     ],
-  //   };
-
-  // const chartConfig = {
-  //   type: chartData.type,
-  //   height: 300,
-  //   series: chartData.series,
-  //   options: {
-  //     chart: {
-  //       // toolbar: {
-  //       // show: false,
-  //       // },
-  //     },
-  //     // title: {
-  //     //     show: "",
-  //     // },
-  //     // dataLabels: {
-  //     //     enabled: false,
-  //     // },
-  //     colors: generateColors(revenueByYear1.length), // Sử dụng hàm generateColors để tạo mảng màuF
-  //     stroke: {
-  //       lineCap: "round",
-  //       curve: "straight",
-  //     },
-  //     // markers: {
-  //     //     size: 0,
-  //     // },
-  //     xaxis: {
-  //       axisTicks: {
-  //         show: false,
-  //       },
-  //       axisBorder: {
-  //         show: false,
-  //       },
-  //       labels: {
-  //         style: {
-  //           colors: "#616161",
-  //           fontSize: "12px",
-  //           fontFamily: "inherit",
-  //           fontWeight: 400,
-  //         },
-  //       },
-  //       categories: [
-  //         "Jan",
-  //         "Feb",
-  //         "Mar",
-  //         "Apr",
-  //         "May",
-  //         "Jun",
-  //         "Jul",
-  //         "Aug",
-  //         "Sep",
-  //         "Oct",
-  //         "Nov",
-  //         "Dec",
-  //       ],
-  //     },
-  //     yaxis: {
-  //       labels: {
-  //         style: {
-  //           colors: "#616161",
-  //           fontSize: "12px",
-  //           fontFamily: "inherit",
-  //           fontWeight: 400,
-  //         },
-  //       },
-  //     },
-  //     grid: {
-  //       show: true,
-  //       borderColor: "#dddddd",
-  //       strokeDashArray: 5,
-  //       xaxis: {
-  //         lines: {
-  //           show: true,
-  //         },
-  //       },
-  //       padding: {
-  //         top: 5,
-  //         right: 20,
-  //       },
-  //     },
-  //     fill: {
-  //       opacity: 0.8,
-  //     },
-  //     tooltip: {
-  //       theme: "dark",
-  //     },
-  //   },
-  // };
-  const handleSelectChange = (selectedYear) => {
-    setSelected(selectedYear);
+  const handleSelectChange = (selected) => {
+    setSelected(parseInt(selected.split(" ")[1]));
   };
   const options = ["Top 5", "Top 10"]
   const namesArray = ticketByYear.map(item => item.name);
@@ -391,7 +240,7 @@ const Dashboard = () => {
       name: "TN Cinema TP.HCM"
     },
   ]
-  const categoriesArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',]
+  const categoriesArr = selectedOptions === 1 ? ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'] : ListDayOfMonth(selectedYear, selectedMonth)
 
 
   const seriesArr = [{
@@ -423,22 +272,22 @@ const Dashboard = () => {
 
         <div className='relative'>
           {
-            loading1 ?
+            loading ?
               <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
                 <Loading />
               </div> :
               <div className='grid grid-cols-4'>
-                <CardItem statistical={statistical1} />
+                <CardItem statistical={statistical} />
 
                 <div className='pb-4 border-2 col-span-4 mx-3 mt-6'>
                   <div className='col-span-4 px-3 mt-4'>
-                    <OptionsStatistics />
+                    <OptionsStatistics selectedMonth={selectedMonth} selectedYear={selectedYear} setSelectedMonth={setSelectedMonth} setSelectedYear={setSelectedYear} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} handleStatistic={handleToggle} />
                   </div>
                   <div className='flex'>
                     <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} mt-6 relative px-3`}>
                       <div className='p-5 border-2 rounded-lg bg-slate-100'>
                         <div className='w-full relative'>
-                          <ApexChart revenueByYear={revenueByYear1} categoriesArr={categoriesArr} />
+                          <ApexChart revenueByYear={totalRevenue} categoriesArr={categoriesArr} />
                         </div>
                       </div>
                     </div>
@@ -458,7 +307,7 @@ const Dashboard = () => {
 
                 <div className='p-4 border-2 col-span-4 mx-3 mt-6'>
                   <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
-                    <SelectMenu onSelectChange={handleSelectChange} items={options} content={`Top 5`} />
+                    <SelectMenu onSelectChange={handleSelectChange} items={options} content={selected || `Top 5`} />
                   </div>
                   <ColumnChart seriesArr={seriesArr} categoriesArr={categoriesArr1} />
                 </div>
