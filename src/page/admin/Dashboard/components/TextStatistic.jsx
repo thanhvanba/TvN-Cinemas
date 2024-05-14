@@ -9,16 +9,11 @@ function ApexChart({ revenueByYear, categoriesArr }) {
     let chartData = (user.role === "ADMIN") ?
         {
             type: "line",
-            series: revenueByYear || []
+            series: revenueByYear ? revenueByYear : []
         } :
         {
             type: "area",
-            series: [
-                {
-                    name: revenueByYear.name,
-                    data: revenueByYear.data,
-                },
-            ] || [],
+            series: revenueByYear ? revenueByYear : []
         };
 
 

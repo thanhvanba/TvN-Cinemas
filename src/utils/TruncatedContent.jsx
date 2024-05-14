@@ -13,7 +13,7 @@ const TruncatedContent = ({ content, maxLength }) => {
     return (
         <div className='flex'>
             {isTruncated ? (
-                <p>{content.slice(0, maxLength)} </p>
+                <p>{content?.slice(0, maxLength)} </p>
             ) : (
                 <p>{content}</p>
             )}

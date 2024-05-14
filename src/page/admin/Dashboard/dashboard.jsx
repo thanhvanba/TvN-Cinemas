@@ -31,9 +31,11 @@ import { ListDayOfMonth } from '../../../utils/ListDayOfMonth';
 
 const Dashboard = () => {
   // const { loading, setLoading } = useLoadingState(false);
+
+  const { pathname } = useLocation()
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState('TOP 5');
-  console.log("🚀 ~ Dashboard ~ selected:", selected)
+  const [selected1, setSelected1] = useState('TOP 5');
   const { user } = useContext(LoginContext);
   // const navigate = useNavigate()
   // const changeTab = (pathname) => {
@@ -42,8 +44,8 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi } = AdminService()
-  const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi } = ManagerService()
+  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi, getFinanceAllCinemaApi, getDetailFinanceApi } = AdminService()
+  const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi, getTopUsersManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
   const [allCinema, setAllCinema] = useState([{
@@ -69,9 +71,7 @@ const Dashboard = () => {
   })
 
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  console.log("🚀 ~ Dashboard ~ selectedYear:", selectedYear)
   const [selectedMonth, setSelectedMonth] = useState((new Date()).getMonth() + 1);
-  console.log("🚀 ~ Dashboard ~ selectedMonth:", selectedMonth)
   const [selectedOptions, setSelectedOptions] = useState(1);
   const [toggleStatic, setToggleStatic] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState()
@@ -95,7 +95,7 @@ const Dashboard = () => {
       header: { stth: "STT", cinemah: "Rạp", addessh: "Địa chỉ", revenueh: "Doanh thu" },
       path: "/admin/list-cinemas",
       listUser: [],
-      listCinema: extendedCinema.sort((a, b) => b.revenue - a.revenue).slice(0, 5),
+      listCinema: extendedCinema.sort((a, b) => b.revenue - a.revenue)?.slice(0, 5),
       listMovie: [],
       listReview: []
     },
@@ -107,7 +107,7 @@ const Dashboard = () => {
       listUser: [],
       listCinema: [],
       listReview: [],
-      listMovie: allMovie.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)).slice(0, 5)
+      listMovie: allMovie.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))?.slice(0, 5)
     },
     {
       title: "Lastest Users",
@@ -138,40 +138,55 @@ const Dashboard = () => {
   const handleStatistic = async () => {
     console.log("VÀO ĐÂY NÈ")
     setLoading(true)
+
     let params = selectedOptions === 1 ? { year: selectedYear } : { year: selectedYear, month: selectedMonth }
-    let resTotalRevenue = await getTotalRevenueApi(params)
+    let resTotalRevenue = user.role === 'ADMIN' ? await getTotalRevenueApi(params) : await getTotalRevenueOfManagerApi(params)
     if (resTotalRevenue && resTotalRevenue.data && resTotalRevenue.data.result) {
       setTotalRevenue(resTotalRevenue.data.result)
     }
 
-    let resTicket = await totalTicketByCinemaApi(selectedYear);
-    if (resTicket && resTicket.data && resTicket.data.result) {
-      setTicketByYear(resTicket.data.result);
+    if (user.role === 'ADMIN') {
+      let updatedParams = { ...params }
+      updatedParams.isTicket = true
+      let resTicket = await getTotalRevenueApi(updatedParams);
+      if (resTicket && resTicket.data && resTicket.data.result) {
+        setTicketByYear(resTicket.data.result);
+      }
     }
 
-    let paramsTopUser
-    let resTopUsers = await getTopUsersApi(paramsTopUser)
+    setLoading(false)
+  }
+
+  const handleStatisticTopUsers = async () => {
+    let paramsTopUser = { top: typeof selected === 'number' ? selected : 5 }
+    let updatedParams = { ...paramsTopUser }
+    user.role === 'MANAGER' && (updatedParams.isStaff = true)
+    let resTopUsers = user.role === 'ADMIN' ? await getTopUsersApi(paramsTopUser) : await getTopUsersManagerApi(updatedParams)
     if (resTopUsers && resTopUsers.data && resTopUsers.data.result) {
       setTopUsers(resTopUsers.data.result)
     }
+  }
 
-    let paramsTopMovie
+  const handleStatisticTopMovies = async () => {
+    let paramsTopMovie = { top: typeof selected1 === 'number' ? selected1 : 5 }
     let resTopMovies = await getTopMovieRatingApi(paramsTopMovie)
     if (resTopMovies && resTopMovies.data && resTopMovies.data.result) {
       setTopMovies(resTopMovies.data.result)
     }
-    // let updatedParams = { ...params }
-    // updatedParams.isTicket = true
-    // let resTicket = await getTotalRevenueApi(updatedParams);
-    // if (resTicket && resTicket.data && resTicket.data.result) {
-    //   setTicketByYear(resTicket.data.result);
-    // }
-    setLoading(false)
   }
 
+
   useEffect(() => {
-    handleGetAllItem()
+    user.role === 'ADMIN' && handleGetAllItem()
   }, []);
+
+  useEffect(() => {
+    handleStatisticTopUsers()
+  }, [selected]);
+
+  useEffect(() => {
+    user.role === 'ADMIN' && handleStatisticTopMovies()
+  }, [selected1]);
 
   useEffect(() => {
     handleStatistic()
@@ -180,78 +195,15 @@ const Dashboard = () => {
   const handleSelectChange = (selected) => {
     setSelected(parseInt(selected.split(" ")[1]));
   };
+  const handleSelectChange1 = (selected1) => {
+    setSelected1(parseInt(selected1.split(" ")[1]));
+  };
   const options = ["Top 5", "Top 10"]
   const namesArray = ticketByYear.map(item => item.name);
   const totalTicketArray = ticketByYear.map(item => item.totalTicket);
 
-  // const configPieChart = {
-  //   type: "pie",
-  //   width: 280,
-  //   height: 280,
-  //   series: totalTicketArray,
-  //   options: {
-  //     chart: {
-  //       toolbar: {
-  //         show: false,
-  //       },
-  //     },
-  //     title: {
-  //       show: "",
-  //     },
-  //     dataLabels: {
-  //       enabled: false,
-  //     },
-  //     colors: generateColors(ticketByYear.length), // Sử dụng hàm generateColors để tạo mảng màuF,
-  //     legend: {
-  //       show: false,
-  //     },
-  //     labels: namesArray,
-  //   },
-  // };
-
-
-  const revenueByYear1 = [
-    {
-      data: [0, 0, 0, 29000, 0, 0, 0, 0, 0, 0, 0, 0],
-      name: "TN Cinema Quận 9"
-    },
-    {
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      name: "TN Cinema Quận 2"
-    },
-    {
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      name: "TN Cinema Gò Vấp"
-    },
-    {
-      data: [0, 0, 0, 422700, 0, 0, 0, 0, 0, 0, 0, 0],
-      name: "TN Cinema Gold"
-    },
-    {
-      data: [0, 0, 0, 0, 0, 0, 0, 400578, 500690, 0, 0, 0],
-      name: "TN Cinema Vũng Tàu"
-    },
-    {
-      data: [0, 0, 0, 0, 0, 0, 300456, 0, 0, 0, 0, 0],
-      name: "TN Cinema Đà Nẵng"
-    },
-    {
-      data: [0, 0, 0, 0, 506789, 0, 0, 0, 0, 0, 0, 0],
-      name: "TN Cinema TP.HCM"
-    },
-  ]
   const categoriesArr = selectedOptions === 1 ? ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'] : ListDayOfMonth(selectedYear, selectedMonth)
 
-
-  const seriesArr = [{
-    name: 'Tổng tiền (VNĐ)',
-    data: [440000, 550000, 400001, 650000, 350000]
-  },
-  {
-    name: 'Số vé',
-    data: [44, 50, 40, 67, 50]
-  }]
-  const categoriesArr1 = ['VBTThanh', 'VVNghia', 'User1', 'Thanh111', 'User2']
   return (
     <div>
       <div className='px-4'>
@@ -277,47 +229,81 @@ const Dashboard = () => {
                 <Loading />
               </div> :
               <div className='grid grid-cols-4'>
-                <CardItem statistical={statistical} />
+                {user.role === 'ADMIN' ? <CardItem statistical={statistical} /> : <RevenueCinema />}
 
-                <div className='pb-4 border-2 col-span-4 mx-3 mt-6'>
-                  <div className='col-span-4 px-3 mt-4'>
-                    <OptionsStatistics selectedMonth={selectedMonth} selectedYear={selectedYear} setSelectedMonth={setSelectedMonth} setSelectedYear={setSelectedYear} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} handleStatistic={handleToggle} />
-                  </div>
-                  <div className='flex'>
-                    <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} mt-6 relative px-3`}>
-                      <div className='p-5 border-2 rounded-lg bg-slate-100'>
-                        <div className='w-full relative'>
-                          <ApexChart revenueByYear={totalRevenue} categoriesArr={categoriesArr} />
+                {!(/^\/(admin\/finance\/cinema)/.test(pathname)) ?
+                  <div className='col-span-4'>
+                    <div className='pb-4 border-2 mx-3 mt-6'>
+                      <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Thống kê doanh thu, vé bán tất cả rạp</h2>
+                      <div className='col-span-4 px-3 mt-4'>
+                        <OptionsStatistics selectedMonth={selectedMonth} selectedYear={selectedYear} setSelectedMonth={setSelectedMonth} setSelectedYear={setSelectedYear} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} handleStatistic={handleToggle} />
+                      </div>
+
+                      <div className='flex'>
+                        <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} mt-6 relative px-3`}>
+                          <div className='p-5 border-2 rounded-lg bg-slate-100'>
+                            <div className='w-full relative'>
+                              <ApexChart revenueByYear={totalRevenue} categoriesArr={categoriesArr} />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className={`${user.role === "ADMIN" ? "w-[45%]" : ""} mt-6 relative px-3`}>
+                          {user.role === "ADMIN" &&
+                            <div className='p-2 pt-5 border-2 rounded-lg bg-slate-100'>
+                              <div className='w-full relative'>
+                                <PieChart seriesArr={totalTicketArray} labelsArr={namesArray} />
+                              </div>
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
 
-                    <div className='w-[45%] mt-6 relative px-3'>
-                      {user.role !== "MANAGER" &&
-                        <div className='p-2 pt-5 border-2 rounded-lg bg-slate-100'>
-                          <div className='w-full relative'>
-                            <PieChart seriesArr={totalTicketArray} labelsArr={namesArray} />
-                          </div>
+                    {user.role === "ADMIN" &&
+                      <div className='p-4 border-2 mx-3 mt-6'>
+                        <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Top phim đánh giá cao nhất</h2>
+                        <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
+                          <SelectMenu onSelectChange={handleSelectChange1} items={options} content={selected1 || `Top 5`} />
                         </div>
-                      }
+                        <BarChart
+                          seriesData={[
+                            {
+                              name: 'Đánh giá(sao)',
+                              data: topMovies?.data
+                            },
+                          ]}
+                          categories={topMovies?.movie}
+                        />
+                      </div>
+                    }
+                    <div className='p-4 border-2 mx-3 mt-6'>
+                      <h2 className='font-semibold text-3xl text-center uppercase pt-3'>
+                        {user.role === "ADMIN" ?
+                          <span> Top khách hàng thân thiết nhất</span> :
+                          <span> Top nhân viên xuất sắc nhất</span>
+                        }
+                      </h2>
+                      <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
+                        <SelectMenu onSelectChange={handleSelectChange} items={options} content={selected || `Top 5`} />
+                      </div>
+                      <ColumnChart
+                        seriesArr={[
+                          {
+                            name: 'Tổng tiền (VNĐ)',
+                            data: topUsers?.money
+                          },
+                          {
+                            name: 'Số vé',
+                            data: topUsers?.ticket
+                          }
+                        ]}
+                        categoriesArr={topUsers?.name}
+                      />
                     </div>
-                  </div>
-
-                </div>
-
-                <div className='p-4 border-2 col-span-4 mx-3 mt-6'>
-                  <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
-                    <SelectMenu onSelectChange={handleSelectChange} items={options} content={selected || `Top 5`} />
-                  </div>
-                  <ColumnChart seriesArr={seriesArr} categoriesArr={categoriesArr1} />
-                </div>
-
-                <div className='p-4 border-2 col-span-4 mx-3 mt-6'>
-                  <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
-                    <SelectMenu onSelectChange={handleSelectChange} items={options} content={`Top 5`} />
-                  </div>
-                  <BarChart />
-                </div>
+                  </div> :
+                  <RevenueCinema />
+                }
                 {/* <div className='flex col-span-4 relative'>
                   <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} relative`}>
                     {revenueByYear.length === 0 &&
@@ -416,7 +402,6 @@ const Dashboard = () => {
                   ))
                 } */}
 
-                <RevenueCinema />
               </div>
           }
         </div>

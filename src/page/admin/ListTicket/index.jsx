@@ -216,7 +216,7 @@ const ListTicket = () => {
         }
         {
           toggle && (
-            <div className='top-8 bottom-0 bg-cover w-5/6 fixed flex justify-center items-center'>
+            <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
               <div className=" w-[30%] z-10 overflow-hidden bg-slate-300 rounded-md right-1/2 ">
                 <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
 
@@ -276,9 +276,13 @@ const ListTicket = () => {
                 </div>
 
                 <div className='border-t-2 border-slate-400 p-4'>
-                  <div className='flex items-end'>
+                  <div className='flex justify-between'>
                     <p className='font-light'>Thời gian đặt vé: </p>
                     <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>
+                  </div>
+                  <div className='flex justify-between'>
+                    <p className='font-light'>Mã đặt vé: </p>
+                    <p className='text-xl'>{ticketDetail.bookingId}</p>
                   </div>
                   <div className='flex items-start justify-between'>
                     <p className='font-light'>Khách hàng: </p>
@@ -322,23 +326,7 @@ const ListTicket = () => {
         }
         {
           loading['fare'] &&
-          <div className='relative'>
-            <div className='top-0 bottom-0 bg-cover w-4/5 fixed flex justify-center items-center'>
-              <button
-                type="button"
-                className="absolute top-[235px] right-[250px] z-50"
-              >
-                <span className="sr-only">Close menu</span>
-                <div
-                  className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
-                  onClick={() => setLoading('fare', false)}
-                >
-                  <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
-                </div>
-              </button>
-              <Fare />
-            </div>
-          </div>
+            <Fare onLoading={setLoading} />
         }
       </div>
     </div >

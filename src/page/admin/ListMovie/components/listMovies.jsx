@@ -131,7 +131,10 @@ const ListMovies = () => {
                         <tbody>
                             {
                                 listMovie.movie.map((item, index) => (
-                                    <tr onClick={() => changeTab(`/admin/movie/${item.movieId}`)} className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                    <tr
+                                        onClick={() => changeTab(`/admin/movie/${item.movieId}`)}
+                                        className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
+                                    >
                                         <td className='text-center font-medium px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
                                         <td className='text-start font-medium px-2 py-3'>
                                             <div className='flex items-center'>

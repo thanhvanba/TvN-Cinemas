@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-const Statistics = () => {
+const Statistics = ({ financeCinema }) => {
   const series = [
     {
       name: "Thu",
-      data: [28, 29, 33, 36, 32, 32, 33]
+      data: financeCinema?.revenue
     },
     {
       name: "Chi",
-      data: [12, 11, 14, 18, 17, 13, 13]
+      data: financeCinema?.expense
     }
   ];
 
@@ -54,7 +54,7 @@ const Statistics = () => {
       size: 1
     },
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
       title: {
         text: 'Month'
       }
@@ -63,8 +63,6 @@ const Statistics = () => {
       title: {
         text: 'Temperature'
       },
-      min: 5,
-      max: 40
     },
     legend: {
       position: 'top',

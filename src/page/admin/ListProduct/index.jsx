@@ -225,8 +225,8 @@ const ListProduct = () => {
                                                 <span className="sr-only">Close menu</span>
                                                 <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`} onClick={() => setStatus(!status)}>
                                                     {status ?
-                                                        <WrenchScrewdriverIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
-                                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                        <TrashIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
+                                                        : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
                                                     }
                                                 </div>
                                             </button>

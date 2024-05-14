@@ -189,14 +189,15 @@ const ManagerService = () => {
             },
         );
     };
-    const getTotalRevenueOfManagerApi = async () => {
+    const getTotalRevenueOfManagerApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/total-revenue`,
             {
                 headers: {
                     "Authorization": bearerToken,
-                }
+                },
+                params: params,
             },
         );
     };
@@ -421,6 +422,43 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+
+    const getTopUsersManagerApi = async (params) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/top-users`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: params
+            },
+        );
+    };
+    const getFinanceAllCinemaManagerApi = async (year) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/finance`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: { year: year }
+            },
+        );
+    };
+    const getDetailFinanceManagerApi = async (params) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/finance/detail`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: params
+            },
+        );
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -455,7 +493,10 @@ const ManagerService = () => {
         quantitySeatBookedManagerApi,
         updateRoomManagerApi,
         addStaffApi,
-        changeStatusStaffApi
+        changeStatusStaffApi,
+        getTopUsersManagerApi,
+        getFinanceAllCinemaManagerApi,
+        getDetailFinanceManagerApi
     }
 }
 

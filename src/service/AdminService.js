@@ -829,6 +829,41 @@ const AdminService = () => {
             },
         );
     };
+    const getFinanceAllCinemaApi = async (year) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/finance`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: { year: year }
+            },
+        );
+    };
+    const getAllPromotionApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/promotions`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            },
+        );
+    };
+    const getDetailFinanceApi = async (params) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/finance/detail`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: params
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -875,7 +910,10 @@ const AdminService = () => {
         getFoodAdminApi,
         getStatisticsOverviewApi,
         getTopUsersApi,
-        getTopMovieRatingApi
+        getTopMovieRatingApi,
+        getFinanceAllCinemaApi,
+        getAllPromotionApi,
+        getDetailFinanceApi
     }
 }
 

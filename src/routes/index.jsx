@@ -71,6 +71,7 @@ const AdminRouter = () => (
 
     <Route path="/admin/info" element={<Admin />} />
     <Route path="/admin/navigate" element={<Navigate />} />
+    <Route path="/admin/finance/cinema/:cinemaId" element={<Admin />} />
 
     <Route path="/manager/:item" element={<Admin />} />
     <Route path="/manager/add-item/:item" element={<Admin />} />

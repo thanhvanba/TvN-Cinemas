@@ -211,7 +211,7 @@ const OrderMovie = () => {
     const handleSelectSeat = async (seatId, type) => {
         if (type != "booked") {
             const row = seatId.charCodeAt(0) - 65 + 1; // Lấy giá trị Unicode của ký tự và trừ đi giá trị Unicode của 'A' + 1
-            const seatNum = parseInt(seatId.slice(1), 10); // Lấy phần số từ seatLabel
+            const seatNum = parseInt(seatId?.slice(1), 10); // Lấy phần số từ seatLabel
             const existingIndex = selectSeats.findIndex(seat => seat.seatId === seatId);
             const resPrice = await getSeatPriceApi(type)
             if (resPrice && resPrice.data && resPrice.data.result) {

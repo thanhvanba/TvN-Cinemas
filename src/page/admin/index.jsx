@@ -23,24 +23,31 @@ import ProfileDetail from '../Info/components/profileDetail';
 import ListTicket from './ListTicket';
 import Header from '../Staff/components/header';
 import UserService from '../../service/UserService';
+import ListPromotion from './ListPromotion';
+import AdminService from '../../service/AdminService';
 
 const Admin = () => {
   const { item } = useParams()
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
+  const [show, setShow] = useState(false);
+  console.log("🚀 ~ Admin ~ show:", show)
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState('1');
   const [tabIndex, setTabIndex] = useState(0);
   const changeTab = (pathname) => {
+    user.role === "ADMIN" && localStorage.getItem('cinemaId') && localStorage.removeItem('cinemaId')
     navigate(pathname)
+    setShow(false)
   }
-  const [show, setShow] = useState(false);
+  const [allCinema, setAllCinema] = useState([])
+  const [selectCinemaId, setSelectCinemaId] = useState('')
 
   const showService = () => {
     setShow(!show)
   }
-
+  const { getAllShowtimeApi, getAllCinemaApi, deleteCinemaApi, changeStatusCinemaApi } = AdminService();
   const { logoutApi } = AuthService();
 
   const { getUserInfoApi } = UserService()
@@ -53,6 +60,7 @@ const Admin = () => {
       { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
       { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
       { content: "Đánh giá", icon: StarIcon, path: "list-review" },
+      { content: "Khuyến mãi", icon: StarIcon, path: "list-promotion" },
     ]
     : [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
@@ -98,9 +106,11 @@ const Admin = () => {
     item === "list-review" &&
       setTabIndex(6);
 
-    if (item === "dashboard") {
+    /^\/(admin|manager)\/(add-item\/promotion|update-item\/promotion|list-promotion|promotion)/.test(pathname) &&
+      setTabIndex(7);
+    if (item === "dashboard" || /^\/(admin)\/finance\/cinema/.test(pathname)) {
       user.role === "ADMIN" ?
-        setTabIndex(7) : setTabIndex(5);
+        setTabIndex(8) : setTabIndex(5);
     }
   };
 
@@ -109,7 +119,13 @@ const Admin = () => {
     if (resInfo && resInfo.data && resInfo.data.result) {
       user.role === "MANAGER" && !localStorage.getItem("cinemaId") && localStorage.setItem("cinemaId", resInfo.data.result.cinema.cinemaId)
     }
+
+    let res = user.role === "ADMIN" ? await getAllCinemaApi(1, 999, true) : null;
+    if (res && res.data && res.data.result && res.data.result.content) {
+      setAllCinema(res.data.result.content)
+    }
   }
+
   useEffect(() => {
     handleCheckPathname(pathname)
     handleTabChange()
@@ -157,22 +173,26 @@ const Admin = () => {
                           <Squares2X2Icon className='h-6 w-6 mr-4 text-emerald-600' />
                           {"Thống kê"}
                         </a>
-                        <div className='w-11 h-10 relative'>
-                          <ChevronUpDownIcon onClick={showService} className='w-6 h-6 absolute top-1 left-2 font-normal' />
-                        </div>
+                        {user.role === "ADMIN" &&
+                          <div className='w-11 h-10 relative'>
+                            <ChevronUpDownIcon onClick={(e) => { e.stopPropagation(); showService() }} className='w-6 h-6 absolute top-1 left-2 font-normal' />
+                          </div>
+                        }
                       </div>
                     </li>
                   </Tab>
                   <ul className={`${show ? '' : 'hidden'} pb-[30px]`}>
-                    <li className="pl-2">
-                      <a href="/thiet-ke-thuong-hieu" className='pl-5 py-[5px] flex'>Thiết kế thương hiệu</a>
-                    </li>
-                    <li className="pl-2">
-                      <a href="/thiet-ke-bao-bi" className='pl-5 py-[5px] flex'>Thiết kế bao bì</a>
-                    </li>
-                    <li className="pl-2">
-                      <a href="/san-xuat-in-an" className='pl-5 py-[5px] flex'>In ấn sản xuất</a>
-                    </li>
+                    {allCinema &&
+                      allCinema.map((item) => (
+                        <li className={`${(localStorage.getItem('cinemaId') === item.cinemaId) ? 'text-emerald-600 font-semibold' : ''} pl-2 cursor-default`}>
+                          <p onClick={() => {
+                            localStorage.setItem("cinemaId", item.cinemaId)
+                            navigate(`/admin/finance/cinema/${item.cinemaId}`)
+                          }
+                          } className='pl-5 py-[5px] flex'>{item.cinemaName}</p>
+                        </li>
+                      ))
+                    }
                   </ul>
                 </ul >
               </TabList>
@@ -212,6 +232,9 @@ const Admin = () => {
                     </TabPanel>
                     <TabPanel>
                       <ListReview />
+                    </TabPanel>
+                    <TabPanel>
+                      <ListPromotion />
                     </TabPanel>
                   </>
                 }

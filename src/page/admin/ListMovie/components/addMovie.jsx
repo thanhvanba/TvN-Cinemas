@@ -220,7 +220,7 @@ const AddMovie = () => {
                                     <input
                                         onChange={e => setMovie({ ...movie, title: e.target.value })}
                                         type="text"
-                                        className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                         defaultValue={oneMovie.title}
                                     />
                                 </div>
@@ -234,7 +234,7 @@ const AddMovie = () => {
                                     <textarea
                                         onChange={e => setMovie({ ...movie, desc: e.target.value })}
                                         type="text"
-                                        className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                         defaultValue={oneMovie.desc}
                                         rows={5}
                                     />
@@ -250,7 +250,7 @@ const AddMovie = () => {
                                         <input
                                             onChange={e => setMovie({ ...movie, director: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.director}
                                         />
                                     </div>
@@ -265,7 +265,7 @@ const AddMovie = () => {
                                         <input
                                             onChange={e => setMovie({ ...movie, actor: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.actor}
                                         />
                                     </div>
@@ -284,7 +284,7 @@ const AddMovie = () => {
                                                     return { ...prevMovie, releaseDate: date };
                                                 });
                                             }}
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             placeholderText={FormatDataTime(oneMovie.releaseDate).date}
                                             dateFormat="yyyy-MM-dd" // Định dạng ngày
                                         />
@@ -299,7 +299,7 @@ const AddMovie = () => {
                                         <input
                                             onChange={e => setMovie({ ...movie, genres: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.genres}
                                         />
                                     </div>
@@ -315,7 +315,7 @@ const AddMovie = () => {
                                         <input
                                             onChange={e => setMovie({ ...movie, duration: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md "
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.duration}
                                         />
                                     </div>
@@ -329,7 +329,7 @@ const AddMovie = () => {
                                         <input
                                             onChange={e => setMovie({ ...movie, trailerLink: e.target.value })}
                                             type="text"
-                                            className="block bg-slate-100 placeholder-neutral-900 w-full px-4 py-1 text-lg focus:outline-none rounded-md"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.trailerLink}
                                         />
                                     </div>
