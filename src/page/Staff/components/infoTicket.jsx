@@ -1,11 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 import img from '../../../images/logo.jpg'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { format, parse } from 'date-fns'
 import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat'
+import StaffService from '../../../service/StaffService'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import useLoadingState from '../../../hook/UseLoadingState'
 function InfoTicket() {
     const location = useLocation()
-    const { infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods } = location.state || {}
+    const navigate = useNavigate()
+    const { sellTicketApi, addViewerApi } = StaffService()
+    const { infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods, userInfo } = location.state || {}
+
+    const { loading, setLoading } = useLoadingState(false)
+    const [account, setAccount] = useState(userInfo || {})
+    const [sellTicket, setSellTicket] = useState()
+
+    const handleSellTicket = async () => {
+        setLoading('sell', true);
+        const resSellticket = await sellTicketApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', infoSchedule.showTimeId, listSeatBooking, listFoodBooking)
+        if (resSellticket && resSellticket.data && resSellticket.data.result) {
+            setSellTicket(resSellticket.data.result);
+        }
+        setLoading('sell', false);
+        navigate('/staff/sell-ticket')
+    }
+
+    const handleCreateAccount = async () => {
+        setLoading('create', true);
+        //Chưa có tk và xin được thông tin account thì thêm người dùng
+        const resInfo = await addViewerApi(account)
+        if (resInfo && resInfo.data && resInfo.data.result) {
+            setAccount(resInfo.data.result);
+        }
+        setLoading('create', false);
+    }
     return (
         <div className='pt-20 px-12'>
             <h2 className='font-medium uppercase text-xl text-center py-4'>Thông tin đặt vé</h2>
@@ -13,7 +43,7 @@ function InfoTicket() {
                 <div className='hidden sm:block w-1/3 px-4'>
                     <img
                         className='w-full h-full'
-                        src={infoSchedule.poster}
+                        src={infoSchedule?.poster}
                     />
                 </div>
                 <div className='w-full sm:w-2/3 px-4 relative'>
@@ -22,24 +52,24 @@ function InfoTicket() {
                                 {loading['ticket'] && <Loading />}
                             </div> */}
                         <div className='space-y-4'>
-                            <p className="text-3xl text-emerald-600 font-semibold">{infoSchedule.movieName}</p>
+                            <p className="text-3xl text-emerald-600 font-semibold">{infoSchedule?.movieName}</p>
 
                             <div>
                                 <p className='font-light'>Suất chiếu</p>
                                 <div className="flex items-center space-x-2 text-xl">
                                     <span className="font-bold text-orange-500">{format(
-                                        parse(`${infoSchedule.dataTime.time}`, 'HH:mm:ss', new Date()),
+                                        parse(`${infoSchedule?.dataTime.time}`, 'HH:mm:ss', new Date()),
                                         "HH:mm"
                                     )}</span>
                                     <span>-</span>
                                     <span className="font-bold">{`01/02/2024`}</span>
-                                    <span>({infoSchedule.duration} phút)</span>
+                                    <span>({infoSchedule?.duration} phút)</span>
                                 </div>
                             </div>
 
                             <div>
                                 <p className='font-light'>Rạp chiếu</p>
-                                <p className="font-semibold text-xl">{infoSchedule.cinemaName}</p>
+                                <p className="font-semibold text-xl">{infoSchedule?.cinemaName}</p>
                             </div>
 
                             <div className="flex gap-10">
@@ -62,7 +92,7 @@ function InfoTicket() {
                                     <p className='font-light'>Bắp nước</p>
                                     <p className="font-semibold text-xl w-full inline-block">
                                         {foods && foods.map((food, index) => (
-                                            <p key={index}>&nbsp;{food.name},</p>
+                                            <p key={index}>&nbsp;{food.name} <span className='text-red-600 pl-4 text-2xl'>{food.count > 1 && `x${food.count}`}</span></p>
                                         ))}
                                     </p>
                                 </div>
@@ -91,8 +121,8 @@ function InfoTicket() {
                             Họ và tên
                         </p>
                         <input
-                            // value={account.password}
-                            // onChange={e => setAccount({ ...account, password: e.target.value })}
+                            value={account.fullName}
+                            onChange={e => setAccount({ ...account, fullName: e.target.value })}
                             className="px-4 py-1 w-96 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                             placeholder="Nhập họ và tên"
                         />
@@ -102,8 +132,8 @@ function InfoTicket() {
                             Email
                         </p>
                         <input
-                            // value={account.password}
-                            // onChange={e => setAccount({ ...account, password: e.target.value })}
+                            value={account.email}
+                            onChange={e => setAccount({ ...account, email: e.target.value })}
                             className="px-4 py-1 w-96 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                             placeholder="Nhập email"
                         />
@@ -113,40 +143,52 @@ function InfoTicket() {
                             Số điện thoại
                         </p>
                         <input
-                            // value={account.password}
-                            // onChange={e => setAccount({ ...account, password: e.target.value })}
+                            value={account.phone}
+                            onChange={e => setAccount({ ...account, phone: e.target.value })}
                             className="px-4 py-1 w-96 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                             placeholder="Nhập số điện thoại"
                         />
                     </div>
-                    <div className="relative flex justify-between border-t-2 py-3 px-4">
-                        <p className="text-lg leading-6 text-gray-900">
-                            Mật khẩu
-                        </p>
-                        <input
-                            // value={account.password}
-                            // onChange={e => setAccount({ ...account, password: e.target.value })}
-                            className="px-4 py-1 w-96 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                            placeholder="Nhập mật khẩu"
-                        />
-                    </div>
+                    {!userInfo &&
+                        <div className="relative flex justify-between border-t-2 py-3 px-4">
+                            <p className="text-lg leading-6 text-gray-900">
+                                Mật khẩu
+                            </p>
+                            <input
+                                value={account.password}
+                                onChange={e => setAccount({ ...account, password: e.target.value })}
+                                className="px-4 py-1 w-96 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                placeholder="Nhập mật khẩu"
+                            />
+                        </div>
+                    }
                     <div className='flex justify-center py-2'>
                         <button
-                            className="px-4 rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 mr-2"
+                            className="px-4 rounded-xl hover:bg-red-800 text-white bg-red-600  py-2 transition-colors duration-300 mr-2"
                             type='submit'
-                        // onClick={() => navigate('/staff/info-ticket')}
-                        // disabled={loading}
+                            onClick={() => navigate(`/staff/sell-ticket/${infoSchedule.movieId}`)}
                         >
                             {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
                             &nbsp;Quay lại
                         </button>
+                        {!userInfo &&
+                            <button
+                                className="px-4 rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 mr-2"
+                                type='submit'
+                                onClick={() => handleCreateAccount()}
+                                disabled={loading['create']}
+                            >
+                                {loading['create'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                &nbsp;Tạo tài khoản
+                            </button>
+                        }
                         <button
                             className="px-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                             type='submit'
-                        // onClick={() => navigate('/staff/info-ticket')}
-                        // disabled={loading}
+                            onClick={() => handleSellTicket()}
+                            disabled={loading['sell']}
                         >
-                            {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
+                            {loading['sell'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                             &nbsp;Xác nhận bán vé
                         </button>
                     </div>

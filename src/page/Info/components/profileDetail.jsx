@@ -261,7 +261,7 @@ const ProfileDetail = () => {
                                         placeholder={"Email"}
                                     />
                                 </div>
-                                {user.role === "MANAGER" && <div className="my-2 w-2/5">
+                                {(user.role === "MANAGER" || user.role === "STAFF") && <div className="my-2 w-2/5">
                                     <label
                                         htmlFor=""
                                         className="w-24 font-bold leading-9 text-gray-900"

@@ -1,10 +1,27 @@
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import React from 'react'
+import React, { useState } from 'react'
 import Search from '../../../components/Search'
 import { useNavigate } from 'react-router-dom'
+import StaffService from '../../../service/StaffService'
 
-function SearchUser({ onToggle }) {
+function SearchUser({ onToggle, infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods }) {
     const navigate = useNavigate()
+    const { searchViewerApi } = StaffService()
+    const [listViewerFound, setListViewerFound] = useState()
+    console.log("🚀 ~ SearchUser ~ listViewerFound:", listViewerFound)
+    const [showMovieList, setShowMovieList] = useState(false)
+    console.log("🚀 ~ SearchUser ~ showMovieList:", showMovieList)
+    const [userInfo, setUserInfo] = useState()
+    const [inputSearch, setInputSearch] = useState()
+    console.log("🚀 ~ SearchUser ~ inputSearch:", inputSearch)
+    console.log("🚀 ~ SearchUser ~ userInfo:", userInfo)
+
+    const handleSearch = async (value) => {
+        let resViewer = await searchViewerApi(value)
+        if (resViewer && resViewer.data && resViewer.data.result) {
+            setListViewerFound(resViewer.data.result)
+        }
+    }
     return (
         <div className='flex justify-center items-start bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
             <div className='w-1/3 relative pt-24'>
@@ -27,15 +44,39 @@ function SearchUser({ onToggle }) {
                     <h2 className='py-2 text-black font-medium'>Bạn hãy nhập tên tài khoản của khách hàng:</h2>
                     <div className='pb-10 border-b'>
                         <div className='border rounded-xl w-1/2'>
-                            <Search />
+                            <Search searchFunction={handleSearch} setShowMovieList={setShowMovieList} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                         </div>
+                        {showMovieList && listViewerFound &&
+
+                            (listViewerFound?.length !== 0 ?
+                                <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
+                                    {listViewerFound.map(viewer => (
+                                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md cursor-default'>
+                                            <div onClick={() => {
+                                                setInputSearch(viewer?.userName)
+                                                setUserInfo(viewer)
+                                            }}
+                                                className='flex p-2 items-end'
+                                            >
+                                                <img className="h-10 w-8 text-emerald-600" src={viewer.avatar} alt="" />
+                                                <span className='text-lg font-semibold px-4 items-center'>{viewer.userName}</span>
+                                            </div>
+                                        </div>
+                                    ))
+
+                                    }
+                                </div>
+                                : <div className='absolute font-light left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
+                                    -- Không tìm thấy --
+                                </div>
+                            )}
                     </div>
                     <div>
                         <div className='flex justify-end py-2'>
                             <button
                                 className="px-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300 mr-2"
                                 type='submit'
-                                onClick={() => navigate('/staff/info-ticket')}
+                                onClick={() => navigate('/staff/info-ticket', { state: { infoSchedule: infoSchedule, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods, userInfo: userInfo } })}
                             // disabled={loading}
                             >
                                 {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}
@@ -44,7 +85,7 @@ function SearchUser({ onToggle }) {
                             <button
                                 className="px-4 rounded-xl hover:bg-red-800 text-white bg-red-600 py-2 transition-colors duration-300"
                                 type='submit'
-                                onClick={() => navigate('/staff/info-ticket')}
+                                onClick={() => navigate('/staff/info-ticket', { state: { infoSchedule: infoSchedule, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods } })}
                             // disabled={loading}
                             >
                                 {/* {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />} */}

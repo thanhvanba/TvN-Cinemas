@@ -48,14 +48,16 @@ function Header() {
         <div
             className={`${user.role === "STAFF" ? "fixed top-0 left-0 right-0 bottom-0 z-50" : "bg-slate-100"
                 } flex justify-end items-center h-20 px-4`}
-            style={user.role === "STAFF" ? { backgroundImage: `url(${bg})`} : {}}
+            style={user.role === "STAFF" ? { backgroundImage: `url(${bg})` } : {}}
         >
             <div className='flex px-3 items-center'>
-                <div className='pr-4'>
-                    <div className="border-2 rounded-2xl ">
-                        <Search />
+                {user.role === 'STAFF' &&
+                    <div className='pr-4'>
+                        <div className="border-2 rounded-2xl ">
+                            <Search />
+                        </div>
                     </div>
-                </div>
+                }
                 <div className={`${user.role === "STAFF" ? "text-white" : ""} flex flex-col relative px-4`}>
                     <BellIcon className='h-6' />
                     <span className='text-xs'>Thông báo</span>

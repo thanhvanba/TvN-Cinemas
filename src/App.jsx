@@ -17,8 +17,6 @@ function App() {
   // effect
   const { info, register } = useContext(RegisterContext);
   const { user, login } = useContext(LoginContext);
-  console.log("🚀 ~ App ~ user:", user)
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       const decode = jwtDecode(localStorage.getItem("token"));

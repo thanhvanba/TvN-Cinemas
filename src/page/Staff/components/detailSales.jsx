@@ -117,7 +117,7 @@ function DetailSales() {
         let resShowtime = await getShowtimeByMovieApi(movieId);
         const newShowtimes = [];
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
-            resShowtime.data.result.forEach(item => {
+            resShowtime.data.result.filter(item => item.room.cinema.cinemaId === localStorage.getItem('cinemaId')).forEach(item => {
                 if (item.status === "SHOWING") {
                     item.schedules.forEach(schedule => {
                         if (schedule.date === dayjs(selectDateTime.toISOString()).format("YYYY-MM-DD")) {
@@ -131,6 +131,7 @@ function DetailSales() {
                                 roomName: item.room.roomName,
                                 cinemaName: item.room.cinema.cinemaName,
                                 poster: item.movie.poster,
+                                movieId: item.movie.movieId,
                                 movieName: item.movie.title,
                                 duration: item.movie.duration
                             });
@@ -188,6 +189,7 @@ function DetailSales() {
     }, [selectDateTime]);
     return (
         <div className='px-4'>
+            <h2 className='text-center text-3xl text-emerald-600 font-bold pt-3'>{allShowtime[0]?.movieName}</h2>
             <div className='pb-4'>
                 <h2 className='font-semibold text-3xl text-yellow-200 pt-4'>Danh sách xuất chiếu</h2>
                 <DatePicker
@@ -198,7 +200,7 @@ function DetailSales() {
                 />
             </div>
             {loading &&
-                <div className='flex justify-center absolute mx-auto w-full h-[79vh] top-40 right-0 z-10'
+                <div className='flex justify-center absolute mx-auto w-full h-[79vh] top-44 right-0 z-10'
                     style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}>
                     <div className="absolute top-0 left-0 w-full h-full bg-slate-400 opacity-20"></div>
                     <Loading />
@@ -499,7 +501,7 @@ function DetailSales() {
                             )}
                         </div>
                         {toggle &&
-                            <SearchUser onToggle={setToggle} />
+                            <SearchUser infoSchedule={createSeatData} listSeatBooking={listSeatBooking} listFoodBooking={listFoodBooking} selectSeats={selectSeats} foods={foods} onToggle={setToggle} />
                         }
                     </div>
                 </div>

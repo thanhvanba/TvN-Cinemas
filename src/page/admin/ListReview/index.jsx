@@ -42,7 +42,7 @@ const ListReview = () => {
 
   const handleGetReviews = async (pageNumber) => {
     setLoading(true)
-    let res = await getListReviewApi(pageNumber, 4)
+    let res = await getListReviewApi(pageNumber, 6  )
     setLoading(false)
     if (res && res.data && res.data.result && res.data.result.content) {
       setReviews(res.data.result.content)

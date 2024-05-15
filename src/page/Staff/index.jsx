@@ -24,11 +24,12 @@ import SellTicket from './components/sellTicket';
 import DetailSales from './components/detailSales';
 import Info from '../Info';
 import InfoTicket from './components/infoTicket';
+import StaffService from '../../service/StaffService';
 function Staff() {
     const { movieId } = useParams()
     const { getUserInfoApi } = UserService()
     const { NowPlayingMovieApi, GetAllMovieApi } = MovieService()
-
+    const { getNowPlayingMovieStaffApi } = StaffService()
     const { pathname } = useLocation()
     const navigate = useNavigate()
     const changeTab = (pathname) => {
@@ -52,11 +53,11 @@ function Staff() {
     const handleGetItems = async () => {
         let resInfo = await getUserInfoApi()
         if (resInfo && resInfo.data && resInfo.data.result) {
-            !localStorage.getItem("cinemaId") && localStorage.setItem("cinemaId", resInfo.data.result.cinema.cinemaId)
+            !localStorage.getItem("cinemaId") && localStorage.setItem("cinemaId", resInfo.data.result?.cinema?.cinemaId)
         }
-        let resNowPlaying = await GetAllMovieApi()
+        let resNowPlaying = await getNowPlayingMovieStaffApi()
         if (resNowPlaying && resNowPlaying.data && resNowPlaying.data.result) {
-            setNowPlayMovie(resNowPlaying.data.result.content)
+            setNowPlayMovie(resNowPlaying.data.result)
         }
     }
     const IMAGES = [

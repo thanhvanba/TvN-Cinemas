@@ -2,20 +2,12 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import UserService from '../../service/UserService'
+import StaffService from '../../service/StaffService'
 
-const Search = ({ searchFunction, resultList }) => {
-    const [inputSearch, setInputSearch] = useState("")
-    const [listMovieFound, setListMovieFound] = useState([])
-    const [showMovieList, setShowMovieList] = useState(false);
+const Search = ({ searchFunction, setShowMovieList, inputSearch, setInputSearch }) => {
 
-    const { searchMovieApi } = UserService()
-
-    const navigate = useNavigate()
-    const changeTab = (pathname) => {
-        navigate(pathname)
-        setInputSearch("")
-    }
     const handleInputFocus = () => {
+        searchFunction(inputSearch)
         setShowMovieList(true);
     };
     const handleInputBlur = () => {
@@ -24,11 +16,11 @@ const Search = ({ searchFunction, resultList }) => {
             setShowMovieList(false);
         }, 100);
     };
-
     const handleChange = (value) => {
         searchFunction(value)
         setInputSearch(value)
     }
+    
     return (
         <div className='relative'>
             <input
@@ -41,7 +33,7 @@ const Search = ({ searchFunction, resultList }) => {
             <button
                 className='absolute right-0 top-0 m-2'>
                 <MagnifyingGlassIcon
-                    onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
+                    // onClick={() => changeTab(`/tim-kiem/${inputSearch}`)}
                     className="h-5 w-5 text-gray-400" />
             </button>
         </div>
