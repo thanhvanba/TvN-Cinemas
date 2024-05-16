@@ -15,8 +15,7 @@ import FormatDataTime from '../../utils/FormatDataTime';
 
 import { LoginContext } from '../../context/LoginContext';
 
-function OrderQuickly() {
-    const { SpecialMovieApi, NowPlayingMovieApi, GetOneMovieApi } = MovieService()
+function OrderQuickly({ allShowMovie }) {
     const { getShowtimeByMovieApi, getAllShowtimeApi } = UserService()
     const { getAllCinemaApi } = CinemaService()
 
@@ -27,13 +26,10 @@ function OrderQuickly() {
 
     const [toggle, setToggle] = useState(false)
     const [allCinema, setAllCinema] = useState([])
-    console.log("🚀 ~ OrderQuickly ~ allCinema:", allCinema)
-    const [allShowMovie, setAllShowMovie] = useState([])
-    console.log("🚀 ~ OrderQuickly ~ allShowMovie:", allShowMovie)
+    // const [allShowMovie, setAllShowMovie] = useState([])
     const [dateList, setDateList] = useState([]);
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
     const [allShowtime, setAllShowtime] = useState([])
-    console.log("🚀 ~ OrderQuickly ~ allShowtime:", allShowtime)
     // const [foundShowtime, setFoundShowtime] = useState({
     //     showTimeId: null,
     //     room: {
@@ -72,7 +68,6 @@ function OrderQuickly() {
     //     special: null
     // })
     const [foundShowtime, setFoundShowtime] = useState([])
-    console.log("🚀 ~ OrderQuickly ~ foundShowtime:", foundShowtime)
     const [infoOrderQuickly, setInfoOrderQuickly] = useState({
         movieId: "",
         cinemaId: "",
@@ -80,7 +75,6 @@ function OrderQuickly() {
         timeShow: ""
     })
 
-    console.log("🚀 ~ OrderQuickly ~ infoOrderQuickly:", infoOrderQuickly)
     const handleToggle = () => {
         setToggle(!toggle)
     }
@@ -98,16 +92,7 @@ function OrderQuickly() {
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
 
-    const handleGetShowMovie = async () => {
-
-        let resNowPlayMovie = await NowPlayingMovieApi()
-        resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
-            setAllShowMovie(resNowPlayMovie.data.result)
-
-    }
-
     const handleGetShowtimeByMovie = async (movieId) => {
-        console.log("🚀 ~ handleGetShowtimeByMovie ~ movieId:", movieId)
         // let resShowtimes = await getShowtimeByMovieApi(movieId)
         // if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
         //     setAllShowtime(resShowtimes.data.result)
@@ -126,8 +111,6 @@ function OrderQuickly() {
         }
     }
     const FoundShowtime = (movieId, cinemaId) => {
-        console.log("🚀 ~ FoundShowtime ~ cinemaId:", cinemaId)
-        console.log("🚀 ~ FoundShowtime ~ movieId:", movieId)
         const foundShowtime = allShowtime.filter(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
@@ -179,7 +162,6 @@ function OrderQuickly() {
     };
 
     useEffect(() => {
-        handleGetShowMovie()
         handleGetAllCinema()
         ListDayShowtime()
     }, []);

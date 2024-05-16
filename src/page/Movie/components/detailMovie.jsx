@@ -8,6 +8,7 @@ import UserService from '../../../service/UserService';
 import Modal from '../../../utils/Modal';
 import { useNavigate } from 'react-router-dom';
 import ReviewMovie from './reviewMovie';
+import Trailer from '../../../components/Trailer';
 
 const DetailMovie = ({ movie }) => {
     const [showTrailer, setShowTrailer] = useState(false);
@@ -85,6 +86,7 @@ const DetailMovie = ({ movie }) => {
                 </ul>
                 {/* button */}
                 <div>
+                    <Trailer showTrailer={showTrailer} closeTrailer={closeTrailer} movie={movie} />
                     <button
                         className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
                         type="button"
@@ -93,7 +95,7 @@ const DetailMovie = ({ movie }) => {
                         Xem trailer
                     </button>
 
-                    {/* Hiển thị video khi showTrailer là true */}
+                    {/* Hiển thị video khi showTrailer là true *
                     {showTrailer && (
                         <div className="fixed z-50 top-1/4 left-1/4 w-1/2 h-1/2 bg-black bg-opacity-75 flex items-center justify-center">
                             <div className="relative w-full h-0 pb-[56.25%]">
@@ -104,7 +106,7 @@ const DetailMovie = ({ movie }) => {
                                     frameBorder="0"
                                     allowFullScreen
                                 ></iframe>
-                                {/* Nút đóng ở góc phải trên của iframe */}
+                                {/* Nút đóng ở góc phải trên của iframe *
                                 <button
                                     className="absolute -top-8 -right-8 text-white cursor-pointer"
                                     onClick={closeTrailer}
@@ -113,7 +115,7 @@ const DetailMovie = ({ movie }) => {
                                 </button>
                             </div>
                         </div>
-                    )}
+                    )} */}
                     <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
                     >
                         <a>Mua vé ngay</a>

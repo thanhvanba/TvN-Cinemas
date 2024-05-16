@@ -24,7 +24,7 @@ function Movies() {
         navigate(pathname)
     }
     const handleGetItems = async () => {
-
+        setLoading(true)
         let resNowPlaying = await NowPlayingMovieApi()
         if (resNowPlaying && resNowPlaying.data && resNowPlaying.data.result) {
             setNowPlayMovie(resNowPlaying.data.result)
@@ -48,12 +48,13 @@ function Movies() {
         }
     }
     useEffect(() => {
-        setLoading(true)
-        handleGetItems()
+        keyWord === undefined &&
+            handleGetItems()
     }, []);
 
     useEffect(() => {
-        handleSearchMovie(keyWord)
+        keyWord !== undefined &&
+            handleSearchMovie(keyWord)
     }, [keyWord])
     return (
         <div>

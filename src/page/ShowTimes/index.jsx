@@ -27,14 +27,18 @@ const ShowTimes = () => {
   const [loading, setLoading] = useState(false);
   const { pathname } = useLocation()
   const navigate = useNavigate()
+
   const [dateList, setDateList] = useState([]);
+
   const [allShowMovie, setAllShowMovie] = useState([])
+  const [nowPlayingMovie, setNowPlayingMovie] = useState();
+  const [comingSoonMovie, setComingSoonMovie] = useState();
+  const [specialMovie, setSpecialMovie] = useState();
+
   const [allCinema, setAllCinema] = useState([])
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
-  console.log("🚀 ~ ShowTimes ~ listShowtime:", listShowtime)
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
-  console.log("🚀 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -59,32 +63,33 @@ const ShowTimes = () => {
     switch (pathname) {
       case "/showtimes/lichchieuphim":
         {
-          let resNowPlayMovie = await NowPlayingMovieApi()
-          resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
-            setAllShowMovie(resNowPlayMovie.data.result)
-
           setCurrentTab("1")
         }
         break;
       case "/showtimes/phimtheorap":
         {
-          let res = await getAllCinemaApi()
-          if (res && res.data && res.data.result && res.data.result.content) {
-            setAllCinema(res.data.result.content)
-          }
           setCurrentTab("2")
         }
         break;
       default:
         {
-          let resNowPlayMovie = await NowPlayingMovieApi()
-          resNowPlayMovie && resNowPlayMovie.data && resNowPlayMovie.data.result &&
-
-            setAllShowMovie(resNowPlayMovie.data.result)
           setCurrentTab("1")
         }
     }
     setLoading(false)
+  }
+
+  const handleGetMovie = async () => {
+    const resNowPlay = await NowPlayingMovieApi()
+
+    const resSpecial = await SpecialMovieApi()
+    if (resSpecial && resSpecial.data && resSpecial.data.result && resNowPlay && resNowPlay.data && resNowPlay.data.result) {
+      setAllShowMovie([...resSpecial.data.result, ...resNowPlay.data.result])
+    }
+    let res = await getAllCinemaApi()
+    if (res && res.data && res.data.result && res.data.result.content) {
+      setAllCinema(res.data.result.content)
+    }
   }
 
   const handleGetShowtimeByMovie = async (movieId) => {
@@ -113,6 +118,10 @@ const ShowTimes = () => {
     handleCheckPathname(pathname)
     ListDayShowtime()
   }, [pathname]);
+
+  useEffect(() => {
+    handleGetMovie()
+  }, [])
   let hasShowtimes = false;
   return (
     <div className="w-full pt-32 pb-10">
@@ -120,11 +129,11 @@ const ShowTimes = () => {
         {/* tab */}
         <TabList className="sub-tab">
           <ul className="relative flex flex-col sm:inline-block">
-            <Tab onClick={() => changeTab("/showtimes/lichchieuphim")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent">
+            <Tab onClick={() => changeTab("/showtimes/lichchieuphim")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent cursor-pointer outline-none">
               <a className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
 
             </Tab>
-            <Tab onClick={() => changeTab("/showtimes/phimtheorap")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent">
+            <Tab onClick={() => changeTab("/showtimes/phimtheorap")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent cursor-pointer outline-none">
               <a className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
             </Tab>
           </ul>

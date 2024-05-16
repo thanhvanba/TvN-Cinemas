@@ -317,6 +317,10 @@ const AdminService = () => {
                         const file = await convertDataURLtoFile(data[key], "poster");
                         data[key] = file;
                     }
+                    if (key === "slider" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "slider");
+                        data[key] = file;
+                    }
                 }
             }
 

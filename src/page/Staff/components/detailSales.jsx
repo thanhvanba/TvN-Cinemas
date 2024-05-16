@@ -28,6 +28,7 @@ function DetailSales() {
     const [createSeatData, setCreateSeatData] = useState({})
     const [loading, setLoading] = useState(false)
     const [allShowtime, setAllShowtime] = useState([])
+    const [showtimeByMovie, setShowtimeByMovie] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
     const [toggle, setToggle] = useState(false)
     const [openProduct, setOpenProduct] = useState(false)
@@ -112,12 +113,17 @@ function DetailSales() {
         setSelectDateTime(date);
     };
 
-    const hadleGetItem = async (movieId) => {
-        setLoading(true)
+    const handleGetShowtimeByMovie = async (movieId) => {
         let resShowtime = await getShowtimeByMovieApi(movieId);
-        const newShowtimes = [];
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
-            resShowtime.data.result.filter(item => item.room.cinema.cinemaId === localStorage.getItem('cinemaId')).forEach(item => {
+            setShowtimeByMovie(resShowtime.data.result)
+        }
+    }
+    const hadleGetItem = () => {
+        setLoading(true)
+        const newShowtimes = [];
+        if (showtimeByMovie) {
+            showtimeByMovie.filter(item => item.room.cinema.cinemaId === localStorage.getItem('cinemaId')).forEach(item => {
                 if (item.status === "SHOWING") {
                     item.schedules.forEach(schedule => {
                         if (schedule.date === dayjs(selectDateTime.toISOString()).format("YYYY-MM-DD")) {
@@ -184,9 +190,13 @@ function DetailSales() {
         navigate('/staff/info-ticket', { state: { infoSchedule: createSeatData, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods } })
     }
     useEffect(() => {
-        hadleGetItem(movieId)
+        hadleGetItem()
+    }, [selectDateTime, showtimeByMovie]);
+
+    useEffect(() => {
         handleGetFood(localStorage.getItem('cinemaId'))
-    }, [selectDateTime]);
+        handleGetShowtimeByMovie(movieId)
+    }, [])
     return (
         <div className='px-4'>
             <h2 className='text-center text-3xl text-emerald-600 font-bold pt-3'>{allShowtime[0]?.movieName}</h2>

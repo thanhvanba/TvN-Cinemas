@@ -31,6 +31,7 @@ const AddMovie = () => {
     const [loading, setLoading] = useState(false);
     const [time, setTime] = useState()
     const [imageURL, setImageURL] = useState(null);
+    const [image2URL, setImage2URL] = useState(null);
     const [movie, setMovie] = useState({
         title: "",
         director: "",
@@ -39,6 +40,7 @@ const AddMovie = () => {
         desc: "",
         releaseDate: "",
         poster: {},
+        slider: {},
         trailerLink: "",
         duration: "",
         reviews: [],
@@ -54,6 +56,7 @@ const AddMovie = () => {
         releaseDate: "",
         desc: "",
         poster: "",
+        slider: "",
         trailerLink: "",
         duration: "",
         reviews: [],
@@ -107,6 +110,24 @@ const AddMovie = () => {
         };
         reader.readAsDataURL(file);
     };
+
+    const handleFileChange2 = (e) => {
+        const selectedFile = e.target.files[0];
+        readAndDisplayFile2(selectedFile);
+    };
+
+    const readAndDisplayFile2 = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImage2URL(reader.result);
+            setMovie((prevMovie) => ({
+                ...prevMovie,
+                slider: file,
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+
     useEffect(() => {
 
         if (pathname === "/admin/add-item/movie") {
@@ -119,6 +140,7 @@ const AddMovie = () => {
                 releaseDate: "",
                 desc: "",
                 poster: {},
+                slider: {},
                 trailerLink: "",
                 duration: "",
                 reviews: [],
@@ -134,6 +156,7 @@ const AddMovie = () => {
                 releaseDate: "",
                 desc: "",
                 poster: "",
+                slider: "",
                 trailerLink: "",
                 duration: "",
                 reviews: [],
@@ -160,6 +183,7 @@ const AddMovie = () => {
                 releaseDate: oneMovie.releaseDate,
                 desc: oneMovie.desc,
                 poster: oneMovie.poster,
+                slider: oneMovie.slider,
                 trailerLink: oneMovie.trailerLink,
                 duration: oneMovie.duration,
                 reviews: oneMovie.reviews,
@@ -167,6 +191,7 @@ const AddMovie = () => {
                 delete: oneMovie.delete
             })
         setImageURL(oneMovie.poster)
+        setImage2URL(oneMovie.slider)
     }, [oneMovie]);
     return (
         <div>
@@ -334,6 +359,26 @@ const AddMovie = () => {
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="my-4 border">
+                                <img src={image2URL} alt="Preview" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
+                            </div>
+
+                            <div className='px-4'>
+                                <input
+                                    onChange={handleFileChange2}
+                                    type="file"
+                                    className="hidden"
+                                    id="form_img2-upload"
+                                />
+                                <label
+                                    htmlFor="form_img2-upload"
+                                    className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                >
+                                    Chọn một tập tin
+                                </label>
                             </div>
                         </div>
                         <div className='flex justify-end'>

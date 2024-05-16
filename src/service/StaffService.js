@@ -26,14 +26,13 @@ function StaffService() {
             }
         );
     };
-    const sellTicketApi = async (userId, showtimeId, seats, foods) => {
+    const sellTicketApi = async (userId, seats, foods) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axios.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/staff/sell-ticket`,
                 {
                     userId: userId,
-                    showtimeId: showtimeId,
                     seatIds: seats,
                     foodIds: foods
                 },

@@ -256,10 +256,10 @@ const Header = () => {
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
-              <a onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5 outline-none ">
+              <p onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5 outline-none ">
                 <span className="sr-only">Your Company</span>
-                <img className="h-[60px] md:h-[80px] w-auto" src={logo} alt="" />
-              </a>
+                <img className="h-[60px] md:h-[80px] w-auto" src={logo}/>
+              </p>
             </div>
             {/* Thanh điều hướng */}
             <nav className="mx-auto flex max-w-6xl xl:max-w-7xl justify-between lg:px-8">
@@ -314,7 +314,7 @@ const Header = () => {
                   className="h-5 w-5 text-gray-400" />
               </button>
               {showMovieList && listMovieFound.length !== 0 &&
-                <div className='absolute -right-[50%] bg-slate-100 w-[200%] mt-2 p-4 rounded-lg'>
+                <div className='absolute -right-[50%] bg-slate-100 w-[200%] mt-2 p-4 rounded-lg cursor-pointer'>
                   {listMovieFound.map(movie => (
                     <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
                       <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>

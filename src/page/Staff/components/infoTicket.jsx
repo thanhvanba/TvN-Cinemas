@@ -19,7 +19,7 @@ function InfoTicket() {
 
     const handleSellTicket = async () => {
         setLoading('sell', true);
-        const resSellticket = await sellTicketApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', infoSchedule.showTimeId, listSeatBooking, listFoodBooking)
+        const resSellticket = await sellTicketApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', listSeatBooking, listFoodBooking)
         if (resSellticket && resSellticket.data && resSellticket.data.result) {
             setSellTicket(resSellticket.data.result);
         }

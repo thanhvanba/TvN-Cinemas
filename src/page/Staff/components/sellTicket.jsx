@@ -8,9 +8,10 @@ function SellTicket({ images, nowPlayingMovie }) {
         <div className=''>
             <div className='border-2 h-full'>
                 <div className='h-full relative'>
-                    <div className='relative flex justify-end items-center p-4'>
-                        <div className='h-[80vh]'>
-                            <Slider images={images} />
+
+                    <div className='relative px-8 pb-8'>
+                        <div className='w-full'>
+                            <Slider movies={nowPlayingMovie} />
                         </div>
                     </div>
                     <div className='relative px-4 pb-8'>
