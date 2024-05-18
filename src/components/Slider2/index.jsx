@@ -73,7 +73,7 @@ const MovieSlider = ({ movies }) => {
             <Slider {...settings}>
                 {movies.map(movie => (
                     <div
-                        onClick={() => navigate(`/staff/sell-ticket/${movie.movieId}`)}
+                        onClick={() => navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })}
                         className='px-2 cursor-pointer outline-none'
                         key={movie.id}
                     >

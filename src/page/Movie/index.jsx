@@ -205,8 +205,6 @@ const Movie = () => {
                                                                                     const updatedDateTime = {
                                                                                         ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                                                     };
-
-                                                                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
                                                                                     navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
                                                                                 }
                                                                             }}

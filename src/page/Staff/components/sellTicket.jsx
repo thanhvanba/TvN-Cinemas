@@ -2,8 +2,7 @@ import React from 'react'
 import Slider from '../../../components/Slider'
 import MovieSlider from '../../../components/Slider2'
 
-function SellTicket({ images, nowPlayingMovie }) {
-    console.log("🚀 ~ SellTicket ~ nowPlayingMovie:", nowPlayingMovie)
+function SellTicket({ nowPlayingMovie }) {
     return (
         <div className=''>
             <div className='border-2 h-full'>

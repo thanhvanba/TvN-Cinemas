@@ -56,10 +56,17 @@ function SearchUser({ onToggle, infoSchedule, listSeatBooking, listFoodBooking, 
                                                 setInputSearch(viewer?.userName)
                                                 setUserInfo(viewer)
                                             }}
-                                                className='flex p-2 items-end'
+                                                className='flex p-2 items-center'
                                             >
-                                                <img className="h-10 w-8 text-emerald-600" src={viewer.avatar} alt="" />
-                                                <span className='text-lg font-semibold px-4 items-center'>{viewer.userName}</span>
+                                                <img className="h-14 w-10 text-emerald-600" src={viewer.avatar} alt="" />
+                                                <div className='w-2/5'>
+                                                    <p className='text-sm font-semibold px-4 items-center'>{viewer.fullName}</p>
+                                                    <p className='text-sm font-semibold px-4 items-center'>{viewer.userName}</p>
+                                                </div>
+                                                <div className='w-1/2'>
+                                                    <p className="relative pl-12 font-semibold text-xs"><span className="absolute top-0 left-0 text-red-600">Email: </span>{viewer.email}</p>
+                                                    <p className="relative pl-12 font-semibold text-xs"><span className="absolute top-0 left-0 text-red-600">SĐT: </span>{viewer.phone}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     ))

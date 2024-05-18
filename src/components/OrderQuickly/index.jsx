@@ -168,7 +168,7 @@ function OrderQuickly({ allShowMovie }) {
     let hasShowtimes = false
     return (
         <div className="block h-36 w-full">
-            <div className="inline-block md:w-[40%] lg:w-[18%] p-3 items-center justify-between font-bold text-emerald-800">
+            <div className="inline-block md:w-[40%] lg:w-[18%] p-3 font-bold text-emerald-800">
                 <h2 className="uppercase font-bold text-2xl">mua vé <br /> nhanh </h2>
             </div>
             <div className="inline-block md:w-[60%] lg:w-[82%] p-2">
@@ -202,12 +202,10 @@ function OrderQuickly({ allShowMovie }) {
                         <ul className='px-2 grid grid-cols-4 gap-4 w-80'>
                             {foundShowtime.map((showtimeByRoom, index) => (
                                 showtimeByRoom.schedules.map((schedule, index) => {
-                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ schedule:", schedule)
                                     const currentDateTime = new Date();
                                     const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
                                     if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
                                         const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ isTimeInFuture:", isTimeInFuture)
                                         hasShowtimes = true;
                                         return (
                                             <li key={index}

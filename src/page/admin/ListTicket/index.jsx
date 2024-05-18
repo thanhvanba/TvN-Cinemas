@@ -15,6 +15,7 @@ import { Receipt } from 'lucide-react';
 import Fare from './components/fare';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import TimeAgo from '../../../components/TimeAgo';
+import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat';
 
 
 const ListTicket = () => {
@@ -129,12 +130,12 @@ const ListTicket = () => {
               <table className='mt-6 w-full'>
                 <thead className=''>
                   <tr>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.stt}</th>
+                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-10'>{listTicket.header.stt}</th>
                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.movieName}</th>
                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.showtime}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.ticketPrice}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.createAt}</th>
+                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[196px]'>{listTicket.header.showtime}</th>
+                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[73px]'>{listTicket.header.ticketPrice}</th>
+                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[116px]'>{listTicket.header.createAt}</th>
                     <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.user}</th>
                   </tr>
                 </thead>
@@ -152,7 +153,7 @@ const ListTicket = () => {
                         <td className='text-start font-medium px-2 py-4'>{item.movieName}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</td>
-                        <td className='text-center font-medium px-2 py-4'>{item.price}</td>
+                        <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}</td>
                         <td className='text-center font-medium px-2 py-4'>{TimeAgo(item.createAt)}</td>
                         <td className='text-center font-medium px-2 py-4'>{item.userName}</td>
                       </tr>
@@ -216,7 +217,7 @@ const ListTicket = () => {
         }
         {
           toggle && (
-            <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
+            <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-50'>
               <div className=" w-[30%] z-10 overflow-hidden bg-slate-300 rounded-md right-1/2 ">
                 <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
 
@@ -326,7 +327,7 @@ const ListTicket = () => {
         }
         {
           loading['fare'] &&
-            <Fare onLoading={setLoading} />
+          <Fare onLoading={setLoading} />
         }
       </div>
     </div >
