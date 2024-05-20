@@ -105,6 +105,7 @@ const AddShowtime = () => {
     // console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
+    const [errors, setErrors] = useState({});
     const handleGetAllItem = async (pathname) => {
         if (pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime") {
             let resMovie = await GetAllMovieApi()
@@ -120,13 +121,34 @@ const AddShowtime = () => {
             setAllRoom(resRoom.data.result.content.reverse())
         }
     }
+
+    const validate = () => {
+        const newErrors = {};
+        if (!showtime.movieId) newErrors.movie = 'Vui lòng chọn phim!';
+        if (!showtime.roomId) newErrors.room = 'Vui lòng chọn phòng!';
+        if (!showtime.timeStart) newErrors.timeStart = 'Vui lòng chọn thời gian bắt đầu!';
+        if (!showtime.timeEnd) newErrors.timeEnd = 'Vui lòng chọn thời gian kết thúc!';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const clearError = (fieldName) => {
+        if (errors[fieldName]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [fieldName]: undefined
+            }));
+        }
+    };
     const handleAddShowtime = async (e) => {
         e.preventDefault();
+        if (validate()) {
         setLoading(true);
         const data = showtime;
         await addShowtimeApi(data);
         navigate(-1)
         setLoading(false);
+        }
     };
     const handleUpdateShowtime = async (e) => {
         e.preventDefault();
@@ -156,12 +178,14 @@ const AddShowtime = () => {
         if (movie) {
             const selectedId = movie.movieId
             setDurationMovie(movie.duration)
-            setShowtime({ ...showtime, movieId: selectedId })
+            setShowtime({ ...showtime, movieId: selectedId })         
+            clearError('movie')
         }
         const room = allRoom.find(room => room.roomName === selectedValue)
         if (room) {
             const roomId = room.roomId
             setShowtime({ ...showtime, roomId: roomId })
+            clearError('room')
         }
     };
 
@@ -236,7 +260,6 @@ const AddShowtime = () => {
             }
         } else {
             // Nếu ngày không tồn tại trong lịch, thêm ngày mới
-            console.log("Vào4")
             const newDay = { date: date, time: [time] };
             const updatedSchedule = [...schedule, newDay];
             updatedSchedule.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -258,6 +281,7 @@ const AddShowtime = () => {
 
         if (initialData.lenght > 0) {
             initialData.forEach(item => {
+                console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
                 if (item.date !== currentDate) {
                     if (currentDate !== '') {
                         transformedData.push({ "date": currentDate, "time": currentStartTimes });
@@ -287,7 +311,6 @@ const AddShowtime = () => {
 
             let filteredShowtime = showtime.schedules.filter(item => !(item.date === date && item.startTime === selectedTime));
             setShowtime({ ...showtime, schedules: filteredShowtime });
-            console.log("Vào5")
             // Cập nhật mảng lịch với thời gian mới
             setSchedule((prevSchedule) => {
                 const newSchedule = [...prevSchedule];
@@ -357,7 +380,6 @@ const AddShowtime = () => {
     useEffect(() => {
         if (pathname !== "/admin/add-item/showtime" || pathname !== "/manager/add-item/showtime") {
             setIsChecked(oneShowtime.special);
-            console.log("Vào6")
             setSchedule(transformData(oneShowtime.schedules));
             setShowtime({
                 ...showtime,
@@ -417,7 +439,7 @@ const AddShowtime = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Movie
+                                            Phim <span className='text-red-600'>*</span>
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
@@ -431,13 +453,14 @@ const AddShowtime = () => {
                                                     />
                                             }
                                         </div>
+                                        {errors.movie && <p className="text-red-600">{errors.movie}</p>}
                                     </div>
                                     <div className="relative my-4">
                                         <label
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Room
+                                            Phòng <span className='text-red-600'>*</span>
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
@@ -453,6 +476,7 @@ const AddShowtime = () => {
                                                         <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom} content={oneShowtime.room.roomName} />
                                             }
                                         </div>
+                                        {errors.room && <p className="text-red-600">{errors.room}</p>}
                                     </div>
                                     <div className='flex justify-between'>
                                         <div className="relative my-4 w-full">
@@ -460,7 +484,7 @@ const AddShowtime = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Time Start
+                                                Thời gian bắt đầu <span className='text-red-600'>*</span>
                                             </label>
                                             {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
                                                 <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
@@ -476,17 +500,19 @@ const AddShowtime = () => {
                                                     onChange={date => {
                                                         setStartDate(date);
                                                         setShowtime({ ...showtime, timeStart: date });
+                                                        clearError('timeStart')
                                                     }}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     dateFormat="yyyy-MM-dd" // Định dạng ngày
                                                 />}
+                                            {errors.timeStart && <p className="text-red-600">{errors.timeStart}</p>}
                                         </div>
                                         <div className="relative my-4 w-full">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Time End
+                                                Thời gian kết thúc <span className='text-red-600'>*</span>
                                             </label>
                                             {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
                                                 <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
@@ -502,17 +528,19 @@ const AddShowtime = () => {
                                                     onChange={date => {
                                                         setEndDate(date);
                                                         setShowtime({ ...showtime, timeEnd: date });
+                                                        clearError('timeEnd')
                                                     }}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     dateFormat="yyyy-MM-dd" // Định dạng ngày
                                                 />}
+                                            {errors.timeEnd && <p className="text-red-600">{errors.timeEnd}</p>}
                                         </div>
                                         <div className="relative my-4 w-full">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Is Special:
+                                                Xuất chiếu đặt biệt:
                                             </label>
                                             <label className="inline-flex items-center mt-4">
                                                 {
@@ -554,16 +582,15 @@ const AddShowtime = () => {
 
                                 </div>
                                 <div className="rounded-md p-8 mt-8 shadow-lg bg-slate-100 relative">
-
                                     <div className=''>
-                                        <h2 className='text-lg font-medium leading-6 text-gray-900'>Set up schedule</h2>
+                                        <h2 className='text-lg font-medium leading-6 text-gray-900'>Thiết lập xuất chiếu</h2>
                                         <div className='flex justify-between'>
                                             <div className="relative m-8 w-full">
                                                 <label
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900 pb-2"
                                                 >
-                                                    Date <br />
+                                                    Ngày<br />
                                                     <span className='text-xs font-extralight text-red-400'>( --Ngày thuộc khoảng thời gian chiếu đã chọn ở trên-- )</span>
                                                 </label>
                                                 <DatePicker
@@ -576,7 +603,7 @@ const AddShowtime = () => {
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900 pb-2"
                                                 >
-                                                    Time<br />
+                                                    Thời gian<br />
                                                     <span className='text-xs font-extralight'>( Thời gian chiếu trong ngày )</span>
                                                 </label>
 
@@ -591,16 +618,16 @@ const AddShowtime = () => {
                                         </div>
 
                                         <div className='p-8 border-2'>
-                                            <h2 className='font-medium text-lg text-gray-900'>Schedule:</h2>
+                                            <h2 className='font-medium text-lg text-gray-900'>Danh sách xuất chiếu:</h2>
                                             <ul>
                                                 {schedule && schedule.map((item, index) => (
                                                     <li key={item.date}>
                                                         <p className='py-4'>
-                                                            <span className='text-emerald-600 pr-8 font-semibold'>{user.role === "ADMIN" ? index + 1 : index}. Date:</span>
+                                                            <span className='text-emerald-600 pr-8 font-semibold'>{index + 1}. Ngày:</span>
                                                             {FormatDataTime(item.date).date}
                                                         </p>
                                                         <div className='flex'>
-                                                            <p className='text-emerald-600 font-medium px-4'> Time:</p>
+                                                            <p className='text-emerald-600 font-medium px-4'> Thời gian:</p>
                                                             <ul className='justify-center grid grid-cols-8 gap-4'>
                                                                 {item.time && item.time.map((time) => (
                                                                     <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
@@ -630,7 +657,7 @@ const AddShowtime = () => {
                                 {
                                     <div className='flex justify-end'>
                                         <button
-                                            className="w-1/6 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                            className="w-1/6 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                             type='submit'
                                             disabled={loading}
                                         >

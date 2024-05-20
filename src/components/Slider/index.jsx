@@ -238,16 +238,16 @@ const HomeSlider = ({ movies }) => {
                             <>
                                 <div className="absolute top-28 right-14 left-14 z-50 flex">
                                     <div className="w-2/5 text-gray-50">
-                                        <h2 data-aos="fade-down-right" data-aos-duration="1000" className="text-6xl font-bold pt-14 uppercase">{movie.title}</h2>
-                                        <div data-aos="zoom-in-left" data-aos-duration="1000" className="py-4 flex items-center">
+                                        <h2 data-aos="fade-down-right" data-aos-duration="700" className="text-6xl font-bold pt-14 uppercase">{movie.title}</h2>
+                                        <div data-aos="zoom-in-left" data-aos-duration="700" className="py-4 flex items-center">
                                             <StarIcon className="h-6 w-6 text-yellow-400" />
                                             <div className="font-bold pl-4 text-orange-300 w-1/2">{movie.rating}/5</div>
                                             <p className="font-bold"><span className="text-red-600">Thời lượng: </span>{movie.duration}'</p>
                                         </div>
-                                        <div data-aos="fade-left" data-aos-duration="1000" >
+                                        <div data-aos="fade-left" data-aos-duration="700" >
                                             <TruncatedContent content={movie.desc} maxLength={280} />
                                         </div>
-                                        <div data-aos="fade-right" data-aos-duration="1000" className="py-4">
+                                        <div data-aos="fade-right" data-aos-duration="700" className="py-4">
                                             <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Thể loại: </span>{movie.genres}</p>
                                             <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Diễn viên: </span>  <TruncatedContent content={movie.actor} maxLength={70} /></p>
                                             <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Tác giả: </span>{movie.director}</p>
@@ -258,7 +258,7 @@ const HomeSlider = ({ movies }) => {
 
                                 <button
                                     data-aos="flip-right"
-                                    data-aos-duration="2000"
+                                    data-aos-duration="1500"
                                     className="absolute bottom-[5%] left-14 z-50 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
                                     type="button"
                                     onClick={(e) => { e.stopPropagation(); openTrailer() }}
@@ -273,7 +273,7 @@ const HomeSlider = ({ movies }) => {
                 }
             </Slider >
 
-            <div className="">
+            <div className="z-[60]">
                 <Trailer showTrailer={showTrailer} closeTrailer={closeTrailer} movie={movies[index]} />
             </div>
 

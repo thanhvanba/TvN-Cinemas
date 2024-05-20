@@ -36,7 +36,7 @@ const Fare = ({ onLoading }) => {
     }
     return (
         <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-20'>
-            <div className="relative w-3/5 z-10 overflow-hidden bg-slate-300 rounded-md">
+            <div className="relative w-1/3 z-10 overflow-hidden bg-slate-300 rounded-md">
                 <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chỉnh sửa giá vé</h4>
                 <div className=' rounded-xl bg-slate-100 w-1/2 z-10'>
                     <button
@@ -56,7 +56,7 @@ const Fare = ({ onLoading }) => {
                     {/* <div className='flex justify-center absolute mx-auto w-full h-full top-0 right-0 z-10'>
                         {loading['ticket'] && <Loading />}
                     </div> */}
-                    <div className="relative my-4">
+                    <div className="relative my-4 z-30">
                         <label
                             htmlFor=""
                             className="block text-lg font-medium leading-6 text-gray-900"
@@ -83,7 +83,7 @@ const Fare = ({ onLoading }) => {
                     </div>
                     <div className='flex justify-end'>
                         <button
-                            className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300 z-50"
+                            className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
                             type='button'
                             // disabled={loading['change']}
                             onClick={() => {

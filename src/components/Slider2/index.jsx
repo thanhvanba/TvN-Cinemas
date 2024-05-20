@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Circle, CircleDot } from 'lucide-react';
 import TruncatedContent from '../../utils/TruncatedContent';
 import { useNavigate } from 'react-router-dom';
+import { LoginContext } from '../../context/LoginContext';
+import { StarIcon } from '@heroicons/react/20/solid';
 
 const MovieSlider = ({ movies }) => {
+    console.log("🚀 ~ MovieSlider ~ movies:", movies)
+    const { user } = useContext(LoginContext)
     const navigate = useNavigate()
     function SampleNextArrow(props) {
         const { className, style, onClick } = props;
@@ -34,8 +37,8 @@ const MovieSlider = ({ movies }) => {
         infinite: true,
         slidesToShow: movies.length < 5 ? movies.length : 5,
         slidesToScroll: 1,
-        autoplay: true,
-        speed: 2000,
+        autoplay: user.role === "STAFF" ? true : false,
+        speed: user.role === "STAFF" ? 2000 : 1000,
         autoplaySpeed: 1,
         cssEase: "linear",
         prevArrow: <SamplePrevArrow />,
@@ -70,18 +73,54 @@ const MovieSlider = ({ movies }) => {
 
     return (
         <div className="slider-container">
-            <Slider {...settings}>
-                {movies.map(movie => (
+            {movies.length === 1 ?
+                (movies?.map(movie => (
                     <div
-                        onClick={() => navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })}
+                        onClick={() => {
+                            user.role === "STAFF" ? navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })
+                                : navigate(`/movie/${movie.movieId}`)
+                        }}
                         className='px-2 cursor-pointer outline-none'
                         key={movie.id}
                     >
-                        <img className='h-96 w-56' src={movie.poster} alt={movie.title} />
-                        <h3 className='text-yellow-50 uppercase font-bold'><TruncatedContent content={movie.title} maxLength={18} /></h3>
+                        <div className='flex justify-center items-center'>
+                            <div className='relative'>
+                                <img className='h-96 w-60' src={movie.poster} alt={movie.title} />
+                                <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                    <div className='flex justify-center items-center p-2'>
+                                        <StarIcon className='h-6 text-amber-400 px-4' />
+                                        <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 className='text-yellow-50 uppercase font-bold text-center'>{movie.title}</h3>
                     </div>
-                ))}
-            </Slider>
+                ))) : (
+                    <Slider {...settings}>
+                        {movies?.map(movie => (
+                            <div
+                                onClick={() => {
+                                    user.role === "STAFF" ? navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })
+                                        : navigate(`/movie/${movie.movieId}`)
+                                }}
+                                className='px-2 cursor-pointer outline-none'
+                                key={movie.id}
+                            >
+                                <div className='relative'>
+                                    <img className='h-96 w-full' src={movie.poster} alt={movie.title} />
+                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                        <div className='flex justify-center items-center p-2'>
+                                            <StarIcon className='h-6 text-amber-400 px-4' />
+                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h3 className='text-yellow-50 uppercase font-bold'><TruncatedContent content={movie.title} maxLength={18} /></h3>
+                            </div>
+                        ))}
+                    </Slider>
+                )}
         </div>
     );
 }

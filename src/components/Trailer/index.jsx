@@ -9,7 +9,7 @@ function Trailer({ showTrailer, closeTrailer, movie }) {
         <>
             {/* Hiển thị video khi showTrailer là true */}
             {showTrailer && (
-                <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
+                <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-[100]'>
                     <div className='relative rounded-xl bg-slate-100 w-1/2 z-10'>
                         <div className="relative w-full h-0 pb-[56.25%]">
                             <iframe

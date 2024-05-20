@@ -96,16 +96,40 @@ const ListUser = () => {
         iAvatar: UserCircleIcon
     }
 
+    const [errors, setErrors] = useState({});
 
+    const validate = () => {
+        const newErrors = {};
+        if (!account.fullName) newErrors.fullName = 'Vui lòng nhập họ tên!';
+        if (!account.email) newErrors.email = 'Vui lòng nhập email!';
+        // else if (isEmail(account.email)) newErrors.email = 'Vui lòng nhập đúng định dạng!'
+        if (!account.phone) newErrors.phone = 'Vui lòng nhập số điện thoại!';
+        if (!account.cinemaId) newErrors.cinema = 'Vui lòng chọn rạp phim!';
+        if (!account.userName) newErrors.userName = 'Vui lòng nhập tên đăng nhập!';
+        if (!account.password) newErrors.password = 'Vui lòng nhập mật khẩu!';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const clearError = (fieldName) => {
+        if (errors[fieldName]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [fieldName]: undefined
+            }));
+        }
+    };
     const handleAddManager = async (e) => {
         e.preventDefault();
-        setLoading('add', true);
-        const data = account;
-        { pathname === "/manager/list-personnel" ? await addStaffApi(data) : await addManagerApi(data); }
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
-        setLoading('add', false);
+        if (validate()) {
+            setLoading('add', true);
+            const data = account;
+            { pathname === "/manager/list-personnel" ? await addStaffApi(data) : await addManagerApi(data); }
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+            setLoading('add', false);
+        }
     };
     const handleGetItem = async () => {
         let res = await getCinemasUnmanagedApi()
@@ -163,6 +187,7 @@ const ListUser = () => {
         const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
         const selectedId = cinema.cinemaId
         setAccount({ ...account, cinemaId: selectedId })
+        clearError('cinema')
     };
 
     const handleOpenModal = (userId) => {
@@ -210,7 +235,7 @@ const ListUser = () => {
                             <div className="px-6 py-3 relative">
                                 <form id='formAddManager' onSubmit={handleAddManager} action="">
                                     <div className='text-xl font-semibold'>
-                                        Thông tin cơ bản
+                                        Thông tin cơ bản <span className='text-red-600'>*</span>
                                     </div>
                                     <div className='px-8'>
                                         <div className="relative my-2">
@@ -218,57 +243,70 @@ const ListUser = () => {
                                                 htmlFor=""
                                                 className="block text-lg leading-6 text-gray-900"
                                             >
-                                                Họ và tên
+                                                Họ và tên <span className='text-red-600'>*</span>
                                             </label>
                                             <input
                                                 // value={account.fullName}
-                                                onChange={e => setAccount({ ...account, fullName: e.target.value })}
+                                                onChange={e => {
+                                                    setAccount({ ...account, fullName: e.target.value })
+                                                    clearError('fullName')
+                                                }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder=""
                                             />
                                         </div>
+                                        {errors.fullName && <p className="text-red-600">{errors.fullName}</p>}
                                         <div className="relative my-2">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg leading-6 text-gray-900"
                                             >
-                                                Email
+                                                Email <span className='text-red-600'>*</span>
                                             </label>
                                             <input
                                                 // value={account.email}
-                                                onChange={e => { setAccount({ ...account, email: e.target.value }); }}
+                                                onChange={e => {
+                                                    setAccount({ ...account, email: e.target.value });
+                                                    clearError('email')
+                                                }}
                                                 type="email"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder=""
                                             />
                                         </div>
+                                        {errors.email && <p className="text-red-600">{errors.email}</p>}
                                         <div className="relative my-2">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg leading-6 text-gray-900"
                                             >
-                                                Số điện thoại
+                                                Số điện thoại <span className='text-red-600'>*</span>
                                             </label>
                                             <input
                                                 // value={account.phone}
-                                                onChange={e => setAccount({ ...account, phone: e.target.value })}
+                                                onChange={e => {
+                                                    setAccount({ ...account, phone: e.target.value })
+                                                    clearError('phone')
+                                                }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder=""
                                             />
                                         </div>
+                                        {errors.phone && <p className="text-red-600">{errors.phone}</p>}
                                         {pathname !== "/manager/list-personnel" &&
                                             <div className="relative my-2 z-50">
                                                 <label
                                                     htmlFor=""
                                                     className="block text-lg leading-6 text-gray-900"
                                                 >
-                                                    Rạp quản lý
+                                                    Rạp quản lý <span className='text-red-600'>*</span>
                                                 </label>
                                                 <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                                     <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
                                                 </div>
+                                                {errors.cinema && <p className="text-red-600">{errors.cinema}</p>}
                                             </div>
                                         }
                                     </div>
@@ -281,28 +319,37 @@ const ListUser = () => {
                                                 htmlFor=""
                                                 className="block text-lg leading-6 text-gray-900"
                                             >
-                                                Tên đăng nhập
+                                                Tên đăng nhập <span className='text-red-600'>*</span>
                                             </label>
                                             <input
                                                 // value={account.userName}
-                                                onChange={e => setAccount({ ...account, userName: e.target.value })} type="text"
+                                                onChange={e => {
+                                                    setAccount({ ...account, userName: e.target.value })
+                                                    clearError('userName')
+                                                }}
+                                                type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder=""
                                             />
+                                            {errors.userName && <p className="text-red-600">{errors.userName}</p>}
                                         </div>
                                         <div className="relative my-2">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg leading-6 text-gray-900"
                                             >
-                                                Mật khẩu
+                                                Mật khẩu <span className='text-red-600'>*</span>
                                             </label>
                                             <input
                                                 // value={account.password}
-                                                onChange={e => setAccount({ ...account, password: e.target.value })}
+                                                onChange={e => {
+                                                    setAccount({ ...account, password: e.target.value })
+                                                    clearError('password')
+                                                }}
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholder=""
                                             />
+                                            {errors.password && <p className="text-red-600">{errors.password}</p>}
                                         </div>
                                     </div>
                                     <div className='flex justify-end mt-10'>

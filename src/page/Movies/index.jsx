@@ -6,13 +6,14 @@ import UserService from '../../service/UserService';
 import TruncatedContent from '../../utils/TruncatedContent';
 import Loading from '../../components/Loading'
 import { StarIcon } from '@heroicons/react/20/solid';
+import MovieSlider from '../../components/Slider2';
 
 function Movies() {
     const { keyWord } = useParams()
 
-    const [nowPlayMovie, setNowPlayMovie] = useState({})
-    const [comingSoonMovie, setComingSoonMovie] = useState({})
-    const [specialMovie, setSpecialMovie] = useState({})
+    const [nowPlayMovie, setNowPlayMovie] = useState([])
+    const [comingSoonMovie, setComingSoonMovie] = useState([])
+    const [specialMovie, setSpecialMovie] = useState([])
     const [listMovieFound, setListMovieFound] = useState([])
     const [loading, setLoading] = useState(false);
 
@@ -104,37 +105,12 @@ function Movies() {
                             : <div>
                                 {specialMovie.length !== 0 &&
                                     <div className='border-y-[0.05px]'>
-                                        <div className='max-w-6xl mx-auto'>
+                                        <div className='max-w-7xl mx-auto'>
                                             <div className='h-20 flex justify-center items-center'>
                                                 <h2 className='text-3xl text-slate-200'>Suất chiếu đặc biệt</h2>
                                             </div>
-
-                                            <div className='pt-8'>
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-screen-xl px-4 mx-auto">
-                                                    {
-                                                        specialMovie && specialMovie.length > 0 &&
-                                                        specialMovie.map((movie, index) => (
-                                                            <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
-                                                                    <img
-                                                                        src={movie.poster}
-                                                                        alt=""
-                                                                        className="product-over h-[300px] w-full table-cell"
-                                                                    />
-                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
-                                                                        <div className='flex justify-center items-center p-2'>
-                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
-                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                                                                    {movie.title}
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
+                                            <div className='mb-8'>
+                                                <MovieSlider movies={specialMovie} />
                                             </div>
                                         </div>
                                     </div>
@@ -142,37 +118,12 @@ function Movies() {
 
                                 {nowPlayMovie.length !== 0 &&
                                     <div className='border-y-[0.05px]'>
-                                        <div className='max-w-6xl mx-auto'>
+                                        <div className='max-w-7xl mx-auto'>
                                             <div className='h-20 flex justify-center items-center'>
                                                 <h2 className='text-3xl text-slate-200'>Phim đang chiếu</h2>
                                             </div>
-
-                                            <div className='pt-8'>
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-screen-xl px-4 mx-auto">
-                                                    {
-                                                        nowPlayMovie && nowPlayMovie.length > 0 &&
-                                                        nowPlayMovie.map((movie, index) => (
-                                                            <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
-                                                                    <img
-                                                                        src={movie.poster}
-                                                                        alt=""
-                                                                        className="product-over h-[300px] w-full table-cell"
-                                                                    />
-                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
-                                                                        <div className='flex justify-center items-center p-2'>
-                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
-                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                                                                    {movie.title}
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
+                                            <div className='mb-8'>
+                                                <MovieSlider movies={nowPlayMovie} />
                                             </div>
                                         </div>
                                     </div>
@@ -180,37 +131,12 @@ function Movies() {
 
                                 {comingSoonMovie.length !== 0 &&
                                     <div className='border-y-[0.05px]'>
-                                        <div className='max-w-6xl mx-auto'>
+                                        <div className='max-w-7xl mx-auto'>
                                             <div className='h-20 flex justify-center items-center'>
                                                 <h2 className='text-3xl text-slate-200'>Phim sắp chiếu</h2>
                                             </div>
-
-                                            <div className='pt-8'>
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-screen-xl px-4 mx-auto">
-                                                    {
-                                                        comingSoonMovie && comingSoonMovie.length > 0 &&
-                                                        comingSoonMovie.map((movie, index) => (
-                                                            <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%]">
-                                                                    <img
-                                                                        src={movie.poster}
-                                                                        alt=""
-                                                                        className="product-over h-[300px] w-full table-cell"
-                                                                    />
-                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
-                                                                        <div className='flex justify-center items-center p-2'>
-                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
-                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                                                                    {movie.title}
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
+                                            <div className='mb-8'>
+                                                <MovieSlider movies={comingSoonMovie} />
                                             </div>
                                         </div>
                                     </div>

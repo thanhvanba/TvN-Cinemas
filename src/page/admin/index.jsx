@@ -64,7 +64,7 @@ const Admin = () => {
     ]
     : [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
-      { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
+      { content: "Lịch chiếu", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
       { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
       { content: "Vé", icon: StarIcon, path: "list-ticket" },
       { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
@@ -256,7 +256,7 @@ const Admin = () => {
             <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
               <div className=''>
                 <div className='h-20 mb-2  flex items-center w-full border-b-2'>
-                  <h2 className='text-3xl'>Update User</h2>
+                  <h2 className='text-3xl px-4'>Cập nhật thông tin</h2>
                 </div>
                 <div className='px-10'>
                   <ProfileDetail />

@@ -144,7 +144,12 @@ const ListRoom = () => {
                         </div>
                         {
                             allRoom.length === 0 ?
-                                <div className='p-4 text-center text-gray-500'>Chưa có phòng. Tiến hành thêm phòng !!!</div>
+                                <div className='p-4 text-center text-gray-500'>
+                                    {isDelete ?
+                                        <span>Chưa có phòng nào đang bảo trì</span>
+                                        : <span>Chưa có phòng. Tiến hành thêm phòng !!!</span>
+                                    }
+                                </div>
                                 :
                                 <>
                                     <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './index.css'
 import AdminService from '../../../service/AdminService';
 import Ticket from '../../../components/Ticket';
@@ -16,10 +16,14 @@ import Fare from './components/fare';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import TimeAgo from '../../../components/TimeAgo';
 import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat';
+import { LoginContext } from '../../../context/LoginContext';
+import StaffService from '../../../service/StaffService';
 
 
 const ListTicket = () => {
-  const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllBookingtApi, getAllUserApi, confirmTicketApi } = AdminService()
+  const { user } = useContext(LoginContext)
+  const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllBookingApi, getAllUserApi, confirmTicketApi } = AdminService()
+  const { getAllBookingStaffApi } = StaffService()
   const { getTicketDetailApi } = UserService()
 
   const [allTicketC, setAllTicketC] = useState([])
@@ -44,9 +48,9 @@ const ListTicket = () => {
 
   const handleGetItems = async (pageNumber) => {
     setLoading('loading', true)
-    let resTicketC = await getAllBookingtApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
-    let resTicketU = await getAllBookingtApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
-    let resTicketCa = await getAllBookingtApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
+    let resTicketC = user.role === 'ADMIN' ? await getAllBookingApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
+    let resTicketU = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
+    let resTicketCa = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
       setAllTicketC(resTicketC.data.result.content)
       setPagination(prevPagination => ({
@@ -103,7 +107,7 @@ const ListTicket = () => {
           <h2 className='text-3xl cursor-default'>Quản lý vé  </h2>
 
           {
-            // (user.role === "ADMIN" && /^\/(admin|manager)\/list-movie/.test(pathname)) ?
+            user.role === "ADMIN" &&
             <button
               className="my-4 px-6 py-2 border-slate-400 border text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
               type='submit'

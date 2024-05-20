@@ -136,7 +136,6 @@ const Dashboard = () => {
   }
 
   const handleStatistic = async () => {
-    console.log("VÀO ĐÂY NÈ")
     setLoading(true)
 
     let params = selectedOptions === 1 ? { year: selectedYear } : { year: selectedYear, month: selectedMonth }

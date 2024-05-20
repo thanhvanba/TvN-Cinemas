@@ -499,10 +499,10 @@ const AdminService = () => {
         );
     };
 
-    const getAllBookingtApi = async (pageIndex, pageSize, status, cinemaId) => {
+    const getAllBookingApi = async (pageIndex, pageSize, status, cinemaId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axios.get(
-            `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings`,
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/bookings`,
             {
                 headers: {
                     "Authorization": bearerToken,
@@ -895,7 +895,7 @@ const AdminService = () => {
         totalTicketByCinemaApi,
         getCinemasUnmanagedApi,
         getAllTicketApi,
-        getAllBookingtApi,
+        getAllBookingApi,
         getAllCinemaApi,
         getAllMovieApi,
         getShowtimeByCinemaApi,

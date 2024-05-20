@@ -15,6 +15,7 @@ import AdminService from '../../../service/AdminService';
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import Loading from '../../../components/Loading';
 import dayjs from 'dayjs';
+import { format, parse } from 'date-fns';
 
 const ProfileDetail = () => {
     const { updateProfileApi, getUserInfoApi } = UserService();
@@ -28,31 +29,8 @@ const ProfileDetail = () => {
     const { loading, setLoading } = useLoadingState(false);
     const [imageURL, setImageURL] = useState()
     const [dob, setDob] = useState(null);
-    const [account, setAccount] = useState({
-        // street: "",
-        // district: "",
-        // province: "",
-        // country: "",
-        // role: "",
-        // userName: "",
-        // email: "",
-        // fullName: "",
-        // dob: null,
-        // phone: "",
-        // // createdAt: null,
-        // // updatedAt: "",
-        // // lastLoginAt: "",
-        // cinema: {
-        //     cinemaId: "",
-        //     location: "",
-        //     cinemaName: "",
-        //     desc: "",
-        //     status: true,
-        //     urlLocation: null
-        // },
-        // image: ""
-    })
-    console.log("🚀 ~ ProfileDetail ~ account:", account.dob)
+    const [account, setAccount] = useState({})
+    console.log("🚀 ~ ProfileDetail ~ account:", account)
     const [userInfo, setUserInfo] = useState({
         userId: "",
         address: {
@@ -92,7 +70,6 @@ const ProfileDetail = () => {
     const handleGetItems = async () => {
         setLoading('hisBooking', true);
         let resInfo = /^\/admin\/update-item\/user/.test(pathname) ? await getOneUserApi(userId) : await getUserInfoApi()
-        console.log("Vào đâỳ")
         if (resInfo && resInfo.data && resInfo.data.result) {
             setUserInfo(resInfo.data.result)
             // navigate(-1)
@@ -125,41 +102,25 @@ const ProfileDetail = () => {
         reader.readAsDataURL(file);
     };
     const handleSelectDate = (date, dateString) => {
-        setAccount({ ...account, dob: dateString });
+        setAccount({
+            ...account, dob: format(parse(dateString, "dd/MM/yyyy", new Date()), "yyyy-MM-dd")
+        })
     };
     useEffect(() => {
         handleGetItems()
     }, [userId]);
 
-    // useEffect(() => {
-    //     if (userInfo && (user.role === "MANAGER" ? userInfo.cinema : true)) {
-    //         setAccount({
-    //             ...account,
-    //             fullName: userInfo.fullName,
-    //             dob: userInfo.dob,
-    //             street: (userInfo && userInfo.address && userInfo.address.street) ? userInfo.address.street : '',
-    //             district: (userInfo && userInfo.address && userInfo.address.district) ? userInfo.address.district : '',
-    //             province: (userInfo && userInfo.address && userInfo.address.province) ? userInfo.address.province : '',
-    //             country: (userInfo && userInfo.address && userInfo.address.country) ? userInfo.address.country : '',
-    //             email: userInfo.email,
-    //             phone: userInfo.phone,
-    //             userName: userInfo.userName,
-    //             role: userInfo.role.roleName,
-    //             ...(user.role === "MANAGER" && {
-    //                 cinema: {
-    //                     ...account.cinema,
-    //                     cinemaId: userInfo.cinema.cinemaId || "",
-    //                     location: userInfo.cinema.location || "",
-    //                     cinemaName: userInfo.cinema.cinemaName || "",
-    //                     desc: userInfo.cinema.desc || "",
-    //                     status: userInfo.cinema.status || true,
-    //                     urlLocation: userInfo.cinema.urlLocation || null
-    //                 }
-    //             }),
-    //             image: userInfo.avatar
-    //         });
-    //     }
-    // }, [userInfo]);
+    useEffect(() => {
+        if (userInfo && (user.role === "MANAGER" ? userInfo.cinema : true)) {
+            setAccount({
+                ...account,
+                street: (userInfo && userInfo.address && userInfo.address.street) ? userInfo.address.street : '',
+                district: (userInfo && userInfo.address && userInfo.address.district) ? userInfo.address.district : '',
+                province: (userInfo && userInfo.address && userInfo.address.province) ? userInfo.address.province : '',
+                country: (userInfo && userInfo.address && userInfo.address.country) ? userInfo.address.country : '',
+            });
+        }
+    }, [userInfo]);
     return (
         <div className='relative'>
             <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
@@ -222,7 +183,7 @@ const ProfileDetail = () => {
                                     <DatePicker
                                         // selected={dob}
                                         onChange={handleSelectDate}
-                                        defaultValue={userInfo.dob &&  dayjs(userInfo.dob, "YYYY-MM-DD")}
+                                        defaultValue={userInfo.dob && dayjs(userInfo.dob, "YYYY-MM-DD")}
                                         // placeholderText='Ngày sinh'
                                         placeholder='Ngày sinh'
                                         className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"

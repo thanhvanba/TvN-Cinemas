@@ -208,13 +208,14 @@ const ListProduct = () => {
                                             <div className='flex justify-center absolute top-0 w-full p-3'>
                                                 {!status ?
                                                     <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
-                                                    : <>
+                                                    : <> {user.role === "ADMIN" ?
                                                         <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
                                                             <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
                                                         </div>
-                                                        <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
+                                                        : <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
                                                             <Button click={() => { setToggle(!toggle) }} img={pnpegg} title={"Nhập hàng"} />
                                                         </div>
+                                                    }
                                                     </>
                                                 }
                                             </div>

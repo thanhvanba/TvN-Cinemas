@@ -41,6 +41,7 @@ const ShowtimeByRoom = () => {
     }
   );
   const [allShowtime, setAllShowtime] = useState([]);
+  console.log("🚀 ~ allShowtime:", allShowtime)
   const [allRoom, setAllRoom] = useState([]);
   console.log("🚀 ~ ShowtimeByRoom ~ allRoom:", allRoom)
 
@@ -57,7 +58,8 @@ const ShowtimeByRoom = () => {
 
   const handleGetShowtimeByRoom = async (pageNumber, roomId) => {
     setLoading(true)
-    let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6)
+    let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd')) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd'))
+    // let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
       // const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
       setAllShowtime(resST.data.result.content);
@@ -73,7 +75,7 @@ const ShowtimeByRoom = () => {
   }
   const handleGetAllShowtime = async (pageNumber) => {
     setLoading(true)
-    let resST = user.role === "ADMIN" ? await getShowtimeByCinemaApi(cinemaId, pageNumber, 6) : await getAllShowtimeByManagerApi(pageNumber, 6)
+    let resST = user.role === "ADMIN" ? await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd')) : await getAllShowtimeByManagerApi(pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd'))
     if (resST && resST.data && resST.data.result.content) {
       setAllShowtime(resST.data.result.content);
       setPagination(prevPagination => ({
@@ -110,40 +112,19 @@ const ShowtimeByRoom = () => {
     setSelectedDateTime({ ...selectedDateTime, date: dateString });
     setLoading(false)
   }
-  const handleChangeStatus = async (showTimeId) => {
-    setLoading(true)
-    await changeStatusShowtimeApi(showTimeId);
-    // handleGetAllShowtime(pagination.pageNumber)
-    const updatedShowtimes = allShowtime.map((showtime) => {
-      if (showtime.showtimeId === showTimeId) {
-        return { ...showtime, delete: !showtime.delete };
-      }
-      return showtime;
-    });
-
-    setAllMovie(updatedShowtimes);
-    setLoading(false)
-  };
-  const handleDeleteShowtime = async (showtimeId) => {
-    await deleteShowtimeApi(showtimeId);
-    handleGetItem(currentPage);
-    const updatedShowtimes = allShowtime.filter((showtime) => showtime.showTimeId !== showtimeId);
-    setAllShowtime(updatedShowtimes);
-  }
-
-  const handleOpenModal = (showTimeId) => {
-    setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: true }));
-  };
-
-  const handleCloseModal = (showTimeId) => {
-    setModalStates((prevStates) => ({ ...prevStates, [showTimeId]: false }));
-  };
 
   useEffect(() => {
     handleGetRoomByCinema(cinemaId)
     ListDayShowtime()
-    handleGetAllShowtime(pagination.pageNumber)
   }, [])
+
+  useEffect(() => {
+    const dateTime = selectedDateTime.date
+    selectedRoom === 1 ?
+      handleGetAllShowtime(pagination.pageNumber)
+      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
+    setSelectedDateTime({ ...selectedDateTime, date: dateTime });
+  }, [selectedDateTime.date])
   return (
     <div>
       <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
@@ -208,9 +189,9 @@ const ShowtimeByRoom = () => {
                     {/* <SelectMenu onSelectChange={handleSelectChange} items={dateList} content={selectedDateTime.date} /> */}
                     <DatePicker
                       onChange={handleSelectChange}
-                      placeholder={FormatDataTime(currentDateTime.toISOString()).date}
+                      placeholder={selectedDateTime.date || FormatDataTime(currentDateTime.toISOString()).date}
                       format='DD/MM/YYYY'
-                      className="inline-block py-2 hover:bg-emerald-600 bg-slate-300 m-2 rounded-bl-full rounded-r-full text-slate-400 relative h-10 w-36"
+                      className="inline-block py-2 hover:bg-emerald-600 bg-slate-300 m-2 rounded-bl-full rounded-r-full text-slate-400 relative h-10 w-36 cursor-default"
                     />
                     {/* </div> */}
                   </div>
@@ -245,7 +226,7 @@ const ShowtimeByRoom = () => {
 
                     <div className='w-[90%] bg-slate-100 shadow-inner mr-4 p-4 rounded-lg'>
                       <div>
-                        {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg'>--- Chưa lên lịch chiếu ---</p> :
+                        {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg font-light'>--- Chưa lên lịch chiếu ---</p> :
                           <table className='mt-6 w-full'>
                             <thead className=''>
                               <tr>
@@ -261,7 +242,6 @@ const ShowtimeByRoom = () => {
                               {allShowtime && allShowtime.map((item, index) => {
                                 let hasShowtimes = false;
                                 let selectDate = parse(selectedDateTime.date, 'dd/MM/yyyy', new Date());
-                                console.log("🚀 ~ {allShowtime&&allShowtime.map ~ selectDate:", selectDate)
                                 return (
                                   (isBefore(item.timeStart, selectDate) || isEqual(item.timeStart, selectDate)) && (isAfter(item.timeEnd, selectDate) || isEqual(item.timeEnd, selectDate)) &&
                                   <tr
@@ -327,19 +307,12 @@ const ShowtimeByRoom = () => {
                                         }
                                       </ul>
                                       {!hasShowtimes && (
-                                        <p className=' text-center text-lg text-slate-400'>-- Chưa có lịch chiếu ngày hôm nay--</p>
+                                        <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có lịch chiếu ngày hôm nay--</p>
                                       )}
                                     </td>
                                     <td className='font-medium px-3 py-4'>
                                       {(
                                         <div className='flex items-center justify-center'>
-                                          <button
-                                            type='button'
-                                            onClick={(e) => { e.stopPropagation(); handleChangeStatus(item.showTimeId) }}
-                                            className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-red-100'
-                                          >
-                                            <listShowtime.action.aChange className='h-4 w-4 text-red-600' />
-                                          </button>
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
@@ -350,30 +323,6 @@ const ShowtimeByRoom = () => {
                                           >
                                             <listShowtime.action.aEdit className='h-4 w-4 text-emerald-600' />
                                           </button>
-                                          {/* <button
-                                  type='button'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenModal(item.showTimeId);
-                                  }}
-                                  className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'
-                                >
-                                  <listShowtime.action.aDelete className='h-4 w-4 text-red-600' />
-                                </button> */}
-                                          <div>
-                                            {modalStates[item.showTimeId] && (
-                                              <ModalComponent
-                                                isOpen={modalStates[item.showTimeId]}
-                                                onClose={() => handleCloseModal(item.showTimeId)}
-                                                onConfirm={() => handleDeleteShowtime(item.showTimeId)}
-                                                onCancel={() => handleCloseModal(item.showTimeId)}
-                                                title='Xóa Lịch chiếu'
-                                                content='Bạn có chắc chắn xóa lịch chiếu này ???'
-                                                buttonName='Xóa '
-                                                buttonCancel='Thoát'
-                                              />
-                                            )}
-                                          </div>
                                         </div>
                                       )}
                                     </td>

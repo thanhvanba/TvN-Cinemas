@@ -86,8 +86,26 @@ function StaffService() {
             toastNotify(err.response.data.message, "error")
         }
     };
+
+    const getAllBookingStaffApi = async (pageIndex, pageSize, status, cinemaId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                    status: status,
+                    cinemaId: cinemaId
+                },
+            },
+        );
+    };
     return {
-        getNowPlayingMovieStaffApi, getMovieComingSoonStaffApi, sellTicketApi, searchViewerApi, addViewerApi
+        getNowPlayingMovieStaffApi, getMovieComingSoonStaffApi, sellTicketApi, searchViewerApi, addViewerApi, getAllBookingStaffApi
     }
 }
 

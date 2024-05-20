@@ -21,24 +21,6 @@ const AddItem = () => {
 
     const { getOneFoodApi, getOneCinemaApi } = UserService()
     const { addCinemaApi, addFoodApi, updateCinemaApi, updateFoodApi } = AdminService()
-    // const { addRoomApi } = ManagerService()
-
-    // const handleTabChange = () => {
-    //     if (item === "cinema" || cinemaId || pathname === `/admin/update-item/food/${foodId}` || pathname === `/admin/update-item/cinema/${cinemaId}`) {
-    //         setTabIndex(0);
-    //     } else if (item === "food" || foodId) {
-    //         setTabIndex(1);
-    //     } else if (item === "room") {
-    //         setTabIndex(2);
-    //     }
-    // };
-
-    // const [cinema, setCinema] = useState({
-    //     cinemaName: "",
-    //     location: "",
-    //     desc: "",
-    //     urlLocation: ""
-    // })
     const [food, setFood] = useState({
         name: "",
         image: {},
@@ -47,15 +29,6 @@ const AddItem = () => {
         foodType: "",
         status: null
     })
-
-    console.log("🚀 ~ food:", food)
-    // const [oneFood, setOneFood] = useState({
-    //     foodId: "",
-    //     name: "",
-    //     price: "",
-    //     foodType: "",
-    //     status: null
-    // })
 
     const handleGetOneFood = async () => {
         let resFood = await getOneFoodApi(foodId)
@@ -77,29 +50,59 @@ const AddItem = () => {
             }));
         };
         reader.readAsDataURL(file);
+        clearError('image')
     };
 
 
     const nameFoods = ["BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
+    const [errors, setErrors] = useState({});
+
+    const validate = () => {
+        const newErrors = {};
+        if (!/^\/(admin|manager)\/update-item/.test(pathname)) {
+            if (!food.name) newErrors.name = 'Vui lòng nhập tên sản phẩm!';
+            if (!food.image) newErrors.image = 'Vui lòng chọn hình ảnh!';
+            if (!food.price) newErrors.price = 'Vui lòng nhập giá tiền!';
+            else if (isNaN(food.price)) newErrors.price = 'Vui lòng nhập đúng định dạng là số!';
+            if (!food.foodType) newErrors.foodType = 'Vui lòng chọn loại sản phẩm!';
+        }
+        if (isNaN(food.price)) newErrors.price = 'Vui lòng nhập đúng định dạng là số!';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const clearError = (fieldName) => {
+        if (errors[fieldName]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [fieldName]: undefined
+            }));
+        }
+    };
     const handleAddFood = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const data = food;
-        await addFoodApi(data);
-        changeTab("/admin/list-food")
-        setLoading(false);
+        if (validate()) {
+            setLoading(true);
+            const data = food;
+            await addFoodApi(data);
+            setLoading(false);
+            changeTab("/admin/list-food")
+        }
     };
     const handleUpdateFood = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const data = food;
-        await updateFoodApi(data, foodId);
-        changeTab("/admin/list-food")
-        setLoading(false);
+        if (validate()) {
+            setLoading(true);
+            const data = food;
+            await updateFoodApi(data, foodId);
+            setLoading(false);
+            changeTab("/admin/list-food")
+        }
     };
 
     const handleSelectChange = (selectedValue) => {
         setFood((prevType) => ({ ...prevType, foodType: selectedValue }));
+        clearError('foodType')
     };
 
     useEffect(() => {
@@ -130,14 +133,20 @@ const AddItem = () => {
                 </div>
             </div>
             <div><div className='absolute mx-auto top-80 right-1/2 z-50'>
-                {loading && <Loading/>}
+                {loading && <Loading />}
             </div>
                 {!loading &&
                     <div className="w-full py-8">
                         <div className="rounded-md p-8 shadow-lg bg-slate-100 relative">
                             <div className="flex">
                                 <div>
-                                    <div className='my-4 border'>
+                                    <label
+                                        htmlFor=""
+                                        className="block text-lg font-medium leading-6 text-gray-900"
+                                    >
+                                        Ảnh {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                    </label>
+                                    <div className='mb-4 border'>
                                         <img
                                             className='w-96 h-80'
                                             // src={movie.poster}
@@ -158,6 +167,7 @@ const AddItem = () => {
                                             Chọn một tập tin
                                         </label>
                                     </div>
+                                    {errors.image && <p className="text-red-600">{errors.image}</p>}
                                 </div>
                                 <form className='px-4 w-[80%]' id='formAddCinema' onSubmit={pathname === "/admin/add-item/food" ? handleAddFood : handleUpdateFood} action="">
                                     <div className="relative my-4">
@@ -165,41 +175,50 @@ const AddItem = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Tên sản phẩm
+                                            Tên sản phẩm {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                         </label>
                                         <input
-                                            onChange={e => setFood({ ...food, name: e.target.value })}
+                                            onChange={e => {
+                                                setFood({ ...food, name: e.target.value })
+                                                clearError('name')
+                                            }}
                                             type="text"
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             value={food.name}
                                         />
+                                        {errors.name && <p className="text-red-600">{errors.name}</p>}
                                     </div>
                                     <div className="relative my-4">
                                         <label
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Giá tiền
+                                            Giá tiền {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                         </label>
                                         <input
-                                            onChange={e => { setFood({ ...food, price: e.target.value }); }}
+                                            onChange={e => {
+                                                setFood({ ...food, price: e.target.value });
+                                                clearError('price')
+                                            }}
                                             type="text"
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             value={food.price}
                                         />
+                                        {errors.price && <p className="text-red-600">{errors.price}</p>}
                                     </div>
                                     <div className="relative my-4">
                                         <label
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Loại sản phẩm
+                                            Loại sản phẩm {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {pathname === `/admin/update-item/food/${foodId}` ?
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
                                         </div>
+                                        {errors.foodType && <p className="text-red-600">{errors.foodType}</p>}
                                     </div>
                                     <div className='flex justify-end'>
                                         <button

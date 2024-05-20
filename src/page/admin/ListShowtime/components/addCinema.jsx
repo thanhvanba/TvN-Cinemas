@@ -14,6 +14,7 @@ const AddCinema = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
     const [loading1, setLoading1] = useState(false);
+    const [errors, setErrors] = useState({});
     const { pathname } = useLocation()
     const { cinemaId } = useParams()
 
@@ -41,13 +42,34 @@ const AddCinema = () => {
         }
         setLoading1(false)
     }
+
+    const validate = () => {
+        const newErrors = {};
+        if (!cinema.cinemaName) newErrors.cinemaName = 'Vui lòng nhập tên rạp phim!';
+        if (!cinema.location) newErrors.location = 'Vui lòng nhập địa chỉ!';
+        if (!cinema.desc) newErrors.desc = 'Vui lòng nhập mô tả!';
+        if (!cinema.urlLocation) newErrors.urlLocation = 'Vui lòng nhập tọa độ vị trí!';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const clearError = (fieldName) => {
+        if (errors[fieldName]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [fieldName]: undefined
+            }));
+        }
+    };
     const handleAddCinema = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const data = cinema;
-        await addCinemaApi(data);
-        changeTab(-1)
-        setLoading(false);
+        if (validate()) {
+            setLoading(true);
+            const data = cinema;
+            await addCinemaApi(data);
+            changeTab(-1)
+            setLoading(false);
+        }
     };
     const handleUpdateCinema = async (e) => {
         e.preventDefault();
@@ -105,59 +127,75 @@ const AddCinema = () => {
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900"
                                                 >
-                                                    Tên rạp phim
+                                                    Tên rạp phim {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                                 </label>
                                                 <input
-                                                    onChange={e => setCinema({ ...cinema, cinemaName: e.target.value })}
+                                                    onChange={e => {
+                                                        setCinema({ ...cinema, cinemaName: e.target.value })
+                                                        clearError('cinemaName')
+                                                    }}
                                                     type="text"
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.cinemaName}
                                                 />
-
+                                                {errors.cinemaName && <p className="text-red-600">{errors.cinemaName}</p>}
                                             </div>
                                             <div className="relative my-4">
                                                 <label
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900"
                                                 >
-                                                    Địa chỉ
+                                                    Địa chỉ {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                                 </label>
                                                 <input
                                                     // value={account.email}
-                                                    onChange={e => { setCinema({ ...cinema, location: e.target.value }); }}
+                                                    onChange={e => {
+                                                        setCinema({ ...cinema, location: e.target.value });
+                                                        clearError('location')
+                                                    }}
                                                     type="text"
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.location}
                                                 />
+                                                {errors.location && <p className="text-red-600">{errors.location}</p>}
                                             </div>
                                             <div className="relative my-4">
                                                 <label
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900"
                                                 >
-                                                    Mô tả
+                                                    Mô tả {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                                 </label>
                                                 <textarea
-                                                    onChange={e => setCinema({ ...cinema, desc: e.target.value })}
+                                                    onChange={e => {
+                                                        setCinema({ ...cinema, desc: e.target.value })
+                                                        clearError('desc')
+                                                    }}
                                                     type="text"
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.desc}
                                                     rows={5}
                                                 />
+                                                {errors.desc && <p className="text-red-600">{errors.desc}</p>}
                                             </div>
                                             <div className="relative my-4">
                                                 <label
                                                     htmlFor=""
                                                     className="block text-lg font-medium leading-6 text-gray-900"
                                                 >
-                                                    URL
+                                                    URL {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                                 </label>
                                                 <input
                                                     // value={account.userName}
-                                                    onChange={e => setCinema({ ...cinema, urlLocation: e.target.value })} type="text"
+                                                    onChange={e => {
+                                                        setCinema({ ...cinema, urlLocation: e.target.value })
+                                                        clearError('urlLocation')
+                                                    }}
+                                                    type="text"
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.urlLocation}
                                                 />
+                                                {errors.urlLocation && <p className="text-red-600">{errors.urlLocation}</p>}
                                             </div>
                                             <div className='flex justify-end'>
                                                 <button

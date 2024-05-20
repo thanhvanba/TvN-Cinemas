@@ -36,45 +36,8 @@ const Movie = () => {
     const [movie, setMovie] = useState({})
     const [allCinema, setAllCinema] = useState([])
     const [allShowtime, setAllShowtime] = useState([])
-    // const [foundShowtime, setFoundShowtime] = useState({
-    //     showTimeId: null,
-    //     room: {
-    //         roomId: null,
-    //         cinema: {
-    //             cinemaId: null,
-    //             location: null,
-    //             cinemaName: null,
-    //             desc: null,
-    //             status: null,
-    //             urlLocation: null
-    //         },
-    //         roomName: null
-    //     },
-    //     movie: {
-    //         movieId: null,
-    //         title: null,
-    //         director: null,
-    //         genres: null,
-    //         actor: null,
-    //         releaseDate: null,
-    //         desc: null,
-    //         poster: null,
-    //         trailerLink: null,
-    //         duration: null,
-    //         reviews: null,
-    //         rating: null,
-    //         delete: null
-    //     },
-    //     timeStart: null,
-    //     timeEnd: null,
-    //     status: null,
-    //     schedules: [
-    //     ],
-    //     seats: null,
-    //     special: null
-    // })
     const [foundShowtime, setFoundShowtime] = useState([])
-    console.log("🚀 ~ Movie ~ foundShowtime:", foundShowtime)
+    const [listSchedule, setListSchedule] = useState([])
 
 
     const ListDayShowtime = () => {
@@ -108,12 +71,27 @@ const Movie = () => {
     }
 
     const FoundShowtime = (cinemaId) => {
+        let schedule = []
         const foundShowtime = allShowtime.filter(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
                 item.movie.movieId === id
         );
         foundShowtime && setFoundShowtime(foundShowtime);
+        foundShowtime.map((showtime) => {
+            schedule = [...schedule, ...showtime.schedules]; // Thêm lịch chiếu từ showtime.schedule vào mảng schedule
+        });
+        let updatedSchedule = schedule.sort((a, b) => {
+            // Lấy giờ bắt đầu từ startTime của mỗi đối tượng
+            const startTimeA = a.startTime;
+            const startTimeB = b.startTime;
+
+            // So sánh theo thứ tự tăng dần của giờ bắt đầu
+            if (startTimeA < startTimeB) return -1;
+            if (startTimeA > startTimeB) return 1;
+            return 0;
+        })
+        setListSchedule(updatedSchedule)
     }
 
     const handleModalStates = () => {
@@ -159,7 +137,7 @@ const Movie = () => {
                                 :
                                 <div>
                                     {/* ngày chiếu */}
-                                    <div className='grid grid-cols-6 px-4'>
+                                    <div className='grid grid-cols-6 px-4 cursor-default'>
                                         {dateList.map((date, index) => (
                                             <a
                                                 key={index}
@@ -188,45 +166,42 @@ const Movie = () => {
                                             <div className='block relative'>
                                                 <div className='relative sm:pl-28 pt-4'>
                                                     <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
-                                                        {foundShowtime.map((showtimeByRoom, index) => (
-                                                            showtimeByRoom.schedules.map((schedule, index) => {
-                                                                const currentDateTime = new Date();
-                                                                const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
-                                                                if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                                                    const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                                                    hasShowtimes = true;
-                                                                    return (
-                                                                        <li key={index}
-                                                                            onClick={() => {
-                                                                                if (!user.auth) {
-                                                                                    handleModalStates();
-                                                                                } else if (isTimeInFuture) {
-                                                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
-                                                                                    const updatedDateTime = {
-                                                                                        ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
-                                                                                    };
-                                                                                    navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
-                                                                                }
-                                                                            }}
-                                                                            className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                        {listSchedule.map((schedule, index) => {
+                                                            const currentDateTime = new Date();
+                                                            const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                                            if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                                                const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                                                hasShowtimes = true;
+                                                                return (
+                                                                    <li key={index}
+                                                                        onClick={() => {
+                                                                            if (!user.auth) {
+                                                                                handleModalStates();
+                                                                            } else if (isTimeInFuture) {
+                                                                                setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
+                                                                                const updatedDateTime = {
+                                                                                    ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
+                                                                                };
+                                                                                navigate(`/${foundShowtime[0]?.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
+                                                                            }
+                                                                        }}
+                                                                        className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                                    >
+                                                                        <a
+                                                                            className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                                                            style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                                                         >
-                                                                            <a
-                                                                                className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-                                                                                style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-                                                                            >
 
-                                                                                {format(
-                                                                                    parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
-                                                                                    "HH:mm"
-                                                                                )}
-                                                                            </a>
-                                                                        </li>
-                                                                    )
-                                                                }
+                                                                            {format(
+                                                                                parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                                                "HH:mm"
+                                                                            )}
+                                                                        </a>
+                                                                    </li>
+                                                                )
+                                                            }
 
-                                                            })
-                                                        ))
-
+                                                        })
                                                         }
                                                     </ul>
                                                     {!hasShowtimes && (
@@ -259,28 +234,5 @@ const Movie = () => {
         </div >
     )
 }
-//     return (
-//         <li key={index}
-//             onClick={() => {
-//                 if (!user.auth) {
-//                     handleModalStates();
-//                 } else if (isTimeInFuture) {
-//                     setSelectedDateTime((prevState) => ({ ...prevState, time: time }));
-//                     const updatedDateTime = { ...selectedDateTime, time: time };
-//                     navigate(`/${foundShowtime.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-//                 }
-//             }}
-//             className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
-//         >
-//             <a
-//                 className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-//                 style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-//             >
-//                 {time}
-//             </a>
-//         </li>
-//     );
-// }) || (
-//         <p className='absolute text-xl text-slate-200'>-- Chưa có lịch chiếu cho ngày hôm nay. Hãy quay lại sau. Xin cảm ơn !!! --</p>
-//     )
+
 export default Movie

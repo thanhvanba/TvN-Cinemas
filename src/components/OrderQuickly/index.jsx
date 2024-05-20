@@ -26,48 +26,10 @@ function OrderQuickly({ allShowMovie }) {
 
     const [toggle, setToggle] = useState(false)
     const [allCinema, setAllCinema] = useState([])
-    // const [allShowMovie, setAllShowMovie] = useState([])
     const [dateList, setDateList] = useState([]);
     const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
     const [allShowtime, setAllShowtime] = useState([])
-    // const [foundShowtime, setFoundShowtime] = useState({
-    //     showTimeId: null,
-    //     room: {
-    //         roomId: null,
-    //         cinema: {
-    //             cinemaId: null,
-    //             location: null,
-    //             cinemaName: null,
-    //             desc: null,
-    //             status: null,
-    //             urlLocation: null
-    //         },
-    //         roomName: null
-    //     },
-    //     movie: {
-    //         movieId: null,
-    //         title: null,
-    //         director: null,
-    //         genres: null,
-    //         actor: null,
-    //         releaseDate: null,
-    //         desc: null,
-    //         poster: null,
-    //         trailerLink: null,
-    //         duration: null,
-    //         reviews: null,
-    //         rating: null,
-    //         delete: null
-    //     },
-    //     timeStart: null,
-    //     timeEnd: null,
-    //     status: null,
-    //     listTimeShow: [
-    //     ],
-    //     seats: null,
-    //     special: null
-    // })
-    const [foundShowtime, setFoundShowtime] = useState([])
+    const [listSchedule, setListSchedule] = useState([])
     const [infoOrderQuickly, setInfoOrderQuickly] = useState({
         movieId: "",
         cinemaId: "",
@@ -93,11 +55,6 @@ function OrderQuickly({ allShowMovie }) {
     }
 
     const handleGetShowtimeByMovie = async (movieId) => {
-        // let resShowtimes = await getShowtimeByMovieApi(movieId)
-        // if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
-        //     setAllShowtime(resShowtimes.data.result)
-        // }
-
         let resShowtimes = await getShowtimeByMovieApi(movieId)
         if (resShowtimes && resShowtimes.data && resShowtimes.data.result) {
             setAllShowtime(resShowtimes.data.result)
@@ -111,16 +68,26 @@ function OrderQuickly({ allShowMovie }) {
         }
     }
     const FoundShowtime = (movieId, cinemaId) => {
+        let schedule = []
         const foundShowtime = allShowtime.filter(
             item =>
                 item.room.cinema.cinemaId === cinemaId &&
                 item.movie.movieId === movieId
         );
-        if (foundShowtime) {
-            setFoundShowtime(foundShowtime);
-        } else {
-            setFoundShowtime(foundShowtime);
-        }
+        foundShowtime.map((showtime) => {
+            schedule = [...schedule, ...showtime.schedules]; // Thêm lịch chiếu từ showtime.schedule vào mảng schedule
+        });
+        let updatedSchedule = schedule.sort((a, b) => {
+            // Lấy giờ bắt đầu từ startTime của mỗi đối tượng
+            const startTimeA = a.startTime;
+            const startTimeB = b.startTime;
+
+            // So sánh theo thứ tự tăng dần của giờ bắt đầu
+            if (startTimeA < startTimeB) return -1;
+            if (startTimeA > startTimeB) return 1;
+            return 0;
+        })
+        setListSchedule(updatedSchedule)
     }
 
     const listNameCinema = allCinema.map(item => item.cinemaName)
@@ -139,12 +106,17 @@ function OrderQuickly({ allShowMovie }) {
             case 'movie':
                 const movie = allShowMovie.find(movie => movie.title === selectedValue)
                 const movieId = movie.movieId
+                console.log("🚀 ~ handleSelectChange ~ movieId:", movieId)
+                
+                console.log("🚀 ~ handleSelectChange ~ infoOrderQuickly?.cinemaId:", infoOrderQuickly?.cinemaId)
+                FoundShowtime(movieId, infoOrderQuickly?.cinemaId)
                 setInfoOrderQuickly({ ...infoOrderQuickly, movieId: movieId })
                 handleGetShowtimeByMovie(movieId)
                 break;
             case 'cinema':
                 const cinema = allCinema.find(cinema => cinema.cinemaName === selectedValue)
                 const cinemaId = cinema.cinemaId
+                FoundShowtime(infoOrderQuickly?.movieId, cinemaId)
                 setInfoOrderQuickly({ ...infoOrderQuickly, cinemaId: cinemaId })
                 break;
             case 'date':
@@ -172,10 +144,14 @@ function OrderQuickly({ allShowMovie }) {
                 <h2 className="uppercase font-bold text-2xl">mua vé <br /> nhanh </h2>
             </div>
             <div className="inline-block md:w-[60%] lg:w-[82%] p-2">
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-120 md:w-11/12 lg:w-[44%]">
+                <div
+                    onClick={() => setToggle(false)}
+                    className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-120 md:w-11/12 lg:w-[44%] z-50">
                     <SelectMenu onSelectChange={(value) => handleSelectChange(value, 'movie')} items={listNameMovie} content={"Chọn phim"} />
                 </div>
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-br-full text-gray-200 relative md:w-11/12 h-12 lg:w-[44%]">
+                <div
+                    onClick={() => setToggle(false)}
+                    className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-l-full rounded-br-full text-gray-200 relative md:w-11/12 h-12 lg:w-[44%]">
                     <SelectMenu
                         onSelectChange={(value) => handleSelectChange(value, 'cinema')}
                         items={infoOrderQuickly.movieId ? listNameCinema : []}
@@ -183,7 +159,9 @@ function OrderQuickly({ allShowMovie }) {
                     />
                     {/* {!infoOrderQuickly.movieId && <div className='absolute z-50 rounded-xl top-8 px-4 py-2 bg-orange-600 text-slate-900 w-60'>Vui lòng chọn phim</div>} */}
                 </div>
-                <div className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-tl-full rounded-r-full text-gray-200 relative md:w-11/12  h-12 lg:w-[44%]">
+                <div
+                    onClick={() => setToggle(false)}
+                    className="inline-block pl-2 py-3 hover:bg-emerald-600 bg-slate-700 m-2 rounded-tl-full rounded-r-full text-gray-200 relative md:w-11/12  h-12 lg:w-[44%] z-40">
                     <SelectMenu
                         onSelectChange={(value) => handleSelectChange(value, 'date')}
                         items={infoOrderQuickly.cinemaId ? formattedDates : []}
@@ -198,50 +176,46 @@ function OrderQuickly({ allShowMovie }) {
                 </div>
 
                 {toggle &&
-                    <div className='bg-slate-100 py-8 absolute right-4 top-32 rounded-xl'>
+                    <div className='bg-slate-100 py-8 absolute right-4 top-32 rounded-xl z-50'>
                         <ul className='px-2 grid grid-cols-4 gap-4 w-80'>
-                            {foundShowtime.map((showtimeByRoom, index) => (
-                                showtimeByRoom.schedules.map((schedule, index) => {
-                                    const currentDateTime = new Date();
-                                    const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
-                                    if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                        const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                        hasShowtimes = true;
-                                        return (
-                                            <li key={index}
-                                                onClick={() => {
-                                                    if (!user.auth) {
-                                                        handleModalStates();
-                                                    } else if (isTimeInFuture) {
-                                                        setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
-                                                        const updatedDateTime = {
-                                                            ...selectedDateTime, time: schedule.startTime
-                                                        };
+                            {listSchedule.map((schedule, index) => {
+                                const currentDateTime = new Date();
+                                const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                    const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                    hasShowtimes = true;
+                                    return (
+                                        <li key={index}
+                                            onClick={() => {
+                                                if (!user.auth) {
+                                                    handleModalStates();
+                                                } else if (isTimeInFuture) {
+                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                    const updatedDateTime = {
+                                                        ...selectedDateTime, time: schedule.startTime
+                                                    };
 
-                                                        console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
-                                                        navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
-                                                    }
-                                                }}
-                                                className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
+                                                    navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                }
+                                            }}
+                                            className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                        >
+                                            <a
+                                                className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                                style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
                                             >
-                                                <a
-                                                    className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-                                                    style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-                                                >
 
-                                                    {format(
-                                                        parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
-                                                        "HH:mm"
-                                                    )}
-                                                </a>
-                                            </li>
-                                        )
-                                    }
+                                                {format(
+                                                    parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                    "HH:mm"
+                                                )}
+                                            </a>
+                                        </li>
+                                    )
+                                }
 
-                                })
-                            ))
-
-                            }
+                            })}
                         </ul>
                         {!hasShowtimes && (
                             <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>

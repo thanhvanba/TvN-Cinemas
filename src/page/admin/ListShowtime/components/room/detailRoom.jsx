@@ -42,21 +42,39 @@ const DetailRoom = () => {
     })
     const generateSeatData = CreateSeat(room.rowSeat, room.colSeat);
     const seatData = generateSeatData();
+    const [errors, setErrors] = useState({});
 
+    const validate = () => {
+        const newErrors = {};
+        if (!seatMap.rowSeat) newErrors.rowSeat = 'Vui lòng nhập số hàng!';
+        else if (isNaN(seatMap.rowSeat)) newErrors.rowSeat = 'Vui lòng nhập đúng định dạng là số!';
+        if (!seatMap.colSeat) newErrors.colSeat = 'Vui lòng nhập số ghế mỗi hàng!';
+        else if (isNaN(seatMap.colSeat)) newErrors.colSeat = 'Vui lòng nhập đúng định dạng là số!';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const clearError = (fieldName) => {
+        if (errors[fieldName]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [fieldName]: undefined
+            }));
+        }
+    };
     const handleCreateRoom = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const data = {
-            roomName: room.roomName,
-            rowSeat: seatMap.rowSeat,
-            colSeat: seatMap.colSeat
-        };
-        await updateRoomManagerApi(data, roomId)
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
-        setModalStates(false)
-        setLoading(false);
+        if (validate()) {
+            setLoading(true);
+            const data = {
+                roomName: room.roomName,
+                rowSeat: seatMap.rowSeat,
+                colSeat: seatMap.colSeat
+            };
+            await updateRoomManagerApi(data, roomId)
+            setModalStates(false)
+        }
+
     };
     const handleGetOneRoom = async (roomId) => {
 
@@ -160,28 +178,36 @@ const DetailRoom = () => {
                                                             htmlFor=""
                                                             className="block text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Số hàng
+                                                            Số hàng <span className='text-red-600'>*</span>
                                                         </label>
                                                         <input
-                                                            onChange={e => setSeatmap({ ...seatMap, rowSeat: e.target.value })}
+                                                            onChange={e => {
+                                                                setSeatmap({ ...seatMap, rowSeat: e.target.value })
+                                                                clearError('rowSeat')
+                                                            }}
                                                             type="text"
                                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                             value={seatMap.rowSeat}
                                                         />
+                                                        {errors.rowSeat && <p className="text-red-600">{errors.rowSeat}</p>}
                                                     </div>
                                                     <div className="relative my-4">
                                                         <label
                                                             htmlFor=""
                                                             className="block text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Ghế mỗi hàng
+                                                            Ghế mỗi hàng <span className='text-red-600'>*</span>
                                                         </label>
                                                         <input
-                                                            onChange={e => setSeatmap({ ...seatMap, colSeat: e.target.value })}
+                                                            onChange={e => {
+                                                                setSeatmap({ ...seatMap, colSeat: e.target.value })
+                                                                clearError('colSeat')
+                                                            }}
                                                             type="text"
                                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                             value={seatMap.colSeat}
                                                         />
+                                                        {errors.colSeat && <p className="text-red-600">{errors.colSeat}</p>}
                                                     </div>
                                                     <div className='flex justify-end'>
                                                         <button
