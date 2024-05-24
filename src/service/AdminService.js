@@ -5,8 +5,10 @@ import toastNotify from "../utils/UseToastForNotify"
 import { useContext } from 'react'
 import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
+import axiosService from './axiosInstance'
 
 const AdminService = () => {
+    const axiosInstance = axiosService();
     const navigate = useNavigate()
     const changeTab = (pathname) => {
         navigate(pathname)
@@ -15,7 +17,7 @@ const AdminService = () => {
     const addManagerApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/managers`,
                 data,
                 {
@@ -35,7 +37,7 @@ const AdminService = () => {
     const addCinemaApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/cinema`,
                 data,
                 {
@@ -55,7 +57,7 @@ const AdminService = () => {
     const updateCinemaApi = async (data, cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}`,
                 data,
                 {
@@ -80,7 +82,7 @@ const AdminService = () => {
         }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/foods/food`,
                 data,
                 {
@@ -110,7 +112,7 @@ const AdminService = () => {
                     }
                 }
             }
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/foods/${foodId}`,
                 data,
                 {
@@ -131,7 +133,7 @@ const AdminService = () => {
     const deleteFoodApi = async (foodId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/foods/${foodId}`,
                 {},
                 {
@@ -149,10 +151,9 @@ const AdminService = () => {
         }
     };
     const updatePriceSeatApi = async (data, priceId) => {
-        console.log("🚀 ~ addPriceSeatApi ~ data:", data)
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/prices/price/${priceId}`,
                 data,
                 {
@@ -172,7 +173,7 @@ const AdminService = () => {
     const changeStatusUserApi = async (userId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
                 {},
                 {
@@ -192,7 +193,7 @@ const AdminService = () => {
     const deleteUserApi = async (userId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
                 {
                     headers: {
@@ -212,7 +213,7 @@ const AdminService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`;
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
                 data,
                 {
@@ -232,7 +233,7 @@ const AdminService = () => {
     const changeStatusMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/movies/${movieId}`,
                 {},
                 {
@@ -252,7 +253,7 @@ const AdminService = () => {
     const deleteMovieApi = async (movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/movies/${movieId}`,
                 {
                     headers: {
@@ -271,7 +272,7 @@ const AdminService = () => {
     const changeStatusCinemaApi = async (cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}`,
                 {},
                 {
@@ -291,7 +292,7 @@ const AdminService = () => {
     const deleteCinemaApi = async (cinemaId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}`,
                 {
                     headers: {
@@ -324,7 +325,7 @@ const AdminService = () => {
                 }
             }
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/movies/${movieId}`,
                 data,
                 {
@@ -356,7 +357,7 @@ const AdminService = () => {
         }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/movies/movie`,
                 data,
                 {
@@ -376,7 +377,7 @@ const AdminService = () => {
     };
     const getAllMovieApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/movies`,
             {
                 headers: {
@@ -391,7 +392,7 @@ const AdminService = () => {
     };
     const getAllUserApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/users`,
             {
                 headers: {
@@ -407,7 +408,7 @@ const AdminService = () => {
 
     const getAllPersonnelApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/personnel`,
             {
                 headers: {
@@ -425,7 +426,7 @@ const AdminService = () => {
 
     const getAllViewerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/viewers`,
             {
                 headers: {
@@ -441,7 +442,7 @@ const AdminService = () => {
 
     const getAllShowtimeApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/showtimes`,
             {
                 headers: {
@@ -456,7 +457,7 @@ const AdminService = () => {
     };
     const getAllRoomApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms`,
             {
                 headers: {
@@ -467,7 +468,7 @@ const AdminService = () => {
     };
     const getFoodAdminApi = async (type, pageIndex, pageSize, status) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/foods`,
             {
                 headers: {
@@ -484,7 +485,7 @@ const AdminService = () => {
     };
     const getAllTicketApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/tickets`,
             {
                 headers: {
@@ -501,7 +502,7 @@ const AdminService = () => {
 
     const getAllBookingApi = async (pageIndex, pageSize, status, cinemaId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/bookings`,
             {
                 headers: {
@@ -519,7 +520,7 @@ const AdminService = () => {
 
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}`,
             {
                 headers: {
@@ -530,7 +531,7 @@ const AdminService = () => {
     };
     const getOneUserApi = async (userId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/users/${userId}`,
             {
                 headers: {
@@ -541,7 +542,7 @@ const AdminService = () => {
     };
     const getTotalRevenueApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/total-revenue`,
             {
                 headers: {
@@ -553,7 +554,7 @@ const AdminService = () => {
     };
     const totalRevenueOfYearApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/year/total-revenue`,
             {
                 headers: {
@@ -567,7 +568,7 @@ const AdminService = () => {
     };
     const totalRevenueOfCinema = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/total-revenue`,
             {
                 headers: {
@@ -578,7 +579,7 @@ const AdminService = () => {
     }
     const totalTicketByCinemaApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/year/total-ticket`,
             {
                 headers: {
@@ -592,7 +593,7 @@ const AdminService = () => {
     };
     const getCinemasUnmanagedApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/unmanaged`,
             {
                 headers: {
@@ -603,7 +604,7 @@ const AdminService = () => {
     };
     const getAllCinemaApi = async (pageIndex, pageSize, status) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas`,
             {
                 headers: {
@@ -619,7 +620,7 @@ const AdminService = () => {
     };
     const getShowtimeByCinemaApi = async (cinemaId, pageIndex, pageSize, date) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/showtimes`,
             {
                 headers: {
@@ -635,7 +636,7 @@ const AdminService = () => {
     };
     const getShowtimeByRoomApi = async (roomId, pageIndex, pageSize, date) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}/showtimes`,
             {
                 headers: {
@@ -651,7 +652,7 @@ const AdminService = () => {
     };
     const getRoomeByCinemaApi = async (cinemaId, pageIndex, pageSize, isDelete) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/rooms`,
             {
                 headers: {
@@ -668,7 +669,7 @@ const AdminService = () => {
     const deleteRoomAdminApi = async (roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}`,
                 {
                     headers: {
@@ -687,7 +688,7 @@ const AdminService = () => {
     const addRoomAdminApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/room`,
                 data,
                 {
@@ -707,7 +708,7 @@ const AdminService = () => {
     const updateRoomAdminApi = async (data, roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}`,
                 data,
                 {
@@ -726,7 +727,7 @@ const AdminService = () => {
     };
     const quantitySeatBookedApi = async (showtimeId, scheduleId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/seats-booked/count`,
             {
                 headers: {
@@ -742,7 +743,7 @@ const AdminService = () => {
     const addScheduleAdminApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/schedule`,
                 data,
                 {
@@ -762,7 +763,7 @@ const AdminService = () => {
     const deleteScheduleAdminApi = async (scheduleId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/schedule/${scheduleId}`,
                 {
                     headers: {
@@ -781,7 +782,7 @@ const AdminService = () => {
     const confirmTicketApi = async (bookingId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings/${bookingId}/confirm`,
                 null,
                 {
@@ -800,7 +801,7 @@ const AdminService = () => {
     };
     const getStatisticsOverviewApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/stats/overview`,
             {
                 headers: {
@@ -811,7 +812,7 @@ const AdminService = () => {
     };
     const getTopUsersApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/top-users`,
             {
                 headers: {
@@ -823,7 +824,7 @@ const AdminService = () => {
     };
     const getTopMovieRatingApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/top-rated-movies`,
             {
                 headers: {
@@ -835,7 +836,7 @@ const AdminService = () => {
     };
     const getFinanceAllCinemaApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/finance`,
             {
                 headers: {
@@ -845,20 +846,9 @@ const AdminService = () => {
             },
         );
     };
-    const getAllPromotionApi = async () => {
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
-            `${process.env.REACT_APP_HOST_API_KEY}/admin/promotions`,
-            {
-                headers: {
-                    "Authorization": bearerToken,
-                },
-            },
-        );
-    };
     const getDetailFinanceApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/finance/detail`,
             {
                 headers: {
@@ -916,7 +906,6 @@ const AdminService = () => {
         getTopUsersApi,
         getTopMovieRatingApi,
         getFinanceAllCinemaApi,
-        getAllPromotionApi,
         getDetailFinanceApi
     }
 }

@@ -49,8 +49,6 @@ const ListTicket = () => {
   const handleGetItems = async (pageNumber) => {
     setLoading('loading', true)
     let resTicketC = user.role === 'ADMIN' ? await getAllBookingApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
-    let resTicketU = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
-    let resTicketCa = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
       setAllTicketC(resTicketC.data.result.content)
       setPagination(prevPagination => ({
@@ -61,7 +59,10 @@ const ListTicket = () => {
         totalElements: resTicketC.data.result.totalElements
       }));
     }
-
+    setLoading('loading', false)
+    
+    let resTicketU = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
+    let resTicketCa = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
       setAllTicketU(resTicketU.data.result.content)
     }
@@ -69,7 +70,6 @@ const ListTicket = () => {
     if (resTicketCa && resTicketCa.data && resTicketCa.data.result && resTicketCa.data.result.content) {
       setAllTicketCa(resTicketCa.data.result.content)
     }
-    setLoading('loading', false)
   }
 
 

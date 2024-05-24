@@ -32,7 +32,6 @@ const Admin = () => {
   const navigate = useNavigate()
 
   const [show, setShow] = useState(false);
-  console.log("🚀 ~ Admin ~ show:", show)
   const { user } = useContext(LoginContext);
   const [currentTab, setCurrentTab] = useState('1');
   const [tabIndex, setTabIndex] = useState(0);
@@ -137,7 +136,7 @@ const Admin = () => {
         {/* sidebar */}
         <div className='flex w-full justify-between pb-4'>
           <div className='flex flex-col'>
-            < div className='fixed shadow-right h-screen bg-slate-100 w-1/5'>
+            < div className='fixed shadow-right h-screen bg-gray-300 w-1/5'>
               {/* logo */}
               <div className='flex items-center justify-center px-8 p-3 border-b-2 outline-none' >
                 <a onClick={() => { changeTab('/') }} href="" className="-m-1.5 p-1.5">

@@ -46,7 +46,7 @@ function Header() {
     }, []);
     return (
         <div
-            className={`${user.role === "STAFF" ? "fixed top-0 left-0 right-0 bottom-0 z-50" : "bg-slate-100"
+            className={`${user.role === "STAFF" ? "fixed top-0 left-0 right-0 bottom-0 z-50" : "bg-gray-300"
                 } flex justify-end items-center h-20 px-4`}
             style={user.role === "STAFF" ? { backgroundImage: `url(${bg})` } : {}}
         >

@@ -5,8 +5,10 @@ import toastNotify from "../utils/UseToastForNotify"
 import { useContext } from 'react'
 import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
+import axiosService from './axiosInstance'
 
 const ManagerService = () => {
+    const axiosInstance = axiosService();
     const navigate = useNavigate()
     const { register } = useContext(RegisterContext);
     const { login, logout } = useContext(LoginContext);
@@ -16,7 +18,7 @@ const ManagerService = () => {
     const changeStatusShowtimeApi = async (showtimeId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 {},
                 {
@@ -36,7 +38,7 @@ const ManagerService = () => {
     const deleteShowtimeApi = async (showtimeId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 {
                     headers: {
@@ -55,7 +57,7 @@ const ManagerService = () => {
     const changeStatusRoomApi = async (roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
                 {},
                 {
@@ -75,7 +77,7 @@ const ManagerService = () => {
     const deleteRoomApi = async (roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
                 {
                     headers: {
@@ -94,7 +96,7 @@ const ManagerService = () => {
     const addRoomApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
                 data,
                 {
@@ -114,7 +116,7 @@ const ManagerService = () => {
     const addShowtimeApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/showtime`,
                 data,
                 {
@@ -133,7 +135,7 @@ const ManagerService = () => {
     };
     const getAllShowtimeByManagerApi = async (pageIndex, pageSize, date) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes`,
             {
                 headers: {
@@ -149,7 +151,7 @@ const ManagerService = () => {
     };
     const getAllRoomByManagerApi = async (pageIndex, pageSize, isDelete) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms`,
             {
                 headers: {
@@ -165,7 +167,7 @@ const ManagerService = () => {
     };
     const getAllTicketByManagerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/tickets`,
             {
                 headers: {
@@ -180,7 +182,7 @@ const ManagerService = () => {
     };
     const getOneRoomManagerApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
             {
                 headers: {
@@ -191,7 +193,7 @@ const ManagerService = () => {
     };
     const getTotalRevenueOfManagerApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/total-revenue`,
             {
                 headers: {
@@ -203,7 +205,7 @@ const ManagerService = () => {
     };
     const getRevenueYearApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/year/total-revenue`,
             {
                 headers: {
@@ -218,7 +220,7 @@ const ManagerService = () => {
     const updateShowTimeApi = async (showtimeId, data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/showtimes/${showtimeId}`,
                 data,
                 {
@@ -245,7 +247,7 @@ const ManagerService = () => {
                 supplier: req.supplier,
                 totalPrice: req.purchasePrice * req.quantity
             }
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/foods/import`,
                 data,
                 {
@@ -264,7 +266,7 @@ const ManagerService = () => {
     };
     const getListReviewApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/reviews`,
             {
                 headers: {
@@ -280,7 +282,7 @@ const ManagerService = () => {
     const addScheduleManagerApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/schedule`,
                 data,
                 {
@@ -300,7 +302,7 @@ const ManagerService = () => {
     const deleteScheduleManagerApi = async (scheduleId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/schedule/${scheduleId}`,
                 {
                     headers: {
@@ -318,7 +320,7 @@ const ManagerService = () => {
     };
     const getAllPersonnelManagerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/personnel`,
             {
                 headers: {
@@ -333,7 +335,7 @@ const ManagerService = () => {
     };
     const getShowtimeByRoomCinemaApi = async (roomId, pageIndex, pageSize, date) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}/showtimes`,
             {
                 headers: {
@@ -349,7 +351,7 @@ const ManagerService = () => {
     };
     const quantitySeatBookedManagerApi = async (showtimeId, scheduleId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/seats-booked/count`,
             {
                 headers: {
@@ -365,7 +367,7 @@ const ManagerService = () => {
     const updateRoomManagerApi = async (data, roomId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/rooms/${roomId}`,
                 data,
                 {
@@ -385,7 +387,7 @@ const ManagerService = () => {
     const addStaffApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/staff`,
                 data,
                 {
@@ -405,7 +407,7 @@ const ManagerService = () => {
     const changeStatusStaffApi = async (userId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${process.env.REACT_APP_HOST_API_KEY}/manager/staffs/${userId}`,
                 {},
                 {
@@ -425,7 +427,7 @@ const ManagerService = () => {
 
     const getTopUsersManagerApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/top-users`,
             {
                 headers: {
@@ -437,7 +439,7 @@ const ManagerService = () => {
     };
     const getFinanceAllCinemaManagerApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/finance`,
             {
                 headers: {
@@ -449,7 +451,7 @@ const ManagerService = () => {
     };
     const getDetailFinanceManagerApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/manager/finance/detail`,
             {
                 headers: {

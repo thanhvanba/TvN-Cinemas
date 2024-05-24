@@ -224,7 +224,7 @@ const Info = () => {
                         <ul className="relative flex flex-col md:inline-block">
                             <li
                                 onClick={() => changeTab("/user/info")}
-                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none text-slate-100"
+                                className="cursor-pointer relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none text-slate-100"
                             >
                                 <a
                                     className={`${currentTab === '1' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
@@ -235,7 +235,7 @@ const Info = () => {
                             </li>
                             <li
                                 onClick={() => changeTab("/user/history-booking")}
-                                className="relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-none md:rounded-tr-full text-slate-100"
+                                className="cursor-pointer relative option1-style uppercase font-bold float-left w-full md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-tr-none md:rounded-tr-full text-slate-100"
                             >
                                 <a
                                     className={`${currentTab === '2' ? "active1" : ""} text-2xl font-bold uppercase p-2 leading-[3.5rem]`}
@@ -247,207 +247,7 @@ const Info = () => {
                     </div>}
                 <div style={{ display: currentTab === '1' ? 'block' : 'none' }}>
                     <div className='grid lg:grid-cols-2 gap-8 px-4'>
-                        {/* Thông tin tài khoản */}
-                        {/* <div>
-                            <h2 className="text-2xl text-emerald-800 font-bold uppercase text-center mb-6">Profile details</h2>
-                            <form id='formUpdateProfile' action="" onSubmit={handleUpdateUserInfo}>
-                                <div className="rounded-md p-8 shadow-lg bg-slate-100">
-                                    <div className='pb-8 mb-2 border-b border-b-slate-400 flex justify-center items-center'>
-                                        <div className=''>
-                                            <div className='flex justify-center h-24 text-center rounded-sm'>
-                                                <input
-                                                    onChange={handlePreviewImage}
-                                                    type="file"
-                                                    className="hidden" // Ẩn input mặc định
-                                                    id="form_img-upload"
-                                                />
-                                                <UserCircleIcon className="h-20 w-20 text-emerald-600 bg-slate-200 rounded-full" />
-                                                {image && (
-                                                    <img className='absolute top-0 left-0 h-full' src={image.preview} alt="" />
-                                                )}
-                                            </div>
-                                            <label
-                                                htmlFor="form_img-upload" // Liên kết label với input
-                                                className="bg-slate-200 px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
-                                            >
-                                                Choose a File
-                                            </label>
-                                        </div>
-
-
-                                    </div>
-                                    <div className="my-2">
-                                        <label
-                                            htmlFor=""
-                                            className="w-24 font-bold leading-9 text-gray-900"
-                                        >
-                                            Full Name
-                                        </label>
-                                        <input
-                                            //value={userInfo.fullName}
-                                            onChange={e => setAccount({ ...account, fullName: e.target.value })}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-[10px] sm:text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            value={account.fullName}
-                                            placeholder='Họ và tên'
-                                        />
-                                    </div>
-                                    <div className='flex justify-between items-center text-[10px] sm:text-lg'>
-                                        <div className="relative my-2">
-                                            <label
-                                                htmlFor=""
-                                                className="block w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Birth
-                                            </label>
-                                            <DatePicker
-                                                selected={dob}
-                                                onChange={date => {
-                                                    setDob(date);
-                                                    setAccount({ ...account, dob: date });
-                                                }}
-                                                value={FormatDataTime(account.dob).date}
-                                                placeholderText='Ngày sinh'
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                dateFormat="yyyy-MM-dd" // Định dạng ngày
-                                            />
-                                        </div>
-                                        <div className="my-2">
-                                            <label
-                                                htmlFor=""
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Phone
-                                            </label>
-                                            <input
-                                                // value={account.fullName}
-                                                onChange={e => setAccount({ ...account, phone: e.target.value })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                value={account.phone}
-                                                placeholder='Số điện thoại'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className='flex justify-between w-full text-[10px] sm:text-lg'>
-                                        <div className="my-2 w-3/5 mr-4">
-                                            <label
-                                                htmlFor=""
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Email
-                                            </label>
-                                            <input
-                                                // value={account.fullName}
-                                                onChange={e => setAccount({ ...account, email: e.target.value })}
-                                                type="email"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                value={account.email}
-                                                placeholder={"Email"}
-                                            />
-                                        </div>
-                                        {user.role === "MANAGER" && <div className="my-2 w-2/5">
-                                            <label
-                                                htmlFor=""
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Cinema
-                                            </label>
-                                            <input
-                                                value={userInfo.cinema.cinemaName}
-                                                onChange={e => setAccount({ ...account, cinema: { ...account.cinema, cinemaName: e.target.value } })}
-                                                type="email"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
-                                                placeholder={"Tên rạp"}
-                                                readOnly
-                                            />
-                                        </div>}
-                                    </div>
-                                    <div className="my-2 text-[10px] sm:text-lg">
-                                        <label
-                                            htmlFor=""
-                                            className="w-24 font-bold leading-9 text-gray-900"
-                                        >
-                                            Address
-                                        </label>
-                                        <div className='flex justify-between w-full'>
-                                            <input
-                                                value={account.address ? account.address.street : ''}
-                                                onChange={e => setAccount({ ...account, address: { ...account.address, street: e.target.value } })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
-                                                placeholder={"Wards (Xã, Phường)"}
-                                            />
-                                            <input
-                                                value={account.address ? account.address.district : ''}
-                                                onChange={e => setAccount({ ...account, address: { ...account.address, district: e.target.value } })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder={"District (Quận, Huyện)"}
-                                            />
-                                        </div>
-                                        <div className='flex justify-between w-full'>
-                                            <input
-                                                value={account.address ? account.address.province : ''}
-                                                onChange={e => setAccount({ ...account, address: { ...account.address, province: e.target.value } })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600 mr-4"
-                                                placeholder={"Province (Thành phố, Tỉnh)"}
-                                            />
-                                            <input
-                                                value={account.address ? account.address.country : ''}
-                                                onChange={e => setAccount({ ...account, address: { ...account.address, country: e.target.value } })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder={"Country (Quốc gia)"}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className='flex justify-between w-full text-[10px] sm:text-lg'>
-                                        <div className="my-2 w-2/3 pr-4">
-                                            <label
-                                                htmlFor=""
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                User Name
-                                            </label>
-                                            <input
-                                                // value={account.fullName}
-                                                onChange={e => setAccount({ ...account, userName: e.target.value })}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                value={account.userName}
-                                                placeholder='Tên đăng nhập'
-                                            />
-                                        </div>
-                                        <div className="my-2 w-1/3">
-                                            <label
-                                                htmlFor=""
-                                                className="w-24 font-bold leading-9 text-gray-900"
-                                            >
-                                                Role
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2"
-                                                placeholder={userInfo.role.roleName}
-                                                readOnly
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <button
-                                    className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                    type='submit'
-                                    disabled={loading['account']}
-                                >
-                                    {loading['account'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                    &nbsp;Save
-                                </button>
-                            </form>
-                        </div> */}
-
+                       
                         <ProfileDetail userInfo={userInfo} />
                         {/* passwordUpdateInfo */}
                         <div>

@@ -30,7 +30,6 @@ const ProfileDetail = () => {
     const [imageURL, setImageURL] = useState()
     const [dob, setDob] = useState(null);
     const [account, setAccount] = useState({})
-    console.log("🚀 ~ ProfileDetail ~ account:", account)
     const [userInfo, setUserInfo] = useState({
         userId: "",
         address: {
@@ -66,7 +65,6 @@ const ProfileDetail = () => {
         avatar: ""
     });
 
-    console.log("🚀 ~ ProfileDetail ~ userInfo:", userInfo.dob)
     const handleGetItems = async () => {
         setLoading('hisBooking', true);
         let resInfo = /^\/admin\/update-item\/user/.test(pathname) ? await getOneUserApi(userId) : await getUserInfoApi()

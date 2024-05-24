@@ -2,13 +2,27 @@ import React, { useEffect, useState } from 'react'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import Search from '../../../../components/Search'
-import AdminService from '../../../../service/AdminService'
+import PromotionService from '../../../../service/PromotionService'
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
+import Pagination from '../../../../components/Pagination'
+import FormatDataTime from '../../../../utils/FormatDataTime'
+import Modal from '../../../../utils/Modal'
+import Loading from '../../../../components/Loading'
+import useLoadingState from '../../../../hook/UseLoadingState'
 
 function ListPromotion() {
     const navigate = useNavigate()
-    const { getAllPromotionApi } = AdminService()
+    const { getAllPromotionApi, deletePromotionsCode, deletePromotionsFixed } = PromotionService()
+    const changeTab = (pathname) => {
+        navigate(pathname)
+    }
+    const [promotionByCode, setPromotionByCode] = useState()
     const [promotion, setPromotion] = useState()
 
+    const [modalStates, setModalStates] = useState({});
+    const { loading, setLoading } = useLoadingState(false);
+    console.log("🚀 ~ ListPromotion ~ loading:", loading)
+    const [tabIndex, setTabIndex] = useState(0);
     const [pagination, setPagination] = useState(
         {
             pageNumber: 1,
@@ -17,51 +31,86 @@ function ListPromotion() {
             totalElements: null
         }
     );
-
-    const handleGetItems = async () => {
-        let resPromotion = await getAllPromotionApi()
-        if (resPromotion && resPromotion.data && resPromotion.data.result) {
-            setPromotion(resPromotion.data.result)
-            // setPagination(prevPagination => ({
-            //     ...prevPagination,
-            //     pageNumber: pageNumber,
-            //     pageSize: resPromotion.data.result.pageSize,
-            //     totalPages: resPromotion.data.result.totalPages,
-            //     totalElements: resPromotion.data.result.totalElements
-            // }));
+    const [pagination1, setPagination1] = useState(
+        {
+            pageNumber: 1,
+            pageSize: null,
+            totalPages: null,
+            totalElements: null
         }
+    );
+
+    const handleOpenModal = (promotionId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [promotionId]: true }));
+    };
+
+    const handleCloseModal = (promotionId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [promotionId]: false }));
+    };
+    const handleGetPromotionByCode = async (pageNumber) => {
+        setLoading('promotionByCode', true)
+        
+        let resPromotion = await getAllPromotionApi(pageNumber, 6)
+        if (resPromotion && resPromotion.data && resPromotion.data.result) {
+            setPromotionByCode(resPromotion.data.result.content)
+            setPagination1(prevPagination => ({
+                ...prevPagination,
+                pageNumber: pageNumber,
+                pageSize: resPromotion.data.result.pageSize,
+                totalPages: resPromotion.data.result.totalPages,
+                totalElements: resPromotion.data.result.totalElements
+            }));
+        }
+        setLoading('promotionByCode', false)
     }
 
-    const promotionFake = [
-        {
-            code: "PROBKLOP",
-            nameSk: "Tháng 4 vui vẻ",
-            dateStart: "01/04/2024",
-            dateEnd: "30/04/2024",
-            status: "Đang hoạt động",
-            deleted: true
-        },
-        {
-            code: "PROBKLOPLOPOJHIO",
-            nameSk: "Tháng 4 vui vẻ",
-            dateStart: "01/04/2024",
-            dateEnd: "30/04/2024",
-            status: "Đang hoạt động",
-            deleted: false
-        },
-        {
-            code: "PROBKLOP",
-            nameSk: "Đón sinh nhật cùng TvN Cinema",
-            dateStart: "01/04/2024",
-            dateEnd: "30/04/2024",
-            status: "Đang hoạt động",
-            deleted: true
+    const handleGetPromotion = async (pageNumber) => {
+        setLoading('promotion', true)
+        let resPromotion = await getAllPromotionApi(pageNumber, 6, true)
+        if (resPromotion && resPromotion.data && resPromotion.data.result) {
+            setPromotion(resPromotion.data.result.content)
+            setPagination(prevPagination => ({
+                ...prevPagination,
+                pageNumber: pageNumber,
+                pageSize: resPromotion.data.result.pageSize,
+                totalPages: resPromotion.data.result.totalPages,
+                totalElements: resPromotion.data.result.totalElements
+            }));
         }
-    ]
+        setLoading('promotion', false)
+    }
+
+    const handleDeletePromotion = async (promotionId) => {
+        setLoading('promotion', true)
+        await deletePromotionsFixed(promotionId)
+
+        handleCloseModal(promotionId)
+        setLoading('promotion', false)
+        handleOpenModal('loading')
+    }
+    const handleDeletePromotionByCode = async (promotionId) => {
+        setLoading('promotionByCode', true)
+        await deletePromotionsCode(promotionId)
+
+        handleCloseModal(promotionId)
+        handleOpenModal('loading1')
+        setLoading('promotionByCode', false)
+    }
 
     useEffect(() => {
-        handleGetItems()
+        handleGetPromotion(pagination.pageNumber)
+        handleGetPromotionByCode(pagination1.pageNumber)
     }, [])
+    useEffect(() => {
+        if (modalStates['loading']) {
+            handleGetPromotion(pagination.pageNumber)
+            handleCloseModal('loading')
+        }
+        if (modalStates['loading1']) {
+            handleGetPromotionByCode(pagination1.pageNumber)
+            handleCloseModal('loading1')
+        }
+    }, [modalStates])
     return (
         <div className='px-4'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
@@ -71,7 +120,7 @@ function ListPromotion() {
                     <button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
                         type='submit'
-                    // onClick={() => changeTab("/admin/add-item/movie")}
+                        onClick={() => changeTab("/admin/add-item/promotion")}
                     >
                         Thêm
                     </button>
@@ -82,50 +131,139 @@ function ListPromotion() {
                     <Search />
                 </div>
             </div>
-            {/* {!loading && */}
-            <div className=''>
-                <table className='mt-6 w-full'>
-                    <thead className=''>
-                        <tr className='border-b-2 border-slate-200'>
-                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-60'>Mã CT khuyến mãi</th>
-                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-80'>Tên CT khuyến mãi</th>
-                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày bắt đầu</th>
-                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày kết thúc</th>
-                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-44'>Trạng thái</th>
-                            {/* {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>} */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            promotionFake.map((item, index) => (
-                                <tr
-                                    onClick={() => { navigate('/admin/promotion') }}
-                                    className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
-                                >
-                                    <td className='text-start font-medium px-2 py-3'>{item.code}</td>
-                                    <td className='text-start font-medium px-2 py-3'>{item.nameSk}</td>
-                                    <td className='text-center font-medium px-2 py-3'>{item.dateStart}</td>
-                                    <td className='text-center font-medium px-2 py-3'>{item.dateEnd}</td>
-                                    <td className={`${item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã kết thúc" : "Đang diễn ra"}</td>
-                                    <td className='text-center font-medium px-2 py-3'>
-                                        <div className='flex items-center justify-end pr-8 outline-none'>
-                                            <button
-                                                type='button'
-                                                onClick={(e) => { e.stopPropagation(); handleOpenModal(item.movieId); }}
-                                                className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100 outline-none'
+            <Tabs selectedIndex={tabIndex} className='relative'>
+                <TabList className='py-2 px-8'>
+                    <Tab onClick={() => setTabIndex(0)}>Tự động áp dụng</Tab>
+                    <Tab onClick={() => setTabIndex(1)}>Áp dụng code</Tab>
+                </TabList>
+                <TabPanel>
+                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 z-50'>
+                        {loading['promotion'] && <Loading />}
+                    </div>
+                    {!loading['promotion'] &&
+                        <div className=''>
+                            <table className='mt-6 w-full'>
+                                <thead className=''>
+                                    <tr className='border-b-2 border-slate-200'>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-60'>Mã CT khuyến mãi</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-80'>Tên CT khuyến mãi</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày bắt đầu</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày kết thúc</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-44'>Trạng thái</th>
+                                        {/* {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>} */}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        promotion && promotion.map((item, index) => (
+                                            <tr
+                                                onClick={() => { navigate('/admin/promotion') }}
+                                                className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
-                                                <TrashIcon className='h-4 w-4 text-red-600' />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-                {/* <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllMovie} /> */}
-            </div>
-            {/* } */}
+                                                <td className='text-start font-medium px-2 py-3'>{item.promotionFixedId}</td>
+                                                <td className='text-start font-medium px-2 py-3'>{item.name}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
+                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
+                                                <td className='text-center font-medium px-2 py-3'>
+                                                    <div className='flex items-center justify-end pr-8 outline-none'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={(e) => { e.stopPropagation(); handleOpenModal(item.promotionFixedId); }}
+                                                            className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100 outline-none'
+                                                        >
+                                                            <TrashIcon className='h-4 w-4 text-red-600' />
+                                                        </button>
+                                                        <div>
+                                                            {modalStates[item.promotionFixedId] && (
+                                                                <Modal
+                                                                    isOpen={modalStates[item.promotionFixedId]}
+                                                                    onClose={() => handleCloseModal(item.promotionFixedId)}
+                                                                    onConfirm={() => handleDeletePromotion(item.promotionFixedId)}
+                                                                    onCancel={() => handleCloseModal(item.promotionFixedId)}
+                                                                    title={!item.deleted ? 'Dừng khuyến mãi' : 'Khởi động lại khuyến mãi'}
+                                                                    content={!item.deleted ? 'Bạn có chắc chắn dừng khuyến mãi này ?' : 'Bạn có chắc chắn khởi động lại khuyến mãi này ?'}
+                                                                    buttonName='Đồng ý'
+                                                                    buttonCancel='Thoát'
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                            <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetPromotion} />
+                        </div>
+                    }
+                </TabPanel>
+                <TabPanel>
+                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 z-50'>
+                        {loading['promotionByCode'] && <Loading />}
+                    </div>
+                    {!loading['promotionByCode'] &&
+                        <div className=''>
+                            <table className='mt-6 w-full'>
+                                <thead className=''>
+                                    <tr className='border-b-2 border-slate-200'>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-60'>Mã CT khuyến mãi</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-80'>Tên CT khuyến mãi</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày bắt đầu</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-40'>Ngày kết thúc</th>
+                                        <th className='text-sm text-center font-light px-2 pb-4 uppercase w-44'>Trạng thái</th>
+                                        {/* {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>} */}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        promotionByCode && promotionByCode.map((item, index) => (
+                                            <tr
+                                                onClick={() => { navigate('/admin/promotion') }}
+                                                className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
+                                            >
+                                                <td className='text-start font-medium px-2 py-3'>{item.promotionCode}</td>
+                                                <td className='text-start font-medium px-2 py-3'>{item.name}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
+                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
+                                                <td className='text-center font-medium px-2 py-3'>
+                                                    <div className='flex items-center justify-end pr-8 outline-none'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={(e) => { e.stopPropagation(); handleOpenModal(item.promotionCodeId); }}
+                                                            className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100 outline-none'
+                                                        >
+                                                            <TrashIcon className='h-4 w-4 text-red-600' />
+                                                        </button>
+
+                                                        <div>
+                                                            {modalStates[item.promotionCodeId] && (
+                                                                <Modal
+                                                                    isOpen={modalStates[item.promotionCodeId]}
+                                                                    onClose={() => handleCloseModal(item.promotionCodeId)}
+                                                                    onConfirm={() => handleDeletePromotionByCode(item.promotionCodeId)}
+                                                                    onCancel={() => handleCloseModal(item.promotionCodeId)}
+                                                                    title={!item.deleted ? 'Dừng khuyến mãi' : 'Khởi động lại khuyến mãi'}
+                                                                    content={!item.deleted ? 'Bạn có chắc chắn dừng khuyến mãi này ?' : 'Bạn có chắc chắn khởi động lại khuyến mãi này ?'}
+                                                                    buttonName='Đồng ý'
+                                                                    buttonCancel='Thoát'
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                            <Pagination pageNumber={pagination1.pageNumber} pageSize={pagination1.pageSize} totalElements={pagination1.totalElements} totalPages={pagination1.totalPages} getItemByPage={handleGetPromotionByCode} />
+                        </div>
+                    }
+                </TabPanel>
+            </Tabs>
         </div>
     )
 }

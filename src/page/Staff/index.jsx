@@ -65,8 +65,10 @@ function Staff() {
     ]
     useEffect(() => {
         handleTabChange()
-        handleGetItems()
     }, [pathname]);
+    useEffect(() => {
+        handleGetItems()
+    }, []);
     return (
         <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
             <div className='flex w-full justify-between'>

@@ -246,234 +246,233 @@ const AddMovie = () => {
                     <div className='absolute mx-auto top-80 right-1/2 z-50'>
                         {loading1 && <Loading />}
                     </div>
-                    {!loading1 && <div className='border py-8 px-4'>
-                        <div className='flex'>
-                            <div>
+                    {!loading1 &&
+                        <div className='border py-8 px-4'>
+                            <div className='flex'>
+                                <div>
+                                    <label
+                                        htmlFor=""
+                                        className="block text-lg font-medium leading-6 text-gray-900"
+                                    >
+                                        Ảnh (dọc) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                    </label>
+                                    <div className="mb-4 border">
+                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                    </div>
+
+                                    <div className='px-4'>
+                                        <input
+                                            onChange={handleFileChange}
+                                            type="file"
+                                            className="hidden"
+                                            id="form_img-upload"
+                                        />
+                                        <label
+                                            htmlFor="form_img-upload"
+                                            className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                                        >
+                                            Chọn một tập tin
+                                        </label>
+                                    </div>
+                                    {errors.poster && <p className="text-red-600">{errors.poster}</p>}
+                                </div>
+
+                                <div className='px-4 w-[80%]'>
+                                    <div className="mb-4">
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            Tên phim {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                        </label>
+                                        <input
+                                            onChange={e => {
+                                                setMovie({ ...movie, title: e.target.value })
+                                                clearError('title')
+                                            }}
+                                            type="text"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            defaultValue={oneMovie.title}
+                                        />
+                                        {errors.title && <p className="text-red-600">{errors.title}</p>}
+                                    </div>
+                                    <div className="my-4">
+                                        <label
+                                            htmlFor=""
+                                            className="block text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            Mô tả {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                        </label>
+                                        <textarea
+                                            onChange={e => {
+                                                setMovie({ ...movie, desc: e.target.value })
+                                                clearError('desc')
+                                            }}
+                                            type="text"
+                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            defaultValue={oneMovie.desc}
+                                            rows={5}
+                                        />
+                                        {errors.desc && <p className="text-red-600">{errors.desc}</p>}
+                                    </div>
+                                    <div className='flex justify-between my-4'>
+                                        <div className="pr-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Đạo diễn {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <input
+                                                onChange={e => {
+                                                    setMovie({ ...movie, director: e.target.value })
+                                                    clearError('director')
+                                                }}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                defaultValue={oneMovie.director}
+                                            />
+                                            {errors.director && <p className="text-red-600">{errors.director}</p>}
+                                        </div>
+                                        <div className="px-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Diễn viên {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <input
+                                                onChange={e => {
+                                                    setMovie({ ...movie, actor: e.target.value })
+                                                    clearError('actor')
+                                                }}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                defaultValue={oneMovie.actor}
+                                            />
+                                            {errors.actor && <p className="text-red-600">{errors.actor}</p>}
+                                        </div>
+                                        <div className="px-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Ngày phát hành {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <DatePicker
+                                                selected={time}
+                                                onChange={date => {
+                                                    setTime(date);
+                                                    setMovie((prevMovie) => {
+                                                        return { ...prevMovie, releaseDate: date };
+                                                    });
+                                                    clearError('releaseDate')
+                                                }}
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholderText={FormatDataTime(oneMovie.releaseDate).date}
+                                                dateFormat="yyyy-MM-dd" // Định dạng ngày
+                                            />
+                                            {errors.releaseDate && <p className="text-red-600">{errors.releaseDate}</p>}
+                                        </div>
+                                        <div className="pl-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Thể loại {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <input
+                                                onChange={e => {
+                                                    setMovie({ ...movie, genres: e.target.value })
+                                                    clearError('genres')
+                                                }}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                defaultValue={oneMovie.genres}
+                                            />
+                                            {errors.genres && <p className="text-red-600">{errors.genres}</p>}
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-between my-4'>
+                                        <div className="w-1/4 pr-2 rounded-md">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Thời lượng {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <input
+                                                onChange={e => {
+                                                    setMovie({ ...movie, duration: e.target.value })
+                                                    clearError('duration')
+                                                }}
+                                                type="text"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                defaultValue={oneMovie.duration}
+                                            />
+                                            {errors.duration && <p className="text-red-600">{errors.duration}</p>}
+                                        </div>
+                                        <div className="w-3/4 pl-2">
+                                            <label
+                                                htmlFor=""
+                                                className="block text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Trailer Link {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                            </label>
+                                            <input
+                                                onChange={e => {
+                                                    setMovie({ ...movie, trailerLink: e.target.value })
+                                                    clearError('trailerLink')
+                                                }}
+                                                type="url"
+                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                defaultValue={oneMovie.trailerLink}
+                                            />
+                                            {errors.trailerLink && <p className="text-red-600">{errors.trailerLink}</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='pt-4'>
                                 <label
                                     htmlFor=""
                                     className="block text-lg font-medium leading-6 text-gray-900"
                                 >
-                                    Ảnh (dọc) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
+                                    Ảnh (ngang) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                 </label>
                                 <div className="mb-4 border">
-                                    <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                    <img src={image2URL} alt="Preview" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
                                 </div>
 
                                 <div className='px-4'>
                                     <input
-                                        onChange={handleFileChange}
+                                        onChange={handleFileChange2}
                                         type="file"
                                         className="hidden"
-                                        id="form_img-upload"
+                                        id="form_img2-upload"
                                     />
                                     <label
-                                        htmlFor="form_img-upload"
+                                        htmlFor="form_img2-upload"
                                         className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
                                     >
                                         Chọn một tập tin
                                     </label>
                                 </div>
-                                {errors.poster && <p className="text-red-600">{errors.poster}</p>}
+                                {errors.slider && <p className="text-red-600">{errors.slider}</p>}
                             </div>
-
-                            <div className='px-4 w-[80%]'>
-                                <div className="mb-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Tên phim {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                    </label>
-                                    <input
-                                        onChange={e => {
-                                            setMovie({ ...movie, title: e.target.value })
-                                            clearError('title')
-                                        }}
-                                        type="text"
-                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        defaultValue={oneMovie.title}
-                                    />
-                                    {errors.title && <p className="text-red-600">{errors.title}</p>}
-                                </div>
-                                <div className="my-4">
-                                    <label
-                                        htmlFor=""
-                                        className="block text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Mô tả {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                    </label>
-                                    <textarea
-                                        onChange={e => {
-                                            setMovie({ ...movie, desc: e.target.value })
-                                            clearError('desc')
-                                        }}
-                                        type="text"
-                                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                        defaultValue={oneMovie.desc}
-                                        rows={5}
-                                    />
-                                    {errors.desc && <p className="text-red-600">{errors.desc}</p>}
-                                </div>
-                                <div className='flex justify-between my-4'>
-                                    <div className="pr-2">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Đạo diễn {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <input
-                                            onChange={e => {
-                                                setMovie({ ...movie, director: e.target.value })
-                                                clearError('director')
-                                            }}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            defaultValue={oneMovie.director}
-                                        />
-                                        {errors.director && <p className="text-red-600">{errors.director}</p>}
-                                    </div>
-                                    <div className="px-2">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Diễn viên {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <input
-                                            onChange={e => {
-                                                setMovie({ ...movie, actor: e.target.value })
-                                                clearError('actor')
-                                            }}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            defaultValue={oneMovie.actor}
-                                        />
-                                        {errors.actor && <p className="text-red-600">{errors.actor}</p>}
-                                    </div>
-                                    <div className="px-2">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Ngày phát hành {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <DatePicker
-                                            selected={time}
-                                            onChange={date => {
-                                                setTime(date);
-                                                setMovie((prevMovie) => {
-                                                    return { ...prevMovie, releaseDate: date };
-                                                });
-                                                clearError('releaseDate')
-                                            }}
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholderText={FormatDataTime(oneMovie.releaseDate).date}
-                                            dateFormat="yyyy-MM-dd" // Định dạng ngày
-                                        />
-                                        {errors.releaseDate && <p className="text-red-600">{errors.releaseDate}</p>}
-                                    </div>
-                                    <div className="pl-2">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Thể loại {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <input
-                                            onChange={e => {
-                                                setMovie({ ...movie, genres: e.target.value })
-                                                clearError('genres')
-                                            }}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            defaultValue={oneMovie.genres}
-                                        />
-                                        {errors.genres && <p className="text-red-600">{errors.genres}</p>}
-                                    </div>
-                                </div>
-                                <div className='flex justify-between my-4'>
-                                    <div className="w-1/4 pr-2 rounded-md">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Thời lượng {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <input
-                                            onChange={e => {
-                                                setMovie({ ...movie, duration: e.target.value })
-                                                clearError('duration')
-                                            }}
-                                            type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            defaultValue={oneMovie.duration}
-                                        />
-                                        {errors.duration && <p className="text-red-600">{errors.duration}</p>}
-                                    </div>
-                                    <div className="w-3/4 pl-2">
-                                        <label
-                                            htmlFor=""
-                                            className="block text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                            Trailer Link {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                                        </label>
-                                        <input
-                                            onChange={e => {
-                                                setMovie({ ...movie, trailerLink: e.target.value })
-                                                clearError('trailerLink')
-                                            }}
-                                            type="url"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            defaultValue={oneMovie.trailerLink}
-                                        />
-                                        {errors.trailerLink && <p className="text-red-600">{errors.trailerLink}</p>}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='pt-4'>
-                            <label
-                                htmlFor=""
-                                className="block text-lg font-medium leading-6 text-gray-900"
-                            >
-                                Ảnh (ngang) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
-                            </label>
-                            <div className="mb-4 border">
-                                <img src={image2URL} alt="Preview" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
-                            </div>
-
-                            <div className='px-4'>
-                                <input
-                                    onChange={handleFileChange2}
-                                    type="file"
-                                    className="hidden"
-                                    id="form_img2-upload"
-                                />
-                                <label
-                                    htmlFor="form_img2-upload"
-                                    className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                            <div className='flex justify-end'>
+                                <button
+                                    className="w-1/6 mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                    type='submit'
+                                    disabled={loading}
+                                    onClick={pathname === "/admin/add-item/movie" ? handleAddMovie : handleUpdateMovie}
                                 >
-                                    Chọn một tập tin
-                                </label>
+                                    {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                    &nbsp;{pathname === "/admin/add-item/movie" ? "Thêm phim" : "Cập nhật"}
+                                </button>
                             </div>
-                            {errors.slider && <p className="text-red-600">{errors.slider}</p>}
                         </div>
-                        <div className='flex justify-end'>
-                            <button
-                                className="w-1/6 mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                type='submit'
-                                disabled={loading}
-                                onClick={pathname === "/admin/add-item/movie" ? handleAddMovie : handleUpdateMovie}
-                            >
-                                {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                &nbsp;{pathname === "/admin/add-item/movie" ? "Thêm phim" : "Cập nhật"}
-                            </button>
-                        </div>
-                        <div>
-
-                        </div>
-                    </div>}
+                    }
                 </div>
 
 

@@ -54,7 +54,7 @@ const OptionsStatistics = ({ selectedMonth, setSelectedMonth, selectedYear, setS
                     <div className='w-44 pr-3'>
                         <span className='font-bold text-lg'>Tháng</span>
                         <div className='border-2 p-2 rounded-lg focus:outline-none bg-white'>
-                            <SelectMenu onSelectChange={handleMonthChange} items={months} content={selectedMonth || currentMonth} />
+                            <SelectMenu onSelectChange={handleMonthChange} items={months} content={`Tháng ${selectedMonth}` || currentMonth} />
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React from 'react'
 import toastNotify from "../utils/UseToastForNotify"
+import axiosService from './axiosInstance';
 
 function StaffService() {
+    const axiosInstance = axiosService()
     const getNowPlayingMovieStaffApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/staff/movie/now-playing`,
             {
                 headers: {
@@ -17,7 +19,7 @@ function StaffService() {
 
     const getMovieComingSoonStaffApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/staff/movie/other`,
             {
                 headers: {
@@ -29,7 +31,7 @@ function StaffService() {
     const sellTicketApi = async (userId, seats, foods) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/staff/sell-ticket`,
                 {
                     userId: userId,
@@ -55,7 +57,7 @@ function StaffService() {
     const searchViewerApi = async (keyWord) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         const params = { keyWord: keyWord }
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/staff/search/viewer`,
             {
                 headers: {
@@ -68,7 +70,7 @@ function StaffService() {
     const addViewerApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/staff/viewer`,
                 data,
                 {
@@ -89,7 +91,7 @@ function StaffService() {
 
     const getAllBookingStaffApi = async (pageIndex, pageSize, status, cinemaId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/staff/bookings`,
             {
                 headers: {

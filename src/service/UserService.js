@@ -2,13 +2,13 @@ import React from 'react'
 import axios from 'axios'
 import toastNotify from "../utils/UseToastForNotify"
 import { useNavigate } from 'react-router-dom'
-import { AxiosService } from './AxiosService'
+import axiosService from './axiosInstance'
 
 const UserService = () => {
-  
+    const axiosInstance = axiosService(); 
     const getUserInfoApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/user/profile`,
             {
                 headers: {
@@ -36,7 +36,7 @@ const UserService = () => {
                 }
             }
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/update`,
                 data,
                 {
@@ -57,7 +57,7 @@ const UserService = () => {
     const changePasswordApi = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/change-password`,
                 data,
                 {
@@ -210,7 +210,7 @@ const UserService = () => {
     const bookingTicketApi = async (seats, foods) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/viewer/book`,
                 {
                     seatIds: seats,
@@ -257,7 +257,7 @@ const UserService = () => {
     }
     const getBookingUpcomingApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/upcoming`,
             {
                 headers: {
@@ -268,7 +268,7 @@ const UserService = () => {
     }
     const getBookingViewedApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axios.get(
+        return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/viewed`,
             {
                 headers: {
@@ -295,7 +295,7 @@ const UserService = () => {
     const reviewMovieApi = async (comment, rating, movieId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/viewer/movies/${movieId}/review`,
                 {
                     comment: comment,
@@ -318,7 +318,7 @@ const UserService = () => {
     const cancelTicketApi = async (ticketId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/viewer/ticket/cancel/${ticketId}`,
                 null,
                 {

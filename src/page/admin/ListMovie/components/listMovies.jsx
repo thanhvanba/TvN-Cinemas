@@ -165,7 +165,7 @@ const ListMovies = () => {
                                                                 onClose={() => handleCloseModal(item.movieId)}
                                                                 onConfirm={() => handleChangeStatus(item.movieId)}
                                                                 onCancel={() => handleCloseModal(item.movieId)}
-                                                                title='Chuyển trạng  thái'
+                                                                title='Chuyển trạng thái'
                                                                 content='Bạn có chắc chắn đổi trạng thái phim này ???'
                                                                 buttonName='Thay đổi'
                                                                 buttonCancel='Thoát'

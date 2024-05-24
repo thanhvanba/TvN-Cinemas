@@ -205,7 +205,7 @@ const HomeSlider = ({ movies }) => {
         // Định nghĩa biến timeoutId để lưu ID của setTimeout
         setTimeout(() => {
             setToggle(false);
-        }, 10);
+        }, 5);
 
     };
 

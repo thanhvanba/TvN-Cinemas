@@ -20,7 +20,7 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
 
 import logo from "../../images/logo.png"
 import Search from '../Search'
@@ -252,13 +252,13 @@ const Header = () => {
         </Dialog.Panel>
       </Dialog>
       <div className='top-menu'>
-        <div className='mx-auto h-full flex max-w-5xl xl:max-w-7xl justify-between lg:px-8 top-menu-container'>
+        <div className='mx-auto h-full flex max-w-5xl xl:max-w-7xl justify-between lg:px-4 top-menu-container'>
           <div className="flex lg:flex-auto">
             {/* logo */}
             <div className='flex items-center'>
               <p onClick={() => { changeTab('/') }} href="" className="pl-6 lg:p-1.5 outline-none ">
                 <span className="sr-only">Your Company</span>
-                <img className="h-[60px] md:h-[80px] w-auto" src={logo}/>
+                <img className="h-[60px] md:h-[80px] w-auto" src={logo} />
               </p>
             </div>
             {/* Thanh điều hướng */}
@@ -404,20 +404,21 @@ const Header = () => {
                     </Popover.Panel>
                   </Transition>
                 </div>
-                : <div>
-                  <span
+                :
+                <div className='flex items-center'>
+                  <p
                     className="cursor-pointer border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
                     onClick={() => { changeTab('/user/info') }}
                   >
                     {user.credentialId}
-                  </span>
+                  </p>
                   <button
                     onClick={handleLogoutApi}
-                    className="ml-2 p-2 text-sm font-bold uppercase rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                    className="ml-2 flex items-center p-1 text-sm font-bold uppercase rounded-lg hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
                     type='submit'
                   >
                     {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                    &nbsp;Đăng xuất
+                    <ArrowRightOnRectangleIcon className='w-6 h-6' />
                   </button>
                 </div>
             }
