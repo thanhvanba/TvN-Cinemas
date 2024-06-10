@@ -9,7 +9,7 @@ function Promotion() {
     return (
         <div>
             {/^\/(admin|manager)\/list-promotion/.test(pathname) ? <ListPromotion /> :
-                /^\/(admin|manager)\/promotion/.test(pathname) ? <DetailPromotion /> :
+                /^\/(admin|manager)\/(update-item\/promotion|promotion)/.test(pathname) ? <DetailPromotion /> :
                     /^\/(admin|manager)\/add-item\/promotion/.test(pathname) && <AddPromotion />
             }
         </div>

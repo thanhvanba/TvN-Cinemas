@@ -91,6 +91,8 @@ const Movie = () => {
             if (startTimeA > startTimeB) return 1;
             return 0;
         })
+        
+        console.log("🚀 ~ FoundShowtime ~ updatedSchedule:", updatedSchedule)
         setListSchedule(updatedSchedule)
     }
 
@@ -182,7 +184,7 @@ const Movie = () => {
                                                                                 const updatedDateTime = {
                                                                                     ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                                                 };
-                                                                                navigate(`/${foundShowtime[0]?.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
+                                                                                navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
                                                                             }
                                                                         }}
                                                                         className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}

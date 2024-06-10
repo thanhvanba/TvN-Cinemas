@@ -38,7 +38,7 @@ const ShowTimes = () => {
   const [listShowtime, setListShowtime] = useState([])
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
   console.log("🚀 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
-  const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "" });
+  const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
     navigate(pathname)
@@ -297,11 +297,11 @@ const ShowTimes = () => {
                                                     if (!user.auth) {
                                                       handleModalStates();
                                                     } else if (isTimeInFuture) {
-                                                      setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                      setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
                                                       const updatedDateTime = {
-                                                        ...selectedDateTime, time: schedule.startTime
+                                                        ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                       };
-                                                      navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                      navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                     }
                                                   }}
                                                   className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
@@ -437,13 +437,13 @@ const ShowTimes = () => {
                                                       if (!user.auth) {
                                                         handleModalStates();
                                                       } else if (isTimeInFuture) {
-                                                        setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                        setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
                                                         const updatedDateTime = {
-                                                          ...selectedDateTime, time: schedule.startTime
+                                                          ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                         };
 
                                                         console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
-                                                        navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                        navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                       }
                                                     }}
                                                     className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}

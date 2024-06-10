@@ -205,7 +205,7 @@ const ListProduct = () => {
                                             <div className="inline-block z-10 pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
                                             </div>
-                                            <div className='flex justify-center absolute top-0 w-full p-3'>
+                                            <div className='flex justify-center absolute top-0 left-0    w-full p-3'>
                                                 {!status ?
                                                     <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
                                                     : <> {user.role === "ADMIN" ?
@@ -238,11 +238,15 @@ const ListProduct = () => {
                                                 <Inflow onToggle={setToggle} />
                                             </div>
                                         }
-                                        <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
-                                            <FoodItems listFood={allFood} onChange={() => handleGetItems(pagination.pageNumber, selectFood)} />
-                                        </div>
+                                        {
+                                            allFood.length === 0 ?
+                                                <p className='text-center pt-4 text-lg text-slate-400 font-ligh'>--- Chưa có sản phẩm ---</p> :
+                                                <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
+                                                    <FoodItems listFood={allFood} />
+                                                </div>
+                                        }
                                     </div>
-                                    <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
+                                    {allFood.length !== 0 && <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />}
                                 </div>
                             }
                         </div>

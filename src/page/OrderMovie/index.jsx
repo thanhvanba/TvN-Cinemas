@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArmchairIcon, PopcornIcon, CreditCardIcon, InboxIcon } from 'lucide-react'
+import { ArmchairIcon, PopcornIcon, CreditCardIcon, InboxIcon, Ticket, Plus } from 'lucide-react'
 import screen from "../../images/screen.webp"
 import { XMarkIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,7 +35,7 @@ const OrderMovie = () => {
     const [listFoodBooking, setListFoodBooking] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
     const [bookingInfo, setBookingInfo] = useState({})
-
+    const [promotionCode, setPromotionCode] = useState('')
     const [showtime, setShowtime] = useState({
         showTimeId: null,
         room: {
@@ -158,21 +158,6 @@ const OrderMovie = () => {
             setListSnacks(resFood3.data.result.content.filter(item => item.quantity > 0))
         }
     }
-    // const handleGetSeatBooked = async () => {
-    //     const data = {
-    //         showtimeId: showtimeId,
-    //         timeShow: dateTime
-    //             ? format(
-    //                 parse(`${dateTime.date} ${dateTime.time}`, 'dd/MM/yyyy HH:mm', new Date()),
-    //                 "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-    //             )
-    //             : null,
-    //     }
-    //     let resSeat = await getSeatBookedApi(data)
-    //     if (resSeat && resSeat.data && resSeat.data.result) {
-    //         setListSeatBooked(resSeat.data.result)
-    //     }
-    // }
     const handleSelectSeatApi = async () => {
         setLoading(true);
         const data = selectSeats;
@@ -180,6 +165,10 @@ const OrderMovie = () => {
         if (res && res.data && res.data.result) {
             setListSeatBooking(res.data.result.seatIds)
         }
+        setBookingInfo({ ...bookingInfo, discount: 0 })
+        setPromotionCode('')
+        console.log("🚀 ~ handleSelectSeatApi ~ bookingInfo:", bookingInfo)
+        navigate(`/${showtimeId}/order/bapnuoc`, { state: { dateTime: dateTime } })
         setLoading(false);
     }
     const handleBookingTicket = async () => {
@@ -192,12 +181,13 @@ const OrderMovie = () => {
         }
         setLoading(false);
     }
-    const handleGetBookingInfo = async () => {
+    const handleGetBookingInfo = async (code) => {
         setLoading(true);
-        const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking)
+        const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking, code)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result)
         }
+        navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
         setLoading(false);
     }
 
@@ -358,7 +348,6 @@ const OrderMovie = () => {
                             <button
                                 onClick={() => {
                                     handleSelectSeatApi();
-                                    navigate(`/${showtimeId}/order/bapnuoc`, { state: { dateTime: dateTime } })
                                 }}
                                 className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                 type="button"
@@ -501,7 +490,6 @@ const OrderMovie = () => {
                                     <button
                                         onClick={() => {
                                             handleGetBookingInfo();
-                                            navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
                                         }}
                                         className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                         type="button"
@@ -618,46 +606,45 @@ const OrderMovie = () => {
                                                 </span>
                                                 <span className="pointer-events-none absolute -inset-px rounded-xl border border-red-500" aria-hidden="true"></span>
                                             </div>
-                                            <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:ri:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rj:">
-                                                <span className="flex items-center">
-                                                    <span className="h-6 w-6 rounded-full border border-gray-700 flex items-center justify-center mr-4 bg-transparent" aria-hidden="true"></span>
-                                                    <span className="flex flex-col">
-                                                        <span className="font-medium text-slate-900 flex items-center gap-2" id="headlessui-label-:rj:">
-                                                            {/* <img alt="hình ảnh" loading="lazy" width="50" height="50" decoding="async" data-nimg="1" src="/images/payoo.svg" style="color: transparent;" />Payoo */}
-                                                            Payoo
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <span className="pointer-events-none absolute -inset-px rounded-xl border border-transparent" aria-hidden="true"></span>
-                                            </div>
-                                            <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rk:" role="radio" aria-checked="false" tabIndex="-1" data-headlessui-state="" aria-labelledby="headlessui-label-:rl:">
-                                                <span className="flex items-center">
-                                                    <span className="h-6 w-6 rounded-full border border-gray-700 flex items-center justify-center mr-4 bg-transparent" aria-hidden="true"></span>
-                                                    <span className="flex flex-col">
-                                                        <span className="font-medium text-slate-900 flex items-center gap-2" id="headlessui-label-:rl:">
-                                                            <img src="" alt="" />
-                                                            {/* <img alt="hình ảnh" loading="lazy" width="50" height="50" decoding="async" data-nimg="1" srcSet="/_next/image?url=%2Fimages%2Fviettel1.png&amp;w=64&amp;q=75 1x, /_next/image?url=%2Fimages%2Fviettel1.png&amp;w=128&amp;q=75 2x" src="/_next/image?url=%2Fimages%2Fviettel1.png&amp;w=128&amp;q=75" style="color: transparent;" /> */}
-                                                            Viettel Money
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <span className="pointer-events-none absolute -inset-px rounded-xl border border-transparent" aria-hidden="true"></span>
-                                            </div>
                                         </div>
                                     </div>
-                                    <h4 className="font-bold">Chi phí</h4>
+                                    <div>
+                                        <h4 className="font-bold">Chi phí</h4>
+                                        <div className='flex items-center justify-center'>
+                                            <Ticket className="h-6 w-6 text-green-600 cursor-pointer ml-2 -mr-8 z-20" />
+                                            <input
+                                                onChange={e => setPromotionCode(e.target.value)}
+                                                type="text"
+                                                className="block pl-10 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                placeholder='Nhập mã khuyến mãi'
+                                            />
+                                            <button
+                                                className='ml-2 bg-sky-600 hover:bg-sky-700 h-8 w-8 flex items-center justify-center rounded-md'
+                                                onClick={() => {
+                                                    handleGetBookingInfo(promotionCode)
+                                                }}
+                                            >
+                                                <Plus className='text-white first-letter:h-5 w-5' />
+                                            </button>
+                                        </div>
+                                    </div>
                                     <div>
                                         <div className="flex items-center justify-between">
-                                            <p>Thanh toán</p>
-                                            <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
+                                            <p>Tổng cộng</p>
+                                            <p className="font-semibold">{formatPrice(
+                                                selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
+                                                foods.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+                                            )}
+                                                <sup>đ</sup>
+                                            </p>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <p>Phí (0%)</p>
-                                            <p className="font-bold">0</p>
+                                            <p className="font-semibold">-{formatPrice(bookingInfo.discount)}<sup>đ</sup></p>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <p>Tổng cộng</p>
-                                            <p className="font-bold">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
+                                            <p>Thanh toán</p>
+                                            <p className="font-bold text-xl text-green-600">{formatPrice(bookingInfo.total)}<sup>đ</sup></p>
                                         </div>
                                     </div>
                                     <div className=" left-4 right-4 bottom-8 space-y-3">

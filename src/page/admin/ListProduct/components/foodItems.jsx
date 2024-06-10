@@ -6,7 +6,7 @@ import Modal from '../../../../utils/Modal'
 import AdminService from '../../../../service/AdminService'
 import { useNavigate } from 'react-router-dom'
 
-const FoodItems = ({ listFood, onChange }) => {
+const FoodItems = ({ listFood }) => {
     const { deleteFoodApi } = AdminService()
 
     const [modalStates, setModalStates] = useState({});

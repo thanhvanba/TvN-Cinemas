@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
 import Search from '../../../../components/Search'
 import PromotionService from '../../../../service/PromotionService'
@@ -9,10 +9,11 @@ import FormatDataTime from '../../../../utils/FormatDataTime'
 import Modal from '../../../../utils/Modal'
 import Loading from '../../../../components/Loading'
 import useLoadingState from '../../../../hook/UseLoadingState'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 
 function ListPromotion() {
     const navigate = useNavigate()
-    const { getAllPromotionApi, deletePromotionsCode, deletePromotionsFixed } = PromotionService()
+    const { getAllPromotionApi, deletePromotionsCode, deletePromotionsFixed, getOnePromotionApi } = PromotionService()
     const changeTab = (pathname) => {
         navigate(pathname)
     }
@@ -21,7 +22,6 @@ function ListPromotion() {
 
     const [modalStates, setModalStates] = useState({});
     const { loading, setLoading } = useLoadingState(false);
-    console.log("🚀 ~ ListPromotion ~ loading:", loading)
     const [tabIndex, setTabIndex] = useState(0);
     const [pagination, setPagination] = useState(
         {
@@ -43,13 +43,13 @@ function ListPromotion() {
     const handleOpenModal = (promotionId) => {
         setModalStates((prevStates) => ({ ...prevStates, [promotionId]: true }));
     };
-
     const handleCloseModal = (promotionId) => {
         setModalStates((prevStates) => ({ ...prevStates, [promotionId]: false }));
     };
+
     const handleGetPromotionByCode = async (pageNumber) => {
         setLoading('promotionByCode', true)
-        
+
         let resPromotion = await getAllPromotionApi(pageNumber, 6)
         if (resPromotion && resPromotion.data && resPromotion.data.result) {
             setPromotionByCode(resPromotion.data.result.content)
@@ -63,7 +63,6 @@ function ListPromotion() {
         }
         setLoading('promotionByCode', false)
     }
-
     const handleGetPromotion = async (pageNumber) => {
         setLoading('promotion', true)
         let resPromotion = await getAllPromotionApi(pageNumber, 6, true)
@@ -111,12 +110,12 @@ function ListPromotion() {
             handleCloseModal('loading1')
         }
     }, [modalStates])
+
     return (
         <div className='px-4'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                 <h2 className='text-3xl cursor-default'>Chương trình khuyến mãi</h2>
                 {
-                    // user.role === "ADMIN" &&
                     <button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
                         type='submit'
@@ -157,7 +156,7 @@ function ListPromotion() {
                                     {
                                         promotion && promotion.map((item, index) => (
                                             <tr
-                                                onClick={() => { navigate('/admin/promotion') }}
+                                                onClick={() => changeTab(`/admin/promotion/${item.promotionFixedId}`)}
                                                 className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
                                                 <td className='text-start font-medium px-2 py-3'>{item.promotionFixedId}</td>
@@ -167,6 +166,9 @@ function ListPromotion() {
                                                 <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
                                                 <td className='text-center font-medium px-2 py-3'>
                                                     <div className='flex items-center justify-end pr-8 outline-none'>
+                                                        <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/promotion/${item.promotionFixedId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
+                                                            <PencilSquareIcon className='h-4 w-4 text-cyan-600' />
+                                                        </a>
                                                         <button
                                                             type='button'
                                                             onClick={(e) => { e.stopPropagation(); handleOpenModal(item.promotionFixedId); }}
@@ -220,16 +222,19 @@ function ListPromotion() {
                                     {
                                         promotionByCode && promotionByCode.map((item, index) => (
                                             <tr
-                                                onClick={() => { navigate('/admin/promotion') }}
+                                                onClick={() => { navigate(`/admin/promotion/${item.promotionCodeId}`) }}
                                                 className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
                                                 <td className='text-start font-medium px-2 py-3'>{item.promotionCode}</td>
                                                 <td className='text-start font-medium px-2 py-3'>{item.name}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
-                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
+                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Ngưng hoạt động" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
                                                 <td className='text-center font-medium px-2 py-3'>
                                                     <div className='flex items-center justify-end pr-8 outline-none'>
+                                                        <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/promotion/${item.promotionCodeId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
+                                                            <PencilSquareIcon className='h-4 w-4 text-cyan-600' />
+                                                        </a>
                                                         <button
                                                             type='button'
                                                             onClick={(e) => { e.stopPropagation(); handleOpenModal(item.promotionCodeId); }}
@@ -237,7 +242,6 @@ function ListPromotion() {
                                                         >
                                                             <TrashIcon className='h-4 w-4 text-red-600' />
                                                         </button>
-
                                                         <div>
                                                             {modalStates[item.promotionCodeId] && (
                                                                 <Modal

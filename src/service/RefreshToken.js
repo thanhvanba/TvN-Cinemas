@@ -7,7 +7,7 @@ import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
 import { jwtDecode } from 'jwt-decode'
 
-const AxiosService = () => {
+const RefreshToken = () => {
 
     const refreshTokenApi = async (accessToken, refreshToken) => {
         try {
@@ -29,4 +29,4 @@ const AxiosService = () => {
     }
 }
 
-export default AxiosService
+export default RefreshToken

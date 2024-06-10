@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import axiosService from './axiosInstance'
 
 const UserService = () => {
-    const axiosInstance = axiosService(); 
+    const axiosInstance = axiosService();
     const getUserInfoApi = async () => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -232,12 +232,20 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error")
         }
     }
-    const bookingInfoApi = async (seats, foods) => {
-        return await axios.post(
+    const bookingInfoApi = async (seats, foods, code) => {
+        console.log("🚀 ~ bookingInfoApi ~ code:", code)
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.post(
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/book-info`,
             {
+                code: code,
                 seatIds: seats,
                 foodIds: foods
+            },
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
             },
         );
     }

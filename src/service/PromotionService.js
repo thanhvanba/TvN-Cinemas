@@ -22,6 +22,17 @@ const PromotionService = () => {
             },
         );
     };
+    const getOnePromotionApi = async (promotionId) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/promotions/${promotionId}`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            },
+        );
+    };
     const addPromotionsFixed = async (data) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
@@ -30,8 +41,9 @@ const PromotionService = () => {
                 {
                     name: data.name,
                     description: data.description,
-                    discountType: data.discountType,
-                    discountValue: data.discountValue,
+                    coupleValue: data.coupleValue,
+                    vipValue: data.vipValue,
+                    normalValue: data.normalValue,
                     validDayOfWeek: data.validDayOfWeek,
                     ageLimit: data.ageLimit,
                     validTimeFrameStart: data.validTimeFrameStart,
@@ -68,6 +80,8 @@ const PromotionService = () => {
                     description: data.description,
                     discountType: data.discountType,
                     discountValue: data.discountValue,
+                    maxDiscountAmount: data.maxDiscountAmount,
+                    minOrderValue: data.minOrderValue,
                     startDate: data.startDate,
                     endDate: data.endDate,
                 },
@@ -164,7 +178,8 @@ const PromotionService = () => {
         }
     };
     return {
-        getAllPromotionApi, addPromotionsFixed, addPromotionsCode,
+        getAllPromotionApi, getOnePromotionApi,
+        addPromotionsFixed, addPromotionsCode,
         updatePromotionsFixed, updatePromotionsCode,
         deletePromotionsFixed, deletePromotionsCode
     }

@@ -235,7 +235,7 @@ const AddShowtime = () => {
                     setTimeOverLap({ ...timeOverLap, start: existingDateTime, end: existingDurationDateTime })
                     overlap = true;
 
-                    UseToastNotify(`Lịch chiếu từ (${format(newDateTime, "HH:mm")} - ${format(durationDateTime, "HH:mm")}) đã trùng với lịch chiếu từ (${format(existingDateTime, "HH:mm")} - ${format(existingDurationDateTime, "HH:mm")}) ngày ${format(newDate, "dd/MM/yyyy")} trong hệ thống`, 'warn');
+                    UseToastNotify(`Lịch chiếu từ (${format(newDateTime, "HH:mm")} - ${format(durationDateTime, "HH:mm")}) đã trùng với lịch chiếu từ (${format(existingDateTime, "HH:mm")} - ${format(existingDurationDateTime, "HH:mm")}) ngày ${format(newDate, "dd/MM/yyyy")}`, 'warn');
                     break; // Dừng vòng lặp ngay khi tìm thấy trùng khớp
                 }
             }

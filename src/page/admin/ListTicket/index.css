@@ -18,7 +18,7 @@
 }
 
 .scrollable1-section {
-   height: 42vh;
+   height: 40vh;
     /* Đặt chiều cao tối đa của phần có thể cuộn */
     overflow-y: auto;
     /* Thiết lập chiều cuộn */

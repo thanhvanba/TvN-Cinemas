@@ -1,7 +1,7 @@
 import axios from 'axios';
 import toastNotify from "../utils/UseToastForNotify";
 import AuthService from './AuthService';
-import AxiosService from './AxiosService';
+import RefreshToken from './RefreshToken';
 import { jwtDecode } from 'jwt-decode';
 import { checkTokenExp } from '../utils/token';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 let refreshTokenRequest = null;
 
 const axiosService = () => {
-    const { refreshTokenApi } = AxiosService()
+    const { refreshTokenApi } = RefreshToken()
 
 
     // eslint-disable-next-line react-hooks/rules-of-hooks

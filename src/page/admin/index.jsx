@@ -128,8 +128,11 @@ const Admin = () => {
   useEffect(() => {
     handleCheckPathname(pathname)
     handleTabChange()
-    handleGetItems()
+    // handleGetItems()
   }, [pathname, item]);
+  useEffect(() => {
+    handleGetItems()
+  }, []);
   return (
     <div>
       <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>

@@ -179,7 +179,7 @@ const ShowtimeByRoom = () => {
           <div className='h-full'>
             {
               allRoom.length === 0 && allShowtime.length === 0 ?
-                <div className='p-4 text-center text-gray-500'>Chưa có phòng và lịch chiếu. Tiến hành thêm phòng, lịch chiếu !!!</div> :
+                <div className='p-4 font-light text-center text-gray-500'>Chưa có phòng và lịch chiếu. Tiến hành thêm phòng, lịch chiếu !!!</div> :
                 <>
                   <div className='flex justify-end items-center py-4 pr-4'>
                     <div className="border-2 rounded-xl ">
@@ -226,7 +226,7 @@ const ShowtimeByRoom = () => {
 
                     <div className='w-[90%] bg-slate-100 shadow-inner mr-4 p-4 rounded-lg'>
                       <div>
-                        {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg font-light'>--- Chưa lên lịch chiếu ---</p> :
+                        {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg text-slate-400 font-ligh'>--- Chưa lên lịch chiếu ---</p> :
                           <table className='mt-6 w-full'>
                             <thead className=''>
                               <tr>
@@ -334,7 +334,7 @@ const ShowtimeByRoom = () => {
                       </div>
                     </div>
                   </div>
-                  <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllShowtime} />
+                  {allShowtime.length !== 0 && <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllShowtime} />}
                 </>
             }
           </div>

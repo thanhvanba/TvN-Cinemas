@@ -27,8 +27,11 @@ const ListTicket = () => {
   const { getTicketDetailApi } = UserService()
 
   const [allTicketC, setAllTicketC] = useState([])
+  console.log("🚀 ~ ListTicket ~ allTicketC:", allTicketC)
   const [allTicketU, setAllTicketU] = useState([])
+  console.log("🚀 ~ ListTicket ~ allTicketU:", allTicketU)
   const [allTicketCa, setAllTicketCa] = useState([])
+  console.log("🚀 ~ ListTicket ~ allTicketCa:", allTicketCa)
   const { loading, setLoading } = useLoadingState(false)
   const [toggle, setToggle] = useState(false);
   const [ticketDetail, setTicketDetail] = useState({});
@@ -60,7 +63,7 @@ const ListTicket = () => {
       }));
     }
     setLoading('loading', false)
-    
+
     let resTicketU = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
     let resTicketCa = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
@@ -123,100 +126,118 @@ const ListTicket = () => {
         {
           !loading['loading'] &&
           <div className="ticket-list-container">
-            {/* Phần đã xác nhận */}
+            {
+              listTicket.tickets.length === 0 && allTicketU.length === 0 && allTicketCa.length === 0 ?
+                <p className='w-full text-center text-lg text-slate-400 font-light'>-- Chưa bán được vé nào --</p>
+                : <>
+                  {/* Phần đã xác nhận */}
 
-            <div className='pr-3 border-1 w-3/4'>
-              {/* <div className='flex justify-end items-center py-4 pr-4'>
-                <div className="border-2 rounded-xl ">
-                  <Search />
-                </div>
-              </div> */}
-              <table className='mt-6 w-full'>
-                <thead className=''>
-                  <tr>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-10'>{listTicket.header.stt}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.movieName}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[196px]'>{listTicket.header.showtime}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[73px]'>{listTicket.header.ticketPrice}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[116px]'>{listTicket.header.createAt}</th>
-                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.user}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    listTicket.tickets.map((item, index) => (
-                      <tr
-                        onClick={() => {
-                          handleOpenModal();
-                          handleGetTicketDetail(item.bookingId);
-                        }}
-                        className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
-                      >
-                        <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
-                        <td className='text-start font-medium px-2 py-4'>{item.movieName}</td>
-                        <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
-                        <td className='text-center font-medium px-2 py-4'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</td>
-                        <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}</td>
-                        <td className='text-center font-medium px-2 py-4'>{TimeAgo(item.createAt)}</td>
-                        <td className='text-center font-medium px-2 py-4'>{item.userName}</td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-
-              </table>
-              <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
-            </div>
-
-            <div className='p-2 h-full bg-neutral-200 w-1/4 shadow-2xl rounded-xl'>
-              {/* Phần chưa xác nhận */}
-              <div className=''>
-                <h2 className='font-semibold text-center text-xl text-amber-500'>Vé mới</h2>
-                <div className="ticket-section">
-                  <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
+                  <div className='pr-3 border-1 w-3/4'>
+                    {/* <div className='flex justify-end items-center py-4 pr-4'>
+                    <div className="border-2 rounded-xl ">
+                      <Search />
+                       </div>
+                       </div> */}
                     {
-                      allTicketU.map((item) => (
-                        <div
-                          onClick={() => {
-                            handleOpenModal();
-                            handleGetTicketDetail(item.bookingId);
-                          }}
-                          className='border-t-2 border-x-2 border-stone-400'
-                        >
-                          <Ticket ticket={item} />
-                        </div>
-                      ))
+                      listTicket.tickets.length === 0 ?
+                        <p className='text-center text-lg text-slate-400 font-light'>--Chưa có vé được xác nhận--</p>
+                        : <>
+                          <table className='mt-6 w-full'>
+                            <thead className=''>
+                              <tr>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-10'>{listTicket.header.stt}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.movieName}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[196px]'>{listTicket.header.showtime}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[73px]'>{listTicket.header.ticketPrice}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[116px]'>{listTicket.header.createAt}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.user}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {
+                                listTicket.tickets.map((item, index) => (
+                                  <tr
+                                    onClick={() => {
+                                      handleOpenModal();
+                                      handleGetTicketDetail(item.bookingId);
+                                    }}
+                                    className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                                  >
+                                    <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
+                                    <td className='text-start font-medium px-2 py-4'>{item.movieName}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{TimeAgo(item.createAt)}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{item.userName}</td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+
+                          </table>
+                          <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
+                        </>
                     }
                   </div>
-                </div>
-              </div>
 
-
-              {/* Phần đã hủy */}
-              <div className=''>
-                <h2 className='font-semibold text-center text-xl pt-4 text-red-500'>Đã Hủy</h2>
-                <div className="ticket-section">
-                  <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
-                    {
-                      allTicketCa.map((item) => (
-                        <div
-                          onClick={() => {
-                            handleOpenModal();
-                            handleGetTicketDetail(item.bookingId);
-                          }}
-                          className='border-t-2 border-x-2 border-stone-400'
-                        >
-                          <Ticket ticket={item} />
+                  <div className='p-2 h-full bg-neutral-200 w-1/4 shadow-2xl rounded-xl'>
+                    {/* Phần chưa xác nhận */}
+                    <div className=''>
+                      <h2 className='font-semibold text-center text-xl text-amber-500'>Vé mới</h2>
+                      <div className="ticket-section">
+                        <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
+                          {
+                            allTicketU.length === 0 ?
+                              <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào vừa được mua--</p>
+                              :
+                              allTicketU.map((item) => (
+                                <div
+                                  onClick={() => {
+                                    handleOpenModal();
+                                    handleGetTicketDetail(item.bookingId);
+                                  }}
+                                  className='border-t-2 border-x-2 border-stone-400'
+                                >
+                                  <Ticket ticket={item} />
+                                </div>
+                              ))
+                          }
                         </div>
-                      ))
-                    }
+                      </div>
+                    </div>
+
+
+                    {/* Phần đã hủy */}
+                    <div className=''>
+                      <h2 className='font-semibold text-center text-xl pt-4 text-red-500'>Đã Hủy</h2>
+                      <div className="ticket-section">
+                        <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
+                          {
+                            allTicketCa.length === 0 ?
+                              <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào đã hủy --</p>
+                              :
+                              allTicketCa.map((item) => (
+                                <div
+                                  onClick={() => {
+                                    handleOpenModal();
+                                    handleGetTicketDetail(item.bookingId);
+                                  }}
+                                  className='border-t-2 border-x-2 border-stone-400'
+                                >
+                                  <Ticket ticket={item} />
+                                </div>
+                              ))
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+
                   </div>
-                </div>
-              </div>
+                </>}
 
-
-            </div>
           </div>
         }
         {
@@ -333,7 +354,7 @@ const ListTicket = () => {
           loading['fare'] &&
           <Fare onLoading={setLoading} />
         }
-      </div>
+      </div >
     </div >
   );
 };
