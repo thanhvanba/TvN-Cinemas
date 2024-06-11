@@ -106,9 +106,6 @@ function OrderQuickly({ allShowMovie }) {
             case 'movie':
                 const movie = allShowMovie.find(movie => movie.title === selectedValue)
                 const movieId = movie.movieId
-                console.log("🚀 ~ handleSelectChange ~ movieId:", movieId)
-                
-                console.log("🚀 ~ handleSelectChange ~ infoOrderQuickly?.cinemaId:", infoOrderQuickly?.cinemaId)
                 FoundShowtime(movieId, infoOrderQuickly?.cinemaId)
                 setInfoOrderQuickly({ ...infoOrderQuickly, movieId: movieId })
                 handleGetShowtimeByMovie(movieId)
@@ -190,13 +187,11 @@ function OrderQuickly({ allShowMovie }) {
                                                 if (!user.auth) {
                                                     handleModalStates();
                                                 } else if (isTimeInFuture) {
-                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime }));
+                                                    setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
                                                     const updatedDateTime = {
-                                                        ...selectedDateTime, time: schedule.startTime
+                                                        ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                     };
-
-                                                    console.log("🚀 ~ showtimeByRoom.schedules.map ~ updatedDateTime:", updatedDateTime)
-                                                    navigate(`/${showtimeByRoom.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
+                                                    navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime } });
                                                 }
                                             }}
                                             className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}

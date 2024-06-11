@@ -207,14 +207,18 @@ const UserService = () => {
 
         );
     }
-    const bookingTicketApi = async (seats, foods) => {
+    const bookingTicketApi = async (seats, foods, bookingId) => {
+        console.log("🚀 ~ bookingTicketApi ~ foods:", foods)
+        console.log("🚀 ~ bookingTicketApi ~ seats:", seats)
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/viewer/book`,
+                null,
                 {
-                    seatIds: seats,
-                    foodIds: foods
+                    params: {
+                        bookingId: bookingId
+                    }
                 },
                 {
                     headers: {

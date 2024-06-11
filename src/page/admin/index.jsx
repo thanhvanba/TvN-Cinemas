@@ -57,7 +57,7 @@ const Admin = () => {
       { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
       { content: "Vé", icon: StarIcon, path: "list-ticket" },
       { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
-      { content: "Khách hàng - Rạp", icon: BuildingLibraryIcon, path: "list-viewer" },
+      { content: "Khách hàng", icon: BuildingLibraryIcon, path: "list-viewer" },
       { content: "Đánh giá", icon: StarIcon, path: "list-review" },
       { content: "Khuyến mãi", icon: StarIcon, path: "list-promotion" },
     ]

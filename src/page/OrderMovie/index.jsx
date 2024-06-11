@@ -112,6 +112,7 @@ const OrderMovie = () => {
     ];
     const generateSeatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, showtimeId, dateTime);
     const seatData = generateSeatData();
+    console.log("🚀 ~ OrderMovie ~ seatData:", seatData)
 
     const navigate = useNavigate()
 
@@ -167,7 +168,6 @@ const OrderMovie = () => {
         }
         setBookingInfo({ ...bookingInfo, discount: 0 })
         setPromotionCode('')
-        console.log("🚀 ~ handleSelectSeatApi ~ bookingInfo:", bookingInfo)
         navigate(`/${showtimeId}/order/bapnuoc`, { state: { dateTime: dateTime } })
         setLoading(false);
     }
@@ -175,7 +175,7 @@ const OrderMovie = () => {
         setTogglePayment(true)
         setToggleConfirm(false)
         setLoading(true);
-        const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking)
+        const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking, bookingInfo.bookingId)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result);
         }
