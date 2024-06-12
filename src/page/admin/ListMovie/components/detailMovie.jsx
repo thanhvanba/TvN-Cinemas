@@ -52,7 +52,7 @@ const DetailMovie = () => {
                 </div>
             </div>
             <div className='pt-8'>
-                <div className='absolute mx-auto top-80 right-1/2 z-50'>
+                <div className='absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                     {loading && <Loading />}
                 </div>
                 {!loading && <div className='border py-8 px-4'>

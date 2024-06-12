@@ -136,7 +136,7 @@ function ListPromotion() {
                     <Tab onClick={() => setTabIndex(1)}>Áp dụng code</Tab>
                 </TabList>
                 <TabPanel>
-                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 z-50'>
+                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 left-1/2 z-50'>
                         {loading['promotion'] && <Loading />}
                     </div>
                     {!loading['promotion'] &&
@@ -202,7 +202,7 @@ function ListPromotion() {
                     }
                 </TabPanel>
                 <TabPanel>
-                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 z-50'>
+                    <div className='flex justify-center absolute mx-auto top-36 right-1/2 left-1/2 z-50'>
                         {loading['promotionByCode'] && <Loading />}
                     </div>
                     {!loading['promotionByCode'] &&

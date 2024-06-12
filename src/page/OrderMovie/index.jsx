@@ -76,7 +76,7 @@ const OrderMovie = () => {
         special: null
     })
 
-    const [totalTime, setTotalTime] = useState(3200);
+    const [totalTime, setTotalTime] = useState(600);
     const [timeRemaining, setTimeRemaining] = useState(totalTime);
     const [currentStep, useCurrentStep] = useState('1');
     const { pathname } = useLocation()
@@ -284,7 +284,7 @@ const OrderMovie = () => {
                     }
                 </ul>
             </div>
-            <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+            <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                 {loading1 && <Loading />}
             </div>
             {!loading1 &&

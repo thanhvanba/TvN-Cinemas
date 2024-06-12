@@ -89,7 +89,7 @@ const RevenueCinema = () => {
                                 <div>
                                     <p className='text-lg font-light'>Khác</p>
                                     <p className='font-bold text-xl'>{detailFinance?.otherExpense ? (detailFinance?.otherExpense / detailFinance?.totalExpense * 100).toFixed(2) : 0}%</p>
-                                    <p className='text-xs font-extralight'>{ConvertStringFollowFormat(detailFinance?.foodExpense)}<sup>đ</sup></p>
+                                    <p className='text-xs font-extralight'>{ConvertStringFollowFormat(detailFinance?.otherExpense)}<sup>đ</sup></p>
                                 </div>
                             </div>
                         </div>

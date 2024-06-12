@@ -132,7 +132,7 @@ const AddItem = () => {
                     }
                 </div>
             </div>
-            <div><div className='absolute mx-auto top-80 right-1/2 z-50'>
+            <div><div className='absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                 {loading && <Loading />}
             </div>
                 {!loading &&

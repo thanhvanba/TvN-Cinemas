@@ -70,7 +70,7 @@ const ListReview = () => {
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
           <h2 className='text-3xl cursor-default'>Quản lý đánh giá</h2>
         </div>
-        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+        <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
           {loading && <Loading />}
         </div>
 

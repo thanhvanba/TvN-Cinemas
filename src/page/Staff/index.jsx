@@ -39,10 +39,8 @@ function Staff() {
     const [loading, setLoading] = useState(false)
     const [nowPlayingMovie, setNowPlayMovie] = useState([])
     const handleTabChange = () => {
-
         /^\/staff\/sell-ticket/.test(pathname) &&
             setTabIndex(0);
-
         /^\/staff\/confirm-ticket/.test(pathname) &&
             setTabIndex(1);
     }
@@ -51,6 +49,7 @@ function Staff() {
         { content: "Xác nhận vé", icon: CalendarDaysIcon, path: "confirm-ticket" },
     ]
     const handleGetItems = async () => {
+        setLoading(true)
         let resInfo = await getUserInfoApi()
         if (resInfo && resInfo.data && resInfo.data.result) {
             !localStorage.getItem("cinemaId") && localStorage.setItem("cinemaId", resInfo.data.result?.cinema?.cinemaId)
@@ -59,6 +58,7 @@ function Staff() {
         if (resNowPlaying && resNowPlaying.data && resNowPlaying.data.result) {
             setNowPlayMovie(resNowPlaying.data.result)
         }
+        setLoading(false)
     }
     const IMAGES = [
         slider1, slider2, slider3
@@ -108,29 +108,37 @@ function Staff() {
                         </div >
                     </div>
                 </div>
-                <div className='w-5/6'>
+                <div className='w-5/6 relative'>
                     <Header />
                     {/^\/staff\/info-ticket/.test(pathname) ?
                         <InfoTicket /> :
                         /^\/staff\/info/.test(pathname) ?
                             <Info /> :
-                            <div className='pt-20 relative'>
-                                <TabPanel style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
-                                    className="bg-slate-300 z-50 w-full"
+                            <>
+                                <div className='flex justify-center absolute mx-auto top-96 right-1/2 left-1/2 z-50'>
+                                    {loading && <Loading />}
+                                </div>
+                                {
+                                    !loading &&
+                                    <div className='pt-20 relative'>
+                                        <TabPanel style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}
+                                            className="bg-slate-300 z-50 w-full"
 
-                                >
-                                    <div className="absolute top-0 left-0 w-full h-full bg-slate-400 opacity-20"></div>
+                                        >
+                                            <div className="absolute top-0 left-0 w-full h-full bg-slate-400 opacity-20"></div>
 
-                                    {movieId ? <DetailSales /> : <SellTicket images={IMAGES} nowPlayingMovie={nowPlayingMovie} />}
-                                </TabPanel>
-                                <TabPanel>
-                                    <ListTicket />
-                                </TabPanel>
-                            </div>
+                                            {movieId ? <DetailSales /> : <SellTicket images={IMAGES} nowPlayingMovie={nowPlayingMovie} />}
+                                        </TabPanel>
+                                        <TabPanel>
+                                            <ListTicket />
+                                        </TabPanel>
+                                    </div>
+                                }
+                            </>
                     }
                 </div>
             </div>
-        </Tabs>
+        </Tabs >
     )
 }
 

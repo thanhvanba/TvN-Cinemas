@@ -27,11 +27,8 @@ const ListTicket = () => {
   const { getTicketDetailApi } = UserService()
 
   const [allTicketC, setAllTicketC] = useState([])
-  console.log("🚀 ~ ListTicket ~ allTicketC:", allTicketC)
   const [allTicketU, setAllTicketU] = useState([])
-  console.log("🚀 ~ ListTicket ~ allTicketU:", allTicketU)
   const [allTicketCa, setAllTicketCa] = useState([])
-  console.log("🚀 ~ ListTicket ~ allTicketCa:", allTicketCa)
   const { loading, setLoading } = useLoadingState(false)
   const [toggle, setToggle] = useState(false);
   const [ticketDetail, setTicketDetail] = useState({});
@@ -64,8 +61,18 @@ const ListTicket = () => {
     }
     setLoading('loading', false)
 
-    let resTicketU = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
-    let resTicketCa = user.role === 'ADMIN' ? await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
+    setLoading('loadingU', true)
+    let resTicketU = user.role === 'ADMIN' ?
+      await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
+      : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
+    setLoading('loadingU', false)
+
+    setLoading('loadingCa', true)
+    let resTicketCa = user.role === 'ADMIN' ?
+      await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
+      : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
+    setLoading('loadingCa', false)
+
     if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
       setAllTicketU(resTicketU.data.result.content)
     }
@@ -120,12 +127,12 @@ const ListTicket = () => {
             </button>
           }
         </div>
-        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+        <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
           {loading['loading'] && <Loading />}
         </div>
         {
           !loading['loading'] &&
-          <div className="ticket-list-container">
+          <div className="ticket-list-container pb-8">
             {
               listTicket.tickets.length === 0 && allTicketU.length === 0 && allTicketCa.length === 0 ?
                 <p className='w-full text-center text-lg text-slate-400 font-light'>-- Chưa bán được vé nào --</p>
@@ -184,53 +191,63 @@ const ListTicket = () => {
 
                   <div className='p-2 h-full bg-neutral-200 w-1/4 shadow-2xl rounded-xl'>
                     {/* Phần chưa xác nhận */}
-                    <div className=''>
+                    <div className='relative'>
                       <h2 className='font-semibold text-center text-xl text-amber-500'>Vé mới</h2>
-                      <div className="ticket-section">
-                        <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
-                          {
-                            allTicketU.length === 0 ?
-                              <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào vừa được mua--</p>
-                              :
-                              allTicketU.map((item) => (
-                                <div
-                                  onClick={() => {
-                                    handleOpenModal();
-                                    handleGetTicketDetail(item.bookingId);
-                                  }}
-                                  className='border-t-2 border-x-2 border-stone-400'
-                                >
-                                  <Ticket ticket={item} />
-                                </div>
-                              ))
-                          }
-                        </div>
+                      <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2 z-50'>
+                        {loading['loadingU'] && <Loading />}
+                      </div>
+                      <div className="ticket-section scrollable1-section">
+                        {!loading['loadingU'] &&
+                          <div className="bg-slate-300 bg-opacity-30 p-1">
+                            {
+                              allTicketU.length === 0 ?
+                                <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào vừa được mua--</p>
+                                :
+                                allTicketU.map((item) => (
+                                  <div
+                                    onClick={() => {
+                                      handleOpenModal();
+                                      handleGetTicketDetail(item.bookingId);
+                                    }}
+                                    className='border-t-2 border-x-2 border-stone-400'
+                                  >
+                                    <Ticket ticket={item} />
+                                  </div>
+                                ))
+                            }
+                          </div>
+                        }
                       </div>
                     </div>
 
 
                     {/* Phần đã hủy */}
-                    <div className=''>
+                    <div className='relative'>
                       <h2 className='font-semibold text-center text-xl pt-4 text-red-500'>Đã Hủy</h2>
-                      <div className="ticket-section">
-                        <div className="scrollable1-section bg-slate-300 bg-opacity-30 p-1">
-                          {
-                            allTicketCa.length === 0 ?
-                              <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào đã hủy --</p>
-                              :
-                              allTicketCa.map((item) => (
-                                <div
-                                  onClick={() => {
-                                    handleOpenModal();
-                                    handleGetTicketDetail(item.bookingId);
-                                  }}
-                                  className='border-t-2 border-x-2 border-stone-400'
-                                >
-                                  <Ticket ticket={item} />
-                                </div>
-                              ))
-                          }
-                        </div>
+                      <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2  z-50'>
+                        {loading['loadingCa'] && <Loading />}
+                      </div>
+                      <div className="ticket-section scrollable1-section">
+                        {!loading['loadingCa'] &&
+                          <div className="bg-slate-300 bg-opacity-30 p-1">
+                            {
+                              allTicketCa.length === 0 ?
+                                <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào đã hủy --</p>
+                                :
+                                allTicketCa.map((item) => (
+                                  <div
+                                    onClick={() => {
+                                      handleOpenModal();
+                                      handleGetTicketDetail(item.bookingId);
+                                    }}
+                                    className='border-t-2 border-x-2 border-stone-400'
+                                  >
+                                    <Ticket ticket={item} />
+                                  </div>
+                                ))
+                            }
+                          </div>
+                        }
                       </div>
                     </div>
 

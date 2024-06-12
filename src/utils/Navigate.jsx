@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -31,19 +31,17 @@ const Navigate = () => {
     setLoading(false)
   }
 
-
-
-
-
   return (
     <div className='pt-48 pb-96  h-full' style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>
       <div className='max-w-4xl mx-auto'>
-        {pathname === "/user/payment-success" ?
+        {pathname === "/user/payment-success" || pathname === "/user/payment-false" ?
           <div>
             <div className='flex justify-center'>
-              <CheckCircleIcon className='h-40 w-40 text-green-600'></CheckCircleIcon>
+              {pathname === "/user/payment-success" ? <CheckCircleIcon className='h-40 w-40 text-green-600'></CheckCircleIcon>
+                : <XCircleIcon className='h-40 w-40 text-red-400'></XCircleIcon>
+              }
             </div>
-            <p className='flex justify-center text-3xl font-bold text-green-600'>Thanh toán thành công</p>
+            <p className={`${pathname === "/user/payment-success" ? "text-green-600" : "text-red-500"} flex justify-center text-3xl font-bold `}>{pathname === "/user/payment-success" ? 'Thanh toán thành công' : 'Thanh toán thất bại'}</p>
             <div className='mx-auto w-1/2 flex justify-between'>
               <button
                 className="px-4 py-2 mt-4 text-xl font-semibold w-1/2 rounded-xl hover:bg-green-200 hover:text-blue-800 text-white bg-teal-600 transition-colors duration-300"

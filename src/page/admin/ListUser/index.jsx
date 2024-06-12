@@ -372,7 +372,7 @@ const ListUser = () => {
 
                 <div className='relative'>
                     <div className='px-2'>
-                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                             {loading['get'] && <Loading />}
                         </div>
                         {!loading['get'] &&

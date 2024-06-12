@@ -14,8 +14,18 @@ const FoodItems = ({ listFood }) => {
 
     const navigate = useNavigate()
     const changeTab = (pathname) => {
-        navigate(pathname)
+        navigate(pathname)  
     }
+    const handleOpenModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: true }));
+    };
+    const handleCloseModal = (itemId) => {
+        setModalStates((prevStates) => ({ ...prevStates, [itemId]: false }));
+    };
+    const handleChangeStatus = async (foodId) => {
+        await deleteFoodApi(foodId);
+        onChange()
+    };
     return (
         <>
             {

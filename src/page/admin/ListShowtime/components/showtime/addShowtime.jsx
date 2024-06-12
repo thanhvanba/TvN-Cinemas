@@ -427,7 +427,7 @@ const AddShowtime = () => {
                 </div>
             </div>
             <div className='px-4 relative'>
-                <div className='absolute mx-auto top-80 right-1/2 z-50'>
+                <div className='absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                     {loading1 && <Loading />}
                 </div>
                 {!loading1 &&

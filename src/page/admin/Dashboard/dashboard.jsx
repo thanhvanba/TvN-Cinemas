@@ -224,7 +224,7 @@ const Dashboard = () => {
         <div className='relative'>
           {
             loading ?
-              <div className='flex justify-center absolute mx-auto top-80 right-1/2 z-50'>
+              <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                 <Loading />
               </div> :
               <div className='grid grid-cols-4'>
