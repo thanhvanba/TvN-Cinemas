@@ -1,5 +1,5 @@
-import { ChevronRightIcon, HomeIcon, MagnifyingGlassIcon, PencilSquareIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot, BadgePlus } from "lucide-react"
+import { ArrowUturnLeftIcon, ChevronRightIcon, HomeIcon, MagnifyingGlassIcon, PencilSquareIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot, BadgePlus, History } from "lucide-react"
 import React, { useContext, useEffect, useState } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Search from '../../../../../components/Search';
@@ -28,6 +28,7 @@ const ShowtimeByRoom = () => {
   const currentDateTime = new Date();
   const [dateList, setDateList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(true);
   const [dateTimeSelect, setDateTimeSelect] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState({ date: FormatDataTime(currentDateTime.toISOString()).date, time: "" });
   const [modalStates, setModalStates] = useState({});
@@ -58,7 +59,9 @@ const ShowtimeByRoom = () => {
 
   const handleGetShowtimeByRoom = async (pageNumber, roomId) => {
     setLoading(true)
-    let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd')) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd'))
+    let resST = user.role === "ADMIN" ?
+      await getShowtimeByRoomApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
+      : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
     // let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
       // const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
@@ -75,7 +78,9 @@ const ShowtimeByRoom = () => {
   }
   const handleGetAllShowtime = async (pageNumber) => {
     setLoading(true)
-    let resST = user.role === "ADMIN" ? await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd')) : await getAllShowtimeByManagerApi(pageNumber, 6, format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd'))
+    let resST = user.role === "ADMIN" ?
+      await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
+      : await getAllShowtimeByManagerApi(pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
     if (resST && resST.data && resST.data.result.content) {
       setAllShowtime(resST.data.result.content);
       setPagination(prevPagination => ({
@@ -125,6 +130,12 @@ const ShowtimeByRoom = () => {
       : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
     setSelectedDateTime({ ...selectedDateTime, date: dateTime });
   }, [selectedDateTime.date])
+
+  useEffect(() => {
+    selectedRoom === 1 ?
+      handleGetAllShowtime(pagination.pageNumber)
+      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
+  }, [status])
   return (
     <div>
       <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
@@ -181,7 +192,7 @@ const ShowtimeByRoom = () => {
               allRoom.length === 0 && allShowtime.length === 0 ?
                 <div className='p-4 font-light text-center text-gray-500'>Chưa có phòng và lịch chiếu. Tiến hành thêm phòng, lịch chiếu !!!</div> :
                 <>
-                  <div className='flex justify-end items-center py-4 pr-4'>
+                  <div className='relative flex justify-end items-center py-4 pr-4'>
                     <div className="border-2 rounded-xl ">
                       <Search />
                     </div>
@@ -194,6 +205,18 @@ const ShowtimeByRoom = () => {
                       className="inline-block py-2 hover:bg-emerald-600 bg-slate-300 m-2 rounded-bl-full rounded-r-full text-slate-400 relative h-10 w-36 cursor-default"
                     />
                     {/* </div> */}
+                    <button
+                      type="button"
+                      className="absolute top-4 left-4 z-10"
+                    >
+                      <span className="sr-only">Close menu</span>
+                      <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-sky-700`} onClick={() => setStatus(!status)}>
+                        {status ?
+                          <History className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
+                          : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
+                        }
+                      </div>
+                    </button>
                   </div>
 
 
@@ -240,10 +263,11 @@ const ShowtimeByRoom = () => {
                             </thead>
                             <tbody>
                               {allShowtime && allShowtime.map((item, index) => {
+                                console.log("🚀 ~ {allShowtime&&allShowtime.map ~ allShowtime:", allShowtime)
                                 let hasShowtimes = false;
                                 let selectDate = parse(selectedDateTime.date, 'dd/MM/yyyy', new Date());
                                 return (
-                                  (isBefore(item.timeStart, selectDate) || isEqual(item.timeStart, selectDate)) && (isAfter(item.timeEnd, selectDate) || isEqual(item.timeEnd, selectDate)) &&
+                                  // (isBefore(item.timeStart, selectDate) || isEqual(item.timeStart, selectDate)) && (isAfter(item.timeEnd, selectDate) || isEqual(item.timeEnd, selectDate)) &&
                                   <tr
                                     onClick={() => {
                                     }}
@@ -313,16 +337,29 @@ const ShowtimeByRoom = () => {
                                     <td className='font-medium px-3 py-4'>
                                       {(
                                         <div className='flex items-center justify-center'>
-                                          <button
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              navigate(`/admin/add-item/schedule`, { state: { dateTime: selectedDateTime, idShowtime: item.showTimeId } });
-                                            }}
-                                            className='flex justify-center items-center w-8 h-8 rounded-lg bg-emerald-100'
-                                            href=''
-                                          >
-                                            <listShowtime.action.aEdit className='h-4 w-4 text-emerald-600' />
-                                          </button>
+                                          {
+                                            status ?
+                                              <button
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  navigate(`/admin/add-item/schedule`, { state: { dateTime: selectedDateTime, idShowtime: item.showTimeId } });
+                                                }}
+                                                className='flex justify-center items-center w-8 h-8 rounded-lg bg-emerald-100'
+                                                href=''
+                                              >
+                                                <listShowtime.action.aEdit className='h-4 w-4 text-emerald-600' />
+                                              </button>
+                                              : <button
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  navigate(`/admin/update-item/showtime/${item.showTimeId}`, { state: { cinemaId: cinemaId, cinemaName: cinemaName } });
+                                                }}
+                                                className='flex justify-center items-center w-8 h-8 rounded-lg bg-sky-100'
+                                                href=''
+                                              >
+                                                <PencilSquareIcon className='h-4 w-4 text-sky-600' />
+                                              </button>
+                                          }
                                         </div>
                                       )}
                                     </td>

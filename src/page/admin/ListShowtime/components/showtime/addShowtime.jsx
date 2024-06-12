@@ -22,7 +22,8 @@ import { LoginContext } from '../../../../../context/LoginContext';
 import Loading from '../../../../../components/Loading';
 
 import { Space, TimePicker, DatePicker } from 'antd'
-import { format, parse } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
+import dayjs from 'dayjs';
 
 const AddShowtime = () => {
     const { showtimeId } = useParams();
@@ -88,6 +89,7 @@ const AddShowtime = () => {
         seats: null,
         special: false
     })
+    console.log("🚀 ~ AddShowtime ~ oneShowtime:", oneShowtime)
     const [showtime, setShowtime] = useState({
         roomId: "",
         movieId: "",
@@ -97,9 +99,7 @@ const AddShowtime = () => {
         schedules: [],
     })
 
-    console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
     const [schedule, setSchedule] = useState([]);
-
     console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
 
     // console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
@@ -143,11 +143,11 @@ const AddShowtime = () => {
     const handleAddShowtime = async (e) => {
         e.preventDefault();
         if (validate()) {
-        setLoading(true);
-        const data = showtime;
-        await addShowtimeApi(data);
-        navigate(-1)
-        setLoading(false);
+            setLoading(true);
+            const data = showtime;
+            await addShowtimeApi(data);
+            navigate(-1)
+            setLoading(false);
         }
     };
     const handleUpdateShowtime = async (e) => {
@@ -162,10 +162,11 @@ const AddShowtime = () => {
         setLoading(false);
     };
     const hadleGetOneShowtime = async () => {
-        console.log("Vào2")
         let resShowtime = await getOneShowtimeApi(showtimeId)
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             setOneShowtime(resShowtime.data.result)
+
+            console.log("🚀 ~ hadleGetOneShowtime ~ resShowtime.data.result.schedules:", resShowtime.data.result.schedules)
             setSchedule(transformData(resShowtime.data.result.schedules))
         }
         setLoading1(false)
@@ -178,7 +179,7 @@ const AddShowtime = () => {
         if (movie) {
             const selectedId = movie.movieId
             setDurationMovie(movie.duration)
-            setShowtime({ ...showtime, movieId: selectedId })         
+            setShowtime({ ...showtime, movieId: selectedId })
             clearError('movie')
         }
         const room = allRoom.find(room => room.roomName === selectedValue)
@@ -279,9 +280,8 @@ const AddShowtime = () => {
         let currentDate = '';
         let currentStartTimes = [];
 
-        if (initialData.lenght > 0) {
+        if (initialData.length > 0) {
             initialData.forEach(item => {
-                console.log("🚀 ~ AddShowtime ~ showtime:", showtime)
                 if (item.date !== currentDate) {
                     if (currentDate !== '') {
                         transformedData.push({ "date": currentDate, "time": currentStartTimes });
@@ -297,6 +297,7 @@ const AddShowtime = () => {
             });
 
             transformedData.push({ "date": currentDate, "time": currentStartTimes });
+            console.log("🚀 ~ transformData ~ transformedData:", transformedData)
         }
         return transformedData
     }
@@ -439,7 +440,7 @@ const AddShowtime = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Phim <span className='text-red-600'>*</span>
+                                            Phim {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
@@ -460,13 +461,13 @@ const AddShowtime = () => {
                                             htmlFor=""
                                             className="block text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Phòng <span className='text-red-600'>*</span>
+                                            Phòng {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                         </label>
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
                                                 pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
                                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom} content={"-------Select-------"} /> :
-                                                    pathname === `/admin/showtime/${showtimeId} ` || pathname === `/manager/showtime/${showtimeId} ` ?
+                                                    pathname === `/admin/update-item/showtime/${showtimeId}` || pathname === `/manager/update-item/showtime/${showtimeId} ` ?
                                                         <input
                                                             type="text"
                                                             className="placeholder-neutral-900 w-full text-lg focus:outline-none"
@@ -484,27 +485,19 @@ const AddShowtime = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Thời gian bắt đầu <span className='text-red-600'>*</span>
+                                                Thời gian bắt đầu {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                             </label>
-                                            {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
-                                                <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                    <input
-                                                        type="text"
-                                                        className="placeholder-neutral-900 w-full text-lg focus:outline-none"
-                                                        placeholder={FormatDataTime(oneShowtime.timeStart).date}
-                                                        readOnly
-                                                    />
-                                                </div> :
-                                                <DatePicker
-                                                    selected={startDate}
-                                                    onChange={date => {
-                                                        setStartDate(date);
-                                                        setShowtime({ ...showtime, timeStart: date });
-                                                        clearError('timeStart')
-                                                    }}
-                                                    className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                    dateFormat="yyyy-MM-dd" // Định dạng ngày
-                                                />}
+                                            <DatePicker
+                                                selected={startDate}
+                                                onChange={date => {
+                                                    setStartDate(date);
+                                                    setShowtime({ ...showtime, timeStart: date });
+                                                    clearError('timeStart')
+                                                }}
+                                                className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                dateFormat="yyyy-MM-dd" // Định dạng n gày
+                                                defaultValue={/^\/(admin|manager)\/update-item/.test(pathname) ? dayjs(FormatDataTime(oneShowtime.timeStart).date, 'DD/MM/YYYY') : null}
+                                            />
                                             {errors.timeStart && <p className="text-red-600">{errors.timeStart}</p>}
                                         </div>
                                         <div className="relative my-4 w-full">
@@ -512,27 +505,19 @@ const AddShowtime = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Thời gian kết thúc <span className='text-red-600'>*</span>
+                                                Thời gian kết thúc {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                             </label>
-                                            {pathname === `/admin/showtime/${showtimeId}` || pathname === `/manager/showtime/${showtimeId}` ?
-                                                <div className="relative mt-1 pr-4 w-4/5 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                    <input
-                                                        type="text"
-                                                        className="placeholder-neutral-900 w-full text-lg focus:outline-none"
-                                                        placeholder={FormatDataTime(oneShowtime.timeEnd).date}
-                                                        readOnly
-                                                    />
-                                                </div> :
-                                                <DatePicker
-                                                    selected={endDate}
-                                                    onChange={date => {
-                                                        setEndDate(date);
-                                                        setShowtime({ ...showtime, timeEnd: date });
-                                                        clearError('timeEnd')
-                                                    }}
-                                                    className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                    dateFormat="yyyy-MM-dd" // Định dạng ngày
-                                                />}
+                                            <DatePicker
+                                                selected={endDate}
+                                                onChange={date => {
+                                                    setEndDate(date);
+                                                    setShowtime({ ...showtime, timeEnd: date });
+                                                    clearError('timeEnd')
+                                                }}
+                                                className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                dateFormat="yyyy-MM-dd" // Định dạng ngày
+                                                defaultValue={/^\/(admin|manager)\/update-item/.test(pathname) ? dayjs(FormatDataTime(oneShowtime.timeEnd).date, 'DD/MM/YYYY') : null}
+                                            />
                                             {errors.timeEnd && <p className="text-red-600">{errors.timeEnd}</p>}
                                         </div>
                                         <div className="relative my-4 w-full">

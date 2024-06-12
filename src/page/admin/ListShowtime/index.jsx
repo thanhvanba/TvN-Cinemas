@@ -46,7 +46,7 @@ const ListShowtime = () => {
             {
               /^\/(admin|manager)\/list-room/.test(pathname) ?
                 <ListRoom />
-                : /^\/(admin|manager)\/add-item\/showtime/.test(pathname) ?
+                : /^\/(admin|manager)\/(add-item|update-item)\/showtime/.test(pathname) ?
                   <AddShowtime />
                   : /^\/(admin|manager)\/(add-item)\/room/.test(pathname) ?
                     <AddRoom />

@@ -112,7 +112,6 @@ const OrderMovie = () => {
     ];
     const generateSeatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, showtimeId, dateTime);
     const seatData = generateSeatData();
-    console.log("🚀 ~ OrderMovie ~ seatData:", seatData)
 
     const navigate = useNavigate()
 
