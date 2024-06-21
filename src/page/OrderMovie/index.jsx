@@ -1,9 +1,11 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
+import { Tooltip as ReactTooltip } from "react-tooltip";
+// import Tooltip from 'react-tooltip';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArmchairIcon, PopcornIcon, CreditCardIcon, InboxIcon, Ticket, Plus } from 'lucide-react'
 import screen from "../../images/screen.webp"
-import { XMarkIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon, MinusSmallIcon, PlusSmallIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import "./index.css"
@@ -16,21 +18,24 @@ import { LoginContext } from '../../context/LoginContext';
 import CreateSeat from '../../components/CreateSeat';
 import Loading from '../../components/Loading';
 import ChairType from '../../components/ChairType';
+import ConvertStringFollowFormat from '../../utils/ConvertStringFollowFormat';
+import useLoadingState from '../../hook/UseLoadingState';
+import Load from '../../components/Load';
+import SeatImage from '../../images/section.jpg'
 
 const OrderMovie = () => {
-    const { getOneShowtimeApi, getFoodApi, getSeatBookedApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
+    const { getOneShowtimeApi, getFoodApi, selectSeatApi, bookingTicketApi, bookingInfoApi, getSeatPriceApi } = UserService()
     const { createPaymentApi } = VnPayService()
     const [togglePayment, setTogglePayment] = useState(false);
     const [toggleConfirm, setToggleConfirm] = useState(true);
     const { user } = useContext(LoginContext)
-    const [loading, setLoading] = useState(false);
-    const [loading1, setLoading1] = useState(false);
+
+    const { loading, setLoading } = useLoadingState(false);
     const [foods, setFoods] = useState([])
     const [listWater, setListWater] = useState([])
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
     const [listSnacks, setListSnacks] = useState([])
-    const [listSeatBooked, setListSeatBooked] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
     const [listFoodBooking, setListFoodBooking] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
@@ -110,8 +115,29 @@ const OrderMovie = () => {
             url: '/order/ve'
         },
     ];
-    const generateSeatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, showtimeId, dateTime);
-    const seatData = generateSeatData();
+    const [listSeatBooked, setListSeatBooked] = useState([]);
+    const [loadSeatBooked, setLoadSeatBooked] = useState(false);
+    const { getSeatBookedApi } = UserService();
+
+    const handleGetSeatBooked = async () => {
+        setLoadSeatBooked(true)
+        const params = {
+            showtimeId: showtimeId,
+            scheduleId: dateTime.scheduleId || ""
+        };
+        let resSeat = await getSeatBookedApi(params);
+        if (resSeat && resSeat.data && resSeat.data.result) {
+            setListSeatBooked(resSeat.data.result);
+        }
+        setLoadSeatBooked(false)
+    };
+
+    useEffect(() => {
+        showtimeId && dateTime.scheduleId &&
+            handleGetSeatBooked();
+    }, [dateTime]); // Theo dõi sự thay đổi của showtimeId và dateTime
+
+    const seatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, listSeatBooked);
 
     const navigate = useNavigate()
 
@@ -159,7 +185,7 @@ const OrderMovie = () => {
         }
     }
     const handleSelectSeatApi = async () => {
-        setLoading(true);
+        setLoading('selectSeat', true);
         const data = selectSeats;
         let res = await selectSeatApi(data, showtimeId)
         if (res && res.data && res.data.result) {
@@ -168,33 +194,35 @@ const OrderMovie = () => {
         setBookingInfo({ ...bookingInfo, discount: 0 })
         setPromotionCode('')
         navigate(`/${showtimeId}/order/bapnuoc`, { state: { dateTime: dateTime } })
-        setLoading(false);
+        setLoading('selectSeat', false);
     }
     const handleBookingTicket = async () => {
-        setTogglePayment(true)
-        setToggleConfirm(false)
-        setLoading(true);
+        setLoading('bookingTicket', true);
         const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking, bookingInfo.bookingId)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result);
         }
-        setLoading(false);
+        setLoading('bookingTicket', false);
+        setTogglePayment(true)
+        setToggleConfirm(false)
     }
     const handleGetBookingInfo = async (code) => {
-        setLoading(true);
+        setLoading('bookingInfo', true);
         const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking, code)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result)
         }
         navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
-        setLoading(false);
+        setLoading('bookingInfo', false);
     }
 
     const handlePayment = async (bookingId) => {
+        setLoading('payment', true);
         let resPayment = await createPaymentApi(bookingId)
         if (resPayment && resPayment.data && resPayment.data.result) {
             window.open(resPayment.data.result, '_blank')
         }
+        setLoading('payment', true);
     }
 
     const handleSelectSeat = async (seatId, type) => {
@@ -229,11 +257,11 @@ const OrderMovie = () => {
         handleCheckPathname(pathname)
     }, [pathname]);
     useEffect(() => {
-        setLoading1(true);
+        setLoading('getItem', true);
         hadleGetItem()
         handleGetFood()
         // handleGetSeatBooked()
-        setLoading1(false);
+        setLoading('getItem', false);
     }, [showtimeId]);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -285,9 +313,9 @@ const OrderMovie = () => {
                 </ul>
             </div>
             <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
-                {loading1 && <Loading />}
+                {loading['getItem'] && <Loading />}
             </div>
-            {!loading1 &&
+            {!loading['getItem'] &&
                 <div className='xl:max-w-5xl lg:max-w-4xl md:max-w-3xl sm:max-w-2xl max-w-lg mx-auto'>
                     {/* Thông tin phim và thời gian đặt vé */}
                     <div className='flex justify-between mb-4 text-[10px] sm:text-base px-4'>
@@ -324,19 +352,34 @@ const OrderMovie = () => {
                             </div>
                             {/*  Sơ đồ*/}
                             <div className='flex justify-center'>
-                                <div className='grid gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
-                                    style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
-                                >
-                                    {seatData.map(seat => (
-                                        <div
-                                            key={seat.id}
-                                            className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
-                                            onClick={() => handleSelectSeat(seat.id, seat.type)}
-                                        >
-                                            {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                                        </div>
-                                    ))}
-                                </div>
+                                {loadSeatBooked ?
+                                    <div
+                                        style={{
+                                            backgroundImage: `url(${SeatImage})`,
+                                            backgroundPosition: 'center', // Vị trí ảnh nền sẽ được căn giữa
+                                            backgroundRepeat: 'no-repeat', // Ngăn lặp lại ảnh nền 
+                                            height: '400px',
+                                            width: '600px'
+                                        }}
+                                        className='flex justify-center items-center rounded-md'
+                                    >
+                                        <Load />
+                                    </div>
+                                    :
+                                    <div className='grid gap-1 mx-6 sm:mx-12 md:mx-32 lg:mx-40 xl:mx-44'
+                                        style={{ gridTemplateColumns: `repeat(${showtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * showtime.room.colSeat}px` }}
+                                    >
+                                        {seatData.map(seat => (
+                                            <div
+                                                key={seat.id}
+                                                className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
+                                                onClick={() => handleSelectSeat(seat.id, seat.type)}
+                                            >
+                                                {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                                            </div>
+                                        ))}
+                                    </div>
+                                }
                             </div>
                         </div>
 
@@ -348,11 +391,11 @@ const OrderMovie = () => {
                                 onClick={() => {
                                     handleSelectSeatApi();
                                 }}
-                                className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
+                                className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-emerald-800 bg-emerald-600"
                                 type="button"
-                                disabled={loading}
+                                disabled={loading['selectSeat']}
                             >
-                                {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                {loading['selectSeat'] && <FontAwesomeIcon className='w-5 h-5 ' icon={faSpinner} spin />}
                                 &nbsp;Xác Nhận
                             </button>
                         </div>
@@ -492,9 +535,9 @@ const OrderMovie = () => {
                                         }}
                                         className="absolute w-1/4 text-slate-200 p-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                         type="button"
-                                        disabled={loading}
+                                        disabled={loading['bookingInfo']}
                                     >
-                                        {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                        {loading['bookingInfo'] && <FontAwesomeIcon className='w-5 h-5' icon={faSpinner} spin />}
                                         &nbsp;Tiếp tục
                                     </button>
                                 </div>
@@ -558,8 +601,30 @@ const OrderMovie = () => {
                                                                     <div className="font-medium text-slate-900">Ghế ({String.fromCharCode(65 + parseInt(seatInfo.row, 10) - 1) + seatInfo.column})</div>
                                                                 </td>
                                                                 <td className="px-3 py-3.5 text-sm">1</td>
-                                                                <td className="px-3 py-3.5 text-sm">{seatInfo.price.price}</td>
-                                                                <td className="px-3 py-3.5 text-sm">{seatInfo.price.price}</td>
+                                                                <td className="px-3 py-3.5 text-sm flex flex-col">
+                                                                    <p className='text-orange-600 font-medium text-lg'>
+                                                                        <span>{ConvertStringFollowFormat(seatInfo?.newPrice)}</span>
+                                                                        <sup>đ</sup>
+                                                                    </p>
+                                                                    {bookingInfo?.promotionFixedList?.length != 0 &&
+                                                                        <p className='font-light line-through text-slate-400 text-xs relative'>
+                                                                            <span>{ConvertStringFollowFormat(seatInfo?.oldPrice)}</span>
+                                                                            <sup>đ</sup>
+                                                                            < InformationCircleIcon
+                                                                                className='absolute top-0.5 right-1/2 h-3 w-3 text-sky-600'
+                                                                                data-tooltip-id={`tooltip-${bookingInfo.bookingId}`}
+                                                                            />
+
+                                                                            <ReactTooltip
+                                                                                id={`tooltip-${bookingInfo.bookingId}`}
+                                                                                place="top"
+                                                                                variant="info"
+                                                                                content={bookingInfo?.promotionFixedList?.map(item => item)[0]?.name}
+                                                                            />
+                                                                        </p>
+                                                                    }
+                                                                </td>
+                                                                <td className="px-3 py-3.5 text-sm">{ConvertStringFollowFormat(seatInfo?.newPrice)} <sup>đ</sup></td>
                                                             </tr>
                                                         ))
                                                     }
@@ -618,12 +683,12 @@ const OrderMovie = () => {
                                                 placeholder='Nhập mã khuyến mãi'
                                             />
                                             <button
-                                                className='ml-2 bg-sky-600 hover:bg-sky-700 h-8 w-8 flex items-center justify-center rounded-md'
+                                                className='relative ml-2 bg-sky-600 hover:bg-sky-700 h-8 w-8 flex items-center justify-center rounded-md'
                                                 onClick={() => {
                                                     handleGetBookingInfo(promotionCode)
                                                 }}
                                             >
-                                                <Plus className='text-white first-letter:h-5 w-5' />
+                                                {loading['bookingInfo'] ? <Load /> : <Plus className='text-white first-letter:h-5 w-5' />}
                                             </button>
                                         </div>
                                     </div>
@@ -637,9 +702,49 @@ const OrderMovie = () => {
                                                 <sup>đ</sup>
                                             </p>
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <p>Phí (0%)</p>
-                                            <p className="font-semibold">-{formatPrice(bookingInfo.discount)}<sup>đ</sup></p>
+                                        <div className="flex justify-between">
+                                            <p className='top-0'>Chiết khấu</p>
+                                            <div className='flex flex-col'>
+                                                {
+                                                    bookingInfo && bookingInfo.seats && bookingInfo.seats.map(seatInfo => (
+                                                        bookingInfo?.promotionFixedList?.length != 0 &&
+                                                        <p className='font-light relative'>
+                                                            <span>-{ConvertStringFollowFormat(seatInfo?.oldPrice - seatInfo?.newPrice)}</span>
+                                                            <sup>đ</sup>
+                                                            < InformationCircleIcon
+                                                                className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
+                                                                data-tooltip-id={`tooltip-${bookingInfo.bookingId}`}
+                                                            />
+
+                                                            <ReactTooltip
+                                                                id={`tooltip-${bookingInfo.bookingId}`}
+                                                                place="top"
+                                                                variant="info"
+                                                                content={bookingInfo?.promotionFixedList?.reduce((min, promo) => promo.normalValue < min.normalValue ? promo : min, bookingInfo?.promotionFixedList[0]).name}
+                                                            />
+                                                        </p>
+                                                    ))
+                                                }
+                                                {bookingInfo.discount > 0 &&
+                                                    <p className="font-light relative">
+                                                        <span>-{formatPrice(bookingInfo.discount)}</span>
+                                                        <sup>đ</sup>
+                                                        < InformationCircleIcon
+                                                            className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
+                                                            data-tooltip-id={`tooltip-promotionCode`}
+                                                        />
+
+                                                        <ReactTooltip
+                                                            id={`tooltip-promotionCode`}
+                                                            place="top"
+                                                            variant="info"
+                                                            content={bookingInfo?.promotionCode?.description
+                                                            }
+                                                        />
+                                                    </p>
+                                                }
+                                            </div>
+
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <p>Thanh toán</p>
@@ -654,9 +759,9 @@ const OrderMovie = () => {
                                                 }}
                                                 className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                                 type="button"
-                                                disabled={loading}
+                                                disabled={loading['bookingTicket']}
                                             >
-                                                {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                {loading['bookingTicket'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                                 &nbsp;Xác Nhận Thông Tin
                                             </button>
                                         }
@@ -667,9 +772,10 @@ const OrderMovie = () => {
                                                 }}
                                                 className="w-full inline-flex items-center justify-center text-[18px] h-10 text-slate-200 p-4 rounded-full hover:bg-white hover:text-emerald-800 bg-emerald-600"
                                                 type="button"
-                                                disabled={loading}
+                                                disabled={loading['payment']}
                                             >
-                                                Thanh Toán
+                                                {loading['payment'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                &nbsp;Thanh Toán
                                             </button>
                                         }
                                     </div>

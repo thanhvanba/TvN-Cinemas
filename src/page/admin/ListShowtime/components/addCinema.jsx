@@ -135,6 +135,7 @@ const AddCinema = () => {
                                                         clearError('cinemaName')
                                                     }}
                                                     type="text"
+                                                    placeholder='Nhập tên rạp phim'
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.cinemaName}
                                                 />
@@ -154,6 +155,7 @@ const AddCinema = () => {
                                                         clearError('location')
                                                     }}
                                                     type="text"
+                                                    placeholder='Nhập địa chỉ rạp'
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.location}
                                                 />
@@ -172,6 +174,7 @@ const AddCinema = () => {
                                                         clearError('desc')
                                                     }}
                                                     type="text"
+                                                    placeholder='Nhập mô tả'
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.desc}
                                                     rows={5}
@@ -192,6 +195,7 @@ const AddCinema = () => {
                                                         clearError('urlLocation')
                                                     }}
                                                     type="text"
+                                                    placeholder='Nhập url địa chỉ'
                                                     className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                     value={cinema.urlLocation}
                                                 />

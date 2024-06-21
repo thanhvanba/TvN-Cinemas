@@ -6,12 +6,15 @@ import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat'
 import StaffService from '../../../service/StaffService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import useLoadingState from '../../../hook/UseLoadingState'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 function InfoTicket() {
     const location = useLocation()
     const navigate = useNavigate()
     const { sellTicketApi, addViewerApi } = StaffService()
     const { infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods, userInfo } = location.state || {}
+    console.log("🚀 ~ InfoTicket ~ listSeatBooking:", listSeatBooking)
 
     const { loading, setLoading } = useLoadingState(false)
     const [account, setAccount] = useState(userInfo || {})
@@ -67,9 +70,15 @@ function InfoTicket() {
                                 </div>
                             </div>
 
-                            <div>
-                                <p className='font-light'>Rạp chiếu</p>
-                                <p className="font-semibold text-xl">{infoSchedule?.cinemaName}</p>
+                            <div className="flex gap-10">
+                                <div className="w-3/5">
+                                    <p className='font-light'>Rạp chiếu</p>
+                                    <p className="font-semibold text-xl">{infoSchedule?.cinemaName}</p>
+                                </div>
+                                <div className='w-2/5'>
+                                    <p className='font-light'>Phòng chiếu</p>
+                                    <p className="font-semibold text-xl">{`G1`}</p>
+                                </div>
                             </div>
 
                             <div className="flex gap-10">
@@ -80,15 +89,7 @@ function InfoTicket() {
                                             <span>&nbsp;{String.fromCharCode(65 + parseInt(seat.row, 10) - 1) + seat.column},</span>
                                         ))}</p>
                                 </div>
-
                                 <div className='w-2/5'>
-                                    <p className='font-light'>Phòng chiếu</p>
-                                    <p className="font-semibold text-xl">{`G1`}</p>
-                                </div>
-                            </div>
-
-                            <div className='flex gap-10'>
-                                <div className='w-3/5'>
                                     <p className='font-light'>Bắp nước</p>
                                     <p className="font-semibold text-xl w-full inline-block">
                                         {foods && foods.map((food, index) => (
@@ -96,7 +97,10 @@ function InfoTicket() {
                                         ))}
                                     </p>
                                 </div>
-                                <div className='w-2/5'>
+                            </div>
+
+                            <div className='flex gap-10'>
+                                <div className='w-3/5'>
                                     <p className='font-light'>Tổng tiền</p>
                                     <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(
                                         selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
@@ -107,6 +111,61 @@ function InfoTicket() {
                                         <sup>đ</sup>
                                     </p>
                                 </div>
+                                <div className='w-2/5'>
+                                    <p className='font-light'>Chiết khấu</p>
+                                    {/* <div className='flex flex-col'>
+                                        {
+                                            bookingInfo && bookingInfo.seats && bookingInfo.seats.map(seatInfo => (
+                                                bookingInfo?.promotionFixedList?.length != 0 &&
+                                                <p className='font-light relative'>
+                                                    <span>-{ConvertStringFollowFormat(seatInfo?.oldPrice - seatInfo?.newPrice)}</span>
+                                                    <sup>đ</sup>
+                                                    < InformationCircleIcon
+                                                        className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
+                                                        data-tooltip-id={`tooltip-${bookingInfo.bookingId}`}
+                                                    />
+
+                                                    <ReactTooltip
+                                                        id={`tooltip-${bookingInfo.bookingId}`}
+                                                        place="top"
+                                                        variant="info"
+                                                        content={bookingInfo?.promotionFixedList?.reduce((min, promo) => promo.normalValue < min.normalValue ? promo : min, bookingInfo?.promotionFixedList[0]).name}
+                                                    />
+                                                </p>
+                                            ))
+                                        }
+                                        {bookingInfo.discount > 0 &&
+                                            <p className="font-light relative">
+                                                <span>-{formatPrice(bookingInfo.discount)}</span>
+                                                <sup>đ</sup>
+                                                < InformationCircleIcon
+                                                    className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
+                                                    data-tooltip-id={`tooltip-promotionCode`}
+                                                />
+
+                                                <ReactTooltip
+                                                    id={`tooltip-promotionCode`}
+                                                    place="top"
+                                                    variant="info"
+                                                    content={bookingInfo?.promotionCode?.description
+                                                    }
+                                                />
+                                            </p>
+                                        }
+                                    </div> */}
+                                </div>
+                            </div>
+
+                            <div className="flex gap-10">
+                                <p className='font-light'>Thanh toán</p>
+                                <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(
+                                    selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
+                                    foods.reduce((total, food) => {
+                                        return total + (food.price * food.count);
+                                    }, 0)
+                                )}
+                                    <sup>đ</sup>
+                                </p>
                             </div>
                         </div>
                     </div>

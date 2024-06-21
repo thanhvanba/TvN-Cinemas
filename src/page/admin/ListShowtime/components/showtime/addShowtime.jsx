@@ -33,8 +33,8 @@ const AddShowtime = () => {
     const location = useLocation();
     const { cinemaId, cinemaName } = location.state || {};
 
-    const { getAllRoomApi, getRoomeByCinemaApi } = AdminService()
-    const { addShowtimeApi, updateShowTimeApi, getAllRoomByManagerApi } = ManagerService()
+    const { getAllRoomApi, getRoomeByCinemaApi, checkScheduleApi } = AdminService()
+    const { addShowtimeApi, updateShowTimeApi, getAllRoomByManagerApi, checkScheduleManagerApi } = ManagerService()
     const { getOneShowtimeApi } = UserService()
     const { GetAllMovieApi } = MovieService()
 
@@ -322,6 +322,21 @@ const AddShowtime = () => {
         }
     };
 
+    const handleCheckScheduleInDB = async (showtimeId, date, startTime) => {
+        setLoading('checkSchedule', true)
+        let response
+        const params = {
+            showtimeId: showtimeId,
+            date: date,
+            startTime: startTime
+        }
+        if (user.role === "ADMIN") {
+            response = await checkScheduleApi(params)
+        } else {
+            response = await checkScheduleManagerApi(params)
+        }
+        setLoading('checkSchedule', !response)
+    }
     useEffect(() => {
         if (pathname === "/(admin|manager)/add-item/showtime") {
             setShowtime({
@@ -404,7 +419,8 @@ const AddShowtime = () => {
 
         // Kiểm tra nếu timeString không rỗng
         if (timeString) {
-            // Gọi handleTimeChange với date và startTime mới
+            // Gọi handleTimeChange với date và startTime mới      
+            // handleCheckScheduleInDB(showtimeId, selectDateTime.date, timeString)
             handleTimeChange(selectDateTime.date, timeString);
         }
     };
@@ -445,7 +461,7 @@ const AddShowtime = () => {
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
                                                 pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
-                                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} content={"-------Select-------"} /> :
+                                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} content={"Chọn phim"} /> :
                                                     <input
                                                         type="text"
                                                         className="placeholder-neutral-900 w-full  text-lg focus:outline-none"
@@ -466,7 +482,7 @@ const AddShowtime = () => {
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {
                                                 pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime" ?
-                                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom} content={"-------Select-------"} /> :
+                                                    <SelectMenu onSelectChange={handleSelectChange} items={listNameRoom} content={"Chọn phòng"} /> :
                                                     pathname === `/admin/update-item/showtime/${showtimeId}` || pathname === `/manager/update-item/showtime/${showtimeId} ` ?
                                                         <input
                                                             type="text"
@@ -494,6 +510,7 @@ const AddShowtime = () => {
                                                     setShowtime({ ...showtime, timeStart: date });
                                                     clearError('timeStart')
                                                 }}
+                                                placeholder={'Chọn ngày bắt đầu'}
                                                 className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 dateFormat="yyyy-MM-dd" // Định dạng n gày
                                                 defaultValue={/^\/(admin|manager)\/update-item/.test(pathname) ? dayjs(FormatDataTime(oneShowtime.timeStart).date, 'DD/MM/YYYY') : null}
@@ -514,6 +531,7 @@ const AddShowtime = () => {
                                                     setShowtime({ ...showtime, timeEnd: date });
                                                     clearError('timeEnd')
                                                 }}
+                                                placeholder={'Chọn ngày kết thúc'}
                                                 className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
                                                 defaultValue={/^\/(admin|manager)\/update-item/.test(pathname) ? dayjs(FormatDataTime(oneShowtime.timeEnd).date, 'DD/MM/YYYY') : null}
@@ -580,6 +598,7 @@ const AddShowtime = () => {
                                                 </label>
                                                 <DatePicker
                                                     onChange={handleSelectDate}
+                                                    placeholder={'Chọn ngày chiếu'}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 />
                                             </div>
@@ -595,6 +614,7 @@ const AddShowtime = () => {
                                                 <TimePicker
                                                     format="HH:mm"
                                                     onChange={handleSelectTime}
+                                                    placeholder={'Chọn xuất chiếu'}
                                                     className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 />
 

@@ -8,8 +8,6 @@ import { CalendarDaysIcon, FilmIcon } from '@heroicons/react/20/solid';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ListTicket from '../admin/ListTicket';
 import Loading from '../../components/Loading';
-import { Search } from 'lucide-react';
-import MovieItems from './components/movieItems';
 import MovieService from '../../service/MovieService';
 import Pagination from '../../components/Pagination';
 

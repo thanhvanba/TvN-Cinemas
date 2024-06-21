@@ -6,11 +6,13 @@ import Signup from './page/Signup/index.jsx'
 import bg from "./images/movie-details-bg.jpg"
 
 import { AdminRouter, MainRouter, AppRouter, StaffRouter } from './routes'
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
 import { jwtDecode } from 'jwt-decode'
 import { useLocation } from 'react-router-dom'
+import Modal from './utils/Modal.jsx'
+import axiosService from './service/axiosInstance.js'
 
 function App() {
   const { pathname } = useLocation()
@@ -29,6 +31,21 @@ function App() {
       register(localStorage.getItem("email"), localStorage.getItem("fullname"), localStorage.getItem("phone"))
     }
   }, []);
+
+  // Xử lý hiển thị thông báo khi phiên đăng nhập hết hạn
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log("🚀 ~ App ~ isModalOpen:", isModalOpen)
+
+  const handleConfirmModal = () => {
+    setIsModalOpen(false);
+    window.location.href = '/signup';
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // const axios = axiosService(openModal);
   return (
     <div>
       {
@@ -40,7 +57,7 @@ function App() {
               (pathname === "/user/payment-success" || pathname === "/reset-password" || pathname === "/booking-timeout") ? (
                 <MainRouter />
               ) :
-               (
+                (
                   <div style={{ backgroundImage: `url(${bg})`, backgroundAttachment: "fixed" }}>
                     <Header />
                     <MainRouter />
@@ -49,6 +66,14 @@ function App() {
                 )
             )
       }
+      {/* <Modal
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmModal}
+        title='Phiên đăng nhập đã hết hạn'
+        content='Vui lòng đăng nhập lại để tiếp tục.'
+        buttonName='Đồng ý'
+        buttonCancel=''
+      /> */}
     </div>
   )
 }

@@ -424,7 +424,6 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-
     const getTopUsersManagerApi = async (params) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -458,6 +457,39 @@ const ManagerService = () => {
                     "Authorization": bearerToken,
                 },
                 params: params
+            },
+        );
+    };
+    const checkScheduleManagerApi = async (params) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/schedule/check`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    },
+                    params: params
+                },
+            );
+            return response.data.success
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const getStockEntriesApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/stockEntries`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
             },
         );
     };
@@ -498,7 +530,9 @@ const ManagerService = () => {
         changeStatusStaffApi,
         getTopUsersManagerApi,
         getFinanceAllCinemaManagerApi,
-        getDetailFinanceManagerApi
+        getDetailFinanceManagerApi,
+        checkScheduleManagerApi,
+        getStockEntriesApi
     }
 }
 

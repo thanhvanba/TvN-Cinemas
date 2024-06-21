@@ -237,21 +237,35 @@ const UserService = () => {
         }
     }
     const bookingInfoApi = async (seats, foods, code) => {
-        console.log("🚀 ~ bookingInfoApi ~ code:", code)
-        let bearerToken = `Bearer ${localStorage.getItem("token")}`
-        return await axiosInstance.post(
-            `${process.env.REACT_APP_HOST_API_KEY}/viewer/book-info`,
-            {
-                code: code,
-                seatIds: seats,
-                foodIds: foods
-            },
-            {
-                headers: {
-                    "Authorization": bearerToken,
-                }
-            },
-        );
+        try {
+            console.log("🚀 ~ bookingInfoApi ~ code:", code)
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/viewer/book-info`,
+                {
+                    code: code,
+                    seatIds: seats,
+                    foodIds: foods
+                },
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.result.promotionCode === null) {
+                if (response.data.message !== "Lấy thông tin đặt lịch thành công!")
+                    toastNotify(response.data.message, "error")
+                else  toastNotify(response.data.message, "success")
+            } else {
+                toastNotify("Áp dụng mã thành công", "success")
+            }
+
+            return response
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
     }
     const getSeatPriceApi = async (type) => {
         const params = { type: type }

@@ -64,7 +64,7 @@ const Fare = ({ onLoading }) => {
                             Chọn loại vé
                         </label>
                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                            <SelectMenu onSelectChange={handleSelectChange} items={ticketTypes} content={"-------Select-------"} />
+                            <SelectMenu onSelectChange={handleSelectChange} items={ticketTypes} content={"Chọn loại vé"} />
                         </div>
                     </div>
                     <div className="relative my-4">
@@ -77,6 +77,7 @@ const Fare = ({ onLoading }) => {
                         <input
                             onChange={e => setFare({ ...fare, price: e.target.value })}
                             type="text"
+                            placeholder='Nhập giá tiền'
                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                             value={fare.price}
                         />

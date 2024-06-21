@@ -20,7 +20,7 @@ const DetailMovie = () => {
         title: "",
         director: "",
         actor: "",
-        genres: "",
+        genres: [],
         desc: "",
         releaseDate: "",
         poster: {},
@@ -90,7 +90,15 @@ const DetailMovie = () => {
                                 </li>
                                 <li className='relative pl-28 pb-5'>
                                     <span className='absolute font-bold top-0 left-0'>Thể loại</span>
-                                    <span>{movie.genres}</span>
+                                    <span>
+                                        {
+                                            movie?.genres.length !== 0 ?
+                                                movie?.genres.map((genres, index) => (
+                                                    <span key={index}>{genres.name}{index < movie.genres.length - 1 ? ', ' : ''}</span>
+                                                )) :
+                                                <span>N/A</span>
+                                        }
+                                    </span>
                                 </li>
                                 <li className='relative pl-28 pb-5'>
                                     <span className='absolute font-bold top-0 left-0'>Khởi chiếu</span>

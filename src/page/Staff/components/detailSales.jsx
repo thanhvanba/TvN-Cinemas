@@ -19,6 +19,9 @@ import Loading from '../../../components/Loading'
 import background from "../../../images/movie-details-bg.jpg"
 import NumberSpinner from '../../../utils/NumberSpinner';
 import { list } from '@material-tailwind/react';
+import useLoadingState from '../../../hook/UseLoadingState';
+import Load from '../../../components/Load'
+import SeatImage from '../../../images/section.jpg'
 
 function DetailSales() {
     const { movieId } = useParams()
@@ -27,15 +30,15 @@ function DetailSales() {
     const { getShowtimeByMovieApi, getFoodApi, selectSeatApi, getSeatPriceApi } = UserService()
 
     const navigate = useNavigate()
-    const [createSeatData, setCreateSeatData] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [selectSchedule, setSelectSchedule] = useState({})
+    const { loading, setLoading } = useLoadingState(false)
     const [allShowtime, setAllShowtime] = useState([])
     const [showtimeByMovie, setShowtimeByMovie] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
     const [toggle, setToggle] = useState(false)
     const [openProduct, setOpenProduct] = useState(false)
     const [modalStates, setModalStates] = useState(false)
-    const [checkIsTimeInFuture, setCheckIsTimeInFuture] = useState(false)
+    const [checkIsTimeInFuture, setCheckIsTimeInFuture] = useState(true)
     const [listWater, setListWater] = useState([])
     const [listSoda, setListSoda] = useState([])
     const [listPopcorn, setListPopcorn] = useState([])
@@ -68,7 +71,7 @@ function DetailSales() {
                         price: price,
                         row: row,
                         column: seatNum,
-                        scheduleId: createSeatData?.dataTime?.scheduleId
+                        scheduleId: selectSchedule?.dataTime?.scheduleId
                     }]);
                 }
             }
@@ -76,37 +79,64 @@ function DetailSales() {
     }
 
     const handleSelectSeatApi = async () => {
-        setLoading(true);
+        setLoading('selectSeat', true);
         const data = selectSeats;
-        let res = await selectSeatApi(data, createSeatData.showTimeId)
+        let res = await selectSeatApi(data, selectSchedule.showTimeId)
         if (res && res.data && res.data.result) {
             setListSeatBooking(res.data.result.seatIds)
         }
-        setLoading(false);
+        setLoading('selectSeat', false);
     }
+    const [listSeatBooked, setListSeatBooked] = useState([]);
+    const [loadSeatBooked, setLoadSeatBooked] = useState(false);
+    const { getSeatBookedApi } = UserService();
 
-    const generateSeatData = CreateSeat(createSeatData?.rowSeat, createSeatData?.colSeat, createSeatData?.showTimeId, createSeatData?.dataTime);
-    const seatData = generateSeatData()
+    const handleGetSeatBooked = async () => {
+        setLoadSeatBooked(true)
+        const params = {
+            showtimeId: selectSchedule?.showTimeId,
+            scheduleId: selectSchedule?.dataTime.scheduleId || ""
+        };
+        let resSeat = await getSeatBookedApi(params);
+        if (resSeat && resSeat.data && resSeat.data.result) {
+            setListSeatBooked(resSeat.data.result);
+        }
+        setLoadSeatBooked(false)
+    };
+
+    useEffect(() => {
+        selectSchedule?.showTimeId && selectSchedule?.dataTime.scheduleId &&
+            handleGetSeatBooked();
+    }, [selectSchedule?.dataTime]); // Theo dõi sự thay đổi của showtimeId và dateTime
+
+    const seatData = CreateSeat(selectSchedule?.rowSeat, selectSchedule?.colSeat, listSeatBooked);
 
     const handleSelectDate = (date, dateString) => {
         date && setSelectDateTime(date);
     };
 
     const handleGetShowtimeByMovie = async (movieId) => {
+        setLoading('getItem', true)
         let resShowtime = await getShowtimeByMovieApi(movieId);
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             setShowtimeByMovie(resShowtime.data.result)
         }
+
+        setLoading('getItem', false)
     }
     const hadleGetItem = () => {
-        setLoading(true)
+        setLoading('getItem', true)
         let isTimeInFuture
         const newShowtimes = [];
+        //Lọc lịch chiếu theo rạp
         if (showtimeByMovie) {
+            let hasFutureScheduleBeenSet = false;
+
             showtimeByMovie.filter(item => item.room.cinema.cinemaId === localStorage.getItem('cinemaId')).forEach(item => {
                 if (item.status === "SHOWING") {
                     item.schedules.forEach(schedule => {
                         if (schedule.date === dayjs(selectDateTime.toISOString()).format("YYYY-MM-DD")) {
+                            //Lấy danh sách xuất chiếu theo ngày
                             newShowtimes.push({
                                 rowSeat: item.room.rowSeat,
                                 colSeat: item.room.colSeat,
@@ -124,20 +154,27 @@ function DetailSales() {
                             const currentDateTime = new Date();
                             const dateTime = parse(`${schedule.date} ${schedule.startTime}`, 'yyyy-MM-dd HH:mm:ss', new Date());
                             isTimeInFuture = isAfter(dateTime, currentDateTime);
-                            isTimeInFuture ? setCreateSeatData({
-                                rowSeat: item.room.rowSeat,
-                                colSeat: item.room.colSeat,
-                                showTimeId: item.showTimeId,
-                                dataTime: { time: schedule.startTime, scheduleId: schedule.scheduleId },
-                                startTime: schedule.startTime,
-                                endTime: schedule.endTime,
-                                roomName: item.room.roomName,
-                                cinemaName: item.room.cinema.cinemaName,
-                                poster: item.movie.poster,
-                                movieId: item.movie.movieId,
-                                movieName: item.movie.title,
-                                duration: item.movie.duration,
-                            }) : setCreateSeatData({})
+                            if (!hasFutureScheduleBeenSet) {  // Check the flag
+                                if (isTimeInFuture) {
+                                    setSelectSchedule({
+                                        rowSeat: item.room.rowSeat,
+                                        colSeat: item.room.colSeat,
+                                        showTimeId: item.showTimeId,
+                                        dataTime: { time: schedule.startTime, scheduleId: schedule.scheduleId },
+                                        startTime: schedule.startTime,
+                                        endTime: schedule.endTime,
+                                        roomName: item.room.roomName,
+                                        cinemaName: item.room.cinema.cinemaName,
+                                        poster: item.movie.poster,
+                                        movieId: item.movie.movieId,
+                                        movieName: item.movie.title,
+                                        duration: item.movie.duration,
+                                    });
+                                    hasFutureScheduleBeenSet = true;  // Update the flag
+                                } else {
+                                    setSelectSchedule({});
+                                }
+                            }
                         }
                     });
                 }
@@ -153,14 +190,13 @@ function DetailSales() {
                 return 0;
             })
 
-            console.log("🚀 ~ hadleGetItem ~ isTimeInFuture:", isTimeInFuture)
             if (isTimeInFuture === false) {
-                setCreateSeatData(listShowtime[0]);
+                setSelectSchedule(listShowtime[0]);
             }
 
             setAllShowtime(listShowtime);
         }
-        setLoading(false)
+        setLoading('getItem', false)
     };
 
     const handleGetFood = async (cinemaId) => {
@@ -189,7 +225,7 @@ function DetailSales() {
 
     const handleCancel = () => {
         setModalStates(false)
-        navigate('/staff/info-ticket', { state: { infoSchedule: createSeatData, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods } })
+        navigate('/staff/info-ticket', { state: { infoSchedule: selectSchedule, listSeatBooking: listSeatBooking, listFoodBooking: listFoodBooking, selectSeats: selectSeats, foods: foods } })
     }
     useEffect(() => {
         hadleGetItem()
@@ -211,14 +247,14 @@ function DetailSales() {
                     className="-m-2 bg-transparent border-none focus-within:bg-transparent hover:bg-transparent font-semibold text-gray-50 text-xl w-1/4"
                 />
             </div>
-            {loading &&
+            {loading['getItem'] &&
                 <div className='flex justify-center absolute mx-auto w-full h-[79vh] top-44 right-0 z-10'
                     style={{ backgroundImage: `url(${background})`, backgroundAttachment: "fixed" }}>
                     <div className="absolute top-0 left-0 w-full h-full bg-slate-400 opacity-20"></div>
                     <Loading />
                 </div>
             }
-            {!loading &&
+            {!loading['getItem'] &&
                 <div className='h-full'>
                     {allShowtime && allShowtime?.length > 0 ?
                         <ul className='grid grid-cols-6 gap-4'>
@@ -229,9 +265,9 @@ function DetailSales() {
                                     const isTimeInFuture = isAfter(dateTime, currentDateTime);
                                     return (
                                         <li
-                                            className={` ${isTimeInFuture ? 'text-white hover:text-orange-200 bg-cyan-800' : 'text-gray-500 bg-gray-300'} ${createSeatData.startTime === item.startTime ? "border-orange-500" : ""} border-[3px] rounded-xl px-4 py-2 font-semibold cursor-pointer opacity-90`}
+                                            className={`${isTimeInFuture ? 'text-gray-800 bg-white hover:bg-slate-100' : 'text-gray-500 bg-gray-300'} border-[3px] rounded-xl px-4 py-2 font-semibold cursor-pointer opacity-90 ${selectSchedule.startTime === item.startTime ? "border-orange-500" : ""} `}
                                             onClick={() => {
-                                                setCreateSeatData(item)
+                                                setSelectSchedule(item)
                                                 setCheckIsTimeInFuture(isTimeInFuture);
                                             }}
 
@@ -261,24 +297,39 @@ function DetailSales() {
                                         {/* Tên phòng */}
                                         <div className='text-center text-2xl font-bold text-gray-50 mb-6'>
                                             Phòng chiếu
-                                            <span>&nbsp;{createSeatData?.roomName || '***'}</span>
+                                            <span>&nbsp;{selectSchedule?.roomName || '***'}</span>
                                         </div>
                                         {/*  Sơ đồ*/}
                                         <div className='flex justify-center'>
-                                            <div className='grid gap-1 mx-2 md:mx-4 lg:mx-12 xl:mx-28'
-                                                style={{ gridTemplateColumns: `repeat(${createSeatData?.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * createSeatData?.colSeat}px` }}
-                                            >
-                                                {seatData.map(seat => (
-                                                    <div
-                                                        key={seat.id}
-                                                        className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} 
+                                            {loadSeatBooked ?
+                                                <div
+                                                    style={{
+                                                        backgroundImage: `url(${SeatImage})`,
+                                                        backgroundPosition: 'center', // Vị trí ảnh nền sẽ được căn giữa
+                                                        backgroundRepeat: 'no-repeat', // Ngăn lặp lại ảnh nền 
+                                                        height: '400px',
+                                                        width: '600px'
+                                                    }}
+                                                    className='flex justify-center items-center rounded-md'
+                                                >
+                                                    <Load />
+                                                </div>
+                                                :
+                                                <div className='grid gap-1 mx-2 md:mx-4 lg:mx-12 xl:mx-28'
+                                                    style={{ gridTemplateColumns: `repeat(${selectSchedule?.colSeat}, minmax(0, 1fr))`, maxWidth: `${44 * selectSchedule?.colSeat}px` }}
+                                                >
+                                                    {seatData.map(seat => (
+                                                        <div
+                                                            key={seat.id}
+                                                            className={`${seat.type} ${selectSeats.some(item => item.seatId === seat.id) ? 'select' : ''} 
                                     cursor-pointer flex justify-center items-center text-slate-200 h-6 w-6 sm:h-10 sm:w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 rounded-xl`}
-                                                        onClick={() => handleSelectSeat(seat.id, seat.type)}
-                                                    >
-                                                        {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                                                    </div>
-                                                ))}
-                                            </div>
+                                                            onClick={() => handleSelectSeat(seat.id, seat.type)}
+                                                        >
+                                                            {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            }
                                         </div>
                                     </div>
 
@@ -532,7 +583,7 @@ function DetailSales() {
                             )}
                         </div>
                         {toggle &&
-                            <SearchUser infoSchedule={createSeatData} listSeatBooking={listSeatBooking} listFoodBooking={listFoodBooking} selectSeats={selectSeats} foods={foods} onToggle={setToggle} />
+                            <SearchUser infoSchedule={selectSchedule} listSeatBooking={listSeatBooking} listFoodBooking={listFoodBooking} selectSeats={selectSeats} foods={foods} onToggle={setToggle} />
                         }
                     </div>
                 </div>

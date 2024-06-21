@@ -254,7 +254,7 @@ const ListUser = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập họ và tên"
                                             />
                                         </div>
                                         {errors.fullName && <p className="text-red-600">{errors.fullName}</p>}
@@ -273,7 +273,7 @@ const ListUser = () => {
                                                 }}
                                                 type="email"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập email"
                                             />
                                         </div>
                                         {errors.email && <p className="text-red-600">{errors.email}</p>}
@@ -292,7 +292,7 @@ const ListUser = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập số điện thoại"
                                             />
                                         </div>
                                         {errors.phone && <p className="text-red-600">{errors.phone}</p>}
@@ -305,7 +305,7 @@ const ListUser = () => {
                                                     Rạp quản lý <span className='text-red-600'>*</span>
                                                 </label>
                                                 <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                                                    <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"----Select----"} />
+                                                    <SelectMenu onSelectChange={handleSelectChange} items={nameCinema} content={"Chọn rạp"} />
                                                 </div>
                                                 {errors.cinema && <p className="text-red-600">{errors.cinema}</p>}
                                             </div>
@@ -330,7 +330,7 @@ const ListUser = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập tên đăng nhập"
                                             />
                                             {errors.userName && <p className="text-red-600">{errors.userName}</p>}
                                         </div>
@@ -348,7 +348,7 @@ const ListUser = () => {
                                                     clearError('password')
                                                 }}
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập mật khẩu"
                                             />
                                             {errors.password && <p className="text-red-600">{errors.password}</p>}
                                         </div>
@@ -382,78 +382,83 @@ const ListUser = () => {
                                         <Search />
                                     </div>
                                 </div>
-                                <table className='mt-6 w-full'>
-                                    <thead className=''>
-                                        <tr className='border-b-2 border-slate-200'>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.stt}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.info}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.username}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.role}</th>
-                                            {pathname === "/admin/list-personnel" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.cinema}</th>}
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.created}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase w-28'>{listUser.header.login}</th>
-                                            <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.action}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            allUser && allUser.map((item, index) => (
-                                                <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
-                                                    <td className='text-center px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
-                                                    <td className='text-start px-2 py-3'>
-                                                        <div className='flex items-center'>
-                                                            <div div className='pr-2' >
-                                                                {item.avatar ? <img className='rounded-full w-14 h-14 border-2' src={item.avatar} alt="" /> : <listUser.iAvatar className="h-16 w-16 text-emerald-600" />}
-                                                            </div >
-                                                            <div>
-                                                                <h3>{item.fullName}</h3>
-                                                                <p className='font-normal'>Email: {item.email}</p>
-                                                                <span className='font-normal'>Sdt: {item.phone}</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className='text-center px-2 py-3'>{item.userName}</td>
-                                                    <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
-                                                    {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
-                                                    <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
-                                                    <td className='text-center px-2 py-3'>{item.lastLoginAt === null ? '-' : TimeAgo(item.lastLoginAt)}</td>
-                                                    <td className='text-center px-2 py-3'>
-                                                        <div className='flex items-center'>
-                                                            <button
-                                                                className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
-                                                                type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }}
-                                                            >
-                                                                <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
-                                                            </button>
-                                                            <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/user/${item.userId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
-                                                                <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
-                                                            </button>
-                                                            {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
+                                {allUser.length === 0 ?
+                                    <div className='p-4 font-light text-center text-gray-500'>Chưa có thành viên nào. Tiến hành thêm  !!!</div> :
+                                    <>
+                                        <table className='mt-6 w-full'>
+                                            <thead className=''>
+                                                <tr className='border-b-2 border-slate-200'>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.stt}</th>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.info}</th>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.username}</th>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.role}</th>
+                                                    {pathname === "/admin/list-personnel" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.cinema}</th>}
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.created}</th>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-28'>{listUser.header.login}</th>
+                                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listUser.header.action}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    allUser && allUser.map((item, index) => (
+                                                        <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
+                                                            <td className='text-center px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
+                                                            <td className='text-start px-2 py-3'>
+                                                                <div className='flex items-center'>
+                                                                    <div div className='pr-2' >
+                                                                        {item.avatar ? <img className='rounded-full w-14 h-14 border-2' src={item.avatar} alt="" /> : <listUser.iAvatar className="h-16 w-16 text-emerald-600" />}
+                                                                    </div >
+                                                                    <div>
+                                                                        <h3>{item.fullName}</h3>
+                                                                        <p className='font-normal'>Email: {item.email}</p>
+                                                                        <span className='font-normal'>Sdt: {item.phone}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className='text-center px-2 py-3'>{item.userName}</td>
+                                                            <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
+                                                            {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
+                                                            <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
+                                                            <td className='text-center px-2 py-3'>{item.lastLoginAt === null ? '-' : TimeAgo(item.lastLoginAt)}</td>
+                                                            <td className='text-center px-2 py-3'>
+                                                                <div className='flex items-center'>
+                                                                    <button
+                                                                        className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-emerald-100'
+                                                                        type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }}
+                                                                    >
+                                                                        <listUser.action.aChange className='h-4 w-4 text-emerald-600' />
+                                                                    </button>
+                                                                    <button onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/user/${item.userId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100' href="">
+                                                                        <listUser.action.aEdit className='h-4 w-4 text-cyan-600' />
+                                                                    </button>
+                                                                    {/* <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.userId); }} className='flex justify-center items-center w-8 h-8 rounded-lg bg-red-100'>
                                                                         <listUser.action.aDelete className='h-4 w-4 text-red-600' />
                                                                     </button> */}
-                                                            <div>
-                                                                {modalStates[item.userId] && (
-                                                                    <ModalComponent
-                                                                        isOpen={modalStates[item.userId]}
-                                                                        onClose={() => handleCloseModal(item.userId)}
-                                                                        onConfirm={() => handleChangeStatus(item.userId)}
-                                                                        onCancel={() => handleCloseModal(item.userId)}
-                                                                        title={!item.delete ? 'Xóa Tài khoản' : 'Khôi phục'}
-                                                                        content={!item.delete ? 'Bạn có chắc chắn xóa tài khoản này ???' : 'Bạn có muốn khôi phục tài khoản này ???'}
-                                                                        buttonName={!item.delete ? 'Xóa' : 'Khôi phục'}
-                                                                        buttonCancel='Thoát'
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center px-2 py-3`}>{!item.delete ? "Khả dụng" : "Bị cấm"}</td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                                <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetUser} />
+                                                                    <div>
+                                                                        {modalStates[item.userId] && (
+                                                                            <ModalComponent
+                                                                                isOpen={modalStates[item.userId]}
+                                                                                onClose={() => handleCloseModal(item.userId)}
+                                                                                onConfirm={() => handleChangeStatus(item.userId)}
+                                                                                onCancel={() => handleCloseModal(item.userId)}
+                                                                                title={!item.delete ? 'Xóa Tài khoản' : 'Khôi phục'}
+                                                                                content={!item.delete ? 'Bạn có chắc chắn xóa tài khoản này ???' : 'Bạn có muốn khôi phục tài khoản này ???'}
+                                                                                buttonName={!item.delete ? 'Xóa' : 'Khôi phục'}
+                                                                                buttonCancel='Thoát'
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className={`${!item.delete ? "text-green-600" : "text-red-600"} text-center px-2 py-3`}>{!item.delete ? "Khả dụng" : "Bị cấm"}</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                        {allUser.length !== 0 && <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetUser} />}
+                                    </>
+                                }
                             </div>
                         }
                     </div>

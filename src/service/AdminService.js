@@ -405,7 +405,6 @@ const AdminService = () => {
             }
         );
     };
-
     const getAllPersonnelApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -422,8 +421,6 @@ const AdminService = () => {
             }
         );
     };
-
-
     const getAllViewerApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -439,7 +436,6 @@ const AdminService = () => {
             }
         );
     };
-
     const getAllShowtimeApi = async (pageIndex, pageSize) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -499,7 +495,6 @@ const AdminService = () => {
             },
         );
     };
-
     const getAllBookingApi = async (pageIndex, pageSize, status, cinemaId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -517,7 +512,6 @@ const AdminService = () => {
             },
         );
     };
-
     const getOneRoomApi = async (roomId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -858,6 +852,75 @@ const AdminService = () => {
             },
         );
     };
+    const checkScheduleApi = async (params) => {
+        console.log("🚀 ~ checkScheduleApi ~ params:", params)
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/schedule/check`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    },
+                    params: params
+                },
+            );
+            return response.data.success
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const createGenresApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/genres`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const deleteGenresApi = async (genresId) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/genres/${genresId}`,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
+    const getListGenresApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/genres`,
+            // {
+            //     headers: {
+            //         "Authorization": bearerToken,
+            //     },
+            // },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -906,7 +969,11 @@ const AdminService = () => {
         getTopUsersApi,
         getTopMovieRatingApi,
         getFinanceAllCinemaApi,
-        getDetailFinanceApi
+        getDetailFinanceApi,
+        checkScheduleApi,
+        createGenresApi,
+        deleteGenresApi,
+        getListGenresApi
     }
 }
 

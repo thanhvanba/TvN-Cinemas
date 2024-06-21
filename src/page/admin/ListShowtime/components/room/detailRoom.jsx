@@ -40,8 +40,8 @@ const DetailRoom = () => {
         rowSeat: "",
         colSeat: "",
     })
-    const generateSeatData = CreateSeat(room.rowSeat, room.colSeat);
-    const seatData = generateSeatData();
+    const seatData = CreateSeat(room.rowSeat, room.colSeat);
+
     const [errors, setErrors] = useState({});
 
     const validate = () => {

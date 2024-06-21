@@ -146,8 +146,12 @@ const ListMovies = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className='text-center font-medium px-2 py-3'>{item.rating}</td>
-                                        <td className='text-center font-medium px-2 py-3'>{item.genres}</td>
+                                        <td className='text-center font-medium px-2 py-3'>{item.rating || "-"}</td>
+                                        <td className='text-center font-medium px-2 py-3'>
+                                            {item.genres.map((genre, index) => (
+                                                <span key={index}>{genre.name}{index < item.genres.length - 1 ? ', ' : ''}</span>
+                                            ))}
+                                        </td>
                                         <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.releaseDate).date}</td>
                                         {user.role === "ADMIN" &&
                                             <td className='text-center font-medium px-2 py-3'>

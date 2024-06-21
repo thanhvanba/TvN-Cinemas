@@ -36,8 +36,7 @@ const AddRoom = () => {
     })
 
 
-    const generateSeatData = CreateSeat(room.rowSeat, room.colSeat);
-    const seatData = generateSeatData();
+    const seatData = CreateSeat(room.rowSeat, room.colSeat);
 
     const [errors, setErrors] = useState({});
 
@@ -106,7 +105,7 @@ const AddRoom = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập tên phòng"
                                             />
                                             {errors.roomName && <p className="text-red-600">{errors.roomName}</p>}
                                         </div>
@@ -124,7 +123,7 @@ const AddRoom = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập số hàng"
                                             />
                                             {errors.rowSeat && <p className="text-red-600">{errors.rowSeat}</p>}
                                         </div>
@@ -142,7 +141,7 @@ const AddRoom = () => {
                                                 }}
                                                 type="text"
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                placeholder=""
+                                                placeholder="Nhập số ghế"
                                             />
                                             {errors.colSeat && <p className="text-red-600">{errors.colSeat}</p>}
                                         </div>

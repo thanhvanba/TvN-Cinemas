@@ -6,8 +6,10 @@ import { useContext } from 'react'
 import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
 import { jwtDecode } from 'jwt-decode'
+import axiosService from './axiosInstance'
 
 const AuthService = () => {
+    const axiosInstance = axiosService();
     const navigate = useNavigate()
     const { register } = useContext(RegisterContext);
     const { login, logout } = useContext(LoginContext);
@@ -93,7 +95,7 @@ const AuthService = () => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             let params = { refreshToken: localStorage.getItem("refreshToken") }
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${process.env.REACT_APP_HOST_API_KEY}/auth/logout-all`,
                 null,
                 {

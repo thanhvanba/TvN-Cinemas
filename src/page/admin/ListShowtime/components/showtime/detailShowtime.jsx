@@ -13,17 +13,18 @@ import { format, isAfter, parse } from 'date-fns'
 import AdminService from '../../../../../service/AdminService'
 import { Space, TimePicker, DatePicker } from 'antd'
 import { LoginContext } from '../../../../../context/LoginContext'
+import Load from '../../../../../components/Load'
+import SeatImage from '../../../../../images/section.jpg'
 
 const DetailShowtime = ({ showtimeId, dateTime }) => {
-  console.log("🚀 ~ DetailShowtime ~ showtimeId:", showtimeId)
   const navigate = useNavigate();
 
   const { user } = useContext(LoginContext)
   const { pathname } = useLocation()
 
   const { getOneShowtimeApi } = UserService()
-  const { updateShowTimeApi, addScheduleManagerApi, deleteScheduleManagerApi, quantitySeatBookedManagerApi } = ManagerService()
-  const { quantitySeatBookedApi, deleteScheduleAdminApi, addScheduleAdminApi } = AdminService()
+  const { updateShowTimeApi, addScheduleManagerApi, deleteScheduleManagerApi, quantitySeatBookedManagerApi, checkScheduleManagerApi } = ManagerService()
+  const { quantitySeatBookedApi, deleteScheduleAdminApi, addScheduleAdminApi, checkScheduleApi } = AdminService()
   const { loading, setLoading } = useLoadingState(false)
   const [countSeatBooked, setCountSeatBooked] = useState({
     SeatAvailable: "",
@@ -68,17 +69,39 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     seats: null,
     special: null
   })
+  const [listSeatBooked, setListSeatBooked] = useState([]);
+  const [loadSeatBooked, setLoadSeatBooked] = useState(false);
+  const { getSeatBookedApi } = UserService();
+
+  const handleGetSeatBooked = async () => {
+    setLoadSeatBooked(true)
+    const params = {
+      showtimeId: showtimeId,
+      scheduleId: dateTime.scheduleId || ""
+    };
+    let resSeat = await getSeatBookedApi(params);
+    if (resSeat && resSeat.data && resSeat.data.result) {
+      setListSeatBooked(resSeat.data.result);
+    }
+    setLoadSeatBooked(false)
+  };
+
+  useEffect(() => {
+    showtimeId && dateTime.scheduleId &&
+      handleGetSeatBooked();
+  }, [dateTime]); // Theo dõi sự thay đổi của showtimeId và dateTime
 
   const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
-  const generateSeatData = CreateSeat(oneShowtime.room.rowSeat, oneShowtime.room.colSeat, showtimeId, dateTime);
+  const seatData = CreateSeat(oneShowtime.room.rowSeat, oneShowtime.room.colSeat, listSeatBooked);
 
   const [schedule, setSchedule] = useState({
     showTimeId: "",
     date: "",
     startTime: ""
   });
-  const seatData = generateSeatData();
+
   const hadleGetItem = async (showtimeId) => {
+    setLoading('getItem', true)
     let resShowtime = await getOneShowtimeApi(showtimeId)
     if (resShowtime && resShowtime.data && resShowtime.data.result) {
       setOneShowtime(resShowtime.data.result)
@@ -90,13 +113,30 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
         }
       ))
     }
-    let resCount = user.role === "ADMIN" ? await quantitySeatBookedApi(showtimeId, dateTime.scheduleId) : await quantitySeatBookedManagerApi(showtimeId, dateTime.scheduleId)
-    if (resCount && resCount.data && resCount.data.result) {
-      setCountSeatBooked(resCount.data.result)
+    if (/^\/(admin|manager)\/list-showtime\/showtime/.test(pathname)) {
+      let resCount = user.role === "ADMIN" ? await quantitySeatBookedApi(showtimeId, dateTime.scheduleId) : await quantitySeatBookedManagerApi(showtimeId, dateTime.scheduleId)
+      if (resCount && resCount.data && resCount.data.result) {
+        setCountSeatBooked(resCount.data.result)
+      }
     }
     setLoading('getItem', false)
   }
 
+  const handleCheckScheduleInDB = async (showtimeId, date, startTime) => {
+    setLoading('checkSchedule', true)
+    let response
+    const params = {
+      showtimeId: showtimeId,
+      date: date,
+      startTime: startTime
+    }
+    if (user.role === "ADMIN") {
+      response = await checkScheduleApi(params)
+    } else {
+      response = await checkScheduleManagerApi(params)
+    }
+    setLoading('checkSchedule', !response)
+  }
   // const handleUpdateShowtime = async (e) => {
   //   e.preventDefault();
   //   setLoading('updateShowtime', true);
@@ -138,10 +178,10 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   const handleSelectTime = (time, timeString) => {
     // Cập nhật selectDateTime với startTime mới
     setSchedule(prevSchedule => ({ ...prevSchedule, startTime: timeString }));
+    handleCheckScheduleInDB(schedule.showTimeId, schedule.date, timeString)
   };
 
   useEffect(() => {
-    setLoading('getItem', true)
     hadleGetItem(showtimeId)
   }, [dateTime]);
 
@@ -164,7 +204,6 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
           </div>
 
           <div className='flex border-t-2 border-t-slate-400'>
-
             <div className={`${pathname !== "/admin/add-item/schedule" ? "w-1/3" : "w-full"} border-r-2`}>
               <div className='px-6 space-y-6 h-[80%]'>
                 <div>
@@ -248,9 +287,11 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                       &nbsp;Xóa
                     </button>
                     : <button
-                      className="w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
+                      className={`${loading['checkSchedule'] ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : ''} 
+                      w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300`}
                       type='button'
                       onClick={handleAddSchedule}
+                      disabled={(loading['checkSchedule'] || loading['addSchedule'])}
                     >
                       {loading['addSchedule'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                       &nbsp;Thêm
@@ -269,38 +310,56 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
               </div>
             </div>
 
-            {pathname !== "/admin/add-item/schedule" && <div className='w-2/3'>
-              <div className='flex justify-center pt-4 font-normal'>
-                <div className='flex px-4'>
-                  Tổng số ghế :
-                  <span>{countSeatBooked.SeatAvailable + countSeatBooked.SeatBooked}</span>
-                </div>
-                <div className='flex px-4'>
-                  Đã đặt :
-                  <span>{countSeatBooked.SeatBooked}</span>
-                </div>
-                <div className='flex px-4'>
-                  Còn trống :
-                  <span>{countSeatBooked.SeatAvailable}</span>
+            {pathname !== "/admin/add-item/schedule" &&
+              <div className='w-2/3'>
+                {/* {!loading['getItem'] && */}
+                  <div className='flex justify-center pt-4 font-normal'>
+                    <div className='flex px-4'>
+                      Tổng số ghế :
+                      <span>{countSeatBooked.SeatAvailable + countSeatBooked.SeatBooked}</span>
+                    </div>
+                    <div className='flex px-4'>
+                      Đã đặt :
+                      <span>{countSeatBooked.SeatBooked}</span>
+                    </div>
+                    <div className='flex px-4'>
+                      Còn trống :
+                      <span>{countSeatBooked.SeatAvailable}</span>
+                    </div>
+                  </div>
+                {/* } */}
+                <div className='flex justify-center'>
+                  {loadSeatBooked ?
+                    <div
+                      style={{
+                        backgroundImage: `url(${SeatImage})`,
+                        backgroundPosition: 'center', // Vị trí ảnh nền sẽ được căn giữa
+                        backgroundRepeat: 'no-repeat', // Ngăn lặp lại ảnh nền 
+                        height: '350px',
+                        width: '500px',
+                        marginTop: '8px'
+                      }}
+                      className='flex justify-center items-center rounded-md'
+                    >
+                      <Load />
+                    </div>
+                    :
+                    <div className='grid grid-cols-14 gap-1 mx-10 py-4'
+                      style={{ gridTemplateColumns: `repeat(${oneShowtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${36 * oneShowtime.room.colSeat}px` }}
+                    >
+                      {seatData.map(seat => (
+                        <div
+                          key={seat.id}
+                          className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
+                        >
+                          {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
+                        </div>
+                      ))}
+                    </div>
+                  }
                 </div>
               </div>
-              {!loading['getItem'] &&
-                <div className='flex justify-center'>
-                  <div className='grid grid-cols-14 gap-1 mx-10 py-4'
-                    style={{ gridTemplateColumns: `repeat(${oneShowtime.room.colSeat}, minmax(0, 1fr))`, maxWidth: `${36 * oneShowtime.room.colSeat}px` }}
-                  >
-                    {seatData.map(seat => (
-                      <div
-                        key={seat.id}
-                        className={`${seat.type} flex justify-center items-center text-slate-200 h-8 w-8 rounded-xl`}
-                      >
-                        {seat.type === "booked" ? <XMarkIcon className='text-slate-400 h-8' /> : seat.label}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              }
-            </div>}
+            }
           </div>
 
         </div>

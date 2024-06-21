@@ -150,7 +150,7 @@ const AddItem = () => {
                                         <img
                                             className='w-96 h-80'
                                             // src={movie.poster}
-                                            src={imageURL ? imageURL : food.image} alt="Preview"
+                                            src={imageURL ? imageURL : food.image} alt="Ảnh sản phẩm"
                                         />
                                     </div>
                                     <div className='px-4'>
@@ -183,6 +183,7 @@ const AddItem = () => {
                                                 clearError('name')
                                             }}
                                             type="text"
+                                            placeholder='Nhập tên sản phẩm'
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             value={food.name}
                                         />
@@ -201,6 +202,7 @@ const AddItem = () => {
                                                 clearError('price')
                                             }}
                                             type="text"
+                                            placeholder='Nhập giá tiền'
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             value={food.price}
                                         />
@@ -216,7 +218,7 @@ const AddItem = () => {
                                         <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                                             {pathname === `/admin/update-item/food/${foodId}` ?
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={food.foodType} /> :
-                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"-------Select-------"} />}
+                                                <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"Chọn loại sản phẩm"} />}
                                         </div>
                                         {errors.foodType && <p className="text-red-600">{errors.foodType}</p>}
                                     </div>

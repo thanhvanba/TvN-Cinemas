@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -13,10 +13,16 @@ import AdminService from '../../../../service/AdminService'
 import CinemaService from '../../../../service/CinemaService';
 import UserService from '../../../../service/UserService';
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+// import DatePicker from 'react-datepicker';
+// import 'react-datepicker/dist/react-datepicker.css';
+
+import { Space, TimePicker, DatePicker } from 'antd'
 import FormatDataTime from '../../../../utils/FormatDataTime';
 import Loading from '../../../../components/Loading';
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { PlusCircle } from 'lucide-react';
+import useLoadingState from '../../../../hook/UseLoadingState';
+import dayjs from 'dayjs';
 
 const AddMovie = () => {
     const { getOneMovieApi } = UserService()
@@ -27,16 +33,25 @@ const AddMovie = () => {
     }
     const { movieId } = useParams();
     const { pathname } = useLocation()
-    const [loading1, setLoading1] = useState(false);
-    const [loading, setLoading] = useState(false);
+
+    const { loading, setLoading } = useLoadingState(false)
+
+    const [toggle, setToggle] = useState(false)
+    const [toggleAddGenres, setToggleAddGenres] = useState(false)
+
     const [time, setTime] = useState()
     const [imageURL, setImageURL] = useState(null);
     const [image2URL, setImage2URL] = useState(null);
+
+    const [genres, setGenres] = useState('')
+    const [arrGenres, setArrGenres] = useState([]);
+    const [selectGenres, setSelectGenres] = useState([]);
+    console.log("🚀 ~ AddMovie ~ selectGenres:", selectGenres)
     const [movie, setMovie] = useState({
         title: "",
         director: "",
         actor: "",
-        genres: "",
+        genres: [],
         desc: "",
         releaseDate: "",
         poster: {},
@@ -47,11 +62,13 @@ const AddMovie = () => {
         rating: "0",
         delete: false
     })
+
+    console.log("🚀 ~ AddMovie ~ movie:", movie)
     const [oneMovie, setOneMovie] = useState({
         movieId: "",
         title: "",
         director: "",
-        genres: "",
+        genres: [],
         actor: "",
         releaseDate: "",
         desc: "",
@@ -64,7 +81,7 @@ const AddMovie = () => {
         delete: false
     })
 
-    const { addMovieApi, updateMovieApi } = AdminService()
+    const { addMovieApi, updateMovieApi, getListGenresApi, createGenresApi } = AdminService()
     const [errors, setErrors] = useState({});
 
     const validate = () => {
@@ -76,7 +93,7 @@ const AddMovie = () => {
             if (!movie.director) newErrors.director = 'Vui lòng nhập tên đạo diễn!';
             if (!movie.actor) newErrors.actor = 'Vui lòng nhập tên diễn viên!';
             if (!movie.releaseDate) newErrors.releaseDate = 'Vui lòng nhập ngày phát hành!';
-            if (!movie.genres) newErrors.genres = 'Vui lòng nhập thể loại!';
+            if (movie.genres.length === 0) newErrors.genres = 'Vui lòng nhập thể loại!';
             if (!movie.duration) newErrors.duration = 'Vui lòng nhập thời lượng!';
             else if (isNaN(movie.duration)) newErrors.duration = 'Vui lòng nhập đúng định dạng là số!';
             if (!movie.trailerLink) newErrors.trailerLink = 'Vui lòng nhập trailer link!';
@@ -99,17 +116,17 @@ const AddMovie = () => {
     const handleAddMovie = async (e) => {
         e.preventDefault();
         if (validate()) {
-            setLoading(true);
+            setLoading('addMovie', true);
             const data = movie;
             await addMovieApi(data);
             changeTab("/admin/list-movie")
-            setLoading(false);
+            setLoading('addMovie', false);
         }
     };
     const handleUpdateMovie = async (e) => {
         e.preventDefault();
         if (validate()) {
-            setLoading(true);
+            setLoading('addMovie', true);
             const data = movie;
 
             let resMovie = await updateMovieApi(movieId, data);
@@ -117,17 +134,52 @@ const AddMovie = () => {
             if (resMovie && resMovie.data && resMovie.data.result) {
                 console.log(resMovie.data.result)
             }
-            setLoading(false);
+            setLoading('addMovie', false);
         }
     };
     const hadleGetOneMovie = async () => {
+        setLoading('getOneMovie', true);
         let resMovie = await getOneMovieApi(movieId)
         if (resMovie && resMovie.data && resMovie.data.result) {
             setOneMovie(resMovie.data.result)
         }
-        setLoading1(false)
+        setLoading('getOneMovie', false)
+    }
+    const handleGetListGenres = async () => {
+        let resGenres = await getListGenresApi()
+        if (resGenres && resGenres.data && resGenres.data.result) {
+            setArrGenres(resGenres.data.result)
+        }
+    }
+    const handleSelectGenres = (value) => {
+        const res = selectGenres.map(genre => genre.id)
+        if (value && !selectGenres.includes(value)) {
+            setSelectGenres([...selectGenres, value])
+            setMovie({ ...movie, genres: [...res, value.id] })
+            setToggle(!toggle)
+            clearError('genres')
+        }
+
+        clearError('genres')
+    }
+    const hadleCreateGenres = async (name) => {
+        setLoading('confirm', true)
+        const data = { name: name }
+        await createGenresApi(data)
+        setLoading('confirm', false)
+        setToggleAddGenres(false)
     }
 
+
+    const handleRemoveGenres = (genres) => {
+        const searchGenres = selectGenres.find((item) => item.name === genres.name);
+
+        if (searchGenres) {
+            const updatedGenres = selectGenres.filter(genre => genre.name !== genres.name);
+            setSelectGenres(updatedGenres);
+            setMovie({ ...movie, genres: updatedGenres.map(genre => genre.id) })
+        }
+    };
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         readAndDisplayFile(selectedFile);
@@ -163,14 +215,20 @@ const AddMovie = () => {
         reader.readAsDataURL(file);
         clearError('slider')
     };
-
+    const handleSelectDate = (date, dateString) => {
+        setTime(dateString);
+        setMovie((prevMovie) => {
+            return { ...prevMovie, releaseDate: dateString };
+        });
+        clearError('releaseDate')
+    };
     useEffect(() => {
         if (pathname === "/admin/add-item/movie") {
             setMovie({
                 movieId: "",
                 title: "",
                 director: "",
-                genres: "",
+                genres: [],
                 actor: "",
                 releaseDate: "",
                 desc: "",
@@ -186,7 +244,7 @@ const AddMovie = () => {
                 movieId: "",
                 title: "",
                 director: "",
-                genres: "",
+                genres: [],
                 actor: "",
                 releaseDate: "",
                 desc: "",
@@ -203,7 +261,6 @@ const AddMovie = () => {
     useEffect(() => {
         if (movieId) {
             hadleGetOneMovie();
-            setLoading1(true);
         }
     }, [movieId]);
     useEffect(() => {
@@ -213,7 +270,7 @@ const AddMovie = () => {
                 movieId: oneMovie.movieId,
                 title: oneMovie.title,
                 director: oneMovie.director,
-                genres: oneMovie.genres,
+                genres: oneMovie.genres.map(genre => genre.id),
                 actor: oneMovie.actor,
                 releaseDate: oneMovie.releaseDate,
                 desc: oneMovie.desc,
@@ -225,9 +282,14 @@ const AddMovie = () => {
                 rating: oneMovie.rating,
                 delete: oneMovie.delete
             })
+        setSelectGenres(oneMovie.genres)
         setImageURL(oneMovie.poster)
         setImage2URL(oneMovie.slider)
     }, [oneMovie]);
+    useEffect(() => {
+        handleGetListGenres()
+    }, [])
+
     return (
         <div>
             <div className='px-4 relative'>
@@ -244,9 +306,9 @@ const AddMovie = () => {
                 </div>
                 <div className='pt-8'>
                     <div className='absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
-                        {loading1 && <Loading />}
+                        {!loading['getOneMovie'] && <Loading />}
                     </div>
-                    {!loading1 &&
+                    {!loading['getOneMovie'] &&
                         <div className='border py-8 px-4'>
                             <div className='flex'>
                                 <div>
@@ -257,7 +319,7 @@ const AddMovie = () => {
                                         Ảnh (dọc) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                     </label>
                                     <div className="mb-4 border">
-                                        <img src={imageURL} alt="Preview" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
+                                        <img src={imageURL} alt="Ảnh phim (dọc)" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
                                     </div>
 
                                     <div className='px-4'>
@@ -290,6 +352,7 @@ const AddMovie = () => {
                                                 setMovie({ ...movie, title: e.target.value })
                                                 clearError('title')
                                             }}
+                                            placeholder='Nhập tên phim'
                                             type="text"
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.title}
@@ -309,6 +372,7 @@ const AddMovie = () => {
                                                 clearError('desc')
                                             }}
                                             type="text"
+                                            placeholder='Nhập mô tả'
                                             className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.desc}
                                             rows={5}
@@ -316,7 +380,7 @@ const AddMovie = () => {
                                         {errors.desc && <p className="text-red-600">{errors.desc}</p>}
                                     </div>
                                     <div className='flex justify-between my-4'>
-                                        <div className="pr-2">
+                                        <div className="pr-2 w-1/4">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
@@ -329,12 +393,13 @@ const AddMovie = () => {
                                                     clearError('director')
                                                 }}
                                                 type="text"
+                                                placeholder='Nhập tên đạo diễn'
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.director}
                                             />
                                             {errors.director && <p className="text-red-600">{errors.director}</p>}
                                         </div>
-                                        <div className="px-2">
+                                        <div className="px-2 w-1/4">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
@@ -347,12 +412,13 @@ const AddMovie = () => {
                                                     clearError('actor')
                                                 }}
                                                 type="text"
+                                                placeholder='Nhập tên diễn viên'
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.actor}
                                             />
                                             {errors.actor && <p className="text-red-600">{errors.actor}</p>}
                                         </div>
-                                        <div className="px-2">
+                                        <div className="px-2 w-1/4">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
@@ -361,35 +427,117 @@ const AddMovie = () => {
                                             </label>
                                             <DatePicker
                                                 selected={time}
-                                                onChange={date => {
-                                                    setTime(date);
-                                                    setMovie((prevMovie) => {
-                                                        return { ...prevMovie, releaseDate: date };
-                                                    });
-                                                    clearError('releaseDate')
-                                                }}
+                                                onChange={handleSelectDate}
+                                                placeholder={'Chọn ngày phát hành'}
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholderText={FormatDataTime(oneMovie.releaseDate).date}
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
+                                                defaultValue={/^\/(admin|manager)\/update-item/.test(pathname) ? dayjs(FormatDataTime(oneMovie.releaseDate).date, 'DD/MM/YYYY') : null}
                                             />
                                             {errors.releaseDate && <p className="text-red-600">{errors.releaseDate}</p>}
                                         </div>
-                                        <div className="pl-2">
+                                        <div className="pl-2 w-1/4 relative">
                                             <label
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
                                                 Thể loại {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                             </label>
-                                            <input
-                                                onChange={e => {
-                                                    setMovie({ ...movie, genres: e.target.value })
-                                                    clearError('genres')
-                                                }}
-                                                type="text"
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                defaultValue={oneMovie.genres}
-                                            />
+                                            <div
+                                                className={`${selectGenres.length <= 2 ? "h-10" : "h-14"} flex items-center overflow-x-auto max-w-[200px] px-2 py-0.5 text-sm text-black focus:outline-none rounded-md border-2`}
+                                                placeholder={'Chọn ngày phát hành'}
+                                            >
+                                                {selectGenres.length === 0 ?
+                                                    <span className='flex items-center text-lg text-gray-400'>Chọn thể loại</span>
+                                                    : selectGenres.map((genres) => (
+                                                        <div className='relative h-5 bg-green-200 rounded-md mx-0.5'>
+                                                            <div className='text-sm text-center px-1 h-5 w-20 cursor-default' >
+                                                                {genres.name}
+                                                            </div>
+                                                            <button className='absolute top-0 -right-3 text-red-400 pr-2'
+                                                                onClick={() => {
+                                                                    handleRemoveGenres(genres)
+                                                                }}
+                                                            >
+                                                                <sup className='text-xs'><XMarkIcon className='h-4' /></sup>
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                            </div>
+                                            <div onClick={() => setToggle(!toggle)} className='absolute top-0 right-1 bg-slate-100 rounded-sm hover:bg-slate-200 cursor-pointer'>
+                                                <ChevronUpDownIcon className='h-5 text-gray-400' />
+                                            </div>
+                                            {toggle &&
+                                                <ul className='absolute top-6 bg-white shadow-xl border-2 rounded-xl w-48 overflow-y-auto max-h-60'>
+                                                    <li
+                                                        onClick={() => setToggleAddGenres(!toggleAddGenres)}
+                                                        className='sticky top-0 py-2 px-3 bg-white hover:bg-slate-200 cursor-pointer border-b-2'
+                                                    >
+                                                        <p className='flex gap-x-1 ml-1 items-center font-medium'>
+                                                            <PlusCircle className='h-5 text-blue-600' />Thêm thể loại
+                                                        </p>
+                                                    </li>
+                                                    {arrGenres && arrGenres.map((genres) => (
+                                                        <li
+                                                            onClick={() => handleSelectGenres(genres)}
+                                                            className='py-2 px-3 flex hover:bg-[#4F46E5] hover:text-white'
+                                                        >
+                                                            <span className='ml-3 cursor-default'>{genres.name}</span>
+                                                        </li>
+                                                    ))}
+
+                                                    {toggleAddGenres &&
+                                                        <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-20'>
+                                                            <div className="relative w-1/3 z-10 overflow-hidden bg-slate-300 rounded-md">
+                                                                <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Thêm thể loại phim</h4>
+                                                                <div className=' rounded-xl bg-slate-100 w-1/2 z-10'>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="absolute top-1 right-1 z-50"
+                                                                    >
+                                                                        <span className="sr-only">Close menu</span>
+                                                                        <div
+                                                                            className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
+                                                                            onClick={() => setToggleAddGenres(false)}
+                                                                        >
+                                                                            <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                                        </div>
+                                                                    </button>
+                                                                </div>
+                                                                <div className="relative px-4 pb-2 md:px-6 md:pb-2 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                                                                    <div className="flex items-center my-4">
+                                                                        <label
+                                                                            htmlFor=""
+                                                                            className="block w-[24%] text-lg font-medium leading-6 text-gray-900"
+                                                                        >
+                                                                            Tên thể loại
+                                                                        </label>
+                                                                        <input
+                                                                            onChange={e => setGenres(e.target.value)}
+                                                                            type="text"
+                                                                            className="block w-[76%] px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                                        // value={fare.price}
+                                                                        />
+                                                                    </div>
+                                                                    <div className='flex justify-end'>
+                                                                        <button
+                                                                            className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                                                            type='button'
+                                                                            // disabled={loading['change']}
+                                                                            onClick={() => {
+                                                                                hadleCreateGenres(genres)
+                                                                            }}
+                                                                        >
+                                                                            {loading['confirm'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                                            &nbsp;Xác nhận
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </ul>
+                                            }
                                             {errors.genres && <p className="text-red-600">{errors.genres}</p>}
                                         </div>
                                     </div>
@@ -407,6 +555,7 @@ const AddMovie = () => {
                                                     clearError('duration')
                                                 }}
                                                 type="text"
+                                                placeholder='Nhập thời lượng'
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.duration}
                                             />
@@ -425,6 +574,7 @@ const AddMovie = () => {
                                                     clearError('trailerLink')
                                                 }}
                                                 type="url"
+                                                placeholder='Nhập đường dẫn trailer'
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.trailerLink}
                                             />
@@ -441,7 +591,7 @@ const AddMovie = () => {
                                     Ảnh (ngang) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                 </label>
                                 <div className="mb-4 border">
-                                    <img src={image2URL} alt="Preview" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
+                                    <img src={image2URL} alt="Ảnh bìa (ngang)" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
                                 </div>
 
                                 <div className='px-4'>
@@ -464,10 +614,10 @@ const AddMovie = () => {
                                 <button
                                     className="w-1/6 mb-4 text-[18px] mt-4 rounded-xl hover:bg-emerald-800 text-white bg-emerald-600 py-2 transition-colors duration-300"
                                     type='submit'
-                                    disabled={loading}
+                                    disabled={loading['addMovie']}
                                     onClick={pathname === "/admin/add-item/movie" ? handleAddMovie : handleUpdateMovie}
                                 >
-                                    {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                    {loading['addMovie'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                                     &nbsp;{pathname === "/admin/add-item/movie" ? "Thêm phim" : "Cập nhật"}
                                 </button>
                             </div>

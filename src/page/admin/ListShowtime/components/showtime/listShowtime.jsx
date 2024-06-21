@@ -42,9 +42,7 @@ const ShowtimeByRoom = () => {
     }
   );
   const [allShowtime, setAllShowtime] = useState([]);
-  console.log("🚀 ~ allShowtime:", allShowtime)
   const [allRoom, setAllRoom] = useState([]);
-  console.log("🚀 ~ ShowtimeByRoom ~ allRoom:", allRoom)
 
   const { cinemaId, movieId } = useParams()
 
@@ -263,7 +261,6 @@ const ShowtimeByRoom = () => {
                             </thead>
                             <tbody>
                               {allShowtime && allShowtime.map((item, index) => {
-                                console.log("🚀 ~ {allShowtime&&allShowtime.map ~ allShowtime:", allShowtime)
                                 let hasShowtimes = false;
                                 let selectDate = parse(selectedDateTime.date, 'dd/MM/yyyy', new Date());
                                 return (
