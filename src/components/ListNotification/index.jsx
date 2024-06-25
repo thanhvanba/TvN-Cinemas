@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import { Button, Drawer } from 'antd';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { LoginContext } from '../../context/LoginContext';
-import './index.css'
 import UserService from '../../service/UserService';
 import bookingSC from '../../images/done_777390.png'
 import cancelT from '../../images/signaling_4378030.png'
