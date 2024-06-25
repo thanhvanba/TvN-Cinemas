@@ -77,7 +77,7 @@ function AddPromotion() {
         setPromotion({ ...promotion, discountType: selectedValue === "Khuyến mãi giảm tiền" ? "FIXED_AMOUNT" : "PERCENTAGE" })
     }
 
-    const formalityOfPromotions = ["Theo ngày trong tuần(T2-CN)(2-8)", "Theo khung thời gian", "Theo độ tuổi"]
+    const formalityOfPromotions = ["Theo ngày trong tuần(T2-CN)(1-7)", "Theo khung thời gian", "Theo độ tuổi"]
     const handleSelectFormality = (selectedValue) => {
         selectedValue === "Theo độ tuổi" ? setFormalityOfPromotion(2) : selectedValue === "Theo khung thời gian" ? setFormalityOfPromotion(1) : setFormalityOfPromotion(0)
     }
@@ -318,7 +318,7 @@ function AddPromotion() {
                                                     htmlFor=""
                                                     className="block font-medium leading-6 text-gray-900"
                                                 >
-                                                    {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(2-8)'} <span className='text-red-600'>*</span>
+                                                    {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(1-7)'} <span className='text-red-600'>*</span>
                                                 </label>
                                                 {
                                                     formalityOfPromotion === 1 ?

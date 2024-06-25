@@ -61,7 +61,7 @@ function ListStockEntries({ allStockEntries, pagination, handleGetStockEntries }
                     }
                 </tbody>
             </table>
-            <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetStockEntries} />
+            {allStockEntries.length !== 0 && < Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetStockEntries} />}
         </div>
     )
 }

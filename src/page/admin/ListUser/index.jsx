@@ -372,7 +372,7 @@ const ListUser = () => {
 
                 <div className='relative'>
                     <div className='px-2'>
-                        <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
+                        <div className='flex justify-center absolute mx-auto top-48 right-1/2 left-1/2 z-50'>
                             {loading['get'] && <Loading />}
                         </div>
                         {!loading['get'] &&
@@ -409,17 +409,21 @@ const ListUser = () => {
                                                                         {item.avatar ? <img className='rounded-full w-14 h-14 border-2' src={item.avatar} alt="" /> : <listUser.iAvatar className="h-16 w-16 text-emerald-600" />}
                                                                     </div >
                                                                     <div>
-                                                                        <h3>{item.fullName}</h3>
-                                                                        <p className='font-normal'>Email: {item.email}</p>
-                                                                        <span className='font-normal'>Sdt: {item.phone}</span>
+                                                                        <h3 className='font-semibold text-lg'>{item.fullName}</h3>
+                                                                        <p className='text-sm'>Email: {item.email}</p>
+                                                                        <span className='text-sm'>Sdt: {item.phone}</span>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className='text-center px-2 py-3'>{item.userName}</td>
-                                                            <td className='text-center px-2 py-3'>{item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}</td>
+                                                            <td className='text-center px-2 py-3'>
+                                                                <div className='flex justify-center px-2 py-0.5 rounded-md bg-orange-100'>
+                                                                    {item.role.roleName === "VIEWER" ? "Người dùng" : item.role.roleName === "ADMIN" ? "Admin" : item.role.roleName === "MANAGER" ? "Quản lý" : "Nhân viên"}
+                                                                </div>
+                                                            </td>
                                                             {pathname === "/admin/list-personnel" && <td className='text-center px-2 py-3'>{item.cinema ? item.cinema.cinemaName : "-"}</td>}
                                                             <td className='text-center px-2 py-3'>{FormatDataTime(item.createdAt).date}</td>
-                                                            <td className='text-center px-2 py-3'>{item.lastLoginAt === null ? '-' : TimeAgo(item.lastLoginAt)}</td>
+                                                            <td className='text-center px-2 py-3 text-sky-600'>{item.lastLoginAt === null ? '-' : TimeAgo(item.lastLoginAt)}</td>
                                                             <td className='text-center px-2 py-3'>
                                                                 <div className='flex items-center'>
                                                                     <button

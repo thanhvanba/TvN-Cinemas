@@ -35,6 +35,7 @@ function DetailSales() {
     const [allShowtime, setAllShowtime] = useState([])
     const [showtimeByMovie, setShowtimeByMovie] = useState([])
     const [selectSeats, setSelectSeats] = useState([])
+    console.log("🚀 ~ DetailSales ~ selectSeats:", selectSeats)
     const [toggle, setToggle] = useState(false)
     const [openProduct, setOpenProduct] = useState(false)
     const [modalStates, setModalStates] = useState(false)
@@ -46,7 +47,9 @@ function DetailSales() {
 
     const [foods, setFoods] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
+    console.log("🚀 ~ DetailSales ~ listSeatBooking:", listSeatBooking)
     const [listFoodBooking, setListFoodBooking] = useState([])
+    console.log("🚀 ~ DetailSales ~ listFoodBooking:", listFoodBooking)
     const currentDateTime = dayjs(new Date());
     const [selectDateTime, setSelectDateTime] = useState(currentDateTime);
 
@@ -508,7 +511,7 @@ function DetailSales() {
                                                                     <td className="relative px-3 py-2 text-sm">
                                                                         <div className="font-medium text-slate-900">Ghế ({String.fromCharCode(65 + parseInt(seatInfo.row, 10) - 1) + seatInfo.column})</div>
                                                                     </td>
-                                                                    <td className="px-3 py-2 text-sm">1</td>
+                                                                    <td className="px-3 py-2 text-sm text-center">1</td>
                                                                     <td className="px-3 py-2 text-sm">{seatInfo.price}</td>
                                                                     {/* <td className="px-3 py-3 text-sm">{`seatInfe`}</td> */}
                                                                 </tr>
@@ -520,7 +523,7 @@ function DetailSales() {
                                                                     <td className="relative px-3 py-2 text-sm">
                                                                         <div className="font-medium text-slate-900">{foodInfo.name}</div>
                                                                     </td>
-                                                                    <td className="px-3 py-2 text-sm">{foodInfo.count}</td>
+                                                                    <td className="px-3 py-2 text-sm text-center">{foodInfo.count}</td>
                                                                     <td className="px-3 py-2 text-sm">{foodInfo.price}<sup>đ</sup></td>
                                                                     {/* <td className="px-3 py-3 text-sm">{`foonfo.food`}</td> */}
                                                                 </tr>

@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UserCircleIcon, PowerIcon, PencilSquareIcon, TrashIcon, ArrowRightIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { StarIcon } from "@heroicons/react/20/solid"
 
 import MovieService from '../../../../service/MovieService'
 import AdminService from '../../../../service/AdminService'
@@ -122,7 +123,7 @@ const ListMovies = () => {
                             <tr className='border-b-2 border-slate-200'>
                                 <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.stt}</th>
                                 <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.movieInfo}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.rating}</th>
+                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-3'>{listMovie.header.rating}</th>
                                 <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.genres}</th>
                                 <th className='text-sm text-center font-light px-2 pb-4 uppercase w-9'>{listMovie.header.releaseDate}</th>
                                 {user.role === "ADMIN" && <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listMovie.header.action}</th>}
@@ -139,20 +140,27 @@ const ListMovies = () => {
                                         <td className='text-start font-medium px-2 py-3'>
                                             <div className='flex items-center'>
                                                 <div div className='pr-2' >
-                                                    <img className="h-20 w-16 text-emerald-600" src={item.poster} alt="" />
+                                                    <img className="h-20 w-16" src={item.poster} alt="" />
                                                 </div >
                                                 <div>
                                                     <h3 className='uppercase'>{item.title}</h3>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className='text-center font-medium px-2 py-3'>{item.rating || "-"}</td>
                                         <td className='text-center font-medium px-2 py-3'>
-                                            {item.genres.map((genre, index) => (
-                                                <span key={index}>{genre.name}{index < item.genres.length - 1 ? ', ' : ''}</span>
-                                            ))}
+                                            <div className='flex justify-center'>
+                                                {item.rating && <StarIcon className='h-6 text-amber-400 px-1' />}
+                                                <span className='w-[30px] flex text-start'>{item.rating || "-"}</span>
+                                            </div>
                                         </td>
-                                        <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.releaseDate).date}</td>
+                                        <td className='text-center font-normal px-2 py-3'>
+                                            {item.genres.length === 0 ?
+                                                <span>-</span> :
+                                                item.genres.map((genre, index) => (
+                                                    <span key={index}>{genre.name}{index < item.genres.length - 1 ? ', ' : ''}</span>
+                                                ))}
+                                        </td>
+                                        <td className='text-center font-normal px-2 py-3 text-sky-600'>{FormatDataTime(item.releaseDate).date}</td>
                                         {user.role === "ADMIN" &&
                                             <td className='text-center font-medium px-2 py-3'>
                                                 <div className='flex items-center justify-center'>

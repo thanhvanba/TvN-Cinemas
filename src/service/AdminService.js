@@ -921,6 +921,23 @@ const AdminService = () => {
             // },
         );
     };
+    const getStockEntriesADApi = async (pageIndex, pageSize, managerId) => {
+        console.log("🚀 ~ getStockEntriesADApi ~ managerId:", managerId)
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/stockEntries`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    managerId: managerId,
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            },
+        );
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -973,7 +990,8 @@ const AdminService = () => {
         checkScheduleApi,
         createGenresApi,
         deleteGenresApi,
-        getListGenresApi
+        getListGenresApi,
+        getStockEntriesADApi
     }
 }
 

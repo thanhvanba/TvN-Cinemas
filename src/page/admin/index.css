@@ -30,3 +30,26 @@
 .react-tabs__tab-list {
   border: none;
 }
+
+.modal-body::-webkit-scrollbar {
+  width: 10px;
+  /* Độ rộng của thanh cuộn */
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #e3e3e3;
+  /* Màu nền của thanh cuộn */
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #059669;
+  /* Màu của thanh cuộn */
+  border-radius: 10px;
+  /* Bo tròn cho phần thanh cuộn */
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #065F46;
+  /* Màu của thanh cuộn khi di chuột qua */
+}

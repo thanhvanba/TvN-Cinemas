@@ -256,7 +256,7 @@ const UserService = () => {
             if (response.data.result.promotionCode === null) {
                 if (response.data.message !== "Lấy thông tin đặt lịch thành công!")
                     toastNotify(response.data.message, "error")
-                else  toastNotify(response.data.message, "success")
+                else toastNotify(response.data.message, "success")
             } else {
                 toastNotify("Áp dụng mã thành công", "success")
             }
@@ -360,6 +360,27 @@ const UserService = () => {
             toastNotify(err.response.data.message, "error");
         }
     }
+
+    const getNotificationsApi = async (pageIndex, pageSize) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/user/notifications`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                },
+            },
+        );
+    };
+    const getOneNotificationApi = async (notificationId) => {
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/user/notification/${notificationId}`
+        );
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -386,7 +407,9 @@ const UserService = () => {
         getShowtimeByCinemaApi,
         searchMovieApi,
         reviewMovieApi,
-        cancelTicketApi
+        cancelTicketApi,
+        getNotificationsApi,
+        getOneNotificationApi
     }
 }
 

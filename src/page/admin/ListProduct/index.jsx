@@ -35,7 +35,6 @@ const ListProduct = () => {
     const { user } = useContext(LoginContext)
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
-    console.log("🚀 ~ ListProduct ~ loading:", loading)
     const [status, setStatus] = useState(true);
     const [toggle, setToggle] = useState(false)
     const [pagination, setPagination] = useState(
@@ -55,12 +54,10 @@ const ListProduct = () => {
         }
     );
     const [importHistory, setImportHistory] = useState(true);
-    console.log("🚀 ~ ListProduct ~ importHistory:", importHistory)
     const [allFood, setAllFood] = useState([])
     const [allStockEntries, setAllStockEntries] = useState([])
-    console.log("🚀 ~ ListProduct ~ allStockEntries:", allStockEntries)
 
-    const { getFoodAdminApi } = AdminService()
+    const { getFoodAdminApi, getStockEntriesADApi } = AdminService()
     const { getFoodApi } = UserService()
     const { getStockEntriesApi } = ManagerService()
 
@@ -70,6 +67,7 @@ const ListProduct = () => {
         navigate(pathname)
     }
     const handleGetItems = async (pageNumber, foodType) => {
+        setLoading(true)
         let resFood = user.role === "ADMIN" ? await getFoodAdminApi(foodType, pageNumber, 10, status) : await getFoodApi(foodType, pageNumber, 10, localStorage.getItem("cinemaId"))
         if (resFood && resFood.data && resFood.data.result.content) {
             setAllFood(resFood.data.result.content)
@@ -87,7 +85,7 @@ const ListProduct = () => {
     const handleGetStockEntries = async (pageNumber) => {
         // if (allStockEntries.length === 0) {
         setLoading(true)
-        let resStockEntries = await getStockEntriesApi(pageNumber, 10)
+        let resStockEntries = user.role === "MANAGER" ? await getStockEntriesApi(pageNumber, 5) : await getStockEntriesADApi(pageNumber, 5, '')
         if (resStockEntries && resStockEntries.data && resStockEntries.data.result.content) {
             setAllStockEntries(resStockEntries.data.result.content)
             setPagination(prevPagination => ({
@@ -103,19 +101,15 @@ const ListProduct = () => {
     }
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
     const handleSelectChange = (selectedValue) => {
-        setSelectFood(selectedValue)
         selectedValue === "ALL" ? handleGetItems(pagination1.pageNumber) : handleGetItems(pagination1.pageNumber, selectedValue)
     }
 
     useEffect(() => {
-        setLoading(true)
         handleGetItems(pagination1.pageNumber)
     }, [status]);
     useEffect(() => {
-        setLoading(true)
         handleGetItems(pagination1.pageNumber)
     }, [pathname]);
-
     return (
         <div>
             <div className='px-4'>
@@ -124,26 +118,27 @@ const ListProduct = () => {
                         <AddItem /> :
                         <div className='relative'>
                             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                                {importHistory ? <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
-                                    : <h2 className='text-3xl cursor-default'>Lịch sử nhập hàng</h2>
-                                }
+                                <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
                             </div>
                             <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                                 {loading && <Loading />}
                             </div>
-                            {!loading &&
-                                <div className='border-2 h-full'>
-                                    <div className='h-full relative'>
-                                        <div className='relative flex justify-end items-center p-4'>
-                                            <div className="border-2 rounded-xl z-10">
-                                                <Search />
-                                            </div>
-                                            <div className="inline-block z-10 pl-2 py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36">
+                            <div className='border-2 h-full'>
+                                <div className='h-full relative'>
+                                    <div className='relative flex justify-end items-center p-4'>
+                                        <div className="border-2 rounded-xl z-10">
+                                            <Search />
+                                        </div>
+                                        {importHistory &&
+                                            <div className="inline-block z-10 pl-2 py-1 m-2 rounded-full text-gray-100 bg-slate-50 border-2 relative h-9 w-40">
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />
                                             </div>
-                                            <div className='flex justify-center absolute top-0 left-0    w-full p-3'>
-                                                {!status ?
-                                                    <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
+                                        }
+                                        <div className='flex justify-center absolute top-0 left-0 w-full p-3'>
+                                            {!status ?
+                                                <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>sản phẩm đã xóa</h1>
+                                                : !importHistory ?
+                                                    <h1 className='uppercase py-3 text-center text-2xl font-bold text-emerald-600'>Lịch sử nhập hàng</h1>
                                                     : <> {user.role === "ADMIN" ?
                                                         <div className='mx-2 w-24 h-16 border-sky-400 hover:bg-slate-100 border-2 rounded-lg'>
                                                             <Button click={() => changeTab('/admin/add-item/food')} img={popcorn} title={"Thêm sản phẩm"} />
@@ -153,29 +148,34 @@ const ListProduct = () => {
                                                         </div>
                                                     }
                                                     </>
-                                                }
-                                            </div>
+                                            }
+                                        </div>
+                                        <div className='flex gap-x-1 absolute top-4 left-4 justify-start'>
                                             {user.role === "ADMIN" ?
                                                 <button
                                                     type="button"
-                                                    className="absolute top-4 left-4 z-10"
+                                                    className="z-10"
                                                 >
                                                     <span className="sr-only">Close menu</span>
                                                     <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`}
                                                         onClick={() => setStatus(!status)}
                                                     >
                                                         {status ?
-                                                            <TrashIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
-                                                            : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
+                                                            <TrashIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner"
+                                                                aria-hidden="true"
+                                                            />
+                                                            : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner"
+                                                                aria-hidden="true"
+                                                            />
                                                         }
                                                     </div>
                                                 </button>
                                                 : <button
                                                     type="button"
-                                                    className="absolute top-4 left-4 z-10"
+                                                    className="z-10"
                                                 >
                                                     <span className="sr-only">Close menu</span>
-                                                    <div className={`${importHistory ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-red-900`}
+                                                    <div className={`${importHistory ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-sky-900`}
                                                     >
                                                         {importHistory ?
                                                             <History
@@ -199,24 +199,31 @@ const ListProduct = () => {
                                                 </button>
                                             }
                                         </div>
-
-                                        {toggle &&
-                                            <div className=''>
-                                                <Inflow onToggle={setToggle} />
-                                            </div>
-                                        }
-                                        {
-                                            !importHistory ? <ListStockEntries allStockEntries={allStockEntries} pagination={pagination} handleGetStockEntries={handleGetStockEntries} /> :
-                                                allFood.length === 0 ?
-                                                    <p className='text-center pt-4 text-lg text-slate-400 font-ligh'>--- Chưa có sản phẩm ---</p> :
-                                                    <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
-                                                        <FoodItems listFood={allFood} />
-                                                    </div>
-                                        }
                                     </div>
-                                    {importHistory && allFood.length !== 0 && <Pagination pageNumber={pagination1.pageNumber} pageSize={pagination1.pageSize} totalElements={pagination1.totalElements} totalPages={pagination1.totalPages} getItemByPage={handleGetItems} />}
+
+                                    {!loading &&
+                                        <>
+                                            {toggle &&
+                                                <div className=''>
+                                                    <Inflow onToggle={setToggle} />
+                                                </div>
+                                            }
+                                            {
+                                                !importHistory ? <ListStockEntries allStockEntries={allStockEntries} pagination={pagination} handleGetStockEntries={handleGetStockEntries} /> :
+                                                    allFood.length === 0 ?
+                                                        <p className='text-center pt-4 text-lg text-slate-400 font-ligh'>--- Chưa có sản phẩm ---</p> :
+                                                        <div className='grid grid-cols-5 gap-4 px-4 pb-4'>
+                                                            <FoodItems listFood={allFood} />
+                                                        </div>
+                                            }
+                                            {importHistory && allFood.length !== 0 &&
+                                                <Pagination pageNumber={pagination1.pageNumber} pageSize={pagination1.pageSize}
+                                                    totalElements={pagination1.totalElements} totalPages={pagination1.totalPages} getItemByPage={handleGetItems} />
+                                            }
+                                        </>
+                                    }
                                 </div>
-                            }
+                            </div>
                         </div>
 
                 }

@@ -57,7 +57,7 @@ function DetailPromotion() {
     selectedValue === "Khuyến mãi giảm tiền" ? setSelectedType(0) : setSelectedType(1)
     setPromotion({ ...promotion, discountType: selectedValue === "Khuyến mãi giảm tiền" ? "FIXED_AMOUNT" : "PERCENTAGE" })
   }
-  const formalityOfPromotions = ["Theo ngày trong tuần(T2-CN)(2-8)", "Theo khung thời gian", "Theo độ tuổi"]
+  const formalityOfPromotions = ["Theo ngày trong tuần(T2-CN)(1-7)", "Theo khung thời gian", "Theo độ tuổi"]
   const handleSelectFormality = (selectedValue) => {
     selectedValue === "Theo độ tuổi" ? setFormalityOfPromotion(2) : selectedValue === "Theo khung thời gian" ? setFormalityOfPromotion(1) : setFormalityOfPromotion(0)
   }
@@ -328,7 +328,7 @@ function DetailPromotion() {
                           type="text"
                           className="block w-full px-4 py-1 text-black bg-white border-slate-300 focus:outline-none rounded-md border-2 focus:border-blue-600"
                           defaultValue={
-                            promotion?.validDayOfWeek ? "Theo ngày trong tuần(T2-CN)(2-8)" :
+                            promotion?.validDayOfWeek ? "Theo ngày trong tuần(T2-CN)(1-7)" :
                               promotion?.validTimeFrameStart ?
                                 "Theo khung thời gian" :
                                 "Theo độ tuổi"
@@ -336,7 +336,7 @@ function DetailPromotion() {
                           disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
                         /> :
                         <div className="relative pr-4 w-full cursor-default rounded-md bg-white py-1 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
-                          <SelectMenu onSelectChange={handleSelectFormality} items={formalityOfPromotions} content={formalityOfPromotion === 2 ? "Theo độ tuổi" : formalityOfPromotion === 1 ? 'Theo khung thời gian' : "Theo ngày trong tuần(T2-CN)(2-8)" || "Chọn hình thức khuyến mãi"} />
+                          <SelectMenu onSelectChange={handleSelectFormality} items={formalityOfPromotions} content={formalityOfPromotion === 2 ? "Theo độ tuổi" : formalityOfPromotion === 1 ? 'Theo khung thời gian' : "Theo ngày trong tuần(T2-CN)(1-7)" || "Chọn hình thức khuyến mãi"} />
                         </div>
                       }
                     </div>
@@ -345,7 +345,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="block font-medium leading-6 text-gray-900"
                       >
-                        {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(2-8)'} <span className='text-red-600'>*</span>
+                        {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(1-7)'} <span className='text-red-600'>*</span>
                       </label>
                       {
                         formalityOfPromotion === 1 ?

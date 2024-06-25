@@ -34,7 +34,6 @@ function App() {
 
   // Xử lý hiển thị thông báo khi phiên đăng nhập hết hạn
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log("🚀 ~ App ~ isModalOpen:", isModalOpen)
 
   const handleConfirmModal = () => {
     setIsModalOpen(false);

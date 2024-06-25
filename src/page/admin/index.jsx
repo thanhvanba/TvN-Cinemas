@@ -149,7 +149,7 @@ const Admin = () => {
               </div >
 
               <TabList>
-                <ul className='flex flex-col p-8 overflow-y-auto max-h-[90vh]' >
+                <ul className='flex flex-col p-8 overflow-y-auto modal-body max-h-[90vh]' >
                   {
                     items.map((item, index) => (
                       <Tab key={index}>

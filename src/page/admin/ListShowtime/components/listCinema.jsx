@@ -97,7 +97,7 @@ const ListCinema = () => {
             {!loading &&
                 <div className='relative'>
                     {allCinema.length !== 0 &&
-                        <h1 className='uppercase text-center pt-8 pb-6 text-2xl font-bold text-emerald-600'>{status ? 'Danh sách rạp phim' : 'Danh sách rạp phim đang bảo trì'}</h1>
+                        <h1 className='uppercase text-center pt-8 pb-6 text-2xl font-bold text-emerald-700'>{status ? 'Danh sách rạp phim' : 'Danh sách rạp phim đang bảo trì'}</h1>
                     }
                     <button
                         type="button"
@@ -126,18 +126,15 @@ const ListCinema = () => {
                                     {
                                         allCinema.map((item, index) => (
                                             <div className='border-2 border-slate-400 rounded-xl h-full w-full' >
-                                                <div className='p-1 h-full'>
-                                                    <div className='flex h-60'>
+                                                <div className='p-2 h-full'>
+                                                    <div className='flex h-52'>
                                                         <div
                                                             key={`cinema-${index}`}
-                                                            className={`relative rounded-xl bg-slate-700 hover:bg-slate-400 cursor-pointer bg-opacity-90 sm:w-80 md:w-[260px] lg:w-64 flex flex-col justify-between`}
+                                                            className={`relative rounded-xl bg-slate-700 cursor-pointer bg-opacity-90 sm:w-80 md:w-[260px] lg:w-64 flex flex-col justify-between`}
                                                             onClick={() => { navigate(`/admin/cinema/${item.cinemaId}/list-showtime`, { state: { cinemaName: item.cinemaName } }) }}
                                                         >
                                                             <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
 
-                                                            {!item.status && <div className='absolute rounded-t-xl top-0 right-0 bottom-0 left-0 bg-red-900 bg-opacity-30'>
-                                                                <XMarkIcon className='text-slate-700 opacity-70' />
-                                                            </div>}
                                                         </div>
                                                         <div className='w-1/6 pl-1'>
                                                             <button type='button' onClick={(e) => { e.stopPropagation(); handleOpenModal(item.cinemaId) }} className='flex justify-center items-center w-full h-8 mb-2 rounded-lg bg-emerald-100'>

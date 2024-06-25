@@ -196,12 +196,15 @@ const ShowtimeByRoom = () => {
                     </div>
                     {/* <div className="inline-block py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36"> */}
                     {/* <SelectMenu onSelectChange={handleSelectChange} items={dateList} content={selectedDateTime.date} /> */}
-                    <DatePicker
-                      onChange={handleSelectChange}
-                      placeholder={selectedDateTime.date || FormatDataTime(currentDateTime.toISOString()).date}
-                      format='DD/MM/YYYY'
-                      className="inline-block py-2 hover:bg-emerald-600 bg-slate-300 m-2 rounded-bl-full rounded-r-full text-slate-400 relative h-10 w-36 cursor-default"
-                    />
+
+                    <div className='text-black'>
+                      <DatePicker
+                        onChange={handleSelectChange}
+                        placeholder={selectedDateTime.date || FormatDataTime(currentDateTime.toISOString()).date}
+                        format='DD/MM/YYYY'
+                        className="inline-block py-1.5 bg-slate-100 m-2 rounded-full text-black relative h-9 w-36 cursor-default border-slate-300"
+                      />
+                    </div>
                     {/* </div> */}
                     <button
                       type="button"
@@ -277,7 +280,7 @@ const ShowtimeByRoom = () => {
                                           <img className="h-12 w-8 text-emerald-600" src={item.movie.poster} alt="" />
                                         </div>
                                         <div>
-                                          <h3>{item.movie.title}</h3>
+                                          <h3 className='text-emerald-600 font-medium'>{item.movie.title}</h3>
                                           <p className='font-normal text-sm'>{FormatDataTime(item.timeStart).day} - {FormatDataTime(item.timeEnd).date}</p>
                                         </div>
                                       </div>
@@ -310,7 +313,7 @@ const ShowtimeByRoom = () => {
                                                   className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                                                 >
                                                   <a
-                                                    className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-600 opacity-70'}`}
+                                                    className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-400 opacity-70'}`}
                                                   >
 
                                                     {format(

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import img from '../../../images/logo.jpg'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { format, parse } from 'date-fns'
@@ -12,22 +12,27 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline'
 function InfoTicket() {
     const location = useLocation()
     const navigate = useNavigate()
-    const { sellTicketApi, addViewerApi } = StaffService()
+    const { sellTicketApi, addViewerApi, sellTicketInfoApi } = StaffService()
     const { infoSchedule, listSeatBooking, listFoodBooking, selectSeats, foods, userInfo } = location.state || {}
     console.log("🚀 ~ InfoTicket ~ listSeatBooking:", listSeatBooking)
 
     const { loading, setLoading } = useLoadingState(false)
     const [account, setAccount] = useState(userInfo || {})
-    const [sellTicket, setSellTicket] = useState()
+    const [sellTicketInfo, setSellTicketInfo] = useState()
+    console.log("🚀 ~ InfoTicket ~ sellTicketInfo:", sellTicketInfo)
 
     const handleSellTicket = async () => {
         setLoading('sell', true);
-        const resSellticket = await sellTicketApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', listSeatBooking, listFoodBooking)
-        if (resSellticket && resSellticket.data && resSellticket.data.result) {
-            setSellTicket(resSellticket.data.result);
-        }
+        await sellTicketApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', listSeatBooking, listFoodBooking)
         setLoading('sell', false);
         navigate('/staff/sell-ticket')
+    }
+
+    const handleSellTicketInfo = async () => {
+        const resSellticket = await sellTicketInfoApi(userInfo ? userInfo.userId : account.userId ? account?.userId : '', listSeatBooking, listFoodBooking)
+        if (resSellticket && resSellticket.data && resSellticket.data.result) {
+            setSellTicketInfo(resSellticket.data.result);
+        }
     }
 
     const handleCreateAccount = async () => {
@@ -37,8 +42,13 @@ function InfoTicket() {
         if (resInfo && resInfo.data && resInfo.data.result) {
             setAccount(resInfo.data.result);
         }
+        handleSellTicketInfo()
         setLoading('create', false);
     }
+
+    useEffect(() => {
+        handleSellTicketInfo()
+    }, [])
     return (
         <div className='pt-20 px-12'>
             <h2 className='font-medium uppercase text-xl text-center py-4'>Thông tin đặt vé</h2>
@@ -102,7 +112,7 @@ function InfoTicket() {
                             <div className='flex gap-10'>
                                 <div className='w-3/5'>
                                     <p className='font-light'>Tổng tiền</p>
-                                    <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(
+                                    <p className="font-semibold text-xl">{ConvertStringFollowFormat(
                                         selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
                                         foods.reduce((total, food) => {
                                             return total + (food.price * food.count);
@@ -113,57 +123,34 @@ function InfoTicket() {
                                 </div>
                                 <div className='w-2/5'>
                                     <p className='font-light'>Chiết khấu</p>
-                                    {/* <div className='flex flex-col'>
+                                    <div className='flex flex-col'>
                                         {
-                                            bookingInfo && bookingInfo.seats && bookingInfo.seats.map(seatInfo => (
-                                                bookingInfo?.promotionFixedList?.length != 0 &&
-                                                <p className='font-light relative'>
+                                            sellTicketInfo && sellTicketInfo.seats && sellTicketInfo.seats.map(seatInfo => (
+                                                sellTicketInfo?.promotionFixedList?.length != 0 ?
+                                                <p className='font-light relative w-20 text-yellow-500'>
                                                     <span>-{ConvertStringFollowFormat(seatInfo?.oldPrice - seatInfo?.newPrice)}</span>
                                                     <sup>đ</sup>
                                                     < InformationCircleIcon
                                                         className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
-                                                        data-tooltip-id={`tooltip-${bookingInfo.bookingId}`}
+                                                        data-tooltip-id={`tooltip-${sellTicketInfo.bookingId}`}
                                                     />
 
                                                     <ReactTooltip
-                                                        id={`tooltip-${bookingInfo.bookingId}`}
+                                                        id={`tooltip-${sellTicketInfo.bookingId}`}
                                                         place="top"
                                                         variant="info"
-                                                        content={bookingInfo?.promotionFixedList?.reduce((min, promo) => promo.normalValue < min.normalValue ? promo : min, bookingInfo?.promotionFixedList[0]).name}
+                                                        content={sellTicketInfo?.promotionFixedList?.reduce((min, promo) => promo.normalValue < min.normalValue ? promo : min, sellTicketInfo?.promotionFixedList[0]).name}
                                                     />
-                                                </p>
+                                                </p>: <p>0<sup>đ</sup></p>
                                             ))
                                         }
-                                        {bookingInfo.discount > 0 &&
-                                            <p className="font-light relative">
-                                                <span>-{formatPrice(bookingInfo.discount)}</span>
-                                                <sup>đ</sup>
-                                                < InformationCircleIcon
-                                                    className='absolute top-0.5 -right-5 h-4 w-4 text-sky-600'
-                                                    data-tooltip-id={`tooltip-promotionCode`}
-                                                />
-
-                                                <ReactTooltip
-                                                    id={`tooltip-promotionCode`}
-                                                    place="top"
-                                                    variant="info"
-                                                    content={bookingInfo?.promotionCode?.description
-                                                    }
-                                                />
-                                            </p>
-                                        }
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="flex gap-10">
-                                <p className='font-light'>Thanh toán</p>
-                                <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(
-                                    selectSeats.map(item => item.price).reduce((accumulator, currentValue) => accumulator + currentValue, 0) +
-                                    foods.reduce((total, food) => {
-                                        return total + (food.price * food.count);
-                                    }, 0)
-                                )}
+                            <div className="flex gap-10 items-end">
+                                <p className='font-light'>Thanh toán:</p>
+                                <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(sellTicketInfo?.total)}
                                     <sup>đ</sup>
                                 </p>
                             </div>

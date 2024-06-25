@@ -159,8 +159,8 @@ function ListPromotion() {
                                                 onClick={() => changeTab(`/admin/promotion/${item.promotionFixedId}`)}
                                                 className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
-                                                <td className='text-start font-medium px-2 py-3'>{item.promotionFixedId}</td>
-                                                <td className='text-start font-medium px-2 py-3'>{item.name}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{item.promotionFixedId}</td>
+                                                <td className='text-start font-medium px-2 py-3 text-amber-500'>{item.name}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
                                                 <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
@@ -225,8 +225,8 @@ function ListPromotion() {
                                                 onClick={() => { navigate(`/admin/promotion/${item.promotionCodeId}`) }}
                                                 className='border-b-2 border-slate-200 hover:bg-slate-200 cursor-pointer'
                                             >
-                                                <td className='text-start font-medium px-2 py-3'>{item.promotionCode}</td>
-                                                <td className='text-start font-medium px-2 py-3'>{item.name}</td>
+                                                <td className='text-center font-medium px-2 py-3'>{item.promotionCode}</td>
+                                                <td className='text-start font-medium px-2 py-3 text-amber-500'>{item.name}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
                                                 <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Ngưng hoạt động" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>

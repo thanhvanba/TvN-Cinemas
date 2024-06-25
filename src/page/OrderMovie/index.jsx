@@ -198,10 +198,7 @@ const OrderMovie = () => {
     }
     const handleBookingTicket = async () => {
         setLoading('bookingTicket', true);
-        const resBookingInfo = await bookingTicketApi(listSeatBooking, listFoodBooking, bookingInfo.bookingId)
-        if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
-            setBookingInfo(resBookingInfo.data.result);
-        }
+        await bookingTicketApi(listSeatBooking, listFoodBooking, bookingInfo.bookingId)
         setLoading('bookingTicket', false);
         setTogglePayment(true)
         setToggleConfirm(false)

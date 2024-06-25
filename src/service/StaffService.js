@@ -54,6 +54,32 @@ function StaffService() {
             toastNotify(err.response.data.message, "error")
         }
     }
+    const sellTicketInfoApi = async (userId, seats, foods) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/staff/sell-info`,
+                {
+                    userId: userId,
+                    seatIds: seats,
+                    foodIds: foods
+                },
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+
+            )
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+                return response
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    }
     const searchViewerApi = async (keyWord) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         const params = { keyWord: keyWord }
@@ -107,7 +133,7 @@ function StaffService() {
         );
     };
     return {
-        getNowPlayingMovieStaffApi, getMovieComingSoonStaffApi, sellTicketApi, searchViewerApi, addViewerApi, getAllBookingStaffApi
+        getNowPlayingMovieStaffApi, getMovieComingSoonStaffApi, sellTicketApi, searchViewerApi, addViewerApi, getAllBookingStaffApi, sellTicketInfoApi
     }
 }
 

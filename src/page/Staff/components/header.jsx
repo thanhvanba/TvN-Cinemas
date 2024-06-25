@@ -14,6 +14,7 @@ import UserService from '../../../service/UserService';
 import { useEffect } from 'react';
 
 import bg from "../../../images/bg-cinema-10.png"
+import ListNotification from '../../../components/ListNotification';
 
 
 function Header() {
@@ -28,6 +29,7 @@ function Header() {
     const [loading, setLoading] = useState(false)
     const [avatar, setAvatar] = useState()
 
+
     const handleLogoutApi = async (e) => {
         setLoading(true)
         e.preventDefault();
@@ -41,6 +43,7 @@ function Header() {
             setAvatar(resInfo.data.result.avatar)
         }
     }
+
     useEffect(() => {
         handleGetItems()
     }, []);
@@ -58,10 +61,10 @@ function Header() {
                         </div>
                     </div>
                 }
-                <div className={`${user.role === "STAFF" ? "text-white" : ""} flex flex-col relative px-4`}>
-                    <BellIcon className='h-6' />
-                    <span className='text-xs'>Thông báo</span>
-                    <span className='absolute text-center -top-3 right-6 rounded-full bg-red-600 text-white h-5 w-5 text-[12px] leading-5'>2</span>
+                <div>
+
+                    <ListNotification />
+
                 </div>
                 <div className='relative'>
                     <div

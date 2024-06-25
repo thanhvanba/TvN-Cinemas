@@ -16,6 +16,7 @@ import Loading from '../../../components/Loading';
 import Search from '../../../components/Search'
 import { LoginContext } from '../../../context/LoginContext'
 import TimeAgo from '../../../components/TimeAgo'
+import { StarIcon } from '@heroicons/react/20/solid'
 
 const ListReview = () => {
   const { getListReviewApi } = ManagerService()
@@ -42,7 +43,7 @@ const ListReview = () => {
 
   const handleGetReviews = async (pageNumber) => {
     setLoading(true)
-    let res = await getListReviewApi(pageNumber, 6  )
+    let res = await getListReviewApi(pageNumber, 6)
     setLoading(false)
     if (res && res.data && res.data.result && res.data.result.content) {
       setReviews(res.data.result.content)
@@ -97,11 +98,16 @@ const ListReview = () => {
                   listReview.reviews.map((item, index) => (
                     <tr className='border-b-2 border-slate-200 hover:bg-slate-200'>
                       <td className='text-center font-medium px-2 py-3'>{index + 1 + pagination.pageSize * (pagination.pageNumber - 1)}</td>
-                      <td className='text-center font-medium px-2 py-3'>{item.movieName}</td>
-                      <td className='text-center font-medium px-2 py-3'>{item.rating}</td>
+                      <td className='text-center font-semibold px-2 py-3 text-emerald-800'>{item.movieName}</td>
+                      <td className='text-center font-medium px-2 py-3'>
+                        <div className='flex justify-center'>
+                          {(item.rating || item.rating != 0) && <StarIcon className='h-6 text-amber-400 px-1' />}
+                          <span className='w-[30px] flex text-start'>{item.rating ? item.rating : "-"}</span>
+                        </div>
+                      </td>
                       <td className='text-center font-medium px-2 py-3'>{item.comment ? item.comment : "-"}</td>
                       <td className='text-center font-medium px-2 py-3'>{item.userName}</td>
-                      <td className='text-center font-medium px-2 py-3'>{TimeAgo(item.createAt)}</td>
+                      <td className='text-center font-light px-2 py-3 text-sky-600'>{TimeAgo(item.createAt)}</td>
                     </tr>
                   ))
                 }

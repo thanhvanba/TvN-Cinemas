@@ -172,12 +172,15 @@ const ListTicket = () => {
                                     className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
                                   >
                                     <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
-                                    <td className='text-start font-medium px-2 py-4'>{item.movieName}</td>
+                                    <td className='text-start font-bold px-2 py-4 text-emerald-800'>{item.movieName}</td>
                                     <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{TimeAgo(item.createAt)}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{item.userName}</td>
+                                    <td className='text-center font-medium px-2 py-4 flex flex-col justify-center'>
+                                      <span className='text-orange-500'>{item.startTime}</span>
+                                      <span>Ngày {FormatDataTime(item.date).date}</span>
+                                    </td>
+                                    <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}<sup>đ</sup></td>
+                                    <td className='text-center font-medium px-2 py-4 text-sky-600'>{TimeAgo(item.createAt)}</td>
+                                    <td className='text-center font-medium px-2 py-4'>{item.userName ? item.userName : '-'}</td>
                                   </tr>
                                 ))
                               }
@@ -189,69 +192,69 @@ const ListTicket = () => {
                     }
                   </div>
 
-                  <div className='p-2 h-full bg-neutral-200 w-1/4 shadow-2xl rounded-xl'>
-                    {/* Phần chưa xác nhận */}
-                    <div className='relative'>
-                      <h2 className='font-semibold text-center text-xl text-amber-500'>Vé mới</h2>
-                      <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2 z-50'>
-                        {loading['loadingU'] && <Loading />}
-                      </div>
-                      <div className="ticket-section scrollable1-section">
-                        {!loading['loadingU'] &&
-                          <div className="bg-slate-300 bg-opacity-30 p-1">
-                            {
-                              allTicketU.length === 0 ?
-                                <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào vừa được mua--</p>
-                                :
-                                allTicketU.map((item) => (
-                                  <div
-                                    onClick={() => {
-                                      handleOpenModal();
-                                      handleGetTicketDetail(item.bookingId);
-                                    }}
-                                    className='border-t-2 border-x-2 border-stone-400'
-                                  >
-                                    <Ticket ticket={item} />
-                                  </div>
-                                ))
-                            }
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-
-                    {/* Phần đã hủy */}
-                    <div className='relative'>
-                      <h2 className='font-semibold text-center text-xl pt-4 text-red-500'>Đã Hủy</h2>
-                      <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2  z-50'>
-                        {loading['loadingCa'] && <Loading />}
-                      </div>
-                      <div className="ticket-section scrollable1-section">
-                        {!loading['loadingCa'] &&
-                          <div className="bg-slate-300 bg-opacity-30 p-1">
-                            {
-                              allTicketCa.length === 0 ?
-                                <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào đã hủy --</p>
-                                :
-                                allTicketCa.map((item) => (
-                                  <div
-                                    onClick={() => {
-                                      handleOpenModal();
-                                      handleGetTicketDetail(item.bookingId);
-                                    }}
-                                    className='border-t-2 border-x-2 border-stone-400'
-                                  >
-                                    <Ticket ticket={item} />
-                                  </div>
-                                ))
-                            }
-                          </div>
-                        }
+                  <div className='flex-col w-1/4'>
+                    <div className='p-2 h-auto bg-gray-100 w-full shadow-[0_0_20px_3px_rgba(0,0,0,0.1)] rounded-xl'>
+                      {/* Phần chưa xác nhận */}
+                      <div className='relative'>
+                        <h2 className='font-semibold text-center text-xl text-amber-500'>Vé mới</h2>
+                        <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2 z-50'>
+                          {loading['loadingU'] && <Loading />}
+                        </div>
+                        <div className="ticket-section modal-body scrollable1-section">
+                          {!loading['loadingU'] &&
+                            <div className="bg-slate-300 bg-opacity-30 p-1">
+                              {
+                                allTicketU.length === 0 ?
+                                  <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào vừa được mua--</p>
+                                  :
+                                  allTicketU.map((item) => (
+                                    <div
+                                      onClick={() => {
+                                        handleOpenModal();
+                                        handleGetTicketDetail(item.bookingId);
+                                      }}
+                                      className='border-t-2 border-x-2 border-stone-400'
+                                    >
+                                      <Ticket ticket={item} />
+                                    </div>
+                                  ))
+                              }
+                            </div>
+                          }
+                        </div>
                       </div>
                     </div>
-
-
+                    <div className='p-2 mt-4 h-auto bg-gray-100 w-full shadow-[0_0_20px_3px_rgba(0,0,0,0.1)] rounded-xl'>
+                      {/* Phần đã hủy */}
+                      <div className='relative'>
+                        <h2 className='font-semibold text-center text-xl pt-4 text-red-500'>Đã Hủy</h2>
+                        <div className='flex justify-center absolute mx-auto top-1/2 right-1/2 left-1/2  z-50'>
+                          {loading['loadingCa'] && <Loading />}
+                        </div>
+                        <div className="ticket-section modal-body scrollable1-section">
+                          {!loading['loadingCa'] &&
+                            <div className="bg-slate-300 bg-opacity-30 p-1">
+                              {
+                                allTicketCa.length === 0 ?
+                                  <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có vé nào đã hủy --</p>
+                                  :
+                                  allTicketCa.map((item) => (
+                                    <div
+                                      onClick={() => {
+                                        handleOpenModal();
+                                        handleGetTicketDetail(item.bookingId);
+                                      }}
+                                      className='border-t-2 border-x-2 border-stone-400'
+                                    >
+                                      <Ticket ticket={item} />
+                                    </div>
+                                  ))
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </>}
 
@@ -329,10 +332,13 @@ const ListTicket = () => {
                   </div>
                   <div className='flex items-start justify-between'>
                     <p className='font-light'>Khách hàng: </p>
-                    <div className='text-center'>
-                      <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>
-                      <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>
-                    </div>
+                    {ticketDetail.userName === null || ticketDetail.fullName === null ?
+                      <p className='text-xl'>Khách vãng lai</p> :
+                      <div className='text-center'>
+                        <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>
+                        <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>
+                      </div>
+                    }
                   </div>
                 </div>
 
