@@ -57,7 +57,7 @@ function ListNotification() {
       <Drawer
         closable={false}
         destroyOnClose
-        title={<p className='text-2xl font-bold flex items-center gap-x-1'> <BellIcon className='h-7' />Thông báo</p>}
+        title={<p className='text-2xl font-bold flex items-center gap-x-1 -mx-3 '> <BellIcon className='h-7' />Thông báo</p>}
         placement="right"
         open={open}
         loading={loading}
@@ -66,7 +66,7 @@ function ListNotification() {
       >
         {!loadingNoti ?
           notifications?.length !== 0 &&
-          <div className='w-full rounded-lg bg-white'>
+          <div className='rounded-lg bg-white -mx-4 -mt-5'>
             {notifications.map(notif => (
               <div className={`${notif.read === false ? 'bg-zinc-100' : ''} text-gray-900 hover:bg-gray-200 rounded-md py-2 pl-2 pr-8 cursor-default relative`}>
                 <div onClick={() => { handleGetOneNotification(notif?.notificationUserId) }} className='flex items-center gap-x-3'>
