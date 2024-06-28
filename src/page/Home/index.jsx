@@ -25,9 +25,9 @@ const Home = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false);
 
-  const [nowPlayingMovie, setNowPlayingMovie] = useState();
-  const [comingSoonMovie, setComingSoonMovie] = useState();
-  const [specialMovie, setSpecialMovie] = useState();
+  const [nowPlayingMovie, setNowPlayingMovie] = useState([]);
+  const [comingSoonMovie, setComingSoonMovie] = useState([]);
+  const [specialMovie, setSpecialMovie] = useState([]);
   const [allMovie, setAllMovie] = useState([])
 
   const [movieOrderQuickly, setMovieOrderQuickly] = useState([])
@@ -107,7 +107,7 @@ const Home = () => {
     <div className="w-full">
       {/* slider */}
       <div className="px-8">
-        <HomeSlider movies={(comingSoonMovie && movieOrderQuickly && [...comingSoonMovie, ...movieOrderQuickly].length > 0) ? [...comingSoonMovie, ...movieOrderQuickly] : IMAGES} />
+        {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...comingSoonMovie, ...movieOrderQuickly]} />}
       </div>
       {/* mua vé nhanh */}
       <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">

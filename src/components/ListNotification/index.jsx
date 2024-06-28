@@ -1,25 +1,60 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Drawer } from 'antd';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { BellIcon, ChevronUpDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { LoginContext } from '../../context/LoginContext';
 import UserService from '../../service/UserService';
 import bookingSC from '../../images/done_777390.png'
 import cancelT from '../../images/signaling_4378030.png'
 import LoadNotification from '../LoadNotification';
+import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
+import SelectMenu from '../SelectMenu/SelectMenu';
+import AdminService from '../../service/AdminService';
+import ManagerService from '../../service/ManagerService';
+import DetailNotification from '../DetailNotification';
 
 function ListNotification() {
-  const { getNotificationsApi, getOneNotificationApi } = UserService()
+  const { getNotificationsApi, getOneNotificationApi, readCountApi } = UserService()
+  const { sendNotificationADApi, getAllUserByRoleApi } = AdminService()
+  const { sendNotificationApi } = ManagerService()
 
   const { user } = useContext(LoginContext)
+
   const [open, setOpen] = useState(false);
+  const [childrenDrawer, setChildrenDrawer] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [loadingNoti, setLoadingNoti] = useState(true);
+  const [loadingSend, setLoadingSend] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const [selectSpecific, setSelectSpecific] = useState(false)
+  const [toggle, setToggle] = useState(false)
+  const [showDetailNotification, setShowDetailNotification] = useState(false)
 
   const [notifications, setNotifications] = useState([])
+  console.log("🚀 ~ ListNotification ~ notifications:", notifications)
   const [notification, setNotification] = useState([])
+  const [dataNotification, setDataNotification] = useState({})
+  const [usersByRole, setUsersByRole] = useState([])
+  const [selectUsersByRole, setSelectUsersByRole] = useState([])
 
+  const handleSelectChange = (selectedValue) => {
+    setDataNotification({ ...dataNotification, role: selectedValue === 'Quản lý' ? 'MANAGER' : selectedValue === 'Nhân Viên' ? 'STAFF' : 'VIEWER' })
+    handleGetUsersByRole(selectedValue === 'Quản lý' ? 'MANAGER' : selectedValue === 'Nhân Viên' ? 'STAFF' : 'VIEWER')
+  };
+  const handleSelectSend = (selectedValue) => {
+    { selectedValue === 'Cụ thể' ? setSelectSpecific(true) : setSelectSpecific(false) }
+    setDataNotification({ ...dataNotification, sendTo: selectedValue === 'Tất cả' ? 'ALL' : 'SPECIFIC' })
+  };
+  const handleSelectType = (selectedValue) => {
+    setDataNotification({ ...dataNotification, type: selectedValue })
+  };
+
+  // Xử lý cho Drawer
   const showLoading = () => {
-    handleGetNotification()
+    handleGetNotification(1)
     setOpen(true);
     setLoading(true);
 
@@ -28,70 +63,293 @@ function ListNotification() {
       setLoading(false);
     }, 2000);
   };
+  const showChildrenDrawer = () => {
+    setChildrenDrawer(true);
+  };
+  const onChildrenDrawerClose = () => {
+    setChildrenDrawer(false);
+  };
 
-  const handleGetNotification = async () => {
+  // Get API
+  const handleGetNotification = async (page) => {
     setLoadingNoti(true)
-    let resNotification = await getNotificationsApi()
-    if (resNotification && resNotification.data && resNotification.data.result) {
-      setNotifications(resNotification.data.result.content)
+    let resNotification = await getNotificationsApi(page, 8)
+    resNotification?.data?.result?.content?.length < 8 && setHasMore(false);
+    if (resNotification && resNotification?.data?.result?.content?.length > 0) {
+      setNotifications(prevNotifications => [...prevNotifications, ...resNotification.data.result.content])
+    } else {
+      setHasMore(false);
     }
     setLoadingNoti(false)
   }
-
   const handleGetOneNotification = async (notificationId) => {
     let resNotification = await getOneNotificationApi(notificationId)
     if (resNotification && resNotification.data && resNotification.data.result) {
       setNotification(resNotification.data.result)
     }
   }
+  const handleGetUsersByRole = async (role) => {
+    let resUsersByRole = await getAllUserByRoleApi(1, 100, role)
+    if (resUsersByRole && resUsersByRole.data && resUsersByRole.data.result) {
+      setUsersByRole(resUsersByRole.data.result.content)
+    }
+  }
+  const handleSendNotification = async () => {
+    let data = dataNotification
+    setLoadingSend(true)
+    let resNotification = user.role === 'ADMIN' ? await sendNotificationADApi(data) : await sendNotificationApi(data)
+    if (resNotification && resNotification.data && resNotification.data.result) {
+      setNotifications(resNotification.data.result.content)
+    }
+    setLoadingSend(false)
+  }
+
+  // Xử lý thêm xóa ds userByRole
+  const handleSelectUser = (value) => {
+    const res = selectUsersByRole.map(user => user.userId)
+    if (value && !selectUsersByRole.includes(value)) {
+      setSelectUsersByRole([...selectUsersByRole, value])
+      setDataNotification({ ...dataNotification, userIds: [...res, value.userId] })
+      setToggle(!toggle)
+    }
+  }
+  const handleRemoveUser = (user) => {
+    const searchUser = selectUsersByRole.find((item) => item.userName === user.userName);
+
+    if (searchUser) {
+      const updatedUsers = selectUsersByRole.filter(item => item.userName !== user.userName);
+      setSelectUsersByRole(updatedUsers);
+      setDataNotification({ ...dataNotification, userIds: updatedUsers.map(item => item.userId) })
+    }
+  };
+
+  const [readCount, setReadCount] = useState()
+  console.log("🚀 ~ ListNotification ~ readCount:", readCount)
+  const handleGetReadCount = async () => {
+    let resCount = await readCountApi()
+    if (resCount && resCount.data) {
+      setReadCount(resCount.data.result)
+    }
+  }
+
+  useEffect(() => {
+    handleGetReadCount()
+  }, [])
+
+  useEffect(() => {
+    { page > 1 && handleGetNotification(page) }
+  }, [page])
+
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
   return (
     <div className=''>
       <div type="" className='hover:bg-transparent active:text-none active:bg-none' onClick={showLoading}>
         <div className={`${user.role === "STAFF" ? "text-white" : ""} hover:opacity-70 opacity-100 flex flex-col relative px-4 cursor-pointer`}>
           <BellIcon className='h-6' />
           <span className='text-xs'>Thông báo</span>
-          <span className='absolute text-center -top-3 right-6 rounded-full bg-red-600 text-white h-5 w-5 text-[12px] leading-5'>2</span>
+          {readCount !== 0 && <span className='absolute text-center -top-3 right-6 rounded-full bg-red-600 text-white h-5 w-5 text-[12px] leading-5'>{readCount}</span>}
         </div>
       </div>
       <Drawer
         closable={false}
         destroyOnClose
-        title={<p className='text-2xl font-bold flex items-center gap-x-1 -mx-3 '> <BellIcon className='h-7' />Thông báo</p>}
+        title={<p className='text-2xl font-bold flex items-center gap-x-1 -mx-3'> <BellIcon className='h-7' />Thông báo</p>}
         placement="right"
         open={open}
         loading={loading}
-        onClose={() => setOpen(false)}
+        onClose={() => { setOpen(false); setNotifications([]); setHasMore(true); setPage(1) }}
+        width={450}
         className='relative'
       >
-        {!loadingNoti ?
-          notifications?.length !== 0 &&
-          <div className='rounded-lg bg-white -mx-4 -mt-5'>
-            {notifications.map(notif => (
-              <div className={`${notif.read === false ? 'bg-zinc-100' : ''} text-gray-900 hover:bg-gray-200 rounded-md py-2 pl-2 pr-8 cursor-default relative`}>
-                <div onClick={() => { handleGetOneNotification(notif?.notificationUserId) }} className='flex items-center gap-x-3'>
-                  <img className='h-16 w-16' src={bookingSC} alt="" />
-                  <div>
-                    <h3 className='text-base font-bold items-center'>{notif.notification.title}</h3>
-                    <p className='items-center'>{notif.notification.message}</p>
-                  </div>
-                  {/* <div>
-                    <h3 className='text-base font-bold items-center'>Giao dịch mới: Đặt vé</h3>
-                    <p className='items-center'>Vừa bán một vé thành công cho 2 ghế</p>
-                  </div> */}
-                  {notif.read === false && <div className='absolute right-1 h-3 w-3 bg-red-600 rounded-full'></div>}
+        <div className='absolute top-5 right-3' onClick={showChildrenDrawer}>
+          <PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />
+        </div>
+        <Drawer
+          title={
+            <div className='text-2xl font-bold flex items-center justify-between -mx-3'>
+              Gửi thông báo
+              <div onClick={() => handleSendNotification()}><PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />
+              </div>
+            </div>
+          }
+          width={400}
+          closable={false}
+          onClose={onChildrenDrawerClose}
+          open={childrenDrawer}
+          style={{ backgroundColor: '#f1f5f9' }}
+        >
+          <div className='-mx-3 mb-2 bg-slate-50 p-3 rounded-lg'>
+            <div className='flex justify-between gap-x-2'>
+              <div className="relative mb-4 w-1/2">
+                <label
+                  htmlFor=""
+                  className="block text-lg leading-6 text-gray-900"
+                >
+                  Gửi đến
+                </label>
+                <div className="relative mt-1 w-full cursor-default rounded-md bg-white py-1 pl-1 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                  {
+                    <SelectMenu onSelectChange={handleSelectChange} items={['Quản lý', 'Nhân Viên', 'Người dùng']} content={"Chọn chức vụ"} />
+                  }
                 </div>
               </div>
-            ))
+              <div className="relative mb-4 w-1/2">
+                <label
+                  htmlFor=""
+                  className="block text-lg leading-6 text-gray-900"
+                >
+                  Đối tượng
+                </label>
+                <div className="relative mt-1 w-full cursor-default rounded-md bg-white py-1 pl-1 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                  {
+                    <SelectMenu onSelectChange={handleSelectSend} items={['Tất cả', 'Cụ thể']} content={"Chọn đối tượng"} />
+                  }
+                </div>
+              </div>
+            </div>
+            {selectSpecific &&
+              <div className="w-full relative">
+                <label
+                  htmlFor=""
+                  className="block text-lg leading-6 text-gray-900"
+                >
+                  Danh sách các đối tượng
+                </label>
+                <div onClick={() => setToggle(!toggle)} className='absolute top-0 right-1 bg-slate-100 rounded-sm hover:bg-slate-200 cursor-pointer'>
+                  <ChevronUpDownIcon className='h-5 text-gray-400' />
+                </div>
+                <div
+                  className={`${selectUsersByRole.length <= 4 ? "h-10" : "h-12"} modal-body flex items-center overflow-x-auto w-full px-2 mt-1 py-0.5 text-sm text-black focus:outline-none rounded-md border-2`}
+                >
+                  {selectUsersByRole.length === 0 ?
+                    <span className='flex items-center text-lg text-gray-400'>Chọn đối tượng cụ thể</span>
+                    : selectUsersByRole.map((user) => (
+                      <div className='relative h-5 bg-green-200 rounded-md mx-0.5'>
+                        <div className='text-sm text-center px-1 h-5 w-20 cursor-default' >
+                          {user.userName}
+                        </div>
+                        <button className='absolute top-0 -right-3 text-red-400 pr-2'
+                          onClick={() => {
+                            handleRemoveUser(user)
+                          }}
+                        >
+                          <sup className='text-xs'><XMarkIcon className='h-4' /></sup>
+                        </button>
+                      </div>
+                    ))}
+                </div>
+                {toggle &&
+                  <div className='absolute top-7 right-0 bg-white shadow-xl border-2 rounded-xl w-48 z-[100]'>
+                    <ul className='modal-body overflow-y-auto max-h-60'>
+                      {usersByRole && usersByRole.map((userByRole) => (
+                        <li
+                          onClick={() => handleSelectUser(userByRole)}
+                          className='py-2 px-3 flex hover:bg-[#4F46E5] hover:text-white'
+                        >
+                          <span className='ml-3 cursor-default'>{userByRole.userName}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                }
+              </div>
             }
+            <div className="relative mt-4">
+              <label
+                htmlFor=""
+                className="block text-lg leading-6 text-gray-900"
+              >
+                Loại thông báo
+              </label>
+              <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
+                {
+                  <SelectMenu onSelectChange={handleSelectType} items={['BOOKING_SUCCESS', 'TICKET_REMINDER', 'TICKET_STATUS', 'PROMOTION', 'REVIEW', 'LOW_STOCK', 'ORTHER']} content={"Chọn loại thông báo"} />
+                }
+              </div>
+            </div>
           </div>
+          <div className='-mx-3 mt-2 bg-slate-50 p-3 rounded-lg'>
+            <div className="relative mb-4">
+              <label
+                htmlFor=""
+                className="block text-lg leading-6 text-gray-900"
+              >
+                Tiêu đề
+              </label>
+              <input
+                onChange={e => {
+                  setDataNotification({ ...dataNotification, title: e.target.value })
+                  // clearError('title')
+                }}
+                placeholder='Nhập tiêu đề'
+                type="text"
+                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+              // defaultValue={oneMovie.title}
+              />
+            </div>
+            <div className="my-4">
+              <label
+                htmlFor=""
+                className="block text-lg leading-6 text-gray-900"
+              >
+                Chi tiết thông báo
+              </label>
+              <textarea
+                onChange={e => {
+                  setDataNotification({ ...dataNotification, message: e.target.value })
+                  // clearError('desc')
+                }}
+                type="text"
+                placeholder='Nhập mô tả'
+                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                // defaultValue={oneMovie.desc}
+                rows={5}
+              />
+            </div>
+          </div>
+        </Drawer>
+        {!loadingNoti ?
+          notifications?.length !== 0 ?
+            <div className='rounded-lg bg-white -mx-4 -mt-5'>
+              {notifications.map(notif => (
+                <div className={`${notif.read === false ? 'bg-zinc-100' : ''} text-gray-900 hover:bg-gray-200 rounded-md py-2 pl-2 pr-8 cursor-default relative`}>
+                  <div
+                    onClick={() => {
+                      if (notif?.read === false) { setReadCount(pre => pre - 1); handleGetReadCount(); }
+                      handleGetOneNotification(notif?.notificationUserId)
+                      setShowDetailNotification(true)
+                      setOpen(false)
+                      setNotifications([]);
+                      setHasMore(true)
+                      setPage(1)
+                    }}
+                    className='flex items-center gap-x-3'
+                  >
+                    <img className='h-16 w-16' src={bookingSC} alt="" />
+                    <div>
+                      <h3 className='text-base font-bold items-center'>{notif.notification.title}</h3>
+                      <p className='items-center'>{notif.notification.message}</p>
+                    </div>
+                    {notif.read === false && <div className='absolute right-1 h-3 w-3 bg-red-600 rounded-full'></div>}
+                  </div>
+                </div>
+              ))}
+              {hasMore && <button className='w-full' onClick={loadMore}><span className='text-center'>Xem thêm</span></button>}
+            </div> : <span className='font-light text-sm flex items-center justify-center'>Chưa có thông báo</span>
           :
           <div className='absolute top-10 left-0 right-0 bottom-0'>
             <LoadNotification />
           </div>
         }
       </Drawer>
-
-    </div>
+      {showDetailNotification &&
+        <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-50'>
+          <DetailNotification notification={notification} setShowDetailNotification={setShowDetailNotification} />
+        </div>
+      }
+    </div >
   );
 
 }

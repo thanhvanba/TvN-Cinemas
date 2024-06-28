@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllUserApi, getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi, getFinanceAllCinemaApi, getDetailFinanceApi } = AdminService()
+  const { getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi, getFinanceAllCinemaApi, getDetailFinanceApi } = AdminService()
   const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi, getTopUsersManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])

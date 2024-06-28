@@ -268,7 +268,7 @@ function DetailSales() {
                                     const isTimeInFuture = isAfter(dateTime, currentDateTime);
                                     return (
                                         <li
-                                            className={`${isTimeInFuture ? 'text-gray-800 bg-white hover:bg-slate-100' : 'text-gray-500 bg-gray-300'} border-[3px] rounded-xl px-4 py-2 font-semibold cursor-pointer opacity-90 ${selectSchedule.startTime === item.startTime ? "border-orange-500" : ""} `}
+                                            className={`${isTimeInFuture ? 'text-emerald-700 bg-white hover:bg-slate-100' : 'text-gray-500 bg-gray-300'} border-[3px] rounded-xl px-4 py-2 font-semibold cursor-pointer opacity-90 ${selectSchedule.startTime === item.startTime ? "border-orange-500" : ""} `}
                                             onClick={() => {
                                                 setSelectSchedule(item)
                                                 setCheckIsTimeInFuture(isTimeInFuture);

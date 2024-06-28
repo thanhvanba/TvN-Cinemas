@@ -381,6 +381,17 @@ const UserService = () => {
             `${process.env.REACT_APP_HOST_API_KEY}/user/notification/${notificationId}`
         );
     }
+    const readCountApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/user/notifications/notRead`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                }
+            },
+        );
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -409,7 +420,8 @@ const UserService = () => {
         reviewMovieApi,
         cancelTicketApi,
         getNotificationsApi,
-        getOneNotificationApi
+        getOneNotificationApi,
+        readCountApi
     }
 }
 

@@ -5,6 +5,7 @@ import { LoginContext } from '../../../context/LoginContext';
 import UserService from '../../../service/UserService';
 import Modal from '../../../utils/Modal';
 import { useNavigate } from 'react-router-dom';
+import Load from '../../../components/Load';
 
 const ReviewMovie = ({ movie, onToggle }) => {
     const { getShowtimeByMovieApi, reviewMovieApi } = UserService()
@@ -13,6 +14,7 @@ const ReviewMovie = ({ movie, onToggle }) => {
     const navigate = useNavigate()
 
     const [toggleRV, setToggleRV] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [modalStates, setModalStates] = useState(false);
     const [hoverRating, setHoverRating] = useState(0);
     const [rating, setRating] = useState(0);
@@ -26,7 +28,10 @@ const ReviewMovie = ({ movie, onToggle }) => {
     };
 
     const handleReviewMovie = async (comment, rating, movieId) => {
+        setLoading(true)
         await reviewMovieApi(comment, rating, movieId)
+        setLoading(false)
+        handleToggle()
     }
     return (
         <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50'>
@@ -123,15 +128,14 @@ const ReviewMovie = ({ movie, onToggle }) => {
                                 Đóng
                             </button>
                             <button
-                                className="w-full md:w-1/2 p-2 md:p-4 text-sm bg-cyan-600 font-medium uppercase" type='submit'
+                                className="w-full flex items-center justify-center md:w-1/2 p-2 md:p-4 text-sm bg-cyan-600 font-medium uppercase" type='submit'
                                 onClick={() => {
-                                    (!user.auth) ?
-                                        handleModalStates() :
-                                        handleReviewMovie(comment, rating, movie.movieId)
-                                    handleToggle()
+                                    !user.auth ?
+                                        handleModalStates()
+                                        : handleReviewMovie(comment, rating, movie.movieId)
                                 }}
                             >
-                                <a>Xác nhận</a>
+                                {loading ? <Load /> : 'Xác nhận'}
                             </button>
                         </div>
                     </div>

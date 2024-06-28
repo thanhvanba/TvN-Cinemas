@@ -16,6 +16,7 @@ import Trailer from "../Trailer";
 import { LoginContext } from "../../context/LoginContext";
 
 const HomeSlider = ({ movies }) => {
+    console.log("🚀 ~ HomeSlider ~ movies:", movies)
     const { user } = useContext(LoginContext)
     const navigate = useNavigate()
     const [index, setIndex] = useState(0)
@@ -120,63 +121,76 @@ const HomeSlider = ({ movies }) => {
 
     return (
         <div className="slider-container">
-            <Slider {...settings} beforeChange={handleAfterChange}>
-                {movies.map((movie) => (
-                    <div
-                        onClick={() => {
-                            user.role === "STAFF" ? navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })
-                                : navigate(`/movie/${movie.movieId}`)
+            {movies.length > 0 &&
+                <>
+                    <Slider {...settings} beforeChange={handleAfterChange}>
+                        {movies.map((movie) => (
+                            <div
+                                onClick={() => {
+                                    user.role === "STAFF" ? navigate(`/staff/sell-ticket/${movie.movieId}`, { state: { movieName: movie.title } })
+                                        : navigate(`/movie/${movie.movieId}`)
 
-                        }}
-                        className='cursor-pointer outline-none h-[94vh] relative'
-                        key={movie.id}
-                    >
-                        <img className='h-full w-full' src={movie.slider} alt={movie.title} />
-                        <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-60 z-40"></div>
+                                }}
+                                className='cursor-pointer outline-none h-[94vh] relative'
+                                key={movie.id}
+                            >
+                                <img className='h-full w-full' src={movie?.slider} alt={movie?.title} />
+                                <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-60 z-40"></div>
 
-                        {!toggle &&
-                            <>
-                                <div className="absolute top-28 right-14 left-14 z-50 flex">
-                                    <div className="w-2/5 text-gray-50">
-                                        {movie.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-6xl font-bold pt-14 uppercase">{movie.title}</h2>}
-                                        <div data-aos="zoom-in-left" data-aos-duration="2000" className="py-4 flex items-center">
-                                            <StarIcon className="h-6 w-6 text-yellow-400" />
-                                            {movie.rating && <div className="font-bold pl-4 text-orange-300 w-1/2">{movie.rating}/5</div>}
-                                            {movie.duration && <p className="font-bold"><span className="text-red-600">Thời lượng: </span>{movie.duration}'</p>}
+                                {!toggle &&
+                                    <>
+                                        <div className="absolute top-28 right-14 left-14 z-50 flex">
+                                            <div className="w-2/5 text-gray-50">
+                                                {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-6xl font-bold pt-14 uppercase">{movie?.title}</h2>}
+                                                <div data-aos="zoom-in-left" data-aos-duration="2000" className="py-4 flex items-center">
+                                                    <StarIcon className="h-6 w-6 text-yellow-400" />
+                                                    {movie?.rating && <div className="font-bold pl-4 text-orange-300 w-1/2">{movie?.rating}/5</div>}
+                                                    {movie?.duration && <p className="font-bold"><span className="text-red-600">Thời lượng: </span>{movie?.duration}'</p>}
+                                                </div>
+                                                <div data-aos="fade-left" data-aos-duration="1500" >
+                                                    {movie?.desc && <TruncatedContent content={movie?.desc} maxLength={280} />}
+                                                </div>
+                                                <div data-aos="fade-right" data-aos-duration="1500" className="py-4">
+                                                    {movie?.genres?.length !== 0 &&
+                                                        <p className="relative pl-24 font-bold">
+                                                            <span className="absolute top-0 left-0 text-red-600">Thể loại: </span>
+                                                            {
+                                                                movie?.genres.length !== 0 ?
+                                                                    movie?.genres.map((genres, index) => (
+                                                                        <span key={index}>{genres.name}{index < movie.genres.length - 1 ? ', ' : ''}</span>
+                                                                    )) :
+                                                                    <span>N/A</span>
+                                                            }
+                                                        </p>
+                                                    }
+                                                    {movie?.actor && <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Diễn viên: </span>  <TruncatedContent content={movie?.actor} maxLength={70} /></p>}
+                                                    {movie?.director && <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Tác giả: </span>{movie?.director}</p>}
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <div data-aos="fade-left" data-aos-duration="1500" >
-                                            {movie.desc && <TruncatedContent content={movie.desc} maxLength={280} />}
-                                        </div>
-                                        <div data-aos="fade-right" data-aos-duration="1500" className="py-4">
-                                            {movie?.genres?.length !== 0 && <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Thể loại: </span>{movie.genres}</p>}
-                                            {movie.actor && <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Diễn viên: </span>  <TruncatedContent content={movie.actor} maxLength={70} /></p>}
-                                            {movie.director && <p className="relative pl-24 font-bold"><span className="absolute top-0 left-0 text-red-600">Tác giả: </span>{movie.director}</p>}
-                                        </div>
-                                    </div>
 
-                                </div>
+                                        <button
+                                            data-aos="flip-right"
+                                            data-aos-duration="3000"
+                                            className="absolute bottom-[5%] left-14 z-50 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
+                                            type="button"
+                                            onClick={(e) => { e.stopPropagation(); openTrailer() }}
+                                        >
+                                            Xem trailer
+                                        </button>
+                                    </>
+                                }
+                            </div>
 
-                                <button
-                                    data-aos="flip-right"
-                                    data-aos-duration="3000"
-                                    className="absolute bottom-[5%] left-14 z-50 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); openTrailer() }}
-                                >
-                                    Xem trailer
-                                </button>
-                            </>
+                        ))
                         }
+                    </Slider >
+                    <div className="z-[60]">
+                        <Trailer showTrailer={showTrailer} closeTrailer={closeTrailer} movie={movies[index]} />
                     </div>
-
-                ))
-                }
-            </Slider >
-
-            <div className="z-[60]">
-                <Trailer showTrailer={showTrailer} closeTrailer={closeTrailer} movie={movies[index]} />
-            </div>
-
+                </>
+            }
         </div >
     );
 }

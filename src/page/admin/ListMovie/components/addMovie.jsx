@@ -443,13 +443,16 @@ const AddMovie = () => {
                                             >
                                                 Thể loại {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                             </label>
+                                            <div onClick={() => setToggle(!toggle)} className='absolute top-0 right-1 bg-slate-100 rounded-sm hover:bg-slate-200 cursor-pointer'>
+                                                <ChevronUpDownIcon className='h-5 text-gray-400' />
+                                            </div>
                                             <div
-                                                className={`${selectGenres.length <= 2 ? "h-10" : "h-14"} flex items-center overflow-x-auto max-w-[200px] px-2 py-0.5 text-sm text-black focus:outline-none rounded-md border-2`}
-                                                placeholder={'Chọn ngày phát hành'}
+                                                className={`${selectGenres.length <= 2 ? "h-10" : "h-12"} modal-body flex items-center overflow-x-auto max-w-[200px] px-2 py-0.5 text-sm text-black focus:outline-none rounded-md border-2`}
                                             >
                                                 {selectGenres.length === 0 ?
                                                     <span className='flex items-center text-lg text-gray-400'>Chọn thể loại</span>
-                                                    : selectGenres.map((genres) => (
+                                                    :
+                                                    selectGenres.map((genres) => (
                                                         <div className='relative h-5 bg-green-200 rounded-md mx-0.5'>
                                                             <div className='text-sm text-center px-1 h-5 w-20 cursor-default' >
                                                                 {genres.name}
@@ -464,79 +467,78 @@ const AddMovie = () => {
                                                         </div>
                                                     ))}
                                             </div>
-                                            <div onClick={() => setToggle(!toggle)} className='absolute top-0 right-1 bg-slate-100 rounded-sm hover:bg-slate-200 cursor-pointer'>
-                                                <ChevronUpDownIcon className='h-5 text-gray-400' />
-                                            </div>
                                             {toggle &&
-                                                <ul className='absolute top-6 bg-white shadow-xl border-2 rounded-xl w-48 overflow-y-auto max-h-60'>
-                                                    <li
+                                                <div className='absolute bg-white shadow-xl border-2 rounded-xl w-48 '>
+                                                    <p
                                                         onClick={() => setToggleAddGenres(!toggleAddGenres)}
-                                                        className='sticky top-0 py-2 px-3 bg-white hover:bg-slate-200 cursor-pointer border-b-2'
+                                                        className='sticky top-0 py-2 px-3 bg-white cursor-pointer border-b-2'
                                                     >
                                                         <p className='flex gap-x-1 ml-1 items-center font-medium'>
                                                             <PlusCircle className='h-5 text-blue-600' />Thêm thể loại
                                                         </p>
-                                                    </li>
-                                                    {arrGenres && arrGenres.map((genres) => (
-                                                        <li
-                                                            onClick={() => handleSelectGenres(genres)}
-                                                            className='py-2 px-3 flex hover:bg-[#4F46E5] hover:text-white'
-                                                        >
-                                                            <span className='ml-3 cursor-default'>{genres.name}</span>
-                                                        </li>
-                                                    ))}
+                                                    </p>
+                                                    <ul className='modal-body top-6 overflow-y-auto max-h-60'>
+                                                        {arrGenres && arrGenres.map((genres) => (
+                                                            <li
+                                                                onClick={() => handleSelectGenres(genres)}
+                                                                className='py-2 px-3 flex hover:bg-[#4F46E5] hover:text-white'
+                                                            >
+                                                                <span className='ml-3 cursor-default'>{genres.name}</span>
+                                                            </li>
+                                                        ))}
 
-                                                    {toggleAddGenres &&
-                                                        <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-20'>
-                                                            <div className="relative w-1/3 z-10 overflow-hidden bg-slate-300 rounded-md">
-                                                                <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Thêm thể loại phim</h4>
-                                                                <div className=' rounded-xl bg-slate-100 w-1/2 z-10'>
-                                                                    <button
-                                                                        type="button"
-                                                                        className="absolute top-1 right-1 z-50"
-                                                                    >
-                                                                        <span className="sr-only">Close menu</span>
-                                                                        <div
-                                                                            className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
-                                                                            onClick={() => setToggleAddGenres(false)}
-                                                                        >
-                                                                            <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
-                                                                        </div>
-                                                                    </button>
-                                                                </div>
-                                                                <div className="relative px-4 pb-2 md:px-6 md:pb-2 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
-                                                                    <div className="flex items-center my-4">
-                                                                        <label
-                                                                            htmlFor=""
-                                                                            className="block w-[24%] text-lg font-medium leading-6 text-gray-900"
-                                                                        >
-                                                                            Tên thể loại
-                                                                        </label>
-                                                                        <input
-                                                                            onChange={e => setGenres(e.target.value)}
-                                                                            type="text"
-                                                                            className="block w-[76%] px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                                        // value={fare.price}
-                                                                        />
-                                                                    </div>
-                                                                    <div className='flex justify-end'>
+                                                        {toggleAddGenres &&
+                                                            <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-20'>
+                                                                <div className="relative w-1/3 z-10 overflow-hidden bg-slate-300 rounded-md">
+                                                                    <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Thêm thể loại phim</h4>
+                                                                    <div className=' rounded-xl bg-slate-100 w-1/2 z-10'>
                                                                         <button
-                                                                            className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                                                            type='button'
-                                                                            // disabled={loading['change']}
-                                                                            onClick={() => {
-                                                                                hadleCreateGenres(genres)
-                                                                            }}
+                                                                            type="button"
+                                                                            className="absolute top-1 right-1 z-50"
                                                                         >
-                                                                            {loading['confirm'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                                                            &nbsp;Xác nhận
+                                                                            <span className="sr-only">Close menu</span>
+                                                                            <div
+                                                                                className='p-1 border-2 rounded-lg shadow-inner hover:bg-red-600 hover:text-zinc-50 text-red-700'
+                                                                                onClick={() => setToggleAddGenres(false)}
+                                                                            >
+                                                                                <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
+                                                                            </div>
                                                                         </button>
+                                                                    </div>
+                                                                    <div className="relative px-4 pb-2 md:px-6 md:pb-2 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                                                                        <div className="flex items-center my-4">
+                                                                            <label
+                                                                                htmlFor=""
+                                                                                className="block w-[24%] text-lg font-medium leading-6 text-gray-900"
+                                                                            >
+                                                                                Tên thể loại
+                                                                            </label>
+                                                                            <input
+                                                                                onChange={e => setGenres(e.target.value)}
+                                                                                type="text"
+                                                                                className="block w-[76%] px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                                            // value={fare.price}
+                                                                            />
+                                                                        </div>
+                                                                        <div className='flex justify-end'>
+                                                                            <button
+                                                                                className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
+                                                                                type='button'
+                                                                                // disabled={loading['change']}
+                                                                                onClick={() => {
+                                                                                    hadleCreateGenres(genres)
+                                                                                }}
+                                                                            >
+                                                                                {loading['confirm'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                                                                &nbsp;Xác nhận
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    }
-                                                </ul>
+                                                        }
+                                                    </ul>
+                                                </div>
                                             }
                                             {errors.genres && <p className="text-red-600">{errors.genres}</p>}
                                         </div>

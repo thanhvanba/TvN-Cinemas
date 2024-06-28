@@ -9,7 +9,7 @@ const CreateSeat = (rows, seatsPerRow, listSeatBooked) => {
         for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
             const seatLabel = String.fromCharCode(65 + row - 1) + seatNum;
             let type;
-            const isSeatBooked = listSeatBooked.find(
+            const isSeatBooked = listSeatBooked != undefined && listSeatBooked.find(
                 item => parseInt(item.row) === row && parseInt(item.column) === seatNum
             );
             if (isSeatBooked) {

@@ -2,7 +2,7 @@ import React from 'react'
 
 function LoadNotification() {
     return (
-        <div class="block  shadow rounded-md p-4 max-w-sm w-full mx-auto">
+        <div class="block shadow rounded-md p-4 max-w-md w-full mx-auto">
             {Array.from({ length: 7 }).map(() => (
                 <div class="animate-pulse flex space-x-4 py-4">
                     <div class="rounded-full bg-slate-200 h-16 w-16"></div>

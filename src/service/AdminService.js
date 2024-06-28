@@ -390,7 +390,7 @@ const AdminService = () => {
             }
         );
     };
-    const getAllUserApi = async (pageIndex, pageSize) => {
+    const getAllUserByRoleApi = async (pageIndex, pageSize, role) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/users`,
@@ -401,6 +401,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    role: role
                 },
             }
         );
@@ -938,6 +939,26 @@ const AdminService = () => {
             },
         );
     };
+    const sendNotificationADApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/admin/notification/send`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         addManagerApi,
         addCinemaApi,
@@ -948,7 +969,7 @@ const AdminService = () => {
         deleteMovieApi,
         updateMovieApi,
         addMovieApi,
-        getAllUserApi,
+        getAllUserByRoleApi,
         getOneUserApi,
         getAllShowtimeApi,
         getAllRoomApi,
@@ -991,7 +1012,8 @@ const AdminService = () => {
         createGenresApi,
         deleteGenresApi,
         getListGenresApi,
-        getStockEntriesADApi
+        getStockEntriesADApi,
+        sendNotificationADApi
     }
 }
 

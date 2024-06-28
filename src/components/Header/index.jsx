@@ -18,25 +18,13 @@ import {
   SquaresPlusIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
-  UserIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, EyeIcon, EyeSlashIcon, UserIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
 
 import logo from "../../images/logo.png"
 import Search from '../Search'
-
-
-const products = [
-  { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
-  { name: 'Engagement', description: 'Speak directly to your customers', href: '#', icon: CursorArrowRaysIcon },
-  { name: 'Security', description: 'Your customers’ data will be safe and secure', href: '#', icon: FingerPrintIcon },
-  { name: 'Integrations', description: 'Connect with third-party tools', href: '#', icon: SquaresPlusIcon },
-  { name: 'Automations', description: 'Build strategic funnels that will convert', href: '#', icon: ArrowPathIcon },
-]
-const callsToAction = [
-  { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
-  { name: 'Contact sales', href: '#', icon: PhoneIcon },
-]
+import Load from '../Load'
+import ListNotification from '../ListNotification'
 
 const Header = () => {
   const { loginApi, logoutApi } = AuthService();
@@ -54,6 +42,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false)
   const [isShowPassword, setIsShowPassword] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [functionUser, setFunctionUser] = useState(false)
 
   const { user } = useContext(LoginContext);
 
@@ -138,6 +127,7 @@ const Header = () => {
   useEffect(() => {
     handleCheckPathname(pathname)
     setMobileMenuOpen(false)
+    setFunctionUser(false)
   }, [pathname]);
   return (
     <header className="header">
@@ -222,7 +212,6 @@ const Header = () => {
               </div>
 
               <div className="py-6">
-
                 {
                   user && user.auth === false ?
                     <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
@@ -329,98 +318,108 @@ const Header = () => {
               }
             </div>
 
-            {/* <Search searchFunction={hannd} /> */}
-            {
-              user && user.auth === false ?
-                <div className='flex'>
-                  <button
-                    onClick={() => changeTab("/showtimes")}
-                    className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none"
-                    type='submit'
-                  >
-                    Mua Vé
-                  </button>
-                  <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-2xl xl:rounded-s-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none "
-                  >
-                    Đăng Nhập
-                  </Popover.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="opacity-0 translate-y-1"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="transition ease-in duration-150"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 translate-y-1"
-                  >
-                    <Popover.Panel
-                      className="absolute top-full right-0 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
-                      <div className="px-6 py-4 backdrop-blur-sm relative">
-                        <form action="">
-                          <div className="relative my-2">
-                            <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
-                            <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
-                            >
-                              User Name
-                            </label>
-                          </div>
-                          <div className="relative my-2">
-                            <input
-                              type={isShowPassword === true ? "text" : "password"}
-                              onChange={e => usePassword(e.target.value)}
-                              className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
-                              placeholder=""
-                            />
-                            <div onClick={() => setIsShowPassword(!isShowPassword)}>
-                              {
-                                isShowPassword === false ?
-                                  <EyeSlashIcon
-                                    className='h-6 w-6 text-white absolute right-0 top-5'
-                                  />
-                                  : <EyeIcon
-                                    className='h-6 w-6 text-white absolute right-0 top-5'
-                                  />
-                              }
-                            </div>
-                            <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
-                            >
-                              Password
-                            </label>
-                          </div>
-                          <div className="flex justify-between mt-4 items-center">
-                            <button onClick={handleSubmit} className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
-                            >
-                              {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                              &nbsp;Đăng nhập
-                            </button>
-                            <a onClick={handleToggle}>Quên mật khẩu</a>
-                          </div>
-                          <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+            {user && user.auth === false ?
+              <div className='flex'>
+                <button
+                  onClick={() => changeTab("/showtimes")}
+                  className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none"
+                  type='submit'
+                >
+                  Mua Vé
+                </button>
+                <Popover.Button className="my-4 p-4 text-sm font-bold uppercase rounded-2xl xl:rounded-s-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none "
+                >
+                  Đăng Nhập
+                </Popover.Button>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-200"
+                  enterFrom="opacity-0 translate-y-1"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-150"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                >
+                  <Popover.Panel
+                    className="absolute top-full right-0 z-10 max-w-md overflow-hidden bg-cyan-950 rounded-md">
+                    <div className="px-6 py-4 backdrop-blur-sm relative">
+                      <form action="">
+                        <div className="relative my-2">
+                          <input onChange={e => useUserName(e.target.value)} className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer" placeholder="" />
+                          <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
                           >
-                            Đăng ký thành viên
+                            User Name
+                          </label>
+                        </div>
+                        <div className="relative my-2">
+                          <input
+                            type={isShowPassword === true ? "text" : "password"}
+                            onChange={e => usePassword(e.target.value)}
+                            className="block w-72 py-2.5 px-0 text-xl text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
+                            placeholder=""
+                          />
+                          <div onClick={() => setIsShowPassword(!isShowPassword)}>
+                            {
+                              isShowPassword === false ?
+                                <EyeSlashIcon
+                                  className='h-6 w-6 text-white absolute right-0 top-5'
+                                />
+                                : <EyeIcon
+                                  className='h-6 w-6 text-white absolute right-0 top-5'
+                                />
+                            }
+                          </div>
+                          <label htmlFor="" className="absolute text-xl text-white duration-300 transform -translate-y-6 scale-75 top-3 -z- origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:darl:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peeer-focus:scale-75 peer-focus:-translate-y-6 "
+                          >
+                            Password
+                          </label>
+                        </div>
+                        <div className="flex justify-between mt-4 items-center">
+                          <button onClick={handleSubmit} className="w-1/2 text-[18px] rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                          >
+                            {loading && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                            &nbsp;Đăng nhập
                           </button>
-                        </form>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
+                          <a onClick={handleToggle}>Quên mật khẩu</a>
+                        </div>
+                        <button onClick={() => { changeTab('/signup') }} className="w-full mb-4 text-[18px] mt-4 rounded-xl hover:bg-white hover:text-emerald-800 bg-emerald-600 py-2 transition-colors duration-300" type='submit'
+                        >
+                          Đăng ký thành viên
+                        </button>
+                      </form>
+                    </div>
+                  </Popover.Panel>
+                </Transition>
+              </div>
+              :
+              <div className='relative w-52 flex items-center justify-between'>
+                <div className='w-24'>
+                  <ListNotification />
                 </div>
-                :
-                <div className='flex items-center'>
-                  <p
-                    className="cursor-pointer border-emerald-400 border-r-2 pr-2 font-bold uppercase hover:text-emerald-800 text-white"
-                    onClick={() => { changeTab('/user/info') }}
-                  >
-                    {user.credentialId}
-                  </p>
-                  <button
-                    onClick={handleLogoutApi}
-                    className="ml-2 flex items-center p-1 text-sm font-bold uppercase rounded-lg hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300"
-                    type='submit'
-                  >
-                    {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                    <ArrowRightOnRectangleIcon className='w-6 h-6' />
-                  </button>
+                <div
+                  className="cursor-pointer font-bold uppercase hover:text-emerald-800 text-white text-right"
+                  onClick={() => { setFunctionUser(!functionUser) }}
+                >
+                  {user.credentialId}
                 </div>
+                {functionUser &&
+                  <div className='absolute flex flex-col top-14 right-0 w-32 bg-[#21312d] rounded-xl p-3 gap-y-2'>
+                    <p
+                      className="flex cursor-pointer font-bold text-sm hover:text-emerald-800 text-white"
+                      onClick={() => { changeTab('/user/info') }}
+                    >
+                      <UserIcon className='h-6 w-6' />&nbsp; Hồ sơ
+                    </p>
+                    <button
+                      onClick={handleLogoutApi}
+                      className="flex items-center text-sm font-bold rounded-lg hover:text-emerald-800 text-white transition-colors duration-300"
+                      type='submit'
+                    >
+                      {loading ? <Load /> : <ArrowRightOnRectangleIcon className='w-6 h-6' />} &nbsp; Đăng xuất
+                    </button>
+                  </div>
+                }
+              </div>
             }
             {toggle &&
               <div className='absolute z-50 -left-80 top-20 bg-slate-200 p-4 rounded-md w-96'>
@@ -458,7 +457,7 @@ const Header = () => {
               onClick={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
-              {!mobileMenuOpen && <Bars3Icon className="h-6 w-6" aria-hidden="true" />}
+              {!mobileMenuOpen && <Bars3Icon className="h-4 w-4" aria-hidden="true" />}
             </button>
           </div>
         </div>

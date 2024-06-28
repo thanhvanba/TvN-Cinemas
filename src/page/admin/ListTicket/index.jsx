@@ -22,7 +22,7 @@ import StaffService from '../../../service/StaffService';
 
 const ListTicket = () => {
   const { user } = useContext(LoginContext)
-  const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllBookingApi, getAllUserApi, confirmTicketApi } = AdminService()
+  const { getAllRoomApi, deleteFoodApi, getAllTicketApi, getAllBookingApi, confirmTicketApi } = AdminService()
   const { getAllBookingStaffApi } = StaffService()
   const { getTicketDetailApi } = UserService()
 
@@ -263,112 +263,124 @@ const ListTicket = () => {
         {
           toggle && (
             <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-50'>
-              <div className=" w-[30%] z-10 overflow-hidden bg-slate-300 rounded-md right-1/2 ">
+              <div className="w-[30%] z-10 overflow-hidden bg-slate-300 rounded-md right-1/2 ">
                 <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
-
-                <div className="relative px-4 pb-2 md:px-6 md:pb-2 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
-                  <div className='flex justify-center absolute mx-auto w-full h-full top-0 right-0 z-10'>
-                    {loading['ticket'] && <Loading />}
-                  </div>
-                  <div className='space-y-4'>
-                    <div>
-                      <p className="text-3xl pt-4 text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
-                    </div>
-
-                    <div>
-                      <p className='font-light'>Ngày giờ chiếu</p>
-                      <div className="flex items-center space-x-2 text-xl">
-                        <span className="font-bold text-orange-500">{ticketDetail.startTime}</span>
-                        <span>-</span>
-                        <span className="font-bold">{FormatDataTime(ticketDetail.date).date}</span>
-                        <span>({ticketDetail.duration} phút)</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className='font-light'>Rạp chiếu</p>
-                      <p className="font-semibold text-xl">{ticketDetail.cinemaName}</p>
-                    </div>
-
-                    <div className="flex gap-10">
-                      <div className="w-3/5">
-                        <p className='font-light'>Ghế</p>
-                        <p className="font-semibold text-xl">{ticketDetail && ticketDetail.seats && ticketDetail.seats.map(seat => (
-                          <span>&nbsp;{String.fromCharCode(65 + parseInt(seat.row, 10) - 1) + seat.column},</span>
-                        ))}</p>
-                      </div>
-
-                      <div className='w-2/5'>
-                        <p className='font-light'>Phòng chiếu</p>
-                        <p className="font-semibold text-xl">{ticketDetail.roomName}</p>
-                      </div>
-                    </div>
-
-                    <div className='flex gap-10'>
-                      <div className='w-3/5'>
-                        <p className='font-light'>Bắp nước</p>
-                        <p className="font-semibold text-xl w-full inline-block">
-                          {ticketDetail.foods && ticketDetail.foods.map((food, index) => (
-                            <p key={index}>&nbsp;{food},</p>
-                          ))}
-                        </p>
-                      </div>
-                      <div className='w-2/5'>
-                        <p className='font-light'>Giá tiền</p>
-                        <p className="font-semibold text-3xl text-cyan-600">{ticketDetail.price}</p>
-                      </div>
-                    </div>
-                  </div>
+                <div className='flex justify-center absolute mx-auto w-full h-full top-0 right-0 z-10'>
+                  {loading['ticket'] && <Loading />}
                 </div>
+                {!loading['ticket'] ?
+                  <>
+                    <div className="relative px-4 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                      <div className='p-4 space-y-4'>
+                        <div>
+                          <p className="text-3xl text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
+                        </div>
+                        <div>
+                          <p className='font-light'>Ngày giờ chiếu</p>
+                          <div className="flex items-center space-x-2 text-xl">
+                            <span className="font-bold text-orange-500">{ticketDetail.startTime}</span>
+                            <span>-</span>
+                            <span className="font-bold">{FormatDataTime(ticketDetail.date).date}</span>
+                            <span>({ticketDetail.duration} phút)</span>
+                          </div>
 
-                <div className='border-t-2 border-slate-400 p-4'>
-                  <div className='flex justify-between'>
-                    <p className='font-light'>Thời gian đặt vé: </p>
-                    <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>
-                  </div>
-                  <div className='flex justify-between'>
-                    <p className='font-light'>Mã đặt vé: </p>
-                    <p className='text-xl'>{ticketDetail.bookingId}</p>
-                  </div>
-                  <div className='flex items-start justify-between'>
-                    <p className='font-light'>Khách hàng: </p>
-                    {ticketDetail.userName === null || ticketDetail.fullName === null ?
-                      <p className='text-xl'>Khách vãng lai</p> :
-                      <div className='text-center'>
-                        <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>
-                        <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>
+                        </div>
+                        <div>
+                          <p className='font-light'>Rạp chiếu</p>
+                          {ticketDetail.cinemaName && <p className="font-semibold text-xl">{ticketDetail.cinemaName}</p>}
+                        </div>
+
+                        <div className="flex items-center gap-10">
+                          <div className="w-3/5">
+                            <p className='font-light'>Ghế</p>
+                            {ticketDetail?.seats &&
+                              <p className="font-semibold text-xl">
+                                {ticketDetail && ticketDetail.seats && ticketDetail.seats.map((seat, index) => (
+                                  <span key={index}>{String.fromCharCode(65 + parseInt(seat.row, 10) - 1) + seat.column}{index < ticketDetail.seats.length - 1 ? ', ' : ''}</span>
+                                ))}
+                              </p>
+                            }
+                          </div>
+                          <div className='w-2/5'>
+                            <p className='font-light'>Phòng chiếu</p>
+                            {ticketDetail.roomName && <p className="font-semibold text-xl">{ticketDetail.roomName}</p>}
+                          </div>
+                        </div>
+                        <div className='flex items-start gap-10'>
+                          <div className='w-3/5'>
+                            <p className='font-light'>Bắp nước</p>
+                            <p className="font-semibold text-xl">
+                              {ticketDetail.foods && ticketDetail.foods.map((food, index) => (
+                                <p key={index}>{food}</p>
+                              ))}
+                            </p>
+                          </div>
+                          <div className='w-2/5'>
+                            <p className='font-light'>Giá tiền</p>
+                            {ticketDetail.price && <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(ticketDetail.price)}<sup>đ</sup></p>}
+                          </div>
+                        </div>
                       </div>
-                    }
-                  </div>
-                </div>
+                    </div>
 
-                <div className='p-4 flex justify-end'>
-                  <button
-                    className="w-1/4 text-[18px] rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 z-50"
-                    type='button'
-                    disabled={loading['change']}
-                    onClick={() => {
-                      handleOpenModal()
-                      setTicketDetail([])
-                    }}
-                  >
-                    {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                    &nbsp;Thoát
-                  </button>
-                  {ticketDetail.status === "UNCONFIRMED" &&
-                    <button
-                      className="w-1/3 ml-2 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300 z-50"
-                      type='button'
-                      disabled={loading['change']}
-                      onClick={() => {
-                        handleConfirmTicket(ticketDetail.bookingId)
-                      }}
-                    >
-                      {loading['confirm'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                      &nbsp;Xác nhận
-                    </button>
-                  }
-                </div>
+                    <div className='border-t-2 border-slate-400 p-4'>
+                      <div className='flex justify-between'>
+                        <p className='font-light'>Thời gian đặt vé: </p>
+                        {ticketDetail?.createAt && <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>}
+                      </div>
+                      {ticketDetail?.status === 'CANCELLED' &&
+                        <div className='flex justify-between'>
+                          <p className='font-light'>Thời gian hủy vé: </p>
+                          <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.cancelTime).date}, {FormatDataTime(ticketDetail.cancelTime).time}</p>
+                        </div>
+                      }
+                      <div className='flex justify-between'>
+                        <p className='font-light'>Mã đặt vé: </p>
+                        {ticketDetail?.bookingId && <p className='text-xl'>{ticketDetail.bookingId}</p>}
+                      </div>
+                      <div className='flex items-start justify-between'>
+                        <p className='font-light'>Khách hàng: </p>
+                        {ticketDetail.userName === null || ticketDetail.fullName === null ?
+                          <p className='text-xl'>Khách vãng lai</p> :
+                          <div className='text-center'>
+                            {ticketDetail.userName && <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>}
+                            {ticketDetail.fullName && <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div className='p-4 flex justify-end'>
+                      <button
+                        className="w-1/4 text-[18px] rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 z-50"
+                        type='button'
+                        disabled={loading['change']}
+                        onClick={() => {
+                          handleOpenModal()
+                          setTicketDetail([])
+                        }}
+                      >
+                        {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                        &nbsp;Thoát
+                      </button>
+                      {ticketDetail.status === "UNCONFIRMED" &&
+                        <button
+                          className="w-1/3 ml-2 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300 z-50"
+                          type='button'
+                          disabled={loading['change']}
+                          onClick={() => {
+                            handleConfirmTicket(ticketDetail.bookingId)
+                          }}
+                        >
+                          {loading['confirm'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                          &nbsp;Xác nhận
+                        </button>
+                      }
+                    </div>
+                  </> :
+                  <div className='h-96'>
+
+                  </div>
+                }
               </div>
             </div>
           )

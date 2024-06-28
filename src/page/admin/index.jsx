@@ -149,7 +149,7 @@ const Admin = () => {
               </div >
 
               <TabList>
-                <ul className='flex flex-col p-8 overflow-y-auto modal-body max-h-[90vh]' >
+                <ul className='flex flex-col p-8 overflow-y-auto modal-body max-h-[82vh]' >
                   {
                     items.map((item, index) => (
                       <Tab key={index}>
@@ -201,7 +201,7 @@ const Admin = () => {
 
 
               {/* thongtin rạp */}
-              < div className='absolute bottom-4 w-full text-xs text-center font-bold text-emerald-600' >
+              < div className='absolute bottom-0 w-full flex justify-center items-center text-xs text-center font-bold text-emerald-600 bg-slate-300 h-[5vh]' >
                 T&N Cinemas - Nơi Hòa Quyện Giấc Mơ!
               </div >
 

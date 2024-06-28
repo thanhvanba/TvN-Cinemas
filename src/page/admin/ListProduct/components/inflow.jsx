@@ -10,7 +10,7 @@ import ManagerService from '../../../../service/ManagerService'
 
 const Inflow = ({ onToggle }) => {
     const { user } = useContext(LoginContext)
-    const { getAllUserApi, getFoodAdminApi } = AdminService()
+    const { getFoodAdminApi } = AdminService()
     const { getFoodApi, getUserInfoApi } = UserService()
     const { stockEntryApi } = ManagerService()
     const [loading, setLoading] = useState("")

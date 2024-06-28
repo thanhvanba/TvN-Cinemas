@@ -493,6 +493,26 @@ const ManagerService = () => {
             },
         );
     };
+    const sendNotificationApi = async (data) => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/manager/notification/send`,
+                data,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+            if (response.data.success) {
+                toastNotify(response.data.message, "success")
+            }
+        }
+        catch (err) {
+            toastNotify(err.response.data.message, "error")
+        }
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -532,7 +552,8 @@ const ManagerService = () => {
         getFinanceAllCinemaManagerApi,
         getDetailFinanceManagerApi,
         checkScheduleManagerApi,
-        getStockEntriesApi
+        getStockEntriesApi,
+        sendNotificationApi
     }
 }
 
