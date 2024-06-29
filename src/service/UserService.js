@@ -392,6 +392,11 @@ const UserService = () => {
             },
         );
     }
+    const getPromotionFixedApi = async (notificationId) => {
+        return await axios.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/viewer/promotionFixeds`
+        );
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -421,7 +426,8 @@ const UserService = () => {
         cancelTicketApi,
         getNotificationsApi,
         getOneNotificationApi,
-        readCountApi
+        readCountApi,
+        getPromotionFixedApi
     }
 }
 

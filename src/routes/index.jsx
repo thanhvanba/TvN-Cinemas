@@ -13,6 +13,7 @@ import Movies from '../page/Movies';
 import Cinemas from '../page/Cinemas';
 import ListShowtime from '../page/admin/ListShowtime';
 import Staff from '../page/Staff';
+import Prommotion from '../page/Promotion';
 
 const MainRouter = () => (
   <Routes>
@@ -23,6 +24,7 @@ const MainRouter = () => (
     <Route path="/phim" element={<Movies />} />
     <Route path="/tim-kiem/:keyWord" element={<Movies />} />
     <Route path="/rap" element={<Cinemas />} />
+    <Route path="/khuyenmai" element={<Prommotion />} />
     <Route path='/signup' element={<Signup />} />
     <Route path='/signup/verify' element={<Signup />} />
     <Route path='/thanhvien' element={<Signup />} />

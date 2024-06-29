@@ -30,7 +30,7 @@ function Cinemas() {
                     <div className='grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-16 mx-4 cursor-default'>
                         {
                             allCinema.map((item, index) => (
-                                <div key={`cinema-${index}`} className='bg-slate-700 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
+                                <div key={`cinema-${index}`} className='rounded-xl bg-slate-700 hover:bg-slate-600 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
                                     <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                                 </div>
                             ))

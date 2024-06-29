@@ -363,7 +363,7 @@ const ShowTimes = () => {
                   <div className={`${allCinema.length >= 4 ? "grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "flex justify-center"} gap-8 mb-16 mx-4`}>
                     {
                       allCinema.map((item, index) => (
-                        <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='cursor-default bg-slate-700 hover:bg-slate-600 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
+                        <div key={`cinema-${index}`} onClick={() => hadnleGetShowtimeByCinema(item.cinemaId)} className='cursor-default rounded-xl bg-slate-700 hover:bg-slate-600 md:w-[364px] lg:w-[330px] xl:w-72 flex flex-col justify-between'>
                           <Cinema cinemaName={item.cinemaName} location={item.location} urlLocation={item.urlLocation} />
                         </div>
                       ))

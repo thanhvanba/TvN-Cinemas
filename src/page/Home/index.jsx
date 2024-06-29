@@ -110,11 +110,12 @@ const Home = () => {
         {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...comingSoonMovie, ...movieOrderQuickly]} />}
       </div>
       {/* mua vé nhanh */}
-      <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">
+      {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">
         <OrderQuickly allShowMovie={movieOrderQuickly} />
       </div>
+      }
       {/* hiển thị ds phim */}
-      <div className="content-page" ref={tabsRef}>
+      <div className={`${[...comingSoonMovie, ...movieOrderQuickly].length > 0 ?'' : 'pt-24'} content-page`} ref={tabsRef}>
         <ul className="sub-tab">
           <div className="relative flex flex-col md:inline-block md:font-bold">
             <li onClick={() => changeTab("/phim/dangchieu")} className="cursor-pointer relative option1-style uppercase font-bold md:float-left md:w-56 lg:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none z-30 text-slate-100 bg-transparent">
