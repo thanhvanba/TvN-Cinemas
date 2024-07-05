@@ -8,6 +8,7 @@ import CreateSeat from '../../../../../components/CreateSeat';
 import { Armchair, Plus } from 'lucide-react';
 import ManagerService from '../../../../../service/ManagerService';
 import { LoginContext } from '../../../../../context/LoginContext';
+import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 
 const DetailRoom = () => {
     const { getOneRoomApi, getRoomeByCinemaApi, addRoomAdminApi, updateRoomAdminApi } = AdminService()
@@ -104,7 +105,10 @@ const DetailRoom = () => {
         <div className='px-4'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                 <div className='flex items-center'>
-                    <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
+                    <h2 className='cursor-default font-medium text-2xl flex items-center'>
+                        <BuildingLibraryIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                        Rạp
+                    </h2>
                     {user.role === "ADMIN" &&
                         <>
                             <ChevronRightIcon className='px-1 h-6' />

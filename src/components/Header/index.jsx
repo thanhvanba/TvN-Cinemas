@@ -107,9 +107,9 @@ const Header = () => {
       case "/phim":
         setCurrentTab("1")
         break;
-      case "/showtimes":
-      case "/showtimes/lichchieuphim":
-      case "/showtimes/phimtheorap":
+      case "/lichchieu":
+      case "/lichchieu/lichchieuphim":
+      case "/lichchieu/phimtheorap":
         setCurrentTab("2")
         break;
       case "/rap":
@@ -188,7 +188,7 @@ const Header = () => {
                       Phim
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/showtimes")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
+                  <li onClick={() => changeTab("/lichchieu")} className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-100'>
                     <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
@@ -259,7 +259,7 @@ const Header = () => {
                       Phim
                     </a>
                   </li>
-                  <li onClick={() => changeTab("/showtimes")} className='px-4 py-8 relative cursor-pointer'>
+                  <li onClick={() => changeTab("/lichchieu")} className='px-4 py-8 relative cursor-pointer'>
                     <a className={`${currentTab === '2' ? "active" : ""} text-sm xl:text-lg font-bold uppercase option-style`}>
                       Lịch Chiếu
                     </a>
@@ -321,7 +321,7 @@ const Header = () => {
             {user && user.auth === false ?
               <div className='flex'>
                 <button
-                  onClick={() => changeTab("/showtimes")}
+                  onClick={() => changeTab("/lichchieu")}
                   className="hidden xl:block my-4 ml-1 border-emerald-400 border-r-2 p-4 text-sm font-bold uppercase rounded-s-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300 outline-none"
                   type='submit'
                 >

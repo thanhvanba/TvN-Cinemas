@@ -10,6 +10,7 @@ import AdminService from '../../../../service/AdminService';
 import CinemaService from '../../../../service/CinemaService';
 import { LoginContext } from '../../../../context/LoginContext';
 import Loading from '../../../../components/Loading';
+import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 const AddCinema = () => {
     const { user } = useContext(LoginContext)
     const [loading, setLoading] = useState(false);
@@ -100,8 +101,11 @@ const AddCinema = () => {
     return (
         <div>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                <div className='flex items-center'>
-                    <h2 onClick={() => { changeTab("/admin/list-cinema") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
+                <div className='flex items-end'>
+                    <h2 onClick={() => { changeTab("/admin/list-cinema") }} className='cursor-pointer font-medium text-2xl flex items-end'>
+                        <BuildingLibraryIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                        Rạp
+                    </h2>
                     <ChevronRightIcon className='px-1 h-6' />
                     {
                         /^\/admin\/add-item\/cinema/.test(pathname) ?

@@ -8,6 +8,7 @@ import UserService from '../../../../service/UserService';
 import AdminService from '../../../../service/AdminService';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import Loading from '../../../../components/Loading';
+import { PopcornIcon } from 'lucide-react';
 const AddItem = () => {
     const [loading, setLoading] = useState(false);
     const [imageURL, setImageURL] = useState()
@@ -123,8 +124,11 @@ const AddItem = () => {
     return (
         <div className='relative'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                <div className='flex items-center'>
-                    <h2 onClick={() => { navigate("/admin/list-food/") }} className='cursor-pointer font-medium text-2xl'>Quản lý sản phẩm</h2>
+                <div className='flex items-end'>
+                    <h2 onClick={() => { navigate("/admin/list-food/") }} className='cursor-pointer font-medium text-2xl flex items-end'>
+                        <PopcornIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                        Quản lý sản phẩm
+                    </h2>
                     <ChevronRightIcon className='px-1 h-6' />
                     {/^\/admin\/add-item\/food/.test(pathname) ?
                         <h2 className='cursor-default text-xl'>Thêm sản phẩm</h2>

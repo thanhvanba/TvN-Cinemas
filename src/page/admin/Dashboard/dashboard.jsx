@@ -28,19 +28,16 @@ import BarChart from './components/barChart';
 import RevenueCinema from './RevenueCinema/revenueCinema';
 
 import { ListDayOfMonth } from '../../../utils/ListDayOfMonth';
+import { Squares2X2Icon } from '@heroicons/react/20/solid';
 
 const Dashboard = () => {
-  // const { loading, setLoading } = useLoadingState(false);
+  ;
 
   const { pathname } = useLocation()
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState('TOP 5');
   const [selected1, setSelected1] = useState('TOP 5');
   const { user } = useContext(LoginContext);
-  // const navigate = useNavigate()
-  // const changeTab = (pathname) => {
-  //   navigate(pathname)
-  // }
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
@@ -57,7 +54,6 @@ const Dashboard = () => {
     revenue: ""
   }])
   const [allUser, setAllUser] = useState([])
-  // const [revenueByYear, setRevenueByYear] = useState([])
 
   const [ticketByYear, setTicketByYear] = useState([])
   const [revenueOfCinema, setRevenueOfCinema] = useState([])
@@ -207,7 +203,10 @@ const Dashboard = () => {
     <div>
       <div className='px-4'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-          <h2 className='text-3xl'>Dashboard</h2>
+          <h2 className='text-3xl flex items-center'>
+            <Squares2X2Icon className='h-10 w-10 mr-1 text-emerald-600' />
+            Dashboard
+          </h2>
           {
             user.role === "MANAGER" ?
               <button
@@ -232,49 +231,51 @@ const Dashboard = () => {
 
                 {!(/^\/(admin\/finance\/cinema)/.test(pathname)) ?
                   <div className='col-span-4'>
-                    <div className='pb-4 border-2 mx-3 mt-6'>
-                      <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Thống kê doanh thu, vé bán tất cả rạp</h2>
-                      <div className='col-span-4 px-3 mt-4'>
-                        <OptionsStatistics selectedMonth={selectedMonth} selectedYear={selectedYear} setSelectedMonth={setSelectedMonth} setSelectedYear={setSelectedYear} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} handleStatistic={handleToggle} />
-                      </div>
+                    {user.role === "ADMIN" &&
+                      <>
+                        <div className='pb-4 border-2 mx-3 mt-6'>
+                          <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Thống kê doanh thu, vé bán tất cả rạp</h2>
+                          <div className='col-span-4 px-3 mt-4'>
+                            <OptionsStatistics selectedMonth={selectedMonth} selectedYear={selectedYear} setSelectedMonth={setSelectedMonth} setSelectedYear={setSelectedYear} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} handleStatistic={handleToggle} />
+                          </div>
 
-                      <div className='flex'>
-                        <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} mt-6 relative px-3`}>
-                          <div className='p-5 border-2 rounded-lg bg-slate-100'>
-                            <div className='w-full relative'>
-                              <ApexChart revenueByYear={totalRevenue} categoriesArr={categoriesArr} />
+                          <div className='flex'>
+                            <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} mt-6 relative px-3`}>
+                              <div className='p-5 border-2 rounded-lg bg-slate-100'>
+                                <div className='w-full relative'>
+                                  <ApexChart revenueByYear={totalRevenue} categoriesArr={categoriesArr} />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className={`${user.role === "ADMIN" ? "w-[45%]" : ""} mt-6 relative px-3`}>
+                              {user.role === "ADMIN" &&
+                                <div className='p-2 pt-5 border-2 rounded-lg bg-slate-100'>
+                                  <div className='w-full relative'>
+                                    <PieChart seriesArr={totalTicketArray} labelsArr={namesArray} />
+                                  </div>
+                                </div>
+                              }
                             </div>
                           </div>
                         </div>
 
-                        <div className={`${user.role === "ADMIN" ? "w-[45%]" : ""} mt-6 relative px-3`}>
-                          {user.role === "ADMIN" &&
-                            <div className='p-2 pt-5 border-2 rounded-lg bg-slate-100'>
-                              <div className='w-full relative'>
-                                <PieChart seriesArr={totalTicketArray} labelsArr={namesArray} />
-                              </div>
-                            </div>
-                          }
+                        <div className='p-4 border-2 mx-3 mt-6'>
+                          <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Top phim đánh giá cao nhất</h2>
+                          <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
+                            <SelectMenu onSelectChange={handleSelectChange1} items={options} content={selected1 || `Top 5`} />
+                          </div>
+                          <BarChart
+                            seriesData={[
+                              {
+                                name: 'Đánh giá(sao)',
+                                data: topMovies?.data
+                              },
+                            ]}
+                            categories={topMovies?.movie}
+                          />
                         </div>
-                      </div>
-                    </div>
-
-                    {user.role === "ADMIN" &&
-                      <div className='p-4 border-2 mx-3 mt-6'>
-                        <h2 className='font-semibold text-3xl text-center uppercase pt-3'>Top phim đánh giá cao nhất</h2>
-                        <div className='border-2 p-2 rounded-lg focus:outline-none bg-white w-32'>
-                          <SelectMenu onSelectChange={handleSelectChange1} items={options} content={selected1 || `Top 5`} />
-                        </div>
-                        <BarChart
-                          seriesData={[
-                            {
-                              name: 'Đánh giá(sao)',
-                              data: topMovies?.data
-                            },
-                          ]}
-                          categories={topMovies?.movie}
-                        />
-                      </div>
+                      </>
                     }
                     <div className='p-4 border-2 mx-3 mt-6'>
                       <h2 className='font-semibold text-3xl text-center uppercase pt-3'>
@@ -303,104 +304,6 @@ const Dashboard = () => {
                   </div> :
                   <RevenueCinema />
                 }
-                {/* <div className='flex col-span-4 relative'>
-                  <div className={`${user.role === "ADMIN" ? "w-[55%]" : "w-full"} relative`}>
-                    {revenueByYear.length === 0 &&
-                      <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
-                        {loading['revenueYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                      </div>}
-                    <RevenueStatistics chartConfig={chartConfig} />
-                  </div>
-
-                  {user.role !== "MANAGER" &&
-                    <div className='w-[45%] relative'>
-                      {ticketByYear.length === 0 &&
-                        <div className='flex justify-center items-center absolute mx-auto w-full h-full top-0 ringht-[50%] z-50'>
-                          {loading['ticketYear'] && <FontAwesomeIcon className='w-16 h-16 ' icon={faSpinner} spin />}
-                        </div>}
-                      <PieChart configPieChart={configPieChart} />
-                    </div>}
-
-                  <div className='absolute top-4 right-4'>
-                    <YearPicker onYearChange={handleYearChange} />
-                  </div>
-
-                </div> */}
-
-
-                {/* {
-                  listTable.map((table, index) => (
-                    user.role === "MANAGER" && (index == 0 || index == 2) ? null :
-                      <div div className='px-3 col-span-2' >
-                        <div className='mt-6 border-2 rounded-lg bg-slate-100'>
-                          <div className='p-5 flex justify-between border-b-2'>
-                            <h3 className='flex items-center text-2xl font-semibold'>
-                              <table.icon className='h-6 w-6 mr-3 text-emerald-600' />
-                              {table.title}
-                            </h3>
-                            <div className='flex items-center'>
-                              <a href=""><ArrowPathIcon className='h-4 w-4' /></a>
-                              <a onClick={() => changeTab(table.path)} href="" className='ml-4 bg-slate-200 rounded-md px-2'>View All</a>
-                            </div>
-                          </div>
-                          <div className='pt-8 pb-5'>
-                            <div>
-                              <table className='w-full'>
-                                <thead className='border-b'>
-                                  <tr>
-                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.stth}</th>
-                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.cinemah}</th>
-                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.addessh}</th>
-                                    <th className='text-sm text-start font-light px-5 pb-4 uppercase'>{table.header.revenueh}</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-
-                                  {index == 0 &&
-                                    // Rendering table.cinemaRatings
-                                    table.listCinema.map((item, index) => (
-                                      <tr key={`movie-${index}`}>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.cinemaName} maxLength={15} /></td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.location} maxLength={18} /></td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{format(getTotalByName(item.cinemaName))}</td>
-                                      </tr>
-                                    ))
-                                  }
-
-                                  {index == 1 &&
-                                    // Rendering table.listMovie
-                                    table.listMovie.map((item, index) => (
-                                      <tr key={`rating-${index}`}>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'><TruncatedContent content={item.title} maxLength={15} /></td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{FormatDataTime(item.releaseDate).date}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{(item.rating === null) ? 0 : item.rating}</td>
-                                      </tr>
-                                    ))
-                                  }
-
-                                  {user.role === "ADMIN" && index == 2 &&
-                                    // Rendering table.listUser
-                                    table.listUser.map((item, index) => (
-                                      <tr key={`rating-${index}`}>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{index + 1}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.fullName}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.userName}</td>
-                                        <td className='text-start text-sm font-medium px-5 pt-4 pb-1'>{item.role.roleName}</td>
-                                      </tr>
-                                    ))
-                                  }
-                                </tbody>
-
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                  ))
-                } */}
-
               </div>
           }
         </div>

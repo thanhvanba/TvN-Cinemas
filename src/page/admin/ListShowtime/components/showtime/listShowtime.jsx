@@ -3,6 +3,8 @@ import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot, BadgePlus, History } fr
 import React, { useContext, useEffect, useState } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Search from '../../../../../components/Search';
+
+import searchImg from '../../../../../images/7a0bfed18240211e7851.jpg'
 import AdminService from '../../../../../service/AdminService';
 import FormatDataTime from '../../../../../utils/FormatDataTime';
 import TruncatedContent from '../../../../../utils/TruncatedContent';
@@ -16,10 +18,13 @@ import Pagination from '../../../../../components/Pagination';
 
 import { Space, TimePicker, DatePicker } from 'antd'
 import { LoginContext } from '../../../../../context/LoginContext';
+import MovieService from '../../../../../service/MovieService';
+import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 
 const ShowtimeByRoom = () => {
   const { getShowtimeByCinemaApi, getShowtimeByRoomApi, getRoomeByCinemaApi } = AdminService();
   const { deleteShowtimeApi, changeStatusShowtimeApi, getAllShowtimeByManagerApi, getAllRoomByManagerApi, getShowtimeByRoomCinemaApi } = ManagerService()
+  const { GetAllMovieApi } = MovieService()
 
   const { user } = useContext(LoginContext)
   const { pathname } = useLocation()
@@ -29,9 +34,11 @@ const ShowtimeByRoom = () => {
   const [dateList, setDateList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(true);
-  const [dateTimeSelect, setDateTimeSelect] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState('');
+  console.log("🚀 ~ ShowtimeByRoom ~ selectedMovie:", selectedMovie)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: FormatDataTime(currentDateTime.toISOString()).date, time: "" });
-  const [modalStates, setModalStates] = useState({});
+  const [movieArr, setMovieArr] = useState([]);
+  console.log("🚀 ~ ShowtimeByRoom ~ movieArr:", movieArr)
   const [selectedRoom, setSelectedRoom] = useState(1);
   const [pagination, setPagination] = useState(
     {
@@ -55,11 +62,11 @@ const ShowtimeByRoom = () => {
     action: { aChange: PowerIcon, aEdit: BadgePlus, aDelete: TrashIcon }
   }
 
-  const handleGetShowtimeByRoom = async (pageNumber, roomId) => {
+  const handleGetShowtimeByRoom = async (pageNumber, roomId, selectedMovie) => {
     setLoading(true)
     let resST = user.role === "ADMIN" ?
-      await getShowtimeByRoomApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
-      : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
+      await getShowtimeByRoomApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
     // let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
       // const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
@@ -72,13 +79,26 @@ const ShowtimeByRoom = () => {
         totalElements: resST.data.result.totalElements
       }));
     }
+    // Lấy danh sách phim không trùng nhau
+    const uniqueMovies = [...new Set(resST.data.result.content.map(movie => movie.movie.movieId))];
+
+    // Tạo mảng movieArr từ danh sách phim không trùng nhau
+    {
+      !selectedMovie && setMovieArr(uniqueMovies.map(movieId => {
+        const uniqueMovie = resST.data.result.content.find(movie => movie.movie.movieId === movieId);
+        return {
+          movieID: uniqueMovie.movie.movieId,
+          movieName: uniqueMovie.movie.title
+        };
+      }));
+    }
     setLoading(false)
   }
-  const handleGetAllShowtime = async (pageNumber) => {
+  const handleGetAllShowtime = async (pageNumber, selectedMovie) => {
     setLoading(true)
     let resST = user.role === "ADMIN" ?
-      await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
-      : await getAllShowtimeByManagerApi(pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null)
+      await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      : await getAllShowtimeByManagerApi(pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
     if (resST && resST.data && resST.data.result.content) {
       setAllShowtime(resST.data.result.content);
       setPagination(prevPagination => ({
@@ -87,6 +107,19 @@ const ShowtimeByRoom = () => {
         pageSize: resST.data.result.pageSize,
         totalPages: resST.data.result.totalPages,
         totalElements: resST.data.result.totalElements
+      }));
+    }
+    // Lấy danh sách phim không trùng nhau
+    const uniqueMovies = [...new Set(resST.data.result.content.map(movie => movie.movie.movieId))];
+
+    // Tạo mảng movieArr từ danh sách phim không trùng nhau
+    {
+      !selectedMovie && setMovieArr(uniqueMovies.map(movieId => {
+        const uniqueMovie = resST.data.result.content.find(movie => movie.movie.movieId === movieId);
+        return {
+          movieID: uniqueMovie.movie.movieId,
+          movieName: uniqueMovie.movie.title
+        };
       }));
     }
     setLoading(false)
@@ -127,19 +160,35 @@ const ShowtimeByRoom = () => {
       handleGetAllShowtime(pagination.pageNumber)
       : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
     setSelectedDateTime({ ...selectedDateTime, date: dateTime });
+    setSelectedMovie(null);
   }, [selectedDateTime.date])
+
+  useEffect(() => {
+    const dateTime = selectedDateTime.date
+    selectedRoom === 1 ?
+      handleGetAllShowtime(pagination.pageNumber, selectedMovie?.movieID)
+      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom, selectedMovie?.movieID)
+  }, [selectedMovie])
 
   useEffect(() => {
     selectedRoom === 1 ?
       handleGetAllShowtime(pagination.pageNumber)
       : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
   }, [status])
+
+  const handleSelectType = async (value) => {
+    const movie = movieArr.find(movie => movie?.movieName === value)
+    setSelectedMovie(movie)
+  }
   return (
     <div>
       <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
         {user.role === "ADMIN" ?
           <div className='flex items-center'>
-            <h2 onClick={() => { changeTab("/admin/list-cinema") }} className='cursor-pointer font-medium text-2xl'>Rạp</h2>
+            <h2 onClick={() => { changeTab("/admin/list-cinema") }} className='cursor-pointer font-medium text-2xl flex items-center'>
+              <BuildingLibraryIcon className='h-10 w-10 mr-1 text-emerald-600' />
+              Rạp
+              </h2>
             <ChevronRightIcon className='px-1 h-6' />
             <h2 className='cursor-default font-medium text-2xl'>{cinemaName}</h2>
             <ChevronRightIcon className='px-1 h-6' />
@@ -166,19 +215,6 @@ const ShowtimeByRoom = () => {
           </div>
 
         }
-        {/* <div className='flex'>
-            <div
-              className="relative mt-1 pr-4 mr-2 w-60 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6"
-            >
-              <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} content={"----- Lọc theo phim -----"} />
-            </div>
-            {user.role === 'ADMIN' && (
-              <div
-                className="relative mt-1 pr-4 w-60 cursor-default rounded-md bg-white py-1.5 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6"
-              >
-                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"----- Lọc theo rạp -----"} />
-              </div>)}
-          </div> */}
       </div>
       <div className='border-2'>
         <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
@@ -188,14 +224,20 @@ const ShowtimeByRoom = () => {
           <div className='h-full'>
             {
               allRoom.length === 0 && allShowtime.length === 0 ?
-                <div className='p-4 font-light text-center text-gray-500'>Chưa có phòng và lịch chiếu. Tiến hành thêm phòng, lịch chiếu !!!</div> :
+                <>
+                  <div className='flex justify-center'>
+                    <img src={searchImg} alt="" />
+                  </div>
+
+                  <div className='p-4 font-light text-center text-gray-500'>Chưa có phòng và lịch chiếu. Tiến hành thêm phòng, lịch chiếu !!!</div>
+                </> :
                 <>
                   <div className='relative flex justify-end items-center py-4 pr-4'>
-                    <div className="border-2 rounded-xl ">
-                      <Search />
+                    <div className='border-2 rounded-xl flex'>
+                      <div className="h-8 xl:w-72 w-32 px-4 focus:outline-none py-1">
+                        <SelectMenu onSelectChange={handleSelectType} items={movieArr.map(item => item.movieName)} content={selectedMovie?.movieName ? selectedMovie?.movieName : "Chọn phim"} />
+                      </div>
                     </div>
-                    {/* <div className="inline-block py-2 hover:bg-emerald-600 bg-slate-500 m-2 rounded-bl-full rounded-r-full text-gray-200 relative h-10 w-36"> */}
-                    {/* <SelectMenu onSelectChange={handleSelectChange} items={dateList} content={selectedDateTime.date} /> */}
 
                     <div className='text-black'>
                       <DatePicker
@@ -228,6 +270,7 @@ const ShowtimeByRoom = () => {
                           onClick={() => {
                             handleGetAllShowtime(pagination.pageNumber);
                             setSelectedRoom(1); // Update selectedRoom state
+                            setSelectedMovie(null);
                           }}
                           className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === 1 ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                         >
@@ -238,7 +281,8 @@ const ShowtimeByRoom = () => {
                             key={room.roomId}
                             onClick={() => {
                               handleGetShowtimeByRoom(pagination.pageNumber, room.roomId);
-                              setSelectedRoom(room.roomId); // Update selectedRoom state
+                              setSelectedRoom(room.roomId); // Update selectedRoom state                   
+                              setSelectedMovie(null);
                             }}
                             className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === room.roomId ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                           >
@@ -248,9 +292,15 @@ const ShowtimeByRoom = () => {
                       </ul>
                     </div>
 
-                    <div className='w-[90%] bg-slate-100 shadow-inner mr-4 p-4 rounded-lg'>
+                    <div className='w-[90%] bg-slate-50 shadow-inner mr-4 p-4 rounded-lg'>
                       <div>
-                        {allShowtime.length === 0 ? <p className='text-center pt-8 text-lg text-slate-400 font-ligh'>--- Chưa lên lịch chiếu ---</p> :
+                        {allShowtime.length === 0 ? <>
+                          <div className='flex justify-center'>
+                            <img src={searchImg} alt="" />
+                          </div>
+
+                          <div className='p-4 font-light text-center text-gray-500'>Chưa lên lịch chiếu</div>
+                        </> :
                           <table className='mt-6 w-full'>
                             <thead className=''>
                               <tr>

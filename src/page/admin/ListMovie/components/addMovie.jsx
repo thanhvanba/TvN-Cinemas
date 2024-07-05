@@ -19,7 +19,7 @@ import UserService from '../../../../service/UserService';
 import { Space, TimePicker, DatePicker } from 'antd'
 import FormatDataTime from '../../../../utils/FormatDataTime';
 import Loading from '../../../../components/Loading';
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { ChevronUpDownIcon, FilmIcon } from '@heroicons/react/20/solid';
 import { PlusCircle } from 'lucide-react';
 import useLoadingState from '../../../../hook/UseLoadingState';
 import dayjs from 'dayjs';
@@ -295,7 +295,10 @@ const AddMovie = () => {
             <div className='px-4 relative'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                     <div className='flex items-center'>
-                        <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl'>Phim</h2>
+                        <h2 onClick={() => { changeTab("/admin/list-movie") }} className='cursor-pointer font-medium text-2xl flex items-center'>
+                            <FilmIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                            Phim
+                        </h2>
                         <ChevronRightIcon className='px-1 h-6' />
                         {
                             /^\/admin\/(add-item\/movie)/.test(pathname) ?

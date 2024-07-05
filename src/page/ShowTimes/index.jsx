@@ -37,7 +37,6 @@ const ShowTimes = () => {
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
-  console.log("🚀 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -60,12 +59,12 @@ const ShowTimes = () => {
 
   const handleCheckPathname = async (pathname) => {
     switch (pathname) {
-      case "/showtimes/lichchieuphim":
+      case "/lichchieu/lichchieuphim":
         {
           setCurrentTab("1")
         }
         break;
-      case "/showtimes/phimtheorap":
+      case "/lichchieu/phimtheorap":
         {
           setCurrentTab("2")
         }
@@ -176,11 +175,11 @@ const ShowTimes = () => {
         {/* tab */}
         <TabList className="sub-tab">
           <ul className="relative flex flex-col sm:inline-block">
-            <Tab onClick={() => changeTab("/showtimes/lichchieuphim")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent cursor-pointer outline-none">
+            <Tab onClick={() => changeTab("/lichchieu/lichchieuphim")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full sm:rounded-tr-none text-slate-100 bg-transparent cursor-pointer outline-none">
               <a className={`${currentTab === '1' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo phim</a>
 
             </Tab>
-            <Tab onClick={() => changeTab("/showtimes/phimtheorap")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent cursor-pointer outline-none">
+            <Tab onClick={() => changeTab("/lichchieu/phimtheorap")} className="border-none relative option1-style uppercase font-bold float-left sm:w-64 md:w-72 h-14 shadow-inner shadow-cyan-500 sm:rounded-tr-full text-slate-100 bg-transparent cursor-pointer outline-none">
               <a className={`${currentTab === '2' ? "active1" : ""} p-2 leading-[3.5rem]`}>Lịch chiếu theo rạp</a>
             </Tab>
           </ul>

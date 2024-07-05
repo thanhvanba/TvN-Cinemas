@@ -28,7 +28,7 @@ import pnpegg from '../../../images/pngegg.png'
 import AddItem from './components/addItem';
 import Inflow from './components/inflow';
 import Button from './components/button';
-import { History } from 'lucide-react';
+import { History, PopcornIcon } from 'lucide-react';
 import ListStockEntries from './components/listStockEntries';
 
 const ListProduct = () => {
@@ -118,7 +118,10 @@ const ListProduct = () => {
                         <AddItem /> :
                         <div className='relative'>
                             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                                <h2 className='text-3xl cursor-default'>Quản lý sản phẩm</h2>
+                                <h2 className='text-3xl cursor-default flex items-end'>
+                                    <PopcornIcon className='h-12 w-12 mr-1 text-emerald-600' />
+                                    Quản lý sản phẩm
+                                </h2>
                             </div>
                             <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                                 {loading && <Loading />}
@@ -126,9 +129,6 @@ const ListProduct = () => {
                             <div className='border-2 h-full'>
                                 <div className='h-full relative'>
                                     <div className='relative flex justify-end items-center p-4'>
-                                        <div className="border-2 rounded-xl z-10">
-                                            <Search />
-                                        </div>
                                         {importHistory &&
                                             <div className="inline-block z-10 pl-2 py-1 m-2 rounded-full text-gray-100 bg-slate-50 border-2 relative h-9 w-40">
                                                 <SelectMenu onSelectChange={handleSelectChange} items={nameFoods} content={"ALL"} />

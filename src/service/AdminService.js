@@ -375,7 +375,7 @@ const AdminService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
-    const getAllMovieApi = async (pageIndex, pageSize) => {
+    const getAllMovieApi = async (pageIndex, pageSize, genresId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/movies`,
@@ -386,6 +386,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    genresId: genresId
                 },
             }
         );
@@ -406,7 +407,7 @@ const AdminService = () => {
             }
         );
     };
-    const getAllPersonnelApi = async (pageIndex, pageSize) => {
+    const getAllPersonnelApi = async (pageIndex, pageSize, search) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/personnel`,
@@ -417,12 +418,13 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
-                    // sortByRole: sortByRole
+                    // sortByRole: sortByRole,
+                    search: search
                 },
             }
         );
     };
-    const getAllViewerApi = async (pageIndex, pageSize) => {
+    const getAllViewerApi = async (pageIndex, pageSize, search) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/viewers`,
@@ -433,6 +435,7 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
+                    search: search
                 },
             }
         );
@@ -613,7 +616,7 @@ const AdminService = () => {
             },
         );
     };
-    const getShowtimeByCinemaApi = async (cinemaId, pageIndex, pageSize, date) => {
+    const getShowtimeByCinemaApi = async (cinemaId, pageIndex, pageSize, date, movieId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/cinemas/${cinemaId}/showtimes`,
@@ -624,12 +627,13 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
-                    date: date
+                    date: date,
+                    movieId: movieId
                 },
             },
         );
     };
-    const getShowtimeByRoomApi = async (roomId, pageIndex, pageSize, date) => {
+    const getShowtimeByRoomApi = async (roomId, pageIndex, pageSize, date, movieId) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
             `${process.env.REACT_APP_HOST_API_KEY}/admin/rooms/${roomId}/showtimes`,
@@ -640,7 +644,8 @@ const AdminService = () => {
                 params: {
                     index: pageIndex,
                     size: pageSize,
-                    date: date
+                    date: date,
+                    movieId: movieId
                 },
             },
         );

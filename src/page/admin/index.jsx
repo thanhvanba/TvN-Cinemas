@@ -4,7 +4,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import logo from "../../images/logo.png"
 import { UserCircleIcon as UserCircleIconSolid, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
-import { Squares2X2Icon, UserCircleIcon as UserCircleIconOutline, FilmIcon, BuildingLibraryIcon, StarIcon, CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+
+import { CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import Dashboard from './Dashboard/dashboard'
 import ListUser from './ListUser'
 import ListMovie from './ListMovie';
@@ -25,6 +26,8 @@ import Header from '../Staff/components/header';
 import UserService from '../../service/UserService';
 import ListPromotion from './ListPromotion';
 import AdminService from '../../service/AdminService';
+import { Popcorn } from 'lucide-react';
+import { Squares2X2Icon, TicketIcon, BuildingLibraryIcon, FilmIcon, StarIcon, UserGroupIcon, UsersIcon, BanknotesIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 const Admin = () => {
   const { item } = useParams()
@@ -53,20 +56,20 @@ const Admin = () => {
   const items = user.role === "ADMIN" ?
     [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
-      { content: "Rạp", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
-      { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
-      { content: "Vé", icon: StarIcon, path: "list-ticket" },
-      { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
-      { content: "Khách hàng", icon: BuildingLibraryIcon, path: "list-viewer" },
+      { content: "Rạp", icon: BuildingLibraryIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
+      { content: "Sản phẩm", icon: Popcorn, path: "list-food" },
+      { content: "Vé", icon: TicketIcon, path: "list-ticket" },
+      { content: "Nhân sự", icon: UserGroupIcon, path: "list-personnel" },
+      { content: "Khách hàng", icon: UsersIcon, path: "list-viewer" },
       { content: "Đánh giá", icon: StarIcon, path: "list-review" },
-      { content: "Khuyến mãi", icon: StarIcon, path: "list-promotion" },
+      { content: "Khuyến mãi", icon: BanknotesIcon, path: "list-promotion" },
     ]
     : [
       { content: "Phim", icon: FilmIcon, path: "list-movie" },
       { content: "Lịch chiếu", icon: CalendarDaysIcon, path: user.role === "ADMIN" ? "list-cinema" : "list-showtime" },
-      { content: "Sản phẩm", icon: StarIcon, path: "list-food" },
-      { content: "Vé", icon: StarIcon, path: "list-ticket" },
-      { content: "Nhân sự", icon: UserCircleIconOutline, path: "list-personnel" },
+      { content: "Sản phẩm", icon: Popcorn, path: "list-food" },
+      { content: "Vé", icon: TicketIcon, path: "list-ticket" },
+      { content: "Nhân sự", icon: UserGroupIcon, path: "list-personnel" },
     ]
   const handleCheckPathname = (pathname) => {
     switch (true) {
@@ -258,7 +261,8 @@ const Admin = () => {
             <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
               <div className=''>
                 <div className='h-20 mb-2  flex items-center w-full border-b-2'>
-                  <h2 className='text-3xl px-4'>Cập nhật thông tin</h2>
+                  <h2 className='text-3xl px-4 flex items-center'>
+                    <AdjustmentsHorizontalIcon className='h-12 w-12 mr-1 text-emerald-600' />Cập nhật thông tin</h2>
                 </div>
                 <div className='px-10'>
                   <ProfileDetail />

@@ -10,6 +10,7 @@ import Modal from '../../../../utils/Modal'
 import Loading from '../../../../components/Loading'
 import useLoadingState from '../../../../hook/UseLoadingState'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { BanknotesIcon } from '@heroicons/react/20/solid'
 
 function ListPromotion() {
     const navigate = useNavigate()
@@ -111,10 +112,30 @@ function ListPromotion() {
         }
     }, [modalStates])
 
+    const [inputSearch, setInputSearch] = useState([])
+    const [showListSearch, setShowListSearch] = useState(false)
+    const handleSearchFc = async (value) => {
+        setLoading('search', true);
+        let ress = pathname === "/admin/list-viewer" ? await getAllViewerApi(1, 5, value) : user.role === "ADMIN" ? await getAllPersonnelApi(1, 5, value) : await getAllPersonnelManagerApi(1, 5, value)
+        setLoading('search', false);
+        if (ress && ress.data && ress.data.result && ress.data.result && ress.data.result.content) {
+            setAllUser(ress.data.result.content)
+            setPagination(prevPagination => ({
+                ...prevPagination,
+                pageNumber: 1,
+                pageSize: ress.data.result.pageSize,
+                totalPages: ress.data.result.totalPages,
+                totalElements: ress.data.result.totalElements
+            }));
+        }
+    }
     return (
         <div className='px-4'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                <h2 className='text-3xl cursor-default'>Chương trình khuyến mãi</h2>
+                <h2 className='text-3xl cursor-default flex items-center'>
+                    <BanknotesIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                    Chương trình khuyến mãi
+                </h2>
                 {
                     <button
                         className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
@@ -125,11 +146,11 @@ function ListPromotion() {
                     </button>
                 }
             </div>
-            <div className='flex justify-between py-4'>
-                <div className='rounded-md border-2 w-1/3'>
-                    <Search />
+            {/* <div className='flex justify-between py-4'>
+                <div className='relative rounded-2xl border-2 w-1/3'>
+                    <Search searchFunction={handleSearchFc} handleClickIconSearch={handleClickIconSearch} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                 </div>
-            </div>
+            </div> */}
             <Tabs selectedIndex={tabIndex} className='relative'>
                 <TabList className='py-2 px-8'>
                     <Tab onClick={() => setTabIndex(0)}>Tự động áp dụng</Tab>

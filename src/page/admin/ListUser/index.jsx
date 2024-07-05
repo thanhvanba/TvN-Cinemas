@@ -10,6 +10,7 @@ import CinemaService from '../../../service/CinemaService'
 import FormatDataTime from '../../../utils/FormatDataTime'
 import Pagination from '../../../components/Pagination'
 
+import searchImg from '../../../images/7a0bfed18240211e7851.jpg'
 import AdminService from '../../../service/AdminService'
 
 import ModalComponent from '../../../utils/Modal';
@@ -19,6 +20,7 @@ import TimeAgo from '../../../components/TimeAgo'
 import ManagerService from '../../../service/ManagerService'
 import { LoginContext } from '../../../context/LoginContext'
 import useLoadingState from '../../../hook/UseLoadingState'
+import { UserGroupIcon, UsersIcon } from '@heroicons/react/24/solid'
 
 const ListUser = () => {
     const { user } = useContext(LoginContext)
@@ -32,7 +34,6 @@ const ListUser = () => {
     const cinemaId = localStorage.getItem('cinemaId');
 
     const { loading, setLoading } = useLoadingState(false);
-    console.log("🚀 ~ ListUser ~ loading:", loading)
     const [modalStates, setModalStates] = useState({});
     const [pagination, setPagination] = useState(
         {
@@ -48,6 +49,7 @@ const ListUser = () => {
 
     const [allCinema, setAllCinema] = useState([])
     const [allUser, setAllUser] = useState([])
+    console.log("🚀 ~ allUser:", allUser)
 
     const [account, setAccount] = useState({
         fullName: "",
@@ -161,6 +163,24 @@ const ListUser = () => {
             }));
         }
     }
+
+    const [inputSearch, setInputSearch] = useState([])
+    const [showListSearch, setShowListSearch] = useState(false)
+    const handleSearchFc = async (value) => {
+        setLoading('search', true);
+        let ress = pathname === "/admin/list-viewer" ? await getAllViewerApi(1, 5, value) : user.role === "ADMIN" ? await getAllPersonnelApi(1, 5, value) : await getAllPersonnelManagerApi(1, 5, value)
+        setLoading('search', false);
+        if (ress && ress.data && ress.data.result && ress.data.result && ress.data.result.content) {
+            setAllUser(ress.data.result.content)
+            setPagination(prevPagination => ({
+                ...prevPagination,
+                pageNumber: 1,
+                pageSize: ress.data.result.pageSize,
+                totalPages: ress.data.result.totalPages,
+                totalElements: ress.data.result.totalElements
+            }));
+        }
+    }
     const handleChangeStatus = async (userId) => {
         user.role === "ADMIN" ? await changeStatusUserApi(userId) : await changeStatusStaffApi(userId)
         handleGetUser(pagination.pageNumber)
@@ -211,13 +231,19 @@ const ListUser = () => {
                 <Popover className='relative h-20 mb-2 flex justify-between items-center border-b-2'>
                     <h2 className='text-3xl'>
                         {pathname === "/admin/list-viewer"
-                            ? <p>Danh sách khách hàng</p>
-                            : <p>Danh sách nhân sự</p>
+                            ? <p className='flex items-center'>
+                                <UsersIcon className='h-12 w-12 mr-1 text-emerald-600' />
+                                Danh sách khách hàng
+                            </p>
+                            : <p className='flex items-center'>
+                                <UserGroupIcon className='h-12 w-12 mr-1 text-emerald-600' />
+                                Danh sách nhân sự
+                            </p>
                         }
                     </h2>
                     {(pathname === "/admin/list-personnel" || user.role === "MANAGER") &&
                         <Popover.Button
-                            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
+                            className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl focus:outline-none hover:bg-emerald-800 bg-emerald-600 text-white"
                             type='submit'
                         >
                             Thêm
@@ -378,12 +404,18 @@ const ListUser = () => {
                         {!loading['get'] &&
                             <div className=''>
                                 <div className='flex justify-end items-center py-4 pr-4'>
-                                    <div className="border-2 rounded-xl ">
-                                        <Search />
+                                    <div className="relative border-2 rounded-xl ">
+                                        <Search searchFunction={handleSearchFc} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                                     </div>
                                 </div>
                                 {allUser.length === 0 ?
-                                    <div className='p-4 font-light text-center text-gray-500'>Chưa có thành viên nào. Tiến hành thêm  !!!</div> :
+                                    <>
+                                        <div className='flex justify-center'>
+                                            <img src={searchImg} alt="" />
+                                        </div>
+
+                                        <div className='p-4 font-light text-center text-gray-500'>Chưa có thành viên nào. Tiến hành thêm  !!!</div>
+                                    </> :
                                     <>
                                         <table className='mt-6 w-full'>
                                             <thead className=''>

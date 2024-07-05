@@ -14,6 +14,7 @@ import Cinemas from '../page/Cinemas';
 import ListShowtime from '../page/admin/ListShowtime';
 import Staff from '../page/Staff';
 import Prommotion from '../page/Promotion';
+import Contact from '../page/Contact';
 
 const MainRouter = () => (
   <Routes>
@@ -25,14 +26,15 @@ const MainRouter = () => (
     <Route path="/tim-kiem/:keyWord" element={<Movies />} />
     <Route path="/rap" element={<Cinemas />} />
     <Route path="/khuyenmai" element={<Prommotion />} />
+    <Route path="/lienhe" element={<Contact />} />
     <Route path='/signup' element={<Signup />} />
     <Route path='/signup/verify' element={<Signup />} />
     <Route path='/thanhvien' element={<Signup />} />
     <Route path='/quydinh' element={<Signup />} />
     <Route path='/movie/:id' element={<Movie />} />
-    <Route path='/showtimes' element={<ShowTimes />} />
-    <Route path='/showtimes/lichchieuphim' element={<ShowTimes />} />
-    <Route path='/showtimes/phimtheorap' element={<ShowTimes />} />
+    <Route path='/lichchieu' element={<ShowTimes />} />
+    <Route path='/lichchieu/lichchieuphim' element={<ShowTimes />} />
+    <Route path='/lichchieu/phimtheorap' element={<ShowTimes />} />
     <Route path='/:showtimeId/order' element={<OrderMovie />} />
     <Route path='/:showtimeId/order/chonghe' element={<OrderMovie />} />
     <Route path='/:showtimeId/order/bapnuoc' element={<OrderMovie />} />
@@ -65,6 +67,7 @@ const AdminRouter = () => (
 
     <Route path="/admin/cinema/:cinemaId/list-showtime" element={<Admin />} />
     <Route path="/admin/list-showtime/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/admin/list-item/search/:item" element={<Admin />} />
 
     <Route path="/admin/showtime/:showtimeId" element={<Admin />} />
     <Route path="/admin/movie/:movieId" element={<Admin />} />
@@ -89,6 +92,7 @@ const AdminRouter = () => (
 
     <Route path="/manager/cinema/:cinemaId/list-showtime" element={<Admin />} />
     <Route path="/manager/list-showtime/showtime/:showtimeId" element={<Admin />} />
+    <Route path="/manager/list-item/search/:item" element={<Admin />} />
 
     <Route path="/manager/showtime/:showtimeId" element={<Admin />} />
     <Route path="/manager/movie/:movieId" element={<Admin />} />

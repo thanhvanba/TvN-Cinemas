@@ -137,16 +137,6 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     }
     setLoading('checkSchedule', !response)
   }
-  // const handleUpdateShowtime = async (e) => {
-  //   e.preventDefault();
-  //   setLoading('updateShowtime', true);
-  //   const data = oneShowtime;
-  //   let resShowtime = await updateShowTimeApi(showtimeId, data);
-  //   if (resShowtime && resShowtime.data && resShowtime.data.result) {
-  //     console.log(resShowtime.data.result)
-  //   }
-  //   setLoading('updateShowtime', false);
-  // };
   const handleDeleteSchedule = async () => {
     setLoading('deleteSchedule', true);
     user.role === "ADMIN" ? await deleteScheduleAdminApi(dateTime.scheduleId) : await deleteScheduleManagerApi(dateTime.scheduleId)
@@ -157,24 +147,6 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
     { user.role === "ADMIN" ? await addScheduleAdminApi(schedule) : await addScheduleManagerApi(schedule) }
     setLoading('addSchedule', false);
   };
-
-  // const handleRemoveTime = (date, selectedTime) => {
-  //   // Tìm đối tượng có ngày tương ứng trong mảng lịch
-  //   const existingDay = schedule.find((item) => item.date === date);
-
-  //   if (existingDay) {
-  //     const updatedTimes = existingDay.time.filter((time) => time !== selectedTime);
-  //     existingDay.time = updatedTimes
-  //     // Cập nhật mảng lịch với thời gian mới
-  //     setSchedule((prevSchedule) => {
-  //       const newSchedule = [...prevSchedule];
-  //       const existingDayIndex = newSchedule.findIndex((item) => item.date === date);
-  //       newSchedule[existingDayIndex] = { date: date, time: updatedTimes };
-  //       return newSchedule;
-  //     });
-  //   }
-  // };
-
   const handleSelectTime = (time, timeString) => {
     // Cập nhật selectDateTime với startTime mới
     setSchedule(prevSchedule => ({ ...prevSchedule, startTime: timeString }));

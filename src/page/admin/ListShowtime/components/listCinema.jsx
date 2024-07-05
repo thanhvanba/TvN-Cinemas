@@ -10,6 +10,7 @@ import Pagination from '../../../../components/Pagination';
 import Cinema from '../../../../components/Cinema';
 import Modal from '../../../../utils/Modal';
 import Loading from '../../../../components/Loading';
+import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 
 const ListCinema = () => {
     const { getAllShowtimeApi, getAllCinemaApi, deleteCinemaApi, changeStatusCinemaApi } = AdminService();
@@ -81,7 +82,10 @@ const ListCinema = () => {
     return (
         <div>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
-                <h2 className='text-3xl cursor-default'>Quản lý rạp</h2>
+                <h2 className='text-3xl cursor-default flex items-end'>
+                    <BuildingLibraryIcon className='h-12 w-12 mr-1 text-emerald-600' />
+                    Quản lý rạp
+                    </h2>
                 <button
                     className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-emerald-800 bg-emerald-600 text-white"
                     onClick={() => changeTab('/admin/add-item/cinema')}

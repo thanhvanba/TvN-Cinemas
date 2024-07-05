@@ -7,6 +7,7 @@ import { DatePicker, Space, TimePicker } from 'antd';
 import SelectMenu from '../../../../components/SelectMenu/SelectMenu';
 import dayjs from 'dayjs';
 import PromotionService from '../../../../service/PromotionService';
+import { BanknotesIcon } from '@heroicons/react/20/solid'
 
 function AddPromotion() {
     const { RangePicker } = DatePicker;
@@ -90,7 +91,10 @@ function AddPromotion() {
         <div className='px-4 relative' >
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                 <div className='flex items-center'>
-                    <h2 onClick={() => { changeTab("/admin/list-promotion") }} className='cursor-pointer font-medium text-2xl'>Chương trình khuyến mãi</h2>
+                    <h2 onClick={() => { changeTab("/admin/list-promotion") }} className='cursor-pointer font-medium text-2xl flex items-end'>
+                        <BanknotesIcon className='h-8 w-8 mr-1 text-emerald-600' />
+                        Chương trình khuyến mãi
+                    </h2>
                     <ChevronRightIcon className='px-1 h-6' />
                     <h2 className='cursor-default text-xl'>Thêm khuyến mãi</h2>
                 </div>

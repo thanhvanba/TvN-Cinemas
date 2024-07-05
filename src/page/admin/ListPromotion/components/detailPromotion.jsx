@@ -11,6 +11,7 @@ import { Armchair, Sofa } from 'lucide-react';
 import useLoadingState from '../../../../hook/UseLoadingState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { BanknotesIcon } from '@heroicons/react/20/solid';
 
 function DetailPromotion() {
   const { promotionId } = useParams()
@@ -70,7 +71,10 @@ function DetailPromotion() {
     <div className='px-4 relative' >
       <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
         <div className='flex items-center'>
-          <h2 onClick={() => { changeTab("/admin/list-promotion") }} className='cursor-pointer font-medium text-2xl'>Chương trình khuyến mãi</h2>
+          <h2 onClick={() => { changeTab("/admin/list-promotion") }} className='cursor-pointer font-medium text-2xl flex items-end'>
+            <BanknotesIcon className='h-8 w-8 mr-1 text-emerald-600' />
+            Chương trình khuyến mãi
+          </h2>
           <ChevronRightIcon className='px-1 h-6' />
           <h2 className='cursor-default text-xl'>{/^\/(admin|manager)\/promotion/.test(pathname) ? 'Chi tiết khuyến mãi' : 'Cập nhật khuyến mãi'}</h2>
         </div>

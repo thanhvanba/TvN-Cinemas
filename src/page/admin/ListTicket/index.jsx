@@ -18,6 +18,7 @@ import TimeAgo from '../../../components/TimeAgo';
 import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat';
 import { LoginContext } from '../../../context/LoginContext';
 import StaffService from '../../../service/StaffService';
+import { TicketIcon } from '@heroicons/react/24/solid';
 
 
 const ListTicket = () => {
@@ -114,7 +115,10 @@ const ListTicket = () => {
     <div className='relative w-full'>
       <div className='px-3 w-full'>
         <div className='h-20 mb-2 flex justify-between items-center border-b-2 w-full'>
-          <h2 className='text-3xl cursor-default'>Quản lý vé  </h2>
+          <h2 className='text-3xl cursor-default flex items-center'>
+            <TicketIcon className='h-12 w-12 mr-1 text-emerald-600' />
+            Quản lý vé
+          </h2>
 
           {
             user.role === "ADMIN" &&

@@ -34,7 +34,6 @@ function ListNotification() {
   const [showDetailNotification, setShowDetailNotification] = useState(false)
 
   const [notifications, setNotifications] = useState([])
-  console.log("🚀 ~ ListNotification ~ notifications:", notifications)
   const [notification, setNotification] = useState([])
   const [dataNotification, setDataNotification] = useState({})
   const [usersByRole, setUsersByRole] = useState([])
@@ -74,7 +73,7 @@ function ListNotification() {
   const handleGetNotification = async (page) => {
     setLoadingNoti(true)
     let resNotification = await getNotificationsApi(page, 8)
-    resNotification?.data?.result?.content?.length < 8 && setHasMore(false);
+    resNotification?.data?.result?.content?.length < 8 || resNotification?.data?.result?.pageNumber === resNotification?.data?.result?.pageSize && setHasMore(false);
     if (resNotification && resNotification?.data?.result?.content?.length > 0) {
       setNotifications(prevNotifications => [...prevNotifications, ...resNotification.data.result.content])
     } else {
@@ -82,6 +81,7 @@ function ListNotification() {
     }
     setLoadingNoti(false)
   }
+
   const handleGetOneNotification = async (notificationId) => {
     let resNotification = await getOneNotificationApi(notificationId)
     if (resNotification && resNotification.data && resNotification.data.result) {
@@ -124,7 +124,6 @@ function ListNotification() {
   };
 
   const [readCount, setReadCount] = useState()
-  console.log("🚀 ~ ListNotification ~ readCount:", readCount)
   const handleGetReadCount = async () => {
     let resCount = await readCountApi()
     if (resCount && resCount.data) {
@@ -136,6 +135,7 @@ function ListNotification() {
     handleGetReadCount()
   }, [])
 
+  // Sử lý phân trang
   useEffect(() => {
     { page > 1 && handleGetNotification(page) }
   }, [page])
@@ -143,6 +143,9 @@ function ListNotification() {
   const loadMore = () => {
     setPage(prevPage => prevPage + 1);
   };
+  //
+
+
   return (
     <div className=''>
       <div type="" className='hover:bg-transparent active:text-none active:bg-none' onClick={showLoading}>
@@ -265,7 +268,7 @@ function ListNotification() {
               </label>
               <div className="relative mt-1 pr-4 w-full cursor-default rounded-md bg-white py-1 pl-3 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                 {
-                  <SelectMenu onSelectChange={handleSelectType} items={['BOOKING_SUCCESS', 'TICKET_REMINDER', 'TICKET_STATUS', 'PROMOTION', 'REVIEW', 'LOW_STOCK', 'ORTHER']} content={"Chọn loại thông báo"} />
+                  <SelectMenu onSelectChange={handleSelectType} items={['BOOKING_SUCCESS', 'TICKET_REMINDER', 'TICKET_STATUS', 'PROMOTION', 'REVIEW', 'LOW_STOCK', 'OTHER']} content={"Chọn loại thông báo"} />
                 }
               </div>
             </div>

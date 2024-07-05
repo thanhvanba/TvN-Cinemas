@@ -13,6 +13,7 @@ import Pagination from '../../../../../components/Pagination'
 import ModalComponent from '../../../../../utils/Modal';
 import Loading from '../../../../../components/Loading';
 import Search from '../../../../../components/Search';
+import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 
 const ListRoom = () => {
     const { user } = useContext(LoginContext)
@@ -97,7 +98,10 @@ const ListRoom = () => {
             <div className='px-4'>
                 <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
                     <div className='flex items-center'>
-                        <h2 className='cursor-default font-medium text-2xl'>Rạp</h2>
+                        <h2 className='cursor-default font-medium text-2xl flex items-center'>
+                            <BuildingLibraryIcon className='h-10 w-10 mr-1 text-emerald-600' />
+                            Rạp
+                        </h2>
                         {user.role === "ADMIN" &&
                             <>
                                 <ChevronRightIcon className='px-1 h-6' />
@@ -126,9 +130,6 @@ const ListRoom = () => {
                     <div className='h-full'>
 
                         <div className='flex justify-end items-center py-4'>
-                            <div className="border-2 rounded-xl mr-4">
-                                <Search />
-                            </div>
                             <button
                                 type="button"
                                 className=" z-50"
