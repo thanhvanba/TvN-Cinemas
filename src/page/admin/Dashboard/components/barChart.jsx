@@ -2,8 +2,6 @@ import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
 const BarChart = ({ seriesData, categories }) => {
-    console.log("🚀 ~ BarChart ~ categories:", categories)
-    console.log("🚀 ~ BarChart ~ seriesData:", seriesData)
     // const seriesData = [{
     //     name: 'Đánh giá(sao)',
     //     data: [5, 4.3, 3, 3.6, 4.0, 4.7]

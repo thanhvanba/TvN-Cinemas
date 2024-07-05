@@ -16,7 +16,6 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 export const requestForToken = () => {
-    console.log('vao đây')
     const { saveTokenFirebaseApi } = FirebaseService()
     const handleSaveToken = async (token) => {
         await saveTokenFirebaseApi(token)
@@ -32,7 +31,7 @@ export const requestForToken = () => {
                                 // Gửi token này đến server backend để lưu trữ
                                 handleSaveToken(currentToken)
                             } else {
-                                console.log('No registration token available. Request permission to generate one.');
+                                console.log('No registration token available. Request permission to generate one');
                             }
                         })
                         .catch((err) => {

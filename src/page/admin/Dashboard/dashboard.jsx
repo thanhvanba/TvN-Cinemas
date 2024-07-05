@@ -122,7 +122,6 @@ const Dashboard = () => {
   }
   const handleGetAllItem = async () => {
 
-    console.log("VÀO ĐÂY")
     setLoading(true)
     let resOverview = await getStatisticsOverviewApi()
     if (resOverview && resOverview.data && resOverview.data.result) {

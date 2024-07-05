@@ -8,7 +8,6 @@ import { LoginContext } from '../../context/LoginContext';
 import { StarIcon } from '@heroicons/react/20/solid';
 
 const MovieSlider = ({ movies }) => {
-    console.log("🚀 ~ MovieSlider ~ movies:", movies)
     const { user } = useContext(LoginContext)
     const navigate = useNavigate()
     function SampleNextArrow(props) {

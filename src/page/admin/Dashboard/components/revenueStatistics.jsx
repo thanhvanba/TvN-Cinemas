@@ -16,7 +16,6 @@ import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
 
 
 export default function RevenueStatistics({chartConfig}) {
-    console.log("🚀 ~ file: Statistical.jsx:19 ~ Statistical ~ chartConfig:", chartConfig)
     return (
         <Card>
             <CardHeader

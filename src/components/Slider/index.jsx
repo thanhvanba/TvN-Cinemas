@@ -16,7 +16,6 @@ import Trailer from "../Trailer";
 import { LoginContext } from "../../context/LoginContext";
 
 const HomeSlider = ({ movies }) => {
-    console.log("🚀 ~ HomeSlider ~ movies:", movies)
     const { user } = useContext(LoginContext)
     const navigate = useNavigate()
     const [index, setIndex] = useState(0)
