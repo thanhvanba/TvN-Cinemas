@@ -9,7 +9,6 @@ import { RegisterContext } from './context/RegisterContext';
 import { LoginContext } from './context/LoginContext';
 import { jwtDecode } from 'jwt-decode'
 import { useLocation } from 'react-router-dom'
-
 function App() {
   const { pathname } = useLocation()
   // effect
@@ -27,7 +26,6 @@ function App() {
       register(localStorage.getItem("email"), localStorage.getItem("fullname"), localStorage.getItem("phone"))
     }
   }, []);
-
   return (
     <div>
       {

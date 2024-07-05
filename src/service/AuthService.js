@@ -7,9 +7,15 @@ import { RegisterContext } from '../context/RegisterContext'
 import { LoginContext } from '../context/LoginContext'
 import { jwtDecode } from 'jwt-decode'
 import axiosService from './axiosInstance'
+import { requestForToken, onMessageListener } from '../../src/firebase';
+import FirebaseService from './FirebaseService'
 
 const AuthService = () => {
     const axiosInstance = axiosService();
+    const { checkTokenFirebaseApi } = FirebaseService()
+    const handleCheckTokenFirebase = async () => {
+        return await checkTokenFirebaseApi()
+    }
     const navigate = useNavigate()
     const { register } = useContext(RegisterContext);
     const { login, logout } = useContext(LoginContext);
@@ -25,9 +31,21 @@ const AuthService = () => {
             const token = response.data.result.accessToken;
             const decode = jwtDecode(token);
             const refreshToken = response.data.result.refreshToken;
+
+
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
                 login(data.credentialId, token, refreshToken, decode.role, decode.sub)
+                const checkToken = handleCheckTokenFirebase()
+                if (!(await checkToken).data.result) {
+                    requestForToken();
+                    onMessageListener()
+                        .then(payload => {
+                            console.log('Message received. ', payload);
+                            // Xử lý thông báo ở đây
+                        })
+                        .catch(err => console.log('failed: ', err));
+                }
                 changeTab('/');
             }
         } catch (error) {

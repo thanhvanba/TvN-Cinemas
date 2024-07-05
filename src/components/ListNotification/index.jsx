@@ -73,7 +73,7 @@ function ListNotification() {
   const handleGetNotification = async (page) => {
     setLoadingNoti(true)
     let resNotification = await getNotificationsApi(page, 8)
-    resNotification?.data?.result?.content?.length < 8 || resNotification?.data?.result?.pageNumber === resNotification?.data?.result?.pageSize && setHasMore(false);
+    if (resNotification?.data?.result?.content?.length < 8 || resNotification?.data?.result?.pageNumber === resNotification?.data?.result?.pageSize) setHasMore(false);
     if (resNotification && resNotification?.data?.result?.content?.length > 0) {
       setNotifications(prevNotifications => [...prevNotifications, ...resNotification.data.result.content])
     } else {
