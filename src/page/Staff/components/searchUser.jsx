@@ -8,19 +8,18 @@ function SearchUser({ onToggle, infoSchedule, listSeatBooking, listFoodBooking, 
     const navigate = useNavigate()
     const { searchViewerApi } = StaffService()
     const [listViewerFound, setListViewerFound] = useState()
-    console.log("🚀 ~ SearchUser ~ listViewerFound:", listViewerFound)
     const [showMovieList, setShowMovieList] = useState(false)
-    console.log("🚀 ~ SearchUser ~ showMovieList:", showMovieList)
     const [userInfo, setUserInfo] = useState()
     const [inputSearch, setInputSearch] = useState()
-    console.log("🚀 ~ SearchUser ~ inputSearch:", inputSearch)
-    console.log("🚀 ~ SearchUser ~ userInfo:", userInfo)
 
     const handleSearch = async (value) => {
         let resViewer = await searchViewerApi(value)
         if (resViewer && resViewer.data && resViewer.data.result) {
             setListViewerFound(resViewer.data.result)
         }
+    }
+    const handleClickIconSearch = () => {
+
     }
     return (
         <div className='flex justify-center items-start bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
@@ -44,7 +43,7 @@ function SearchUser({ onToggle, infoSchedule, listSeatBooking, listFoodBooking, 
                     <h2 className='py-2 text-black font-medium'>Bạn hãy nhập tên tài khoản của khách hàng:</h2>
                     <div className='pb-10 border-b'>
                         <div className='border rounded-xl w-1/2'>
-                            <Search searchFunction={handleSearch} setShowMovieList={setShowMovieList} inputSearch={inputSearch} setInputSearch={setInputSearch} />
+                            <Search searchFunction={handleSearch} handleClickIconSearch={handleClickIconSearch} setShowListSearch={setShowMovieList} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                         </div>
                         {showMovieList && listViewerFound &&
 

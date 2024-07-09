@@ -1,15 +1,16 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, useContext } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { useLocation } from 'react-router-dom'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import CinemaService from "../../service/CinemaService"
+import { LoginContext } from '../../context/LoginContext'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 const SelectMenu = ({ onSelectChange, items, content }) => {
-
+    const { user } = useContext(LoginContext)
     const [selected, setSelected] = useState(null)
     const handleSelectChange = (value) => {
         setSelected(value);
@@ -24,7 +25,7 @@ const SelectMenu = ({ onSelectChange, items, content }) => {
                     <div className="relative">
                         <Listbox.Button className="relative w-full">
                             <span className="flex items-center">
-                                <span className={`${selected !== null ? 'text-black' : 'text-[#a4aab5]'} ml-2 block truncate`}>{selected || content}</span>
+                                <span className={`${selected === null ? 'text-[#a4aab5]' : user.role === 'VIEWER' ? 'text-white' : 'text-black'} ml-2 block truncate`}>{selected || content}</span>
                             </span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                                 <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -78,8 +79,9 @@ const SelectMenu = ({ onSelectChange, items, content }) => {
                         </Transition>
                     </div>
                 </>
-            )}
-        </Listbox>
+            )
+            }
+        </Listbox >
     )
 }
 export default SelectMenu;

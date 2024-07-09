@@ -107,7 +107,7 @@ const Home = () => {
     <div className="w-full">
       {/* slider */}
       <div className="px-8">
-        {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...comingSoonMovie, ...movieOrderQuickly]} />}
+        {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...movieOrderQuickly, ...comingSoonMovie]} />}
       </div>
       {/* mua vé nhanh */}
       {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">
@@ -115,7 +115,7 @@ const Home = () => {
       </div>
       }
       {/* hiển thị ds phim */}
-      <div className={`${[...comingSoonMovie, ...movieOrderQuickly].length > 0 ?'' : 'pt-24'} content-page`} ref={tabsRef}>
+      <div className={`${[...comingSoonMovie, ...movieOrderQuickly].length > 0 ? '' : 'pt-24'} content-page`} ref={tabsRef}>
         <ul className="sub-tab">
           <div className="relative flex flex-col md:inline-block md:font-bold">
             <li onClick={() => changeTab("/phim/dangchieu")} className="cursor-pointer relative option1-style uppercase font-bold md:float-left md:w-56 lg:w-72 h-14 shadow-inner shadow-cyan-500 rounded-t-full md:rounded-tr-none z-30 text-slate-100 bg-transparent">
@@ -139,11 +139,11 @@ const Home = () => {
                   allMovie && allMovie.length > 0 &&
                   allMovie.map((movie, index) => (
                     <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                      <div className="relative product-item table border-2 border-slate-600 h-[92%]">
+                      <div className="relative product-item table border-2 border-slate-600 h-[92%] w-full">
                         <img
                           src={movie.poster}
                           alt=""
-                          className="product-over h-[462px] w-full table-cell"
+                          className="product-over h-full w-full table-cell"
                         />
                         <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
                           <div className='flex justify-center items-center p-2'>

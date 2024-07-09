@@ -260,7 +260,7 @@ const Admin = () => {
             }
             <div style={{ display: currentTab === '3' ? 'block' : 'none' }}>
               <div className=''>
-                <div className='h-20 mb-2  flex items-center w-full border-b-2'>
+                <div className='h-20 mb-2 flex items-center w-full border-b-2'>
                   <h2 className='text-3xl px-4 flex items-center'>
                     <AdjustmentsHorizontalIcon className='h-12 w-12 mr-1 text-emerald-600' />Cập nhật thông tin</h2>
                 </div>

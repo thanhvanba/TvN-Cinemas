@@ -166,9 +166,11 @@ function ListNotification() {
         width={450}
         className='relative'
       >
-        <div className='absolute top-5 right-3' onClick={showChildrenDrawer}>
-          <PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />
-        </div>
+        {(user.role !== 'VIEWER' && user.role !== 'STAFF') &&
+          <div className='absolute top-5 right-3' onClick={showChildrenDrawer}>
+            <PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />
+          </div>
+        }
         <Drawer
           title={
             <div className='text-2xl font-bold flex items-center justify-between -mx-3'>
@@ -194,7 +196,7 @@ function ListNotification() {
                 </label>
                 <div className="relative mt-1 w-full cursor-default rounded-md bg-white py-1 pl-1 text-left text-gray-900 shadow-sm focus:outline-none border-2 sm:text-sm sm:leading-6">
                   {
-                    <SelectMenu onSelectChange={handleSelectChange} items={['Quản lý', 'Nhân Viên', 'Người dùng']} content={"Chọn chức vụ"} />
+                    <SelectMenu onSelectChange={handleSelectChange} items={user.role === 'ADMIN' ? ['Quản lý', 'Nhân Viên', 'Người dùng'] : ['Nhân Viên', 'Người dùng']} content={"Chọn chức vụ"} />
                   }
                 </div>
               </div>

@@ -219,7 +219,7 @@ const Info = () => {
     }, [userInfo]);
     return (
         <div >
-            <div className='mx-auto max-w-6xl pt-32 pb-8'>
+            <div className={`${user.role !== 'VIEWER' ? 'pt-4' : 'pt-32'} mx-auto max-w-6xl pb-8`}>
                 {user.role === "VIEWER" &&
                     <div className="sub-tab">
                         <ul className="relative flex flex-col md:inline-block">
@@ -351,7 +351,7 @@ const Info = () => {
                                                                     <div
                                                                         className='relative flex flex-col border-[12px] border-slate-300 bg-slate-100 px-6 pb-4 hover:bg-slate-200 cursor-pointer'
                                                                     >
-                                                                        <p className='text-start font-medium py-4 text-4xl text-emerald-600 '>{item.movieName}</p>
+                                                                        <p className='text-start font-medium py-4 text-4xl text-emerald-600 w-[85%]'>{item.movieName}</p>
                                                                         <p className='pl-2 text-start font-light text-xl'>{item.cinemaName}</p>
                                                                         <p className='pl-2 text-start font-semibold text-xl'>{item.startTime} - Ngày {FormatDataTime(item.date).date}</p>
                                                                         <p className='absolute bottom-3 right-6 font-medium text-5xl text-zinc-500'>

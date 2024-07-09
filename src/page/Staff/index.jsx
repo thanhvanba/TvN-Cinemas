@@ -111,7 +111,14 @@ function Staff() {
                     {/^\/staff\/info-ticket/.test(pathname) ?
                         <InfoTicket /> :
                         /^\/staff\/info/.test(pathname) ?
-                            <Info /> :
+                            <div className='pt-20'>
+                                <div className='px-4'>
+                                    <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
+                                        <h2 className='text-3xl cursor-default'>Hồ sơ</h2>
+                                    </div>
+                                    <Info />
+                                </div>
+                            </div> :
                             <>
                                 <div className='flex justify-center absolute mx-auto top-96 right-1/2 left-1/2 z-50'>
                                     {loading && <Loading />}

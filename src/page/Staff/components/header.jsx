@@ -54,17 +54,8 @@ function Header() {
             style={user.role === "STAFF" ? { backgroundImage: `url(${bg})` } : {}}
         >
             <div className='flex px-3 items-center'>
-                {user.role === 'STAFF' &&
-                    <div className='pr-4'>
-                        <div className="border-2 rounded-2xl ">
-                            <Search />
-                        </div>
-                    </div>
-                }
                 <div>
-
                     <ListNotification />
-
                 </div>
                 <div className='relative'>
                     <div

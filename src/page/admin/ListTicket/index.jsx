@@ -48,7 +48,6 @@ const ListTicket = () => {
   }
 
   const handleGetItems = async (pageNumber) => {
-    setLoading('loading', true)
     let resTicketC = user.role === 'ADMIN' ? await getAllBookingApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
       setAllTicketC(resTicketC.data.result.content)
@@ -62,13 +61,11 @@ const ListTicket = () => {
     }
     setLoading('loading', false)
 
-    setLoading('loadingU', true)
     let resTicketU = user.role === 'ADMIN' ?
       await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
       : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
     setLoading('loadingU', false)
 
-    setLoading('loadingCa', true)
     let resTicketCa = user.role === 'ADMIN' ?
       await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
       : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
@@ -109,6 +106,9 @@ const ListTicket = () => {
   }
 
   useEffect(() => {
+    setLoading('loading', true)
+    setLoading('loadingU', true)
+    setLoading('loadingCa', true)
     handleGetItems(pagination.pageNumber)
   }, [])
   return (

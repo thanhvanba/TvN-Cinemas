@@ -139,8 +139,8 @@ const HomeSlider = ({ movies }) => {
                                 {!toggle &&
                                     <>
                                         <div className="absolute top-28 right-14 left-14 z-50 flex">
-                                            <div className="w-2/5 text-gray-50">
-                                                {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-6xl font-bold pt-14 uppercase">{movie?.title}</h2>}
+                                            <div className="w-[42%] text-gray-50">
+                                                {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-5xl font-bold pt-14 uppercase text-emerald-500">{movie?.title}</h2>}
                                                 <div data-aos="zoom-in-left" data-aos-duration="2000" className="py-4 flex items-center">
                                                     <StarIcon className="h-6 w-6 text-yellow-400" />
                                                     {movie?.rating && <div className="font-bold pl-4 text-orange-300 w-1/2">{movie?.rating}/5</div>}

@@ -102,8 +102,8 @@ const Inflow = ({ onToggle }) => {
                     </div>
 
                     <form className='pl-4 w-[80%]' id='formAddCinema' onSubmit='' action="">
-                        <div className="relative my-4 flex justify-between">
-                            <div className='w-2/5'>
+                        <div className="relative my-4 flex justify-between gap-x-3">
+                            <div className='w-1/2'>
                                 <label
                                     htmlFor=""
                                     className="block text-lg font-medium leading-6 text-gray-900"

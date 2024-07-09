@@ -49,7 +49,7 @@ const ReviewMovie = ({ movie, onToggle }) => {
                             <XMarkIcon className="text-4xl h-5 w-5 z-50 cursor-pointer opacity-80 hover:opacity-100" aria-hidden="true" />
                         </div>
                     </button>
-                    <img src={movie.poster} className='h-2/5 w-full' />
+                    <img src={movie.slider} className='h-2/5 w-full' />
                     <div className='h-3/5'>
                         <h1 className='py-2 text-center font-bold text-lg opacity-70'>{movie.title}</h1>
                         <div className='mx-4 px-8 py-1 rounded'>

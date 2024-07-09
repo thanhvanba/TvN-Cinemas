@@ -206,17 +206,6 @@ const Dashboard = () => {
             <Squares2X2Icon className='h-10 w-10 mr-1 text-emerald-600' />
             Dashboard
           </h2>
-          {
-            user.role === "MANAGER" ?
-              <button
-                className="my-4 px-8 border-slate-400 border p-4 text-sm font-bold uppercase rounded-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white"
-                onClick={() => changeTab("/admin/add-item/showtime")}
-                type='button'
-              >
-                Add showtime
-              </button> :
-              <div></div>
-          }
         </div>
 
         <div className='relative'>

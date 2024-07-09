@@ -109,7 +109,7 @@ const AddShowtime = () => {
     const [errors, setErrors] = useState({});
     const handleGetAllItem = async (pathname) => {
         if (pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime") {
-            let resMovie = await GetAllMovieApi()
+            let resMovie = await GetAllMovieApi(1, 999)
             if (resMovie && resMovie.data && resMovie.data.result && resMovie.data.result.content) {
                 setAllMovie(resMovie.data.result.content)
             }

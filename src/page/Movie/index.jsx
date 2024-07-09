@@ -91,8 +91,7 @@ const Movie = () => {
             if (startTimeA > startTimeB) return 1;
             return 0;
         })
-        
-        console.log("🚀 ~ FoundShowtime ~ updatedSchedule:", updatedSchedule)
+
         setListSchedule(updatedSchedule)
     }
 
@@ -134,7 +133,7 @@ const Movie = () => {
                             </div>
                         </div>
                         {
-                            foundShowtime.length === 0 ?
+                            foundShowtime && foundShowtime.length === 0 ?
                                 <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p>
                                 :
                                 <div>
@@ -161,7 +160,7 @@ const Movie = () => {
                                     <div className='relative max-w-5xl mx-auto text-left pt-5'>
                                         <div className='relative sm:pl-60 pb-4 mb-4 min-h-[200px] px-4'>
                                             {/* vị trí */}
-                                            <div className='absolute hidden sm:block top-0 left-4 bg-slate-700 w-60'>
+                                            <div className='absolute hidden rounded-xl sm:block top-0 left-4 bg-slate-700 w-60'>
                                                 <Cinema cinemaName={foundShowtime[0]?.room.cinema.cinemaName} location={foundShowtime[0]?.room.cinema.location} urlLocation={foundShowtime[0]?.room.cinema.urlLocation} />
                                             </div>
                                             {/* thời gian */}
