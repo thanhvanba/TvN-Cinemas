@@ -12,7 +12,11 @@ import SearchUser from './searchUser';
 import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import UserService from '../../../service/UserService';
+
 import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import FormatDataTime from '../../../utils/FormatDataTime';
 import { format, isAfter, parse } from 'date-fns';
 import Loading from '../../../components/Loading'

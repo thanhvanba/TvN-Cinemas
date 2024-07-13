@@ -130,15 +130,15 @@ const HomeSlider = ({ movies }) => {
                                         : navigate(`/movie/${movie.movieId}`)
 
                                 }}
-                                className='cursor-pointer outline-none h-[94vh] relative'
+                                className='cursor-pointer outline-none md:h-[400px] xl:h-[700px] relative'
                                 key={movie.id}
                             >
-                                <img className='h-full w-full' src={movie?.slider} alt={movie?.title} />
+                                <img className='md:h-[400px] xl:h-[700px]' src={movie?.slider} alt={movie?.title} />
                                 <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-60 z-40"></div>
 
                                 {!toggle &&
-                                    <>
-                                        <div className="absolute top-28 right-14 left-14 z-50 flex">
+                                    <div className="hidden lg:block">
+                                        <div className="flex absolute top-28 right-14 left-14 bottom-0 z-50 ">
                                             <div className="w-[42%] text-gray-50">
                                                 {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-5xl font-bold pt-14 uppercase text-emerald-500">{movie?.title}</h2>}
                                                 <div data-aos="zoom-in-left" data-aos-duration="2000" className="py-4 flex items-center">
@@ -178,7 +178,7 @@ const HomeSlider = ({ movies }) => {
                                         >
                                             Xem trailer
                                         </button>
-                                    </>
+                                    </div>
                                 }
                             </div>
 

@@ -11,6 +11,7 @@ import Loading from '../../../../components/Loading'
 import useLoadingState from '../../../../hook/UseLoadingState'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { BanknotesIcon } from '@heroicons/react/20/solid'
+import { isAfter, parse } from 'date-fns'
 
 function ListPromotion() {
     const navigate = useNavigate()
@@ -146,11 +147,6 @@ function ListPromotion() {
                     </button>
                 }
             </div>
-            {/* <div className='flex justify-between py-4'>
-                <div className='relative rounded-2xl border-2 w-1/3'>
-                    <Search searchFunction={handleSearchFc} handleClickIconSearch={handleClickIconSearch} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
-                </div>
-            </div> */}
             <Tabs selectedIndex={tabIndex} className='relative'>
                 <TabList className='py-2 px-8'>
                     <Tab onClick={() => setTabIndex(0)}>Tự động áp dụng</Tab>
@@ -184,7 +180,7 @@ function ListPromotion() {
                                                 <td className='text-start font-medium px-2 py-3 text-amber-500'>{item.name}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
-                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Đã xóa" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
+                                                <td className={`${isAfter(parse(`${item.startDate}`, 'yyyy-MM-dd', new Date()), new Date()) ? "text-amber-600" : (!item.valid || item.deleted) ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{isAfter(parse(`${item.startDate}`, 'yyyy-MM-dd', new Date()), new Date()) ? "Chưa diễn ra" : item.deleted ? "Ngưng hoạt động" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
                                                 <td className='text-center font-medium px-2 py-3'>
                                                     <div className='flex items-center justify-end pr-8 outline-none'>
                                                         <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/promotion/${item.promotionFixedId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>
@@ -250,7 +246,7 @@ function ListPromotion() {
                                                 <td className='text-start font-medium px-2 py-3 text-amber-500'>{item.name}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.startDate).date}</td>
                                                 <td className='text-center font-medium px-2 py-3'>{FormatDataTime(item.endDate).date}</td>
-                                                <td className={`${!item.valid || item.deleted ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{item.deleted ? "Ngưng hoạt động" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
+                                                <td className={`${isAfter(parse(`${item.startDate}`, 'yyyy-MM-dd', new Date()), new Date()) ? "text-amber-600" : (!item.valid || item.deleted) ? "text-red-600" : "text-green-600"} text-center font-medium px-2 py-3`}>{isAfter(parse(`${item.startDate}`, 'yyyy-MM-dd', new Date()), new Date()) ? "Chưa diễn ra" : item.deleted ? "Ngưng hoạt động" : !item.valid ? "Đã kết thúc" : "Đang diễn ra"}</td>
                                                 <td className='text-center font-medium px-2 py-3'>
                                                     <div className='flex items-center justify-end pr-8 outline-none'>
                                                         <a onClick={(e) => { e.stopPropagation(); changeTab(`/admin/update-item/promotion/${item.promotionCodeId}`) }} className='flex justify-center items-center w-8 h-8 mr-2 rounded-lg bg-cyan-100'>

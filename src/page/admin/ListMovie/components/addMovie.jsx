@@ -13,8 +13,6 @@ import AdminService from '../../../../service/AdminService'
 import CinemaService from '../../../../service/CinemaService';
 import UserService from '../../../../service/UserService';
 
-// import DatePicker from 'react-datepicker';
-// import 'react-datepicker/dist/react-datepicker.css';
 
 import { Space, TimePicker, DatePicker } from 'antd'
 import FormatDataTime from '../../../../utils/FormatDataTime';
@@ -23,6 +21,9 @@ import { ChevronUpDownIcon, FilmIcon } from '@heroicons/react/20/solid';
 import { PlusCircle } from 'lucide-react';
 import useLoadingState from '../../../../hook/UseLoadingState';
 import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 const AddMovie = () => {
     const { getOneMovieApi } = UserService()
@@ -46,7 +47,6 @@ const AddMovie = () => {
     const [genres, setGenres] = useState('')
     const [arrGenres, setArrGenres] = useState([]);
     const [selectGenres, setSelectGenres] = useState([]);
-    console.log("🚀 ~ AddMovie ~ selectGenres:", selectGenres)
     const [movie, setMovie] = useState({
         title: "",
         director: "",
@@ -63,7 +63,6 @@ const AddMovie = () => {
         delete: false
     })
 
-    console.log("🚀 ~ AddMovie ~ movie:", movie)
     const [oneMovie, setOneMovie] = useState({
         movieId: "",
         title: "",
@@ -146,6 +145,7 @@ const AddMovie = () => {
         setLoading('getOneMovie', false)
     }
     const handleGetListGenres = async () => {
+        console.log('sss')
         let resGenres = await getListGenresApi()
         if (resGenres && resGenres.data && resGenres.data.result) {
             setArrGenres(resGenres.data.result)
@@ -166,6 +166,7 @@ const AddMovie = () => {
         setLoading('confirm', true)
         const data = { name: name }
         await createGenresApi(data)
+        handleGetListGenres()
         setLoading('confirm', false)
         setToggleAddGenres(false)
     }
@@ -321,7 +322,7 @@ const AddMovie = () => {
                                     >
                                         Ảnh (dọc) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                     </label>
-                                    <div className="mb-4 border">
+                                    <div className="mb-4 border-2 border-[#d9d9d9] rounded-md">
                                         <img src={imageURL} alt="Ảnh phim (dọc)" className="md:w-64 md:h-80 lg:h-96 lg:w-72" />
                                     </div>
 
@@ -357,7 +358,7 @@ const AddMovie = () => {
                                             }}
                                             placeholder='Nhập tên phim'
                                             type="text"
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.title}
                                         />
                                         {errors.title && <p className="text-red-600">{errors.title}</p>}
@@ -376,7 +377,7 @@ const AddMovie = () => {
                                             }}
                                             type="text"
                                             placeholder='Nhập mô tả'
-                                            className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                            className="block placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                             defaultValue={oneMovie.desc}
                                             rows={5}
                                         />
@@ -397,7 +398,7 @@ const AddMovie = () => {
                                                 }}
                                                 type="text"
                                                 placeholder='Nhập tên đạo diễn'
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.director}
                                             />
                                             {errors.director && <p className="text-red-600">{errors.director}</p>}
@@ -416,7 +417,7 @@ const AddMovie = () => {
                                                 }}
                                                 type="text"
                                                 placeholder='Nhập tên diễn viên'
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="placeholder-[#bfbfbf] leading-7 font-sans block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 border-[#d9d9d9] focus:border-blue-600"
                                                 defaultValue={oneMovie.actor}
                                             />
                                             {errors.actor && <p className="text-red-600">{errors.actor}</p>}
@@ -432,6 +433,7 @@ const AddMovie = () => {
                                                 selected={time}
                                                 onChange={handleSelectDate}
                                                 placeholder={'Chọn ngày phát hành'}
+                                                size='large'
                                                 className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 placeholderText={FormatDataTime(oneMovie.releaseDate).date}
                                                 dateFormat="yyyy-MM-dd" // Định dạng ngày
@@ -453,7 +455,7 @@ const AddMovie = () => {
                                                 className={`${selectGenres.length <= 2 ? "h-10" : "h-12"} modal-body flex items-center overflow-x-auto max-w-[200px] px-2 py-0.5 text-sm text-black focus:outline-none rounded-md border-2`}
                                             >
                                                 {selectGenres.length === 0 ?
-                                                    <span className='flex items-center text-lg text-gray-400'>Chọn thể loại</span>
+                                                    <span className='flex items-center leading-7 font-sans border-[#d9d9d9] text-lg text-[#bfbfbf]'>Chọn thể loại</span>
                                                     :
                                                     selectGenres.map((genres) => (
                                                         <div className='relative h-5 bg-green-200 rounded-md mx-0.5'>
@@ -493,7 +495,7 @@ const AddMovie = () => {
                                                         {toggleAddGenres &&
                                                             <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-20'>
                                                                 <div className="relative w-1/3 z-10 overflow-hidden bg-slate-300 rounded-md">
-                                                                    <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Thêm thể loại phim</h4>
+                                                                    <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400 text-slate-700">Thêm thể loại phim</h4>
                                                                     <div className=' rounded-xl bg-slate-100 w-1/2 z-10'>
                                                                         <button
                                                                             type="button"
@@ -526,7 +528,7 @@ const AddMovie = () => {
                                                                         <div className='flex justify-end'>
                                                                             <button
                                                                                 className="w-1/4 text-[18px] rounded-xl hover:bg-emerald-800 hover:text-white text-white bg-emerald-600 py-2 transition-colors duration-300"
-                                                                                type='button'
+                                                                                type='submit'
                                                                                 // disabled={loading['change']}
                                                                                 onClick={() => {
                                                                                     hadleCreateGenres(genres)
@@ -561,7 +563,7 @@ const AddMovie = () => {
                                                 }}
                                                 type="text"
                                                 placeholder='Nhập thời lượng'
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.duration}
                                             />
                                             {errors.duration && <p className="text-red-600">{errors.duration}</p>}
@@ -580,7 +582,7 @@ const AddMovie = () => {
                                                 }}
                                                 type="url"
                                                 placeholder='Nhập đường dẫn trailer'
-                                                className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                className="block placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
                                                 defaultValue={oneMovie.trailerLink}
                                             />
                                             {errors.trailerLink && <p className="text-red-600">{errors.trailerLink}</p>}
@@ -595,7 +597,7 @@ const AddMovie = () => {
                                 >
                                     Ảnh (ngang) {!/^\/(admin|manager)\/update-item/.test(pathname) && <span className='text-red-600'>*</span>}
                                 </label>
-                                <div className="mb-4 border">
+                                <div className="mb-4 border-2 border-[#d9d9d9] rounded-md">
                                     <img src={image2URL} alt="Ảnh bìa (ngang)" className="md:w-64 md:h-80 lg:h-[520px] lg:w-full" />
                                 </div>
 

@@ -8,6 +8,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import useLoadingState from '../../hook/UseLoadingState'
 import FormatDataTime from '../../utils/FormatDataTime';
 import { LoginContext } from '../../context/LoginContext';
@@ -267,7 +272,7 @@ const Info = () => {
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, currentPassword: e.target.value })}
                                             type="text"
                                             className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
+                                            placeholder="Nhập mật khẩu"
                                         />
                                     </div>
                                     <div >
@@ -282,7 +287,7 @@ const Info = () => {
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, newPassword: e.target.value })}
                                             type="text"
                                             className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
+                                            placeholder="Nhập mật khẩu mới"
                                         />
                                     </div>
                                     <div>
@@ -297,7 +302,7 @@ const Info = () => {
                                             onChange={e => setPasswordUpdateInfo({ ...passwordUpdateInfo, confirmNewPassword: e.target.value })}
                                             type="text"
                                             className="block w-full px-4 py-1 text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                            placeholder=""
+                                            placeholder="Xác nhận mật khẩu"
                                         />
                                     </div>
                                     <button
@@ -370,7 +375,7 @@ const Info = () => {
                                                                 </td>
                                                                 <td className='text-center font-medium px-2 py-4'>
                                                                     {item.ticketStatus !== "CANCELLED" &&
-                                                                        <div
+                                                                        <button
                                                                             className='bg-red-600 text-zinc-200 hover:bg-red-800 inline px-3 py-1 rounded-lg'
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
@@ -379,7 +384,7 @@ const Info = () => {
                                                                             }}
                                                                         >
                                                                             Hủy
-                                                                        </div>
+                                                                        </button>
                                                                     }
                                                                 </td>
                                                                 <div>
@@ -468,17 +473,17 @@ const Info = () => {
             {
                 toggle && (
                     <div className='top-0 bottom-0 bg-cover w-full fixed flex justify-center'>
-                        <div className="relative w-[30%] mt-28 mb-4 h-auto z-10 overflow-hidden bg-slate-300 rounded-md">
-                            <h4 className="font-bold text-3xl p-2 border-b-2 border-slate-400">Chi tiết vé</h4>
+                        <div className="relative w-[28%] mt-28 mb-4 h-auto z-10 overflow-hidden bg-slate-300 rounded-md">
+                            <h2 className="font-bold text-2xl p-2 border-b-2 border-slate-400">Chi tiết vé</h2>
                             <div className='flex justify-center absolute mx-auto w-full h-full top-0 right-0 z-10'>
                                 {loading['ticket'] && <Loading />}
                             </div>
                             {!loading['ticket'] &&
                                 <>
-                                    <div className="relative px-4 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
-                                        <div className='p-4 space-y-4'>
+                                    <div className="relative bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                                        <div className='px-4 py-3 space-y-2'>
                                             <div>
-                                                <p className="text-3xl text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
+                                                <p className="text-2xl text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
                                             </div>
                                             <div>
                                                 <p className='font-light'>Ngày giờ chiếu</p>
@@ -499,7 +504,7 @@ const Info = () => {
                                                 <div className="w-3/5">
                                                     <p className='font-light'>Ghế</p>
                                                     {ticketDetail?.seats &&
-                                                        <p className="font-semibold text-xl">
+                                                        <p className="font-semibold text-lg">
                                                             {ticketDetail && ticketDetail.seats && ticketDetail.seats.map((seat, index) => (
                                                                 <span key={index}>{String.fromCharCode(65 + parseInt(seat.row, 10) - 1) + seat.column}{index < ticketDetail.seats.length - 1 ? ', ' : ''}</span>
                                                             ))}
@@ -514,7 +519,7 @@ const Info = () => {
                                             <div className='flex items-start gap-10'>
                                                 <div className='w-3/5'>
                                                     <p className='font-light'>Bắp nước</p>
-                                                    <p className="font-semibold text-xl">
+                                                    <p className="font-semibold text-lg">
                                                         {ticketDetail.foods && ticketDetail.foods.map((food, index) => (
                                                             <p key={index}>{food}</p>
                                                         ))}
@@ -522,36 +527,26 @@ const Info = () => {
                                                 </div>
                                                 <div className='w-2/5'>
                                                     <p className='font-light'>Giá tiền</p>
-                                                    {ticketDetail.price && <p className="font-semibold text-3xl text-cyan-600">{ConvertStringFollowFormat(ticketDetail.price)}<sup>đ</sup></p>}
+                                                    {ticketDetail.price && <p className="font-semibold text-2xl text-cyan-600">{ConvertStringFollowFormat(ticketDetail.price)}<sup>đ</sup></p>}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className='border-t-2 border-slate-400 p-4'>
+                                    <div className='border-t-2 border-slate-400 p-3'>
                                         <div className='flex justify-between'>
                                             <p className='font-light'>Thời gian đặt vé: </p>
-                                            {ticketDetail?.createAt && <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>}
+                                            {ticketDetail?.createAt && <p className='text-lg'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>}
                                         </div>
                                         {ticketDetail?.status === 'CANCELLED' &&
                                             <div className='flex justify-between'>
                                                 <p className='font-light'>Thời gian hủy vé: </p>
-                                                <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.cancelTime).date}, {FormatDataTime(ticketDetail.cancelTime).time}</p>
+                                                <p className='text-lg'>&nbsp;{FormatDataTime(ticketDetail.cancelTime).date}, {FormatDataTime(ticketDetail.cancelTime).time}</p>
                                             </div>
                                         }
                                         <div className='flex justify-between'>
                                             <p className='font-light'>Mã đặt vé: </p>
-                                            {ticketDetail?.bookingId && <p className='text-xl'>{ticketDetail.bookingId}</p>}
-                                        </div>
-                                        <div className='flex items-start justify-between'>
-                                            <p className='font-light'>Khách hàng: </p>
-                                            {ticketDetail.userName === null || ticketDetail.fullName === null ?
-                                                <p className='text-xl'>Khách vãng lai</p> :
-                                                <div className='text-center'>
-                                                    {ticketDetail.userName && <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>}
-                                                    {ticketDetail.fullName && <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>}
-                                                </div>
-                                            }
+                                            {ticketDetail?.bookingId && <p className='text-lg'>{ticketDetail.bookingId}</p>}
                                         </div>
                                     </div>
                                     <div className='absolute bottom-4 right-4 z-50'>

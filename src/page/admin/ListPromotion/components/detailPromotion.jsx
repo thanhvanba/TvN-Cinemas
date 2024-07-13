@@ -5,23 +5,27 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { DatePicker, Space, TimePicker } from 'antd';
 import SelectMenu from '../../../../components/SelectMenu/SelectMenu';
 import PromotionService from '../../../../service/PromotionService';
+
 import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import FormatDataTime from '../../../../utils/FormatDataTime';
 import { Armchair, Sofa } from 'lucide-react';
 import useLoadingState from '../../../../hook/UseLoadingState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { BanknotesIcon } from '@heroicons/react/20/solid';
+import { parse } from 'date-fns';
+import { isAfter } from 'date-fns';
 
 function DetailPromotion() {
   const { promotionId } = useParams()
   const { pathname } = useLocation()
   const [promotion, setPromotion] = useState({})
-  console.log("🚀 ~ DetailPromotion ~ promotion:", promotion)
   const [formality, setFormality] = useState(null)
   const [selectedType, setSelectedType] = useState(null)
   const [formalityOfPromotion, setFormalityOfPromotion] = useState(null)
-  console.log("🚀 ~ DetailPromotion ~ formalityOfPromotion:", formalityOfPromotion)
   const { RangePicker } = DatePicker;
   const { getOnePromotionApi, updatePromotionsCode, updatePromotionsFixed } = PromotionService()
   const navigate = useNavigate()
@@ -38,6 +42,7 @@ function DetailPromotion() {
       resPromotion.data.result.promotionCode ? setFormality(1) : setFormality(0)
       resPromotion.data.result.discountType === "FIXED_AMOUNT" ? setSelectedType(0) : setSelectedType(1)
       resPromotion.data.result.ageLimit ? setFormalityOfPromotion(2) : resPromotion.data.result.validTimeFrameStart ? setFormalityOfPromotion(1) : setFormalityOfPromotion(0)
+      setImageURL(resPromotion.data.result.image)
       setPromotion(resPromotion.data.result)
     }
     setLoading('getOne', false)
@@ -45,13 +50,11 @@ function DetailPromotion() {
 
   const handleUpdatePromotion = async (e) => {
     e.preventDefault();
-    // if (validate()) {
     setLoading('update', true);
     const data = promotion;
     formality === 0 ? await updatePromotionsFixed(data, promotionId) : await updatePromotionsCode(data, promotionId)
     changeTab("/admin/list-promotion")
     setLoading('update', false);
-    // }
   };
   const types = ["Khuyến mãi giảm tiền", "Khuyến mãi chiết khấu %"]
   const handleSelectType = (selectedValue) => {
@@ -62,6 +65,26 @@ function DetailPromotion() {
   const handleSelectFormality = (selectedValue) => {
     selectedValue === "Theo độ tuổi" ? setFormalityOfPromotion(2) : selectedValue === "Theo khung thời gian" ? setFormalityOfPromotion(1) : setFormalityOfPromotion(0)
   }
+
+  // Upload ảnh
+  const [imageURL, setImageURL] = useState(null);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    readAndDisplayFile(selectedFile);
+  };
+
+  const readAndDisplayFile = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageURL(reader.result);
+      setPromotion((prevPromotion) => ({
+        ...prevPromotion,
+        image: file,
+      }));
+    };
+    reader.readAsDataURL(file);
+    clearError('image')
+  };
 
   useEffect(() => {
     handleGetOnePromotion(promotionId)
@@ -85,107 +108,139 @@ function DetailPromotion() {
         </div>
         {!loading['getOne'] &&
           <div>
-            <div className='rounded-lg bg-slate-100 p-4'>
-              <div className='flex justify-between'>
-                <div className="mb-4 w-1/2 mr-2">
-                  <label
-                    htmlFor=""
-                    className="block text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Mã CT khuyến mãi
-                  </label>
-                  <input
-                    type="text"
-                    className="block w-1/2 mt-1 px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600 cursor-not-allowed"
-                    disabled={true}
-                    defaultValue={promotionId}
-                  />
-                </div>
-                <div className="mb-4 w-1/2 ml-2">
-                  <label
-                    className="block text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Trạng thái
-                  </label>
-                  <input
-                    type="text"
-                    className={`${!promotion.valid || promotion.deleted ? "text-red-600" : "text-green-600"} block w-1/2 mt-1 px-4 py-1 text-lg focus:outline-none rounded-md border-2 focus:border-blue-600 cursor-not-allowed`}
-                    defaultValue={
-                      promotion.deleted
-                        ? 'Ngưng hoạt động'
-                        : !promotion.valid
-                          ? 'Đã kết thúc'
-                          : 'Đang diễn ra'
-                    }
-                    disabled={true}
-                  />
-                </div>
-              </div>
-              <div className='flex'>
-                <div className="mb-4 w-1/2 mr-2">
-                  <label
-                    htmlFor=""
-                    className="block text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Tên CT khuyến mãi
-                  </label>
-                  <input
-                    onChange={e => setPromotion({ ...promotion, name: e.target.value })}
-                    type="text"
-                    className="block w-full mt-1 px-4 py-1 text-lg bg-white text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                    defaultValue={promotion.name}
-                    disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
-                  />
-                </div>
-
-                <div className="mb-4 w-1/2 ml-2">
-                  <label
-                    htmlFor=""
-                    className="block text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Thời gian hoạt động
-                  </label>
-                  <div >
-                    <RangePicker
-                      onChange={(dates, dateStrings) => {
-                        setPromotion({
-                          ...promotion,
-                          startDate: dateStrings ? dateStrings[0] : null,
-                          endDate: dateStrings ? dateStrings[1] : null
-                        });
-                      }}
-                      placeholder={['Chọn ngày bắt đầu', 'Chọn ngày kết thúc']}
-                      defaultValue={[dayjs(FormatDataTime(promotion.startDate).date, 'DD/MM/YYYY'), dayjs(FormatDataTime(promotion.endDate).date, 'DD/MM/YYYY')]}
-                      className="w-full mt-1 py-1.5 text-lg text-black bg-white focus:outline-none rounded-md border-2 focus:border-blue-600"
-                      disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
+            <div className='flex gap-x-3'>
+              <div className='w-2/3 rounded-lg bg-slate-100 p-4'>
+                <div className='flex justify-between'>
+                  <div className="mb-4 w-1/2 mr-2">
+                    <label
+                      htmlFor=""
+                      className="block text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Mã CT khuyến mãi
+                    </label>
+                    <input
+                      type="text"
+                      className="block w-1/2 mt-1 px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600 cursor-not-allowed"
+                      disabled={true}
+                      defaultValue={promotionId}
+                    />
+                  </div>
+                  <div className="mb-4 w-1/2 ml-2">
+                    <label
+                      className="block text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Trạng thái
+                    </label>
+                    <input
+                      type="text"
+                      className={`${isAfter(parse(`${promotion.startDate}`, 'yyyy-MM-dd', new Date()), new Date()) ? "text-amber-600" : (!promotion.valid || promotion.deleted) ? "text-red-600" : "text-green-600"} block w-1/2 mt-1 px-4 py-1 text-lg focus:outline-none rounded-md border-2 focus:border-blue-600 cursor-not-allowed`}
+                      defaultValue={
+                        isAfter(parse(`${promotion.startDate}`, 'yyyy-MM-dd', new Date()), new Date())
+                          ? "Chưa diễn ra"
+                          : promotion.deleted
+                            ? 'Ngưng hoạt động'
+                            : !promotion.valid
+                              ? 'Đã kết thúc'
+                              : 'Đang diễn ra'
+                      }
+                      disabled={true}
                     />
                   </div>
                 </div>
-              </div>
+                <div className='flex'>
+                  <div className="mb-4 w-1/2 mr-2">
+                    <label
+                      htmlFor=""
+                      className="block text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Tên CT khuyến mãi
+                    </label>
+                    <input
+                      onChange={e => setPromotion({ ...promotion, name: e.target.value })}
+                      type="text"
+                      className="block w-full mt-1 px-4 py-1 text-lg bg-white text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                      defaultValue={promotion.name}
+                      disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
+                    />
+                  </div>
 
-              <div className="mb-4">
+                  <div className="mb-4 w-1/2 ml-2">
+                    <label
+                      htmlFor=""
+                      className="block text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Thời gian hoạt động
+                    </label>
+                    <div >
+                      <RangePicker
+                        onChange={(dates, dateStrings) => {
+                          setPromotion({
+                            ...promotion,
+                            startDate: dateStrings ? dateStrings[0] : null,
+                            endDate: dateStrings ? dateStrings[1] : null
+                          });
+                        }}
+                        placeholder={['Chọn ngày bắt đầu', 'Chọn ngày kết thúc']}
+                        defaultValue={[dayjs(FormatDataTime(promotion.startDate).date, 'DD/MM/YYYY'), dayjs(FormatDataTime(promotion.endDate).date, 'DD/MM/YYYY')]}
+                        className="w-full mt-1 py-1.5 text-lg text-black bg-white focus:outline-none rounded-md border-2 focus:border-blue-600"
+                        disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    htmlFor=""
+                    className="block font-medium leading-6 text-gray-900"
+                  >
+                    Mô tả
+                  </label>
+                  <textarea
+                    onChange={e => {
+                      setPromotion({ ...promotion, description: e.target.value })
+                      // clearError('desc')
+                    }}
+                    type="text"
+                    className="block w-full px-4 py-1 text-black bg-white focus:outline-none rounded-md border-2 focus:border-blue-600"
+                    placeholder='Nhập mô tả khuyến mãi'
+                    defaultValue={promotion?.description}
+                    rows={5}
+                    disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
+                  />
+                </div>
+              </div>
+              <div className='pb-4 w-1/3'>
                 <label
                   htmlFor=""
-                  className="block font-medium leading-6 text-gray-900"
+                  className="block text-lg font-medium leading-6 text-gray-900"
                 >
-                  Mô tả
+                  Ảnh khuyến mãi
                 </label>
-                <textarea
-                  onChange={e => {
-                    setPromotion({ ...promotion, description: e.target.value })
-                    // clearError('desc')
-                  }}
-                  type="text"
-                  className="block w-full px-4 py-1 text-black bg-white focus:outline-none rounded-md border-2 focus:border-blue-600"
-                  placeholder='Nhập mô tả khuyến mãi'
-                  defaultValue={promotion?.description}
-                  rows={5}
-                  disabled={/^\/(admin|manager)\/promotion/.test(pathname) ? true : false}
-                />
+                <div className="mb-4 border">
+                  <img src={imageURL} alt="Ảnh khuyến mãi" className="w-full lg:h-[264px]" />
+                </div>
+
+                {!/^\/(admin|manager)\/promotion/.test(pathname) &&
+                  <div className=''>
+                    <input
+                      onChange={handleFileChange}
+                      type="file"
+                      className="hidden"
+                      id="form_img2-upload"
+                    />
+                    <label
+                      htmlFor="form_img2-upload"
+                      className="bg-slate-200 w-full h-full px-4 py-1 text-lg focus:outline-none rounded-md cursor-pointer flex items-center flex-col-reverse"
+                    >
+                      Chọn một tập tin
+                    </label>
+                  </div>
+                }
               </div>
             </div>
 
-            <div className='rounded-lg bg-slate-200 p-4 mt-4'>
+            <div className='rounded-lg bg-slate-100 p-4 mt-4'>
               {formality === 1 ?
                 <>
                   <div className='flex'>
@@ -325,7 +380,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="block font-medium leading-6 text-gray-900"
                       >
-                        Hình thức khuyến mãi<span className='text-red-600'>*</span>
+                        Hình thức khuyến mãi
                       </label>
                       {/^\/(admin|manager)\/promotion/.test(pathname) ?
                         <input
@@ -349,7 +404,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="block font-medium leading-6 text-gray-900"
                       >
-                        {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(1-7)'} <span className='text-red-600'>*</span>
+                        {formalityOfPromotion === 2 ? 'Giới hạn tuổi' : formalityOfPromotion === 1 ? 'Khung thời gian' : 'Ngày trong tuần(T2-CN)(1-7)'}
                       </label>
                       {
                         formalityOfPromotion === 1 ?
@@ -406,7 +461,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="flex items-center font-medium leading-6 text-gray-900"
                       >
-                        <Armchair className='h-8 w-8 text-slate-800' />&nbsp; Ghế thường <span className='text-red-600'>*</span>
+                        <Armchair className='h-8 w-8 text-slate-800' />&nbsp; Ghế thường
                       </label>
                       <input
                         onChange={e => setPromotion({ ...promotion, normalValue: e.target.value })}
@@ -423,7 +478,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="flex items-center font-medium leading-6 text-gray-900"
                       >
-                        <Armchair className='h-8 w-8 text-orange-500' />&nbsp;Ghế vip <span className='text-red-600'>*</span>
+                        <Armchair className='h-8 w-8 text-orange-500' />&nbsp;Ghế vip
                       </label>
                       <input
                         onChange={e => setPromotion({ ...promotion, vipValue: e.target.value })}
@@ -440,7 +495,7 @@ function DetailPromotion() {
                         htmlFor=""
                         className="flex items-center font-medium leading-6 text-gray-900"
                       >
-                        <Sofa className='h-8 w-8 text-pink-700' />&nbsp; Ghế đôi <span className='text-red-600'>*</span>
+                        <Sofa className='h-8 w-8 text-pink-700' />&nbsp; Ghế đôi
                       </label>
                       <input
                         onChange={e => setPromotion({ ...promotion, coupleValue: e.target.value })}

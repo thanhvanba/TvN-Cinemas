@@ -6,8 +6,10 @@ import f_visa from "../../images/payment-visa.png"
 import dtb from "../../images/dathongbao.png"
 import fb from "../../images/scl_facebook.png"
 import yt from "../../images/scl_youtube.png"
+import { useNavigate } from 'react-router-dom'
 
 function Footer() {
+    const navigate = useNavigate()
     return (
         <div className='bg-gray-800 pt-10'>
             <div className='max-w-7xl mx-auto px-4 py-10 mb-10 border-slate-200 border-b'>
@@ -15,17 +17,16 @@ function Footer() {
                     <div className='text-slate-200 m-2'>
                         <h2 className='uppercase font-bold text-xs sm:text-base lg:text-xl text-cyan-300 '>Về chúng tôi</h2>
                         <ul className='pt-6 pl-2 text-[10px] sm:text-sm xl:text-lg'>
-                            <li className='hover:text-cyan-300 mb-2'>Tuyển dụng</li>
-                            <li className='hover:text-cyan-300 mb-2'>Hệ thống rạp</li>
-                            <li className='hover:text-cyan-300 mb-2'>Liên hệ</li>
+                            <li onClick={() => navigate('./rap')} className='hover:text-cyan-300 mb-2 cursor-pointer'>Hệ thống rạp</li>
+                            <li onClick={() => navigate('./lienhe')} className='hover:text-cyan-300 mb-2 cursor-pointer'>Liên hệ</li>
                         </ul>
                     </div>
                     <div className='text-slate-200 m-2'>
-                        <h2 className='uppercase font-bold text-xs sm:text-base lg:text-xl text-cyan-300'>Quy định và điều khoản</h2>
+                        <h2 className='uppercase font-bold text-xs sm:text-base lg:text-xl text-cyan-300'>Dịch vụ hệ thống</h2>
                         <ul className='pt-6 pl-2 text-[10px] sm:text-sm xl:text-lg'>
-                            <li className='hover:text-cyan-300 mb-2'>Tuyển dụng</li>
-                            <li className='hover:text-cyan-300 mb-2'>Hệ thống rạp</li>
-                            <li className='hover:text-cyan-300 mb-2'>Liên hệ</li>
+                            <li onClick={() => navigate('./phim')} className='hover:text-cyan-300 mb-2 cursor-pointer'>Phim</li>
+                            <li onClick={() => navigate('./lichchieu')} className='hover:text-cyan-300 mb-2 cursor-pointer'>Lịch chiếu</li>
+                            <li onClick={() => navigate('./khuyenmai')} className='hover:text-cyan-300 mb-2 cursor-pointer'>Khuyến mãi</li>
                         </ul>
                     </div>
                     <div className='hidden sm:block'></div>
@@ -33,10 +34,10 @@ function Footer() {
                         <h2 className='uppercase font-bold text-xs sm:text-base lg:text-xl text-cyan-300'>Liên Kết :</h2>
                         <ul className='pt-2 pl-2 flex justify-end'>
                             <li className='p-2'>
-                                <img src={fb} alt="" className='h-6 w-6 sm:h-10 sm:w-10 lg:h-14 lg:w-14'/>
+                                <img src={fb} alt="" className='h-6 w-6 sm:h-10 sm:w-10 lg:h-14 lg:w-14' />
                             </li>
                             <li className='p-2'>
-                                <img src={yt} alt="" className='h-6 w-6 sm:h-10 sm:w-10 lg:h-14 lg:w-14'/>
+                                <img src={yt} alt="" className='h-6 w-6 sm:h-10 sm:w-10 lg:h-14 lg:w-14' />
                             </li>
                         </ul>
                         <h2 className='uppercase font-bold text-xs sm:text-base lg:text-xl text-cyan-300'>HOTLINE :</h2>
@@ -51,7 +52,7 @@ function Footer() {
                     Trải nghiệm điện ảnh tuyệt vời cùng T&N Cinemas - Nơi Hòa Quyện Giấc Mơ!
                 </p>
                 <p className='flex justify-center'>
-                    <img src={dtb} alt="" className='w-28 sm:w-40 md:w-[200px]'/>
+                    <img src={dtb} alt="" className='w-28 sm:w-40 md:w-[200px]' />
                 </p>
                 <p className='uppercase pt-4 text-xs sm:text-sm md:text-base'>
                     CÔNG TY CỔ PHẦN GIẢI TRÍ PHÁT HÀNH PHIM – RẠP CHIẾU PHIM NGÔI SAO

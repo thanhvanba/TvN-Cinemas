@@ -33,7 +33,18 @@ const PromotionService = () => {
             },
         );
     };
+    // Hàm chuyển đổi chuỗi dạng data URL thành đối tượng File
+    const convertDataURLtoFile = async (dataURL, filename) => {
+        const response = await fetch(dataURL);
+        const blob = await response.blob();
+        return new File([blob], filename);
+    };
     const addPromotionsFixed = async (data) => {
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                console.log(`Field: ${key}, Type: ${typeof data[key]}`);
+            }
+        }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axiosInstance.post(
@@ -50,10 +61,12 @@ const PromotionService = () => {
                     validTimeFrameEnd: data.validTimeFrameEnd,
                     startDate: data.startDate,
                     endDate: data.endDate,
+                    image: data.image
                 },
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );
@@ -67,7 +80,11 @@ const PromotionService = () => {
         }
     };
     const addPromotionsCode = async (data) => {
-        console.log("🚀 ~ addPromotionsCode ~ data:", data)
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                console.log(`Field: ${key}, Type: ${typeof data[key]}`);
+            }
+        }
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
             const response = await axiosInstance.post(
@@ -84,10 +101,12 @@ const PromotionService = () => {
                     minOrderValue: data.minOrderValue,
                     startDate: data.startDate,
                     endDate: data.endDate,
+                    image: data.image
                 },
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );
@@ -102,12 +121,21 @@ const PromotionService = () => {
     const updatePromotionsFixed = async (data, promotionId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (key === "image" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "image");
+                        data[key] = file;
+                    }
+                }
+            }
             const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/promotionsFixed/${promotionId}`,
                 data,
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );
@@ -122,12 +150,21 @@ const PromotionService = () => {
     const updatePromotionsCode = async (data, promotionId) => {
         try {
             let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (key === "image" && typeof data[key] === "string") {
+                        const file = await convertDataURLtoFile(data[key], "image");
+                        data[key] = file;
+                    }
+                }
+            }
             const response = await axiosInstance.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/admin/promotionsCode/${promotionId}`,
                 data,
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );
@@ -147,6 +184,7 @@ const PromotionService = () => {
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );
@@ -166,6 +204,7 @@ const PromotionService = () => {
                 {
                     headers: {
                         "Authorization": bearerToken,
+                        'Content-Type': 'multipart/form-data',
                     },
                 },
             );

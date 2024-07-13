@@ -37,6 +37,7 @@ const ShowTimes = () => {
   const [movie, setMovie] = useState([])
   const [listShowtime, setListShowtime] = useState([])
   const [listShowtimeCinema, setListShowtimeCinema] = useState([])
+  console.log("🚀 ~ ShowTimes ~ listShowtimeCinema:", listShowtimeCinema)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: "", time: "", scheduleId: "" });
   const [currentTab, setCurrentTab] = useState('1');
   const changeTab = (pathname) => {
@@ -196,14 +197,14 @@ const ShowTimes = () => {
                     {
                       allShowMovie.map((item, index) => (
                         <div key={`movie-${index}-${item.movieId}`} onClick={() => handleGetShowtimeByMovie(item.movieId)} className="mb-4">
-                          <div className="relative product-item table border-2 border-slate-600 h-[92%]">
+                          <div className="relative product-item table h-[92%] border-[0.5px] border-slate-700 rounded-lg">
                             <img src={item.poster} alt=""
                               className="product-over h-full lg:w-[188px] xl:w-[166px] table-cell"
                             />
                             <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
                               <div className='flex justify-center items-center p-2'>
-                                <StarIcon className='h-6 text-amber-400 px-4' />
-                                <p className=' text-slate-200 font-bold text-lg'>{item.rating ? item.rating : "N/A"}</p>
+                                <StarIcon className='h-4 text-amber-400 px-2' />
+                                <p className=' text-slate-200 font-bold text-sm'>{item.rating ? item.rating : "N/A"}</p>
                               </div>
                             </div>
                           </div>

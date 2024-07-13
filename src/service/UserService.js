@@ -88,11 +88,11 @@ const UserService = () => {
             );
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                navigate("/forgot-password/verify", { state: { email: email } });
+                return true
             }
         }
         catch (err) {
-            toastNotify(err.response.data.message, "error")
+            toastNotify(err?.response?.data?.message, "error")
         }
     };
     const verifyApi = async (token) => {
@@ -108,20 +108,15 @@ const UserService = () => {
             );
             if (response.data.success) {
                 toastNotify(response.data.message, "success")
-                navigate("/reset-password", { state: { token: token } });
+                return true
             }
         }
         catch (err) {
             console.log("verify fail")
-
             toastNotify(err.response.data.message, "error")
         }
     }
     const resetPasswordApi = async (token, data) => {
-        const navigate = useNavigate()
-        const changeTab = (pathname) => {
-            navigate(pathname)
-        }
         try {
             const response = await axios.put(
                 `${process.env.REACT_APP_HOST_API_KEY}/user/reset-password`,
@@ -135,7 +130,7 @@ const UserService = () => {
 
             if (response.data.success) {
                 toastNotify(response.data.message, "success");
-                changeTab("/signup")
+                return true
             }
         } catch (err) {
             toastNotify(err.response.data.message, "error");
@@ -397,6 +392,26 @@ const UserService = () => {
             `${process.env.REACT_APP_HOST_API_KEY}/viewer/promotionFixeds`
         );
     }
+    const readAllNotificationApi = async () => {
+        try {
+            let bearerToken = `Bearer ${localStorage.getItem("token")}`
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_HOST_API_KEY}/user/notification/read-all`,
+                null,
+                {
+                    headers: {
+                        "Authorization": bearerToken,
+                    }
+                },
+            );
+
+            if (response.data.success) {
+                toastNotify(response.data.message, "success");
+            }
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
+        }
+    }
     return {
         getUserInfoApi,
         updateProfileApi,
@@ -427,7 +442,8 @@ const UserService = () => {
         getNotificationsApi,
         getOneNotificationApi,
         readCountApi,
-        getPromotionFixedApi
+        getPromotionFixedApi,
+        readAllNotificationApi
     }
 }
 

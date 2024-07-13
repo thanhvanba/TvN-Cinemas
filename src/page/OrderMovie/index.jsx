@@ -547,7 +547,7 @@ const OrderMovie = () => {
                         <div className='flex flex-col md:flex md:flex-row md:gap-5 '>
                             <div className="w-full md:w-2/3">
                                 <div className="p-4 md:p-6 space-y-6 bg-slate-300 rounded-2xl text-slate-900">
-                                    <h4 className="font-bold text-3xl">Thông tin phim</h4>
+                                    <h2 className="font-bold text-3xl">Thông tin phim</h2>
                                     <div>
                                         <p>Phim</p>
                                         <p className="font-semibold">{showtime.movie.title}</p>
@@ -578,7 +578,7 @@ const OrderMovie = () => {
                                     </div>
                                 </div>
                                 <div className="p-4 md:p-6 space-y-6 bg-slate-300 mt-5 rounded-2xl text-slate-900">
-                                    <h4 className="font-bold text-3xl">Thông tin thanh toán</h4>
+                                    <h2 className="font-bold text-3xl">Thông tin thanh toán</h2>
                                     <div>
                                         <div className="mt-4 ring-1 ring-gray-700 sm:mx-0 rounded-xl">
                                             <table className="min-w-full divide-y divide-gray-600">
@@ -646,7 +646,7 @@ const OrderMovie = () => {
                             </div>
                             <div className="w-full pt-4 md:pt-0 md:w-1/3 flex-1">
                                 <div className="relative bg-slate-300 h-[525] rounded-2xl p-4 md:p-6 md:space-y-5">
-                                    <h4 className="font-bold text-3xl">Phương thức thanh toán</h4>
+                                    <h2 className="font-bold text-3xl">Phương thức thanh toán</h2>
                                     <div id="headlessui-radiogroup-:rf:" role="radiogroup">
                                         <div className="space-y-2" role="none">
                                             <div className="relative block cursor-pointer rounded-xl border bg-transparent p-2 md:px-6 md:py-4 shadow-sm focus:outline-none sm:flex sm:justify-between border-gray-700" id="headlessui-radiogroup-option-:rg:" role="radio" aria-checked="true" tabIndex="0" data-headlessui-state="checked" aria-labelledby="headlessui-label-:rh:">

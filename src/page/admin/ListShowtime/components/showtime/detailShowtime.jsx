@@ -12,6 +12,12 @@ import useLoadingState from '../../../../../hook/UseLoadingState'
 import { format, isAfter, parse } from 'date-fns'
 import AdminService from '../../../../../service/AdminService'
 import { Space, TimePicker, DatePicker } from 'antd'
+
+import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
+
 import { LoginContext } from '../../../../../context/LoginContext'
 import Load from '../../../../../components/Load'
 import SeatImage from '../../../../../images/section.jpg'
@@ -167,11 +173,11 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
 
           <div className='flex border-b-2 border-b-slate-400'>
             {pathname === "/admin/add-item/schedule" ?
-              <h4 className="w-full pt-4 font-bold px-4 text-3xl pb-2 border-r-2">Thêm suất chiếu</h4>
+              <h2 className="w-full pt-4 font-bold px-4 text-3xl pb-2 border-r-2">Thêm suất chiếu</h2>
               :
               <>
-                <h4 className="w-1/3 pt-4 font-bold px-4 text-3xl pb-2 border-r-2">Chi tiết suất chiếu</h4>
-                <h4 className="w-2/3 pt-4 font-bold px-4 text-3xl pb-2">Danh sách ghế</h4>
+                <h2 className="w-1/3 pt-4 font-bold px-4 text-3xl pb-2 border-r-2">Chi tiết suất chiếu</h2>
+                <h2 className="w-2/3 pt-4 font-bold px-4 text-3xl pb-2">Danh sách ghế</h2>
               </>}
           </div>
 
@@ -285,20 +291,20 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
             {pathname !== "/admin/add-item/schedule" &&
               <div className='w-2/3'>
                 {/* {!loading['getItem'] && */}
-                  <div className='flex justify-center pt-4 font-normal'>
-                    <div className='flex px-4'>
-                      Tổng số ghế :
-                      <span>{countSeatBooked.SeatAvailable + countSeatBooked.SeatBooked}</span>
-                    </div>
-                    <div className='flex px-4'>
-                      Đã đặt :
-                      <span>{countSeatBooked.SeatBooked}</span>
-                    </div>
-                    <div className='flex px-4'>
-                      Còn trống :
-                      <span>{countSeatBooked.SeatAvailable}</span>
-                    </div>
+                <div className='flex justify-center pt-4 font-normal'>
+                  <div className='flex px-4'>
+                    Tổng số ghế :
+                    <span>{countSeatBooked.SeatAvailable + countSeatBooked.SeatBooked}</span>
                   </div>
+                  <div className='flex px-4'>
+                    Đã đặt :
+                    <span>{countSeatBooked.SeatBooked}</span>
+                  </div>
+                  <div className='flex px-4'>
+                    Còn trống :
+                    <span>{countSeatBooked.SeatAvailable}</span>
+                  </div>
+                </div>
                 {/* } */}
                 <div className='flex justify-center'>
                   {loadSeatBooked ?

@@ -40,13 +40,13 @@ const DetailMovie = ({ movie }) => {
                         {movie.title}
                     </h3>
                     <span className='text-orange-400 pl-4'>(</span>
-                    <div
+                    <button
                         className='flex flex-col group justify-center items-center'
                         onClick={handleToggle}
                     >
                         <StarSolidIcon className='h-8 text-amber-200 group-hover:text-amber-400' />
                         <p className='text-slate-200 group-hover:text-slate-400 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
-                    </div>
+                    </button>
                     <span className='text-orange-400'>)</span>
 
                     {toggleRV &&
@@ -101,28 +101,6 @@ const DetailMovie = ({ movie }) => {
                     >
                         Xem trailer
                     </button>
-
-                    {/* Hiển thị video khi showTrailer là true *
-                    {showTrailer && (
-                        <div className="fixed z-50 top-1/4 left-1/4 w-1/2 h-1/2 bg-black bg-opacity-75 flex items-center justify-center">
-                            <div className="relative w-full h-0 pb-[56.25%]">
-                                <iframe
-                                    title={`${movie.title} Trailer`}
-                                    className="absolute top-0 left-0 w-full h-full"
-                                    src={getSrcYoutube(movie.trailerLink)}
-                                    frameBorder="0"
-                                    allowFullScreen
-                                ></iframe>
-                                {/* Nút đóng ở góc phải trên của iframe *
-                                <button
-                                    className="absolute -top-8 -right-8 text-white cursor-pointer"
-                                    onClick={closeTrailer}
-                                >
-                                    <XMarkIcon className="h-10 w-10 text-gray-400" aria-hidden="true" />
-                                </button>
-                            </div>
-                        </div>
-                    )} */}
                     <button className="my-4 border-slate-400 border p-4 text-sm font-bold uppercase rounded-e-2xl hover:bg-white hover:text-emerald-800 bg-emerald-600 text-white transition-colors duration-300" type='submit'
                     >
                         <a>Mua vé ngay</a>

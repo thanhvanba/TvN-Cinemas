@@ -71,10 +71,12 @@ const Home = () => {
   }
 
   const handleGetMovie = async () => {
+    setLoading(true)
     const resNowPlay = await NowPlayingMovieApi()
     if (resNowPlay && resNowPlay.data && resNowPlay.data.result) {
       setNowPlayingMovie(resNowPlay.data.result)
     }
+    setLoading(false)
     const resComingSoon = await ComingSoonMovieApi()
     if (resComingSoon && resComingSoon.data && resComingSoon.data.result) {
       setComingSoonMovie(resComingSoon.data.result)
@@ -134,12 +136,12 @@ const Home = () => {
             <Loading /> :
             <div >
               {/* load phim */}
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 max-w-screen-xl mx-auto">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 px-4 max-w-screen-xl mx-auto mb-8">
                 {
                   allMovie && allMovie.length > 0 &&
                   allMovie.map((movie, index) => (
-                    <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                      <div className="relative product-item table border-2 border-slate-600 h-[92%] w-full">
+                    <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4 h-full">
+                      <div className="relative product-item table h-[92%] w-full border-[0.5px] border-slate-700 rounded-xl">
                         <img
                           src={movie.poster}
                           alt=""
@@ -152,7 +154,7 @@ const Home = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
+                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%] mb-2">
                         {movie.title}
                       </div>
                     </div>

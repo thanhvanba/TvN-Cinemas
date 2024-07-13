@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import logo from "../../images/logo.png"
-import { UserCircleIcon as UserCircleIconSolid, ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid'
 
 import { CalendarDaysIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import Dashboard from './Dashboard/dashboard'

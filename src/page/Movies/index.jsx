@@ -30,6 +30,7 @@ function Movies() {
         if (resNowPlaying && resNowPlaying.data && resNowPlaying.data.result) {
             setNowPlayMovie(resNowPlaying.data.result)
         }
+        setLoading(false)
         let resComingSoon = await ComingSoonMovieApi()
         if (resComingSoon && resComingSoon.data && resComingSoon.data.result) {
             setComingSoonMovie(resComingSoon.data.result)
@@ -39,7 +40,6 @@ function Movies() {
         if (resSpecial && resSpecial.data && resSpecial.data.result) {
             setSpecialMovie(resSpecial.data.result)
         }
-        setLoading(false)
     }
 
     const handleSearchMovie = async (keyWord) => {
@@ -74,7 +74,7 @@ function Movies() {
                                     </div>
 
                                     <div className='pt-8'>
-                                        <div className={`${listMovieFound.length > 5 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 px-4" : "flex justify-center"} px-4 gap-4`}>
+                                        <div className={`${listMovieFound.length > 5 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 px-4" : "flex justify-center"} px-4 gap-4 rounded-xl`}>
                                             {
                                                 listMovieFound && listMovieFound.length > 0 &&
                                                 listMovieFound.map((movie, index) => (

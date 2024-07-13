@@ -104,10 +104,10 @@ const MovieSlider = ({ movies }) => {
                                         : navigate(`/movie/${movie.movieId}`)
                                 }}
                                 className='px-2 cursor-pointer outline-none'
-                                key={movie.id}
+                                key={movie.id} 
                             >
-                                <div className='relative'>
-                                    <img className='h-96 w-full' src={movie.poster} alt={movie.title} />
+                                <div className='relative border-[0.5px] border-slate-700 rounded-xl product-item'>
+                                    <img className='product-over h-96 w-full' src={movie.poster} alt={movie.title} />
                                     <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
                                         <div className='flex justify-center items-center p-2'>
                                             <StarIcon className='h-6 text-amber-400 px-4' />

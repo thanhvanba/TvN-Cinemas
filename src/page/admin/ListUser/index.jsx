@@ -261,9 +261,9 @@ const ListUser = () => {
                         <Popover.Panel className="absolute top-full right-72 z-10 w-1/2 overflow-hidden bg-slate-300 rounded-md">
                             <div className="px-6 py-3 relative">
                                 <form id='formAddManager' onSubmit={handleAddManager} action="">
-                                    <div className='text-xl font-semibold'>
-                                        Thông tin cơ bản <span className='text-red-600'>*</span>
-                                    </div>
+                                    <h2 className='text-xl font-semibold'>
+                                        Thông tin cơ bản
+                                    </h2>
                                     <div className='px-8'>
                                         <div className="relative my-2">
                                             <label
@@ -337,9 +337,9 @@ const ListUser = () => {
                                             </div>
                                         }
                                     </div>
-                                    <div className='text-xl font-semibold pt-3'>
+                                    <h2 className='text-xl font-semibold pt-3'>
                                         Thông tin đăng nhập
-                                    </div>
+                                    </h2>
                                     <div className='px-8'>
                                         <div className="relative my-2">
                                             <label

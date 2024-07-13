@@ -14,7 +14,11 @@ import { useContext } from 'react';
 import AdminService from '../../../service/AdminService';
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import Loading from '../../../components/Loading';
+
 import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import { format, parse } from 'date-fns';
 
 const ProfileDetail = () => {

@@ -30,7 +30,7 @@ function ReviewNotification({ notification }) {
                         </div>
                         <div className=''>
                             <p className='font-light'>Người đánh giá</p>
-                            <p className="pl-3 text-xl font-semibold text-cyan-600">{notification?.notification?.detailData?.userName ? notification?.notification?.detailData?.userName : "-"}</p>
+                            <p className="text-xl font-semibold text-cyan-600">{notification?.notification?.detailData?.userName ? notification?.notification?.detailData?.userName : "-"}</p>
                         </div>
                     </div>
 

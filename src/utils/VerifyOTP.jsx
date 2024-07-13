@@ -3,22 +3,30 @@ import logo from "../images/logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useLoadingState from '../hook/UseLoadingState'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useState, useEffect, useRef, useContext } from 'react'
 
 import UserService from '../service/UserService';
+import AuthService from '../service/AuthService';
 function VerifyOTP() {
-    const { verifyApi } = UserService()
-
+    const { verifyApi, forgotPasswordApi } = UserService()
+    const { sendOtpApi } = AuthService();
 
     const location = useLocation();
+    const navigate = useNavigate()
     const { email } = location.state || {};
 
     const { loading, setLoading } = useLoadingState(false);
     const [otp, setOTP] = useState(["", "", "", "", "", ""]);
     const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
-
+    const handleForgotPassword = async () => {
+        setLoading(true)
+        const check = await forgotPasswordApi(email)
+        check && navigate("/forgot-password/verify", { state: { email: email } });
+        setToggle(false)
+        setLoading(false)
+    }
     const handleInputChange = (e, index) => {
         const value = e.target.value;
         const newOTP = [...otp];
@@ -65,7 +73,8 @@ function VerifyOTP() {
         setLoading('verify', true)
         console.log(loading)
         const otpValue = otp.join("");
-        await verifyApi(otpValue)
+        const check = await verifyApi(otpValue)
+        check && navigate("/reset-password", { state: { token: otpValue } });
         setLoading('verify', false)
     }
     return (
@@ -75,7 +84,7 @@ function VerifyOTP() {
                     <div className='flex justify-center'>
                         <img className="h-36 w-auto" src={logo} alt="" />
                     </div>
-                    <p className='text-3xl text-slate-600 font-bold'>T&N Cinemas</p>
+                    <h2 className='text-3xl text-slate-600 font-bold'>T&N Cinemas</h2>
                     <p className='text-xl text-cyan-500 font-bold pb-4 mb-4'>
                         Trải nghiệm điện ảnh tuyệt vời cùng T&N Cinemas - Nơi Hòa Quyện Giấc Mơ!
                     </p>
@@ -104,17 +113,17 @@ function VerifyOTP() {
                                     ref={inputRefs[index]}
                                 />
                             ))}
-                            {/* <div className='flex justify-between px-8'>
-                            <p>Bạn chưa nhận được mã ?</p>
-                            <a
-                                onClick={handleSendOtp}
-                                className='underline text-cyan-500 font-semibold'
-                                disabled={loading['sendotp']}
-                            >
-                                {loading['sendotp'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
-                                &nbsp;Gửi lại mã OTP
-                            </a>
-                        </div> */}
+                            <div className='flex justify-between px-8'>
+                                <p>Bạn chưa nhận được mã ?</p>
+                                <div
+                                    onClick={handleForgotPassword}
+                                    className='underline text-cyan-500 font-semibold cursor-pointer'
+                                    disabled={loading['sendotp']}
+                                >
+                                    {loading['sendotp'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
+                                    &nbsp;Gửi lại mã OTP
+                                </div>
+                            </div>
 
                         </div>
                         <button

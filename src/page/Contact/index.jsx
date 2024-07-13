@@ -6,7 +6,7 @@ import fanpage from '../../images/support-icon.png'
 
 function Contact() {
     return (
-        <div className='pt-32 bg-[#fff7f7]'>
+        <div className='pt-32 bg-[#e1dddd]'>
             <div className='py-8 px-4 w-full xl:max-w-[1360px] mx-auto flex flex-col'>
                 <h2 className='mb-3 md:mb-6 text-lg md:text-3xl font-bold font-lato uppercase text-[#334862]'>
                     CÔNG TY CỔ PHẦN GIẢI TRÍ PHÁT HÀNH PHIM – RẠP CHIẾU PHIM NGÔI SAO

@@ -274,8 +274,8 @@ const ListTicket = () => {
                 </div>
                 {!loading['ticket'] ?
                   <>
-                    <div className="relative px-4 bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
-                      <div className='p-4 space-y-4'>
+                    <div className="relative bg-slate-300 rounded-2xl text-sm md:text-base text-slate-900">
+                      <div className='px-4 py-3 space-y-3'>
                         <div>
                           <p className="text-3xl text-emerald-600 font-semibold">{ticketDetail.movieName}</p>
                         </div>
@@ -327,33 +327,33 @@ const ListTicket = () => {
                       </div>
                     </div>
 
-                    <div className='border-t-2 border-slate-400 p-4'>
+                    <div className='border-t-2 border-slate-400 p-3'>
                       <div className='flex justify-between'>
                         <p className='font-light'>Thời gian đặt vé: </p>
-                        {ticketDetail?.createAt && <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>}
+                        {ticketDetail?.createAt && <p className='text-lg'>&nbsp;{FormatDataTime(ticketDetail.createAt).date}, {FormatDataTime(ticketDetail.createAt).time}</p>}
                       </div>
                       {ticketDetail?.status === 'CANCELLED' &&
                         <div className='flex justify-between'>
                           <p className='font-light'>Thời gian hủy vé: </p>
-                          <p className='text-xl'>&nbsp;{FormatDataTime(ticketDetail.cancelTime).date}, {FormatDataTime(ticketDetail.cancelTime).time}</p>
+                          <p className='text-lg'>&nbsp;{FormatDataTime(ticketDetail.cancelTime).date}, {FormatDataTime(ticketDetail.cancelTime).time}</p>
                         </div>
                       }
                       <div className='flex justify-between'>
                         <p className='font-light'>Mã đặt vé: </p>
-                        {ticketDetail?.bookingId && <p className='text-xl'>{ticketDetail.bookingId}</p>}
+                        {ticketDetail?.bookingId && <p className='text-lg'>{ticketDetail.bookingId}</p>}
                       </div>
                       <div className='flex items-start justify-between'>
                         <p className='font-light'>Khách hàng: </p>
                         {ticketDetail.userName === null || ticketDetail.fullName === null ?
-                          <p className='text-xl'>Khách vãng lai</p> :
+                          <p className='text-lg'>Khách vãng lai</p> :
                           <div className='text-center'>
-                            {ticketDetail.userName && <p className='text-xl'>&nbsp;{ticketDetail.userName}</p>}
-                            {ticketDetail.fullName && <p className='text-xl'>&nbsp; ({ticketDetail.fullName})</p>}
+                            {ticketDetail.userName && <p className='text-lg'>&nbsp;{ticketDetail.userName}</p>}
+                            {ticketDetail.fullName && <p className='text-lg'>&nbsp; ({ticketDetail.fullName})</p>}
                           </div>
                         }
                       </div>
                     </div>
-                    <div className='p-4 flex justify-end'>
+                    <div className='p-3 flex justify-end'>
                       <button
                         className="w-1/4 text-[18px] rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300 z-50"
                         type='button'

@@ -11,9 +11,11 @@ import SelectMenu from '../SelectMenu/SelectMenu';
 import AdminService from '../../service/AdminService';
 import ManagerService from '../../service/ManagerService';
 import DetailNotification from '../DetailNotification';
+import { CheckCheck, ListChecks } from 'lucide-react';
+import Load from '../Load';
 
 function ListNotification() {
-  const { getNotificationsApi, getOneNotificationApi, readCountApi } = UserService()
+  const { getNotificationsApi, getOneNotificationApi, readCountApi, readAllNotificationApi } = UserService()
   const { sendNotificationADApi, getAllUserByRoleApi } = AdminService()
   const { sendNotificationApi } = ManagerService()
 
@@ -25,6 +27,7 @@ function ListNotification() {
   const [loading, setLoading] = useState(true);
   const [loadingNoti, setLoadingNoti] = useState(true);
   const [loadingSend, setLoadingSend] = useState(true);
+  const [readAll, setReadAll] = useState(false);
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -104,6 +107,13 @@ function ListNotification() {
     setLoadingSend(false)
   }
 
+  const handleReadAllNotification = async () => {
+    setReadAll(true)
+    await readAllNotificationApi()
+    handleGetNotification(1)
+    setReadAll(false)
+    handleGetReadCount()
+  }
   // Xử lý thêm xóa ds userByRole
   const handleSelectUser = (value) => {
     const res = selectUsersByRole.map(user => user.userId)
@@ -151,7 +161,7 @@ function ListNotification() {
       <div type="" className='hover:bg-transparent active:text-none active:bg-none' onClick={showLoading}>
         <div className={`${user.role === "STAFF" ? "text-white" : ""} hover:opacity-70 opacity-100 flex flex-col relative px-4 cursor-pointer`}>
           <BellIcon className='h-6' />
-          <span className='text-xs'>Thông báo</span>
+          <h2 className='text-xs'>Thông báo</h2>
           {readCount !== 0 && <span className='absolute text-center -top-3 right-6 rounded-full bg-red-600 text-white h-5 w-5 text-[12px] leading-5'>{readCount}</span>}
         </div>
       </div>
@@ -317,10 +327,17 @@ function ListNotification() {
         </Drawer>
         {!loadingNoti ?
           notifications?.length !== 0 ?
-            <div className='rounded-lg bg-white -mx-4 -mt-5'>
+            <div className='relative rounded-lg bg-white -mx-4 mt-5 '>
+              <div
+                onClick={handleReadAllNotification}
+                className='flex items-center z-10 gap-x-2 text-[#80a3ef] absolute -top-10 right-3 border-2 px-2 py-1 rounded-lg border-[#80a3ef] cursor-pointer hover:bg-slate-50 hover:text-[#6388d9]'
+              >
+                {readAll ? <Load /> : <CheckCheck className='h-6' />}
+                Đánh dấu tất cả
+              </div>
               {notifications.map(notif => (
-                <div className={`${notif.read === false ? 'bg-zinc-100' : ''} text-gray-900 hover:bg-gray-200 rounded-md py-2 pl-2 pr-8 cursor-default relative`}>
-                  <div
+                <ul className={`${notif.read === false ? 'bg-zinc-100' : ''} text-gray-900 hover:bg-gray-200 rounded-md py-2 pl-2 pr-8 cursor-default relative`}>
+                  <li
                     onClick={() => {
                       if (notif?.read === false) { setReadCount(pre => pre - 1); handleGetReadCount(); }
                       handleGetOneNotification(notif?.notificationUserId)
@@ -338,8 +355,8 @@ function ListNotification() {
                       <p className='items-center'>{notif.notification.message}</p>
                     </div>
                     {notif.read === false && <div className='absolute right-1 h-3 w-3 bg-red-600 rounded-full'></div>}
-                  </div>
-                </div>
+                  </li>
+                </ul>
               ))}
               {hasMore && <button className='w-full' onClick={loadMore}><span className='text-center'>Xem thêm</span></button>}
             </div> : <span className='font-light text-sm flex items-center justify-center'>Chưa có thông báo</span>

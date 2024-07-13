@@ -23,7 +23,11 @@ import Loading from '../../../../../components/Loading';
 
 import { Space, TimePicker, DatePicker } from 'antd'
 import { format, parse, parseISO } from 'date-fns';
+
 import dayjs from 'dayjs';
+
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 import { BuildingLibraryIcon } from '@heroicons/react/24/solid';
 
 const AddShowtime = () => {
@@ -468,7 +472,7 @@ const AddShowtime = () => {
                                                     <SelectMenu onSelectChange={handleSelectChange} items={listNameMovie} content={"Chọn phim"} /> :
                                                     <input
                                                         type="text"
-                                                        className="placeholder-neutral-900 w-full  text-lg focus:outline-none"
+                                                        className="placeholder-[#bfbfbf] leading-7 font-sans border-[#d9d9d9] w-full text-lg focus:outline-none"
                                                         placeholder={oneShowtime.movie.title}
                                                         readOnly
                                                     />
@@ -547,7 +551,7 @@ const AddShowtime = () => {
                                                 htmlFor=""
                                                 className="block text-lg font-medium leading-6 text-gray-900"
                                             >
-                                                Xuất chiếu đặt biệt:
+                                                Suất chiếu đặt biệt:
                                             </label>
                                             <label className="inline-flex items-center mt-4">
                                                 {
@@ -627,7 +631,7 @@ const AddShowtime = () => {
                                         </div>
 
                                         <div className='p-8 border-2'>
-                                            <h2 className='font-medium text-lg text-gray-900'>Danh sách xuất chiếu:</h2>
+                                            <h2 className='font-medium text-lg text-gray-900'>Danh sách suất chiếu:</h2>
                                             <ul>
                                                 {schedule && schedule.map((item, index) => (
                                                     <li key={item.date}>

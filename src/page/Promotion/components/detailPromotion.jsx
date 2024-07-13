@@ -28,7 +28,7 @@ function DetailPromtion({ onePromotion, onToggle }) {
       </div>
       <div className="relative flex p-6 text-sm md:text-base text-slate-900">
         <div className='w-2/5'>
-          <img className='h-52 w-full rounded-xl' src={imgVoucher1} alt="" />
+          <img className='h-52 w-full rounded-xl' src={onePromotion.image || imgVoucher1} alt="" />
         </div>
         <div className='w-3/5 pl-4 space-y-2'>
           <h3 className="">
@@ -57,10 +57,11 @@ function DetailPromtion({ onePromotion, onToggle }) {
                 </p>
             }
           </div>
+          <div>{onePromotion.description}</div>
           <div className='border-t-2 text-center py-2'>
             <h3>Chi tiết</h3>
             <div className='flex justify-between items-center w-full'>
-              <div className="relative my-4 w-1/3 mr-2">
+              <div className="relative w-1/3 mr-2">
                 <div
                   htmlFor=""
                   className="flex items-center justify-center font-medium leading-6 text-gray-900"
@@ -69,7 +70,7 @@ function DetailPromtion({ onePromotion, onToggle }) {
                 </div>
                 <div className='w-full font-bold px-4 text-xl text-emerald-600'>{ConvertStringFollowFormat(onePromotion.normalValue)}<sup>đ</sup></div>
               </div>
-              <div className="relative my-4 w-1/3">
+              <div className="relative w-1/3">
                 <div
                   htmlFor=""
                   className="flex items-center justify-center font-medium leading-6 text-gray-900"
@@ -78,7 +79,7 @@ function DetailPromtion({ onePromotion, onToggle }) {
                 </div>
                 <div className='w-full font-bold px-4 text-xl text-emerald-600'>{ConvertStringFollowFormat(onePromotion.vipValue)}<sup>đ</sup></div>
               </div>
-              <div className="relative my-4 w-1/3 ml-2">
+              <div className="relative w-1/3 ml-2">
                 <div
                   htmlFor=""
                   className="flex items-center justify-center font-medium leading-6 text-gray-900"
