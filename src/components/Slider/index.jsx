@@ -133,7 +133,7 @@ const HomeSlider = ({ movies }) => {
                                 className='cursor-pointer outline-none md:h-[400px] xl:h-[700px] relative'
                                 key={movie.id}
                             >
-                                <img className='md:h-[400px] xl:h-[700px]' src={movie?.slider} alt={movie?.title} />
+                                <img className='md:h-[400px] xl:h-[700px] w-full' src={movie?.slider} alt={movie?.title} />
                                 <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-60 z-40"></div>
 
                                 {!toggle &&
