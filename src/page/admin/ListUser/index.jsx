@@ -414,7 +414,7 @@ const ListUser = () => {
                                             <img src={searchImg} alt="" />
                                         </div>
 
-                                        <div className='p-4 font-light text-center text-gray-500'>Chưa có thành viên nào. Tiến hành thêm  !!!</div>
+                                        <div className='p-4 font-light text-center text-gray-500'>Không tìm thấy thành viên nào. Tiến hành thêm  !!!</div>
                                     </> :
                                     <>
                                         <table className='mt-6 w-full'>

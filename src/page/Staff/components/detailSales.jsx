@@ -51,12 +51,16 @@ function DetailSales() {
 
     const [foods, setFoods] = useState([])
     const [listSeatBooking, setListSeatBooking] = useState([])
-    console.log("🚀 ~ DetailSales ~ listSeatBooking:", listSeatBooking)
     const [listFoodBooking, setListFoodBooking] = useState([])
     console.log("🚀 ~ DetailSales ~ listFoodBooking:", listFoodBooking)
     const currentDateTime = dayjs(new Date());
     const [selectDateTime, setSelectDateTime] = useState(currentDateTime);
-
+    const findCount = (foodId) => {
+        console.log("🚀 ~ findCount ~ foodId:", foodId)
+        const foodItem = foods.find(item => item.foodId === foodId);
+        console.log("🚀 ~ findCount ~ foodItem:", foodItem)
+        return foodItem ? foodItem.count : 0;
+    };
     const handleSelectSeat = async (seatId, type) => {
         if (type != "booked") {
             const row = seatId.charCodeAt(0) - 65 + 1; // Lấy giá trị Unicode của ký tự và trừ đi giá trị Unicode của 'A' + 1
@@ -353,8 +357,8 @@ function DetailSales() {
                                         <Button click={() => setOpenProduct(!openProduct)} img={popcorn} title={"Chọn sản phẩm"} />
                                     </div>
                                     {openProduct &&
-                                        <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-20'>
-                                            <div className='relative block bg-slate-300 cyan-200 rounded-3xl h-auto w-1/2 text-slate-900 mt-16'>
+                                        <div className='flex justify-center items-center bg-black bg-opacity-50 w-full h-screen right-0 bottom-0 fixed z-50'>
+                                            <div className='relative block bg-slate-300 cyan-200 rounded-3xl h-auto w-1/2 text-slate-900 mt-2'>
                                                 <button
                                                     type="button"
                                                     className="absolute top-2 right-2 z-50"
@@ -370,125 +374,138 @@ function DetailSales() {
                                                 <ul>
                                                     {/* nước lọc */}
                                                     <li>
-                                                        <h2 className='px-8 py-4 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Nước lọc</h2>
+                                                        <h2 className='px-8 py-2 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Nước lọc</h2>
                                                         {
-                                                            listWater.every(item => item.quantity === 0) ? (
+                                                            listWater.every(item => item.quantity === 0) ?
                                                                 <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
-                                                            ) : (
-                                                                listWater.map((item, index) => (
-                                                                    <div className='flex items-center'>
-                                                                        <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                                        <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                                            <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                                            <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                                                Giá :
-                                                                                <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
+                                                                : <div className={`${listWater.length > 2 ? 'h-[18vh]' : ''} modal-body overflow-y-auto`}>
+                                                                    {
+                                                                        listWater.map((item, index) => (
+                                                                            <div className={`flex items-center ${listWater.length - 1 === index ? '' : 'border-b'}`}>
+                                                                                <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                                                <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                                    <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                                    <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                                        Giá :
+                                                                                        <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <NumberSpinner
+                                                                                    idPerItem={item.foodId}
+                                                                                    pricePerItem={item.price}
+                                                                                    listFoodBooking={listFoodBooking}
+                                                                                    setListFoodBooking={setListFoodBooking}
+                                                                                    foods={foods}
+                                                                                    setFoods={setFoods}
+                                                                                    count={findCount(item.foodId)}
+                                                                                />
                                                                             </div>
-                                                                        </div>
-                                                                        <NumberSpinner
-                                                                            idPerItem={item.foodId}
-                                                                            pricePerItem={item.price}
-                                                                            listFoodBooking={listFoodBooking}
-                                                                            setListFoodBooking={setListFoodBooking}
-                                                                            foods={foods}
-                                                                            setFoods={setFoods}
-                                                                        />
-                                                                    </div>
-                                                                ))
-                                                            )
+                                                                        ))
+                                                                    }
+                                                                </div>
                                                         }
                                                     </li>
                                                     {/* bắp rang */}
                                                     <li>
-                                                        <h2 className='px-8 py-4 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Bắp rang</h2>
+                                                        <h2 className='px-8 py-2 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Bắp rang</h2>
                                                         {
-                                                            listPopcorn.every(item => item.quantity === 0) ? (
+                                                            listPopcorn.every(item => item.quantity === 0) ?
                                                                 <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
-                                                            ) : (
-                                                                listPopcorn.map((item, index) => (
-                                                                    <div className='flex items-center'>
-                                                                        <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                                        <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                                            <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                                            <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                                                Giá :
-                                                                                <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
+                                                                : <div className={`${listPopcorn.length > 2 ? 'h-[18vh]' : ''} modal-body overflow-y-auto`}>
+                                                                    {
+                                                                        listPopcorn.map((item, index) => (
+                                                                            <div className={`flex items-center ${listPopcorn.length - 1 === index ? '' : 'border-b'}`}>
+                                                                                <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                                                <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                                    <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                                    <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                                        Giá :
+                                                                                        <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
 
+                                                                                    </div>
+                                                                                </div>
+                                                                                <NumberSpinner
+                                                                                    idPerItem={item.foodId}
+                                                                                    pricePerItem={item.price}
+                                                                                    listFoodBooking={listFoodBooking}
+                                                                                    setListFoodBooking={setListFoodBooking}
+                                                                                    foods={foods}
+                                                                                    setFoods={setFoods}
+                                                                                    count={findCount(item.foodId)}
+                                                                                />
                                                                             </div>
-                                                                        </div>
-                                                                        <NumberSpinner
-                                                                            idPerItem={item.foodId}
-                                                                            pricePerItem={item.price}
-                                                                            listFoodBooking={listFoodBooking}
-                                                                            setListFoodBooking={setListFoodBooking}
-                                                                            foods={foods}
-                                                                            setFoods={setFoods}
-                                                                        />
-                                                                    </div>
-                                                                ))
-                                                            )
+                                                                        ))
+
+                                                                    }
+                                                                </div>
                                                         }
                                                     </li>
                                                     {/* nước ngọt */}
                                                     <li>
-                                                        <h2 className='px-8 py-4 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Nước Ngọt</h2>
+                                                        <h2 className='px-8 py-2 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Nước Ngọt</h2>
                                                         {
-                                                            listSoda.every(item => item.quantity === 0) ? (
+                                                            listSoda.every(item => item.quantity === 0) ?
                                                                 <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
-                                                            ) : (
-                                                                listSoda.map((item, index) => (
-                                                                    <div className='flex items-center'>
-                                                                        <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                                        <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                                            <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                                            <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                                                Giá :
-                                                                                <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
+                                                                : <div className={`${listSoda.length > 2 ? 'h-[18vh]' : ''} modal-body overflow-y-auto`}>
+                                                                    {
+                                                                        listSoda.map((item, index) => (
+                                                                            <div className={`flex items-center ${listSoda.length - 1 === index ? '' : 'border-b'}`}>
+                                                                                <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                                                <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                                    <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                                    <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                                        Giá :
+                                                                                        <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
 
+                                                                                    </div>
+                                                                                </div>
+                                                                                <NumberSpinner
+                                                                                    idPerItem={item.foodId}
+                                                                                    pricePerItem={item.price}
+                                                                                    listFoodBooking={listFoodBooking}
+                                                                                    setListFoodBooking={setListFoodBooking}
+                                                                                    foods={foods}
+                                                                                    setFoods={setFoods}
+                                                                                    count={findCount(item.foodId)}
+                                                                                />
                                                                             </div>
-                                                                        </div>
-                                                                        <NumberSpinner
-                                                                            idPerItem={item.foodId}
-                                                                            pricePerItem={item.price}
-                                                                            listFoodBooking={listFoodBooking}
-                                                                            setListFoodBooking={setListFoodBooking}
-                                                                            foods={foods}
-                                                                            setFoods={setFoods}
-                                                                        />
-                                                                    </div>
-                                                                ))
-                                                            )
+                                                                        ))
+                                                                    }
+                                                                </div>
                                                         }
                                                     </li>
                                                     {/* khác */}
                                                     <li>
-                                                        <h2 className='px-8 py-4 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Khác</h2>
+                                                        <h2 className='px-8 py-2 bg-cyan-500 rounded-t-3xl uppercase text-xl text-slate-200'>Khác</h2>
                                                         {
-                                                            listSnacks.every(item => item.quantity === 0) ? (
+                                                            listSnacks.every(item => item.quantity === 0) ?
                                                                 <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
-                                                            ) : (
-                                                                listSnacks.map((item, index) => (
-                                                                    <div className='flex items-center'>
-                                                                        <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                                        <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                                            <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                                            <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                                                Giá :
-                                                                                <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
+                                                                : <div className={`${listSnacks.length > 2 ? 'h-[18vh]' : ''} modal-body overflow-y-auto`}>
+                                                                    {
+                                                                        listSnacks.map((item, index) => (
+                                                                            <div className={`flex items-center ${listSnacks.length - 1 === index ? '' : 'border-b'}`}>
+                                                                                <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                                                <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                                    <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                                    <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                                        Giá :
+                                                                                        <span className='text-cyan-600'> {ConvertStringFollowFormat(item.price)} <sup>đ</sup> </span>
 
+                                                                                    </div>
+                                                                                </div>
+                                                                                <NumberSpinner
+                                                                                    idPerItem={item.foodId}
+                                                                                    pricePerItem={item.price}
+                                                                                    listFoodBooking={listFoodBooking}
+                                                                                    setListFoodBooking={setListFoodBooking}
+                                                                                    foods={foods}
+                                                                                    setFoods={setFoods}
+                                                                                    count={findCount(item.foodId)}
+                                                                                />
                                                                             </div>
-                                                                        </div>
-                                                                        <NumberSpinner
-                                                                            idPerItem={item.foodId}
-                                                                            pricePerItem={item.price}
-                                                                            listFoodBooking={listFoodBooking}
-                                                                            setListFoodBooking={setListFoodBooking}
-                                                                            foods={foods}
-                                                                            setFoods={setFoods}
-                                                                        />
-                                                                    </div>
-                                                                ))
-                                                            )
+                                                                        ))
+                                                                    }
+                                                                </div>
                                                         }
                                                     </li>
                                                 </ul>
@@ -504,7 +521,7 @@ function DetailSales() {
                                                         <tr>
                                                             <th scope="col" className="px-3 py-3 text-left text-sm font-semibold">Danh mục</th>
                                                             <th scope="col" className="px-3 py-3 w-[82px] text-left text-sm font-semibold">Số lượng</th>
-                                                            <th scope="col" className="px-3 py-3 w-20 text-left text-sm font-semibold">Đơn giá</th>
+                                                            <th scope="col" className="px-2 py-3 w-20 text-left text-sm font-semibold">Đơn giá</th>
                                                             {/* <th scope="col" className="px-3 py-3 text-left text-sm font-semibold">Tổng tiền</th> */}
                                                         </tr>
                                                     </thead>
@@ -516,7 +533,7 @@ function DetailSales() {
                                                                         <div className="font-medium text-slate-900">Ghế ({String.fromCharCode(65 + parseInt(seatInfo.row, 10) - 1) + seatInfo.column})</div>
                                                                     </td>
                                                                     <td className="px-3 py-2 text-sm text-center">1</td>
-                                                                    <td className="px-3 py-2 text-sm">{seatInfo.price}</td>
+                                                                    <td className="px-2 py-2 text-sm">{ConvertStringFollowFormat(seatInfo.price)} <sup>đ</sup> </td>
                                                                     {/* <td className="px-3 py-3 text-sm">{`seatInfe`}</td> */}
                                                                 </tr>
                                                             ))

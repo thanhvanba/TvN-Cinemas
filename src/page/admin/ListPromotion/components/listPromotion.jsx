@@ -52,7 +52,7 @@ function ListPromotion() {
     const handleGetPromotionByCode = async (pageNumber) => {
         setLoading('promotionByCode', true)
 
-        let resPromotion = await getAllPromotionApi(pageNumber, 6)
+        let resPromotion = await getAllPromotionApi(pageNumber, 3)
         if (resPromotion && resPromotion.data && resPromotion.data.result) {
             setPromotionByCode(resPromotion.data.result.content)
             setPagination1(prevPagination => ({
@@ -67,7 +67,7 @@ function ListPromotion() {
     }
     const handleGetPromotion = async (pageNumber) => {
         setLoading('promotion', true)
-        let resPromotion = await getAllPromotionApi(pageNumber, 6, true)
+        let resPromotion = await getAllPromotionApi(pageNumber, 3, true)
         if (resPromotion && resPromotion.data && resPromotion.data.result) {
             setPromotion(resPromotion.data.result.content)
             setPagination(prevPagination => ({
@@ -149,8 +149,16 @@ function ListPromotion() {
             </div>
             <Tabs selectedIndex={tabIndex} className='relative'>
                 <TabList className='py-2 px-8'>
-                    <Tab onClick={() => setTabIndex(0)}>Tự động áp dụng</Tab>
-                    <Tab onClick={() => setTabIndex(1)}>Áp dụng code</Tab>
+                    <Tab onClick={() => {
+                        handleGetPromotion(1)
+                        setTabIndex(0)
+                    }}
+                    >Tự động áp dụng</Tab>
+                    <Tab onClick={() => {
+                        handleGetPromotionByCode(1)
+                        setTabIndex(1)
+                    }}
+                    >Áp dụng code</Tab>
                 </TabList>
                 <TabPanel>
                     <div className='flex justify-center absolute mx-auto top-36 right-1/2 left-1/2 z-50'>

@@ -409,26 +409,30 @@ const OrderMovie = () => {
                                         listWater.every(item => item.quantity === 0) ? (
                                             <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
                                         ) : (
-                                            listWater.map((item, index) => (
-                                                <div className='flex items-center border-b'>
-                                                    <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                    <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                        <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                        <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                            Giá :
-                                                            <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
+                                            <div className={`${listWater.length > 3 ? ' h-[26vh]' : ''} modal-body overflow-y-auto`}>
+                                                {
+                                                    listWater.map((item, index) => (
+                                                        <div className={`flex items-center ${listWater.length - 1 === index ? '' : 'border-b'}`}>
+                                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                    Giá :
+                                                                    <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
+                                                                </div>
+                                                            </div>
+                                                            <NumberSpinner
+                                                                idPerItem={item.foodId}
+                                                                pricePerItem={item.price}
+                                                                listFoodBooking={listFoodBooking}
+                                                                setListFoodBooking={setListFoodBooking}
+                                                                foods={foods}
+                                                                setFoods={setFoods}
+                                                            />
                                                         </div>
-                                                    </div>
-                                                    <NumberSpinner
-                                                        idPerItem={item.foodId}
-                                                        pricePerItem={item.price}
-                                                        listFoodBooking={listFoodBooking}
-                                                        setListFoodBooking={setListFoodBooking}
-                                                        foods={foods}
-                                                        setFoods={setFoods}
-                                                    />
-                                                </div>
-                                            ))
+                                                    ))
+                                                }
+                                            </div>
                                         )
                                     }
                                 </li>
@@ -439,27 +443,31 @@ const OrderMovie = () => {
                                         listPopcorn.every(item => item.quantity === 0) ? (
                                             <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
                                         ) : (
-                                            listPopcorn.map((item, index) => (
-                                                <div className='flex items-center border-b'>
-                                                    <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                    <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                        <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                        <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                            Giá :
-                                                            <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
+                                            <div className={`${listPopcorn.length > 3 ? ' h-[26vh]' : ''} modal-body overflow-y-auto`}>
+                                                {
+                                                    listPopcorn.map((item, index) => (
+                                                        <div className={`flex items-center ${listPopcorn.length - 1 === index ? '' : 'border-b'}`}>
+                                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                    Giá :
+                                                                    <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
+                                                                </div>
+                                                            </div>
+                                                            <NumberSpinner
+                                                                idPerItem={item.foodId}
+                                                                pricePerItem={item.price}
+                                                                listFoodBooking={listFoodBooking}
+                                                                setListFoodBooking={setListFoodBooking}
+                                                                foods={foods}
+                                                                setFoods={setFoods}
+                                                            />
                                                         </div>
-                                                    </div>
-                                                    <NumberSpinner
-                                                        idPerItem={item.foodId}
-                                                        pricePerItem={item.price}
-                                                        listFoodBooking={listFoodBooking}
-                                                        setListFoodBooking={setListFoodBooking}
-                                                        foods={foods}
-                                                        setFoods={setFoods}
-                                                    />
-                                                </div>
-                                            ))
+                                                    ))
+                                                }
+                                            </div>
                                         )
                                     }
                                 </li>
@@ -470,27 +478,31 @@ const OrderMovie = () => {
                                         listSoda.every(item => item.quantity === 0) ? (
                                             <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
                                         ) : (
-                                            listSoda.map((item, index) => (
-                                                <div className='flex items-center border-b'>
-                                                    <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                    <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                        <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                        <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                            Giá :
-                                                            <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
+                                            <div className={`${listSoda.length > 3 ? ' h-[26vh]' : ''} modal-body overflow-y-auto`}>
+                                                {
+                                                    listSoda.map((item, index) => (
+                                                        <div className={`flex items-center ${listSoda.length - 1 === index ? '' : 'border-b'}`}>
+                                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                    Giá :
+                                                                    <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
+                                                                </div>
+                                                            </div>
+                                                            <NumberSpinner
+                                                                idPerItem={item.foodId}
+                                                                pricePerItem={item.price}
+                                                                listFoodBooking={listFoodBooking}
+                                                                setListFoodBooking={setListFoodBooking}
+                                                                foods={foods}
+                                                                setFoods={setFoods}
+                                                            />
                                                         </div>
-                                                    </div>
-                                                    <NumberSpinner
-                                                        idPerItem={item.foodId}
-                                                        pricePerItem={item.price}
-                                                        listFoodBooking={listFoodBooking}
-                                                        setListFoodBooking={setListFoodBooking}
-                                                        foods={foods}
-                                                        setFoods={setFoods}
-                                                    />
-                                                </div>
-                                            ))
+                                                    ))
+                                                }
+                                            </div>
                                         )
                                     }
                                 </li>
@@ -501,27 +513,31 @@ const OrderMovie = () => {
                                         listSnacks.every(item => item.quantity === 0) ? (
                                             <div className="p-4 text-center text-gray-500">Hiện không có hàng</div>
                                         ) : (
-                                            listSnacks.map((item, index) => (
-                                                <div className='flex items-center border-b'>
-                                                    <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
-                                                    <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
-                                                        <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
-                                                        <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
-                                                            Giá :
-                                                            <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
+                                            <div className={`${listSnacks.length > 3 ? ' h-[26vh]' : ''} modal-body overflow-y-auto`}>
+                                                {
+                                                    listSnacks.map((item, index) => (
+                                                        <div className={`flex items-center ${listSnacks.length - 1 === index ? '' : 'border-b'}`}>
+                                                            <p className='text-sm sm:text-2xl p-3 sm:p-4'>{index + 1}</p>
+                                                            <div className='px-3 sm:px-4 w-2/5 sm:w-1/2 md:w-3/5'>
+                                                                <h3 className='py-1 text-base sm:text-xl'>{item.name}</h3>
+                                                                <div className='px-2 py-1 text-slate-600 text-xs sm:text-base'>
+                                                                    Giá :
+                                                                    <span className='text-cyan-600'> {formatPrice(item.price)} <sup>đ</sup> </span>
 
+                                                                </div>
+                                                            </div>
+                                                            <NumberSpinner
+                                                                idPerItem={item.foodId}
+                                                                pricePerItem={item.price}
+                                                                listFoodBooking={listFoodBooking}
+                                                                setListFoodBooking={setListFoodBooking}
+                                                                foods={foods}
+                                                                setFoods={setFoods}
+                                                            />
                                                         </div>
-                                                    </div>
-                                                    <NumberSpinner
-                                                        idPerItem={item.foodId}
-                                                        pricePerItem={item.price}
-                                                        listFoodBooking={listFoodBooking}
-                                                        setListFoodBooking={setListFoodBooking}
-                                                        foods={foods}
-                                                        setFoods={setFoods}
-                                                    />
-                                                </div>
-                                            ))
+                                                    ))
+                                                }
+                                            </div>
                                         )
                                     }
                                 </li>
@@ -563,7 +579,7 @@ const OrderMovie = () => {
                                         </div>
                                         <div>
                                             <p>Ghế</p>
-                                            <p className="font-semibold">{selectSeats.map(seat => (<span>&nbsp;{seat.seatId},</span>))}</p>
+                                            <p className="font-semibold">{selectSeats.map((seat, index) => (<span>&nbsp;{seat.seatId}<span className={`${selectSeats.length - 1 === index ? 'hidden' : ''}`}>,</span></span>))}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-10">
@@ -632,8 +648,14 @@ const OrderMovie = () => {
                                                                     <div className="font-medium text-slate-900">{foodInfo.food.name}</div>
                                                                 </td>
                                                                 <td className="px-3 py-3.5 text-sm">{foodInfo.count}</td>
-                                                                <td className="px-3 py-3.5 text-sm">{foodInfo.food.price}</td>
-                                                                <td className="px-3 py-3.5 text-sm">{foodInfo.food.price * foodInfo.count}</td>
+                                                                <td className="px-3 py-3.5 text-sm">
+                                                                    <span>{ConvertStringFollowFormat(foodInfo.food.price)}</span>
+                                                                    <sup>đ</sup>
+                                                                </td>
+                                                                <td className="px-3 py-3.5 text-sm">
+                                                                    <span>{ConvertStringFollowFormat(foodInfo.food.price * foodInfo.count)}</span>
+                                                                    <sup>đ</sup>
+                                                                </td>
                                                             </tr>
                                                         ))
 
@@ -790,12 +812,12 @@ const OrderMovie = () => {
                         <div className='w-3/4'>
                             <p className=''>
                                 Ghế đã chọn :
-                                {selectSeats.map(seat => (<span>&nbsp;{seat.seatId},</span>))}
+                                {selectSeats.map((seat, index) => (<span>&nbsp;{seat.seatId}<span className={`${selectSeats.length - 1 === index ? 'hidden' : ''}`}>,</span></span>))}
                             </p>
                             <p>
                                 Kèm theo:
                                 {
-                                    foods.map(food => (<span>&nbsp;{food.name},</span>))
+                                    foods.map((food, index) => (<span>&nbsp;{food.name}<span className={`${foods.length - 1 === index ? 'hidden' : ''}`}>,</span></span>))
                                 }
 
                             </p>

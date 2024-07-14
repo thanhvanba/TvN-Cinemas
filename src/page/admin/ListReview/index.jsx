@@ -43,12 +43,11 @@ const ListReview = () => {
   const { user } = useContext(LoginContext)
   const [reviews, setReviews] = useState([])
   const [movieArr, setMovieArr] = useState([]);
-  console.log("🚀 ~ ListReview ~ movieArr:", movieArr)
-  const [selectedMovie, setSelectedMovie] = useState({});
+  const [selectedMovie, setSelectedMovie] = useState('');
 
   const handleGetReviews = async (pageNumber) => {
     setLoading(true)
-    let res = await getListReviewApi(pageNumber, 6, selectedMovie.movieId)
+    let res = await getListReviewApi(pageNumber, 8, selectedMovie)
     setLoading(false)
     if (res && res.data && res.data.result && res.data.result.content) {
       setReviews(res.data.result.content)
@@ -70,7 +69,7 @@ const ListReview = () => {
   }
 
   useEffect(() => {
-    handleGetReviews(pagination.pageNumber)
+    handleGetReviews(1)
   }, [selectedMovie]);
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const ListReview = () => {
 
   const handleSelectType = async (value) => {
     const movie = movieArr.find(movie => movie?.title === value)
-    setSelectedMovie(movie)
+    setSelectedMovie(movie?.movieId)
   }
   const listReview = {
     header: { stt: "STT", movieInfo: "Phim", rating: "Số sao", desc: "Chi tiết", userName: "Người dùng", releaseDate: "Ngày đánh giá" },
@@ -102,7 +101,7 @@ const ListReview = () => {
         <div className='flex justify-end items-center py-4 pr-4'>
           <div className='border-2 rounded-xl flex'>
             <div className="h-8 xl:w-72 w-32 px-4 focus:outline-none py-1">
-              <SelectMenu onSelectChange={handleSelectType} items={movieArr.map(item => item.title)} content={"Chọn phim"} />
+              <SelectMenu onSelectChange={handleSelectType} items={['ALL', ...movieArr.map(item => item.title)]} content={"Chọn phim"} />
             </div>
           </div>
         </div>

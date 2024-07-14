@@ -7,7 +7,7 @@ import { UserCircleIcon } from 'lucide-react';
 function ListStockEntries({ allStockEntries, pagination, handleGetStockEntries }) {
     return (
         <div>
-            <table className='mt-6 w-full'>
+            <table className='mt-14 w-full'>
                 <thead className=''>
                     <tr className='border-b-2 border-slate-200'>
                         <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{"STT"}</th>

@@ -32,18 +32,14 @@ const ShowtimeByRoom = () => {
   const { GetAllMovieApi } = MovieService()
 
   const { user } = useContext(LoginContext)
-  const { pathname } = useLocation()
   const location = useLocation();
   const { cinemaName } = location.state || {};
   const currentDateTime = new Date();
-  const [dateList, setDateList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState('');
-  console.log("🚀 ~ ShowtimeByRoom ~ selectedMovie:", selectedMovie)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: FormatDataTime(currentDateTime.toISOString()).date, time: "" });
   const [movieArr, setMovieArr] = useState([]);
-  console.log("🚀 ~ ShowtimeByRoom ~ movieArr:", movieArr)
   const [selectedRoom, setSelectedRoom] = useState(1);
   const [pagination, setPagination] = useState(
     {
@@ -67,11 +63,11 @@ const ShowtimeByRoom = () => {
     action: { aChange: PowerIcon, aEdit: BadgePlus, aDelete: TrashIcon }
   }
 
-  const handleGetShowtimeByRoom = async (pageNumber, roomId, selectedMovie) => {
+  const handleGetShowtimeByRoom = async (pageNumber, roomId) => {
     setLoading(true)
     let resST = user.role === "ADMIN" ?
-      await getShowtimeByRoomApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
-      : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      await getShowtimeByRoomApi(roomId || selectedRoom, pageNumber, 4, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      : await getShowtimeByRoomCinemaApi(roomId || selectedRoom, pageNumber, 4, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
     // let resST = user.role === "ADMIN" ? await getShowtimeByRoomApi(roomId, pageNumber, 6) : await getShowtimeByRoomCinemaApi(roomId, pageNumber, 6)
     if (resST && resST.data && resST.data.result.content) {
       // const showtimes = resST.data.result.content.filter(showtime => showtime.room.roomId === roomId)
@@ -84,26 +80,13 @@ const ShowtimeByRoom = () => {
         totalElements: resST.data.result.totalElements
       }));
     }
-    // Lấy danh sách phim không trùng nhau
-    const uniqueMovies = [...new Set(resST.data.result.content.map(movie => movie.movie.movieId))];
-
-    // Tạo mảng movieArr từ danh sách phim không trùng nhau
-    {
-      !selectedMovie && setMovieArr(uniqueMovies.map(movieId => {
-        const uniqueMovie = resST.data.result.content.find(movie => movie.movie.movieId === movieId);
-        return {
-          movieID: uniqueMovie.movie.movieId,
-          movieName: uniqueMovie.movie.title
-        };
-      }));
-    }
     setLoading(false)
   }
-  const handleGetAllShowtime = async (pageNumber, selectedMovie) => {
+  const handleGetAllShowtime = async (pageNumber) => {
     setLoading(true)
     let resST = user.role === "ADMIN" ?
-      await getShowtimeByCinemaApi(cinemaId, pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
-      : await getAllShowtimeByManagerApi(pageNumber, 6, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      await getShowtimeByCinemaApi(cinemaId, pageNumber, 4, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
+      : await getAllShowtimeByManagerApi(pageNumber, 4, status ? format(parse(selectedDateTime.date, 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null, selectedMovie)
     if (resST && resST.data && resST.data.result.content) {
       setAllShowtime(resST.data.result.content);
       setPagination(prevPagination => ({
@@ -114,38 +97,22 @@ const ShowtimeByRoom = () => {
         totalElements: resST.data.result.totalElements
       }));
     }
-    // Lấy danh sách phim không trùng nhau
-    const uniqueMovies = [...new Set(resST.data.result.content.map(movie => movie.movie.movieId))];
-
-    // Tạo mảng movieArr từ danh sách phim không trùng nhau
-    {
-      !selectedMovie && setMovieArr(uniqueMovies.map(movieId => {
-        const uniqueMovie = resST.data.result.content.find(movie => movie.movie.movieId === movieId);
-        return {
-          movieID: uniqueMovie.movie.movieId,
-          movieName: uniqueMovie.movie.title
-        };
-      }));
-    }
     setLoading(false)
   }
   const handleGetRoomByCinema = async (cinemaId) => {
     let resR = user.role === "ADMIN" ? await getRoomeByCinemaApi(cinemaId) : await getAllRoomByManagerApi()
+    let resM = await GetAllMovieApi(1, 999)
     if (resR && resR.data && resR.data.result.content) {
       setAllRoom(resR.data.result.content.reverse());
     }
-  }
-  const ListDayShowtime = () => {
-
-    // Tạo danh sách 6 ngày liên tiếp
-    const sixDayList = Array.from({ length: 6 }, (_, index) => {
-      const date = addDays(currentDateTime, index);
-      return FormatDataTime(date.toISOString()).date;
-    });
-
-    // Cập nhật state với danh sách ngày
-    setDateList(sixDayList);
-    setSelectedDateTime({ ...selectedDateTime, date: (sixDayList[0]) });
+    if (resM && resM.data && resM.data.result.content) {
+      setMovieArr(resM.data.result.content.map(movie => {
+        return {
+          movieID: movie.movieId,
+          movieName: movie.title
+        };
+      }));
+    }
   }
 
   const handleSelectChange = (date, dateString) => {
@@ -156,14 +123,13 @@ const ShowtimeByRoom = () => {
 
   useEffect(() => {
     handleGetRoomByCinema(cinemaId)
-    ListDayShowtime()
   }, [])
 
   useEffect(() => {
     const dateTime = selectedDateTime.date
     selectedRoom === 1 ?
       handleGetAllShowtime(pagination.pageNumber)
-      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
+      : handleGetShowtimeByRoom(pagination.pageNumber)
     setSelectedDateTime({ ...selectedDateTime, date: dateTime });
     setSelectedMovie(null);
   }, [selectedDateTime.date])
@@ -171,19 +137,19 @@ const ShowtimeByRoom = () => {
   useEffect(() => {
     const dateTime = selectedDateTime.date
     selectedRoom === 1 ?
-      handleGetAllShowtime(pagination.pageNumber, selectedMovie?.movieID)
-      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom, selectedMovie?.movieID)
+      handleGetAllShowtime(1)
+      : handleGetShowtimeByRoom(1)
   }, [selectedMovie])
 
   useEffect(() => {
     selectedRoom === 1 ?
       handleGetAllShowtime(pagination.pageNumber)
-      : handleGetShowtimeByRoom(pagination.pageNumber, selectedRoom)
+      : handleGetShowtimeByRoom(pagination.pageNumber)
   }, [status])
 
   const handleSelectType = async (value) => {
     const movie = movieArr.find(movie => movie?.movieName === value)
-    setSelectedMovie(movie)
+    setSelectedMovie(movie?.movieID)
   }
   return (
     <div>
@@ -228,7 +194,7 @@ const ShowtimeByRoom = () => {
 
         <div className='h-full'>
           {
-            allRoom.length === 0 && allShowtime.length === 0 ?
+            !loading && allRoom.length === 0 && allShowtime.length === 0 ?
               <>
                 <div className='flex justify-center'>
                   <img src={searchImg} alt="" />
@@ -238,27 +204,38 @@ const ShowtimeByRoom = () => {
               </> :
               <>
                 <div className='relative flex justify-end items-center py-4 pr-4'>
-                  <div className='border-2 rounded-xl flex'>
+                  <div className='border-2 my-2 rounded-xl flex'>
                     <div className="h-8 xl:w-72 w-32 px-4 focus:outline-none py-1">
-                      <SelectMenu onSelectChange={handleSelectType} items={movieArr.map(item => item.movieName)} content={selectedMovie?.movieName ? selectedMovie?.movieName : "Chọn phim"} />
+                      <SelectMenu onSelectChange={handleSelectType} items={['ALL', ...movieArr.map(item => item.movieName)]} content={selectedMovie?.movieName ? selectedMovie?.movieName : "Chọn phim"} />
                     </div>
                   </div>
 
-                  <div className='text-black'>
-                    <DatePicker
-                      onChange={handleSelectChange}
-                      placeholder={selectedDateTime.date || FormatDataTime(currentDateTime.toISOString()).date}
-                      format='DD/MM/YYYY'
-                      className="inline-block py-1.5 bg-slate-100 m-2 rounded-full text-black relative h-9 w-36 cursor-default border-slate-300"
-                    />
-                  </div>
+                  {status &&
+                    <div className='text-black'>
+                      <DatePicker
+                        onChange={handleSelectChange}
+                        placeholder={selectedDateTime.date || FormatDataTime(currentDateTime.toISOString()).date}
+                        format='DD/MM/YYYY'
+                        className="inline-block py-1.5 bg-slate-100 m-2 rounded-full text-black relative h-9 w-36 cursor-default border-slate-300"
+                      />
+                    </div>
+                  }
                   {/* </div> */}
                   <button
                     type="button"
                     className="absolute top-4 left-4 z-10"
                   >
                     <span className="sr-only">Close menu</span>
-                    <div className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-sky-700`} onClick={() => setStatus(!status)}>
+                    <div
+                      className={`${status ? '' : 'shadow-inner'} p-1 border-2 rounded-lg text-sky-700`}
+                      onClick={() => {
+                        setStatus(!status)
+                        setPagination(prevPagination => ({
+                          ...prevPagination,
+                          pageNumber: 1,
+                        }))
+                      }}
+                    >
                       {status ?
                         <History className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
                         : <ArrowUturnLeftIcon className="text-4xl h-10 w-10 z-10 cursor-pointer opacity-80 hover:opacity-100 shadow-inner" aria-hidden="true" />
@@ -273,9 +250,8 @@ const ShowtimeByRoom = () => {
                         <ul className="flex flex-col">
                           <li
                             onClick={() => {
-                              handleGetAllShowtime(pagination.pageNumber);
+                              handleGetAllShowtime(1);
                               setSelectedRoom(1); // Update selectedRoom state
-                              setSelectedMovie(null);
                             }}
                             className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === 1 ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                           >
@@ -285,9 +261,8 @@ const ShowtimeByRoom = () => {
                             <li
                               key={room.roomId}
                               onClick={() => {
-                                handleGetShowtimeByRoom(pagination.pageNumber, room.roomId);
-                                setSelectedRoom(room.roomId); // Update selectedRoom state                   
-                                setSelectedMovie(null);
+                                handleGetShowtimeByRoom(1, room.roomId);
+                                setSelectedRoom(room.roomId); // Update selectedRoom state            
                               }}
                               className={`py-1 pl-2 font-semibold border-l-4 cursor-pointer ${selectedRoom === room.roomId ? 'text-emerald-500 border-l-emerald-500 bg-emerald-100' : ''}`}
                             >
@@ -313,7 +288,7 @@ const ShowtimeByRoom = () => {
                                   <th className='text-base text-center font-semibold px-3 pb-4 uppercase'>{listShowtime.header.movieInfo}</th>
                                   <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-[124px]'>{listShowtime.header.duration}</th>
                                   {selectedRoom === 1 && <th className='text-base text-center font-semibold px-3 pb-4 uppercase'>{listShowtime.header.room}</th>}
-                                  <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-2/5'>{listShowtime.header.timeshow}</th>
+                                  {status && <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-2/5'>{listShowtime.header.timeshow}</th>}
                                   <th className='text-base text-center font-semibold px-3 pb-4 uppercase w-20'>{listShowtime.header.action}</th>
                                 </tr>
                               </thead>
@@ -346,49 +321,51 @@ const ShowtimeByRoom = () => {
                                       {selectedRoom === 1 && <td className='text-center font-medium px-3 py-4'>
                                         {item.room.roomName}
                                       </td>}
-                                      <td className='text-center font-medium px-3 py-4'>
-                                        <ul className='relative items-center grid grid-cols-3 gap-2'>
-                                          {
-                                            item.schedules.map((schedule, index) => {
-                                              const currentDateTime = new Date();
-                                              const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
-                                              if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                                const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                                hasShowtimes = true;
-                                                return (
-                                                  <li key={index}
-                                                    onClick={() => {
-                                                      setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
-                                                      const updatedDateTime = {
-                                                        ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
-                                                      };
+                                      {status &&
+                                        <td className='text-center font-medium px-3 py-4'>
+                                          <ul className='relative items-center grid grid-cols-3 gap-2'>
+                                            {
+                                              item.schedules.map((schedule, index) => {
+                                                const currentDateTime = new Date();
+                                                const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                                if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                                  const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                                  hasShowtimes = true;
+                                                  return (
+                                                    <li key={index}
+                                                      onClick={() => {
+                                                        setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
+                                                        const updatedDateTime = {
+                                                          ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
+                                                        };
 
-                                                      navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
-                                                    }}
-                                                    className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
-                                                  >
-                                                    <a
-                                                      className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-400 opacity-70'}`}
+                                                        navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
+                                                      }}
+                                                      className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                                                     >
+                                                      <a
+                                                        className={`block p-1 border-2 text-center cursor-pointer rounded-xl ${isTimeInFuture ? ' bg-gray-100 border-orange-500' : 'bg-gray-300 border-gray-400 opacity-70'}`}
+                                                      >
 
-                                                      {format(
-                                                        parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
-                                                        "HH:mm"
-                                                      )}
-                                                    </a>
-                                                  </li>
-                                                )
-                                              }
+                                                        {format(
+                                                          parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                          "HH:mm"
+                                                        )}
+                                                      </a>
+                                                    </li>
+                                                  )
+                                                }
 
-                                              console.log("🚀 ~ item.schedules.map ~ hasShowtimes:", hasShowtimes)
+                                                console.log("🚀 ~ item.schedules.map ~ hasShowtimes:", hasShowtimes)
 
-                                            })
-                                          }
-                                        </ul>
-                                        {!hasShowtimes && (
-                                          <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có lịch chiếu ngày hôm nay--</p>
-                                        )}
-                                      </td>
+                                              })
+                                            }
+                                          </ul>
+                                          {!hasShowtimes && (
+                                            <p className=' text-center text-lg text-slate-400 font-light'>-- Chưa có lịch chiếu ngày hôm nay--</p>
+                                          )}
+                                        </td>
+                                      }
                                       <td className='font-medium px-3 py-4'>
                                         {(
                                           <div className='flex items-center justify-center'>
@@ -426,7 +403,7 @@ const ShowtimeByRoom = () => {
                         </div>
                       </div>
                     </div>
-                    {allShowtime.length !== 0 && <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetAllShowtime} />}
+                    {allShowtime.length !== 0 && <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={selectedRoom === 1 ? handleGetAllShowtime : handleGetShowtimeByRoom} />}
                   </>
                 }
               </>

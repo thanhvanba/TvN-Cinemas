@@ -15,6 +15,7 @@ function Movies() {
     const [comingSoonMovie, setComingSoonMovie] = useState([])
     const [specialMovie, setSpecialMovie] = useState([])
     const [listMovieFound, setListMovieFound] = useState([])
+    console.log("🚀 ~ Movies ~ listMovieFound:", listMovieFound)
     const [loading, setLoading] = useState(false);
 
     const { GetAllMovieApi, ComingSoonMovieApi, SpecialMovieApi, NowPlayingMovieApi } = MovieService()
@@ -65,41 +66,43 @@ function Movies() {
                         <Loading />
                     </div> :
                     <div className='pt-32 pb-10' >
-                        {(listMovieFound.length !== 0) && keyWord != undefined ?
-                            <div className='border-y-[0.05px]'>
+                        {(listMovieFound.length !== 0) || keyWord != undefined ?
+                            <div>
                                 <div className='max-w-6xl mx-auto'>
-                                    <div className='border-b'>
+                                    <div className={`${listMovieFound?.length !== 0 ? 'border-b' : ''}`}>
                                         <h2 className='text-center pt-4 text-5xl text-slate-200'>Tìm kiếm</h2>
                                         <p className='text-center py-4 text-xl text-slate-200'>Theo từ khóa <span>'{keyWord}'</span></p>
                                     </div>
-
-                                    <div className='pt-8'>
-                                        <div className={`${listMovieFound.length > 5 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 px-4" : "flex justify-center"} px-4 gap-4 rounded-xl`}>
-                                            {
-                                                listMovieFound && listMovieFound.length > 0 &&
-                                                listMovieFound.map((movie, index) => (
-                                                    <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
-                                                        <div className="relative product-item table border-2 border-slate-600 h-[80%]">
-                                                            <img
-                                                                src={movie.poster}
-                                                                alt=""
-                                                                className="product-over h-[300px] w-[200px] table-cell"
-                                                            />
-                                                            <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
-                                                                <div className='flex justify-center items-center p-2'>
-                                                                    <StarIcon className='h-6 text-amber-400 px-4' />
-                                                                    <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                    {
+                                        listMovieFound?.length === 0 ? <p className='font-light text-center text-white'>Không tìm thấy phim phù hợp theo từ khóa</p> :
+                                            <div className='pt-8'>
+                                                <div className={`${listMovieFound.length > 5 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 px-4" : "flex justify-center"} px-4 gap-4 rounded-xl`}>
+                                                    {
+                                                        listMovieFound && listMovieFound.length > 0 &&
+                                                        listMovieFound.map((movie, index) => (
+                                                            <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4">
+                                                                <div className="relative product-item table border-2 border-slate-600 h-[80%] rounded-lg">
+                                                                    <img
+                                                                        src={movie.poster}
+                                                                        alt=""
+                                                                        className="product-over h-[300px] w-[200px] table-cell"
+                                                                    />
+                                                                    <div className="absolute top-0 right-0 bg-black bg-opacity-40 z-10 rounded-bl-full">
+                                                                        <div className='flex justify-center items-center p-2'>
+                                                                            <StarIcon className='h-6 text-amber-400 px-4' />
+                                                                            <p className=' text-slate-200 font-bold text-lg'>{movie.rating ? movie.rating : "N/A"}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
+                                                                    <TruncatedContent content={movie.title} maxLength={18} />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%]">
-                                                            <TruncatedContent content={movie.title} maxLength={18} />
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                            </div>
+                                    }
                                 </div>
                             </div>
                             : <div>

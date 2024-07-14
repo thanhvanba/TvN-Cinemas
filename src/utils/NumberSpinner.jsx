@@ -4,6 +4,8 @@ import formatPrice from '../utils/ConvertStringFollowFormat'
 import UserService from '../service/UserService'
 // component number spiner
 const NumberSpinner = ({ idPerItem, pricePerItem, listFoodBooking, setListFoodBooking, foods, setFoods, count }) => {
+    console.log("🚀 ~ NumberSpinner ~ count:", count)
+    console.log("🚀 ~ NumberSpinner ~ foods:", foods)
     const [quantity, setQuantity] = useState(count || 0);
     const [totalPrice, setTotalPrice] = useState(0);
 

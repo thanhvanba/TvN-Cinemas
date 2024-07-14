@@ -30,6 +30,7 @@ const ListMovies = () => {
     }
 
     const [loading, setLoading] = useState(false);
+    const [movieType, setMovieType] = useState('')
     const [pagination, setPagination] = useState(
         {
             pageNumber: 1,
@@ -47,7 +48,7 @@ const ListMovies = () => {
 
     const handleGetAllMovie = async (pageNumber) => {
         setLoading(true)
-        let res = (user.role === "ADMIN") ? await getAllMovieApi(pageNumber, 4) : await GetAllMovieApi(pageNumber, 4)
+        let res = (user.role === "ADMIN") ? await getAllMovieApi(pageNumber, 4, movieType) : await GetAllMovieApi(pageNumber, 4, movieType)
         setLoading(false)
         if (res && res.data && res.data.result && res.data.result.content) {
             setAllMovie(res.data.result.content)
@@ -100,6 +101,9 @@ const ListMovies = () => {
         handleGetAllMovie(pagination.pageNumber)
         handleGetListGenres()
     }, []);
+    useEffect(() => {
+        handleGetAllMovie(1)
+    }, [movieType])
     const listMovie = {
         header: { stt: "STT", movieInfo: "Phim", rating: "rating", genres: "Thể loại", releaseDate: "Ngày phát hành", action: "actions" },
         movie: allMovie,
@@ -123,20 +127,9 @@ const ListMovies = () => {
     const handleSelectType = async (value) => {
         setInputSearch(null)
         const genres = arrGenres.find(genre => genre?.name === value)
-        setLoading(true)
-        let res = (user.role === "ADMIN") ? await getAllMovieApi(1, 4, genres?.id) : await GetAllMovieApi(1, 4, genres?.id)
-        setLoading(false)
-        if (res && res.data && res.data.result && res.data.result.content) {
-            setAllMovie(res.data.result.content)
-            setPagination(prevPagination => ({
-                ...prevPagination,
-                pageNumber: 1,
-                pageSize: res.data.result.pageSize,
-                totalPages: res.data.result.totalPages,
-                totalElements: res.data.result.totalElements
-            }));
-        }
+        setMovieType(genres?.id)
     }
+
     return (
         <div className='relative'>
             <div className='h-20 mb-2 flex justify-between items-center border-b-2'>
@@ -178,17 +171,20 @@ const ListMovies = () => {
                 <div className="relative border-2 rounded-xl ">
                     <Search searchFunction={handleSearchFc} handleClickIconSearch={handleClickIconSearch} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                     {showListSearch && allMovieSearch.length !== 0 &&
-                        <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
-                            {allMovieSearch.map(movie => (
-                                <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
-                                    <div onClick={() => changeTab(`/admin/movie/${movie.movieId}`)} className='flex p-2 items-end cursor-default'>
-                                        <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
-                                        <span className='text-sm font-semibold px-4 items-center'>{movie.title}</span>
-                                    </div>
-                                </div>
-                            ))
+                        <div className='absolute -right-[25%] bg-slate-100 w-[150%] mt-2 p-4 rounded-lg'>
+                            <div className={`${allMovieSearch.length > 6 ? 'h-[42vh]' : ''} modal-body overflow-y-auto`}>
+                                {
+                                    allMovieSearch.map(movie => (
+                                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                                            <div onClick={() => changeTab(`/admin/movie/${movie.movieId}`)} className='flex p-2 items-end cursor-default'>
+                                                <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                                                <span className='text-sm font-semibold px-4 items-center'>{movie.title}</span>
+                                            </div>
+                                        </div>
+                                    ))
 
-                            }
+                                }
+                            </div>
                         </div>
                     }
                 </div>

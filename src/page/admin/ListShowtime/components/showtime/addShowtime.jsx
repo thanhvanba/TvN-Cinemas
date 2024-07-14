@@ -94,7 +94,6 @@ const AddShowtime = () => {
         seats: null,
         special: false
     })
-    console.log("🚀 ~ AddShowtime ~ oneShowtime:", oneShowtime)
     const [showtime, setShowtime] = useState({
         roomId: "",
         movieId: "",
@@ -105,9 +104,6 @@ const AddShowtime = () => {
     })
 
     const [schedule, setSchedule] = useState([]);
-    console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
-
-    // console.log("🚀 ~ AddShowtime ~ schedule:", schedule)
     const [allMovie, setAllMovie] = useState([])
     const [allRoom, setAllRoom] = useState([])
     const [errors, setErrors] = useState({});
@@ -170,8 +166,6 @@ const AddShowtime = () => {
         let resShowtime = await getOneShowtimeApi(showtimeId)
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             setOneShowtime(resShowtime.data.result)
-
-            console.log("🚀 ~ hadleGetOneShowtime ~ resShowtime.data.result.schedules:", resShowtime.data.result.schedules)
             setSchedule(transformData(resShowtime.data.result.schedules))
         }
         setLoading1(false)
@@ -592,81 +586,83 @@ const AddShowtime = () => {
                                     </div>
 
                                 </div>
-                                <div className="rounded-md p-8 mt-8 shadow-lg bg-slate-100 relative">
-                                    <div className=''>
-                                        <h2 className='text-lg font-medium leading-6 text-gray-900'>Thiết lập xuất chiếu</h2>
-                                        <div className='flex justify-between'>
-                                            <div className="relative m-8 w-full">
-                                                <label
-                                                    htmlFor=""
-                                                    className="block text-lg font-medium leading-6 text-gray-900 pb-2"
-                                                >
-                                                    Ngày<br />
-                                                    <span className='text-xs font-extralight text-red-400'>( --Ngày thuộc khoảng thời gian chiếu đã chọn ở trên-- )</span>
-                                                </label>
-                                                <DatePicker
-                                                    onChange={handleSelectDate}
-                                                    placeholder={'Chọn ngày chiếu'}
-                                                    className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                />
+                                {(pathname === "/admin/add-item/showtime" || pathname === "/manager/add-item/showtime") &&
+                                    <div className="rounded-md p-8 mt-8 shadow-lg bg-slate-100 relative">
+                                        <div className=''>
+                                            <h2 className='text-lg font-medium leading-6 text-gray-900'>Thiết lập xuất chiếu</h2>
+                                            <div className='flex justify-between'>
+                                                <div className="relative m-8 w-full">
+                                                    <label
+                                                        htmlFor=""
+                                                        className="block text-lg font-medium leading-6 text-gray-900 pb-2"
+                                                    >
+                                                        Ngày<br />
+                                                        <span className='text-xs font-extralight text-red-400'>( --Ngày thuộc khoảng thời gian chiếu đã chọn ở trên-- )</span>
+                                                    </label>
+                                                    <DatePicker
+                                                        onChange={handleSelectDate}
+                                                        placeholder={'Chọn ngày chiếu'}
+                                                        className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                    />
+                                                </div>
+                                                <div className="relative m-8 w-full">
+                                                    <label
+                                                        htmlFor=""
+                                                        className="block text-lg font-medium leading-6 text-gray-900 pb-2"
+                                                    >
+                                                        Thời gian<br />
+                                                        <span className='text-xs font-extralight'>( Thời gian chiếu trong ngày )</span>
+                                                    </label>
+
+                                                    <TimePicker
+                                                        format="HH:mm"
+                                                        onChange={handleSelectTime}
+                                                        placeholder={'Chọn xuất chiếu'}
+                                                        className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                                                    />
+
+
+                                                </div>
                                             </div>
-                                            <div className="relative m-8 w-full">
-                                                <label
-                                                    htmlFor=""
-                                                    className="block text-lg font-medium leading-6 text-gray-900 pb-2"
-                                                >
-                                                    Thời gian<br />
-                                                    <span className='text-xs font-extralight'>( Thời gian chiếu trong ngày )</span>
-                                                </label>
 
-                                                <TimePicker
-                                                    format="HH:mm"
-                                                    onChange={handleSelectTime}
-                                                    placeholder={'Chọn xuất chiếu'}
-                                                    className="block w-4/5 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
-                                                />
-
+                                            <div className='p-8 border-2'>
+                                                <h2 className='font-medium text-lg text-gray-900'>Danh sách suất chiếu:</h2>
+                                                <ul>
+                                                    {schedule && schedule.map((item, index) => (
+                                                        <li key={item.date}>
+                                                            <p className='py-4'>
+                                                                <span className='text-emerald-600 pr-8 font-semibold'>{index + 1}. Ngày:</span>
+                                                                {FormatDataTime(item.date).date}
+                                                            </p>
+                                                            <div className='flex'>
+                                                                <p className='text-emerald-600 font-medium px-4'> Thời gian:</p>
+                                                                <ul className='justify-center grid grid-cols-8 gap-4'>
+                                                                    {item.time && item.time.map((time) => (
+                                                                        <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
+                                                                            <span className='p-2'>{time}</span>
+                                                                            {
+                                                                                pathname !== `/(admin|manager)/showtime/${showtimeId} ` &&
+                                                                                <button className='text-red-400 pr-2'
+                                                                                    onClick={() => {
+                                                                                        handleRemoveTime(item.date, time)
+                                                                                    }}
+                                                                                >
+                                                                                    <sup>X</sup>
+                                                                                </button>
+                                                                            }
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
 
                                             </div>
-                                        </div>
-
-                                        <div className='p-8 border-2'>
-                                            <h2 className='font-medium text-lg text-gray-900'>Danh sách suất chiếu:</h2>
-                                            <ul>
-                                                {schedule && schedule.map((item, index) => (
-                                                    <li key={item.date}>
-                                                        <p className='py-4'>
-                                                            <span className='text-emerald-600 pr-8 font-semibold'>{index + 1}. Ngày:</span>
-                                                            {FormatDataTime(item.date).date}
-                                                        </p>
-                                                        <div className='flex'>
-                                                            <p className='text-emerald-600 font-medium px-4'> Thời gian:</p>
-                                                            <ul className='justify-center grid grid-cols-8 gap-4'>
-                                                                {item.time && item.time.map((time) => (
-                                                                    <li className='bg-slate-200 rounded-lg p-0.5' key={time}>
-                                                                        <span className='p-2'>{time}</span>
-                                                                        {
-                                                                            pathname !== `/(admin|manager)/showtime/${showtimeId} ` &&
-                                                                            <button className='text-red-400 pr-2'
-                                                                                onClick={() => {
-                                                                                    handleRemoveTime(item.date, time)
-                                                                                }}
-                                                                            >
-                                                                                <sup>X</sup>
-                                                                            </button>
-                                                                        }
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
 
                                         </div>
-
                                     </div>
-                                </div>
+                                }
                                 {
                                     <div className='flex justify-end'>
                                         <button

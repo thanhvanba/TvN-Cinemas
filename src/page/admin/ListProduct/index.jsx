@@ -36,6 +36,7 @@ const ListProduct = () => {
     const { pathname } = useLocation()
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(true);
+    const [foodType, setFoodType] = useState('')
     const [toggle, setToggle] = useState(false)
     const [pagination, setPagination] = useState(
         {
@@ -66,7 +67,7 @@ const ListProduct = () => {
     const changeTab = (pathname) => {
         navigate(pathname)
     }
-    const handleGetItems = async (pageNumber, foodType) => {
+    const handleGetItems = async (pageNumber) => {
         setLoading(true)
         let resFood = user.role === "ADMIN" ? await getFoodAdminApi(foodType, pageNumber, 10, status) : await getFoodApi(foodType, pageNumber, 10, localStorage.getItem("cinemaId"))
         if (resFood && resFood.data && resFood.data.result.content) {
@@ -101,7 +102,7 @@ const ListProduct = () => {
     }
     const nameFoods = ["ALL", "BAP", "NUOCLOC", "NUOCNGOT", "ANVAT"]
     const handleSelectChange = (selectedValue) => {
-        selectedValue === "ALL" ? handleGetItems(pagination1.pageNumber) : handleGetItems(pagination1.pageNumber, selectedValue)
+        selectedValue !== "ALL" ? setFoodType(selectedValue) : setFoodType('')
     }
 
     useEffect(() => {
@@ -110,6 +111,9 @@ const ListProduct = () => {
     useEffect(() => {
         handleGetItems(pagination1.pageNumber)
     }, [pathname]);
+    useEffect(() => {
+        handleGetItems(1)
+    }, [foodType]);
     return (
         <div>
             <div className='px-4'>
@@ -126,7 +130,7 @@ const ListProduct = () => {
                             <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
                                 {loading && <Loading />}
                             </div>
-                            <div className='border-2 h-full'>
+                            <div className={`${importHistory ? 'border-2' : ''} h-full`}>
                                 <div className='h-full relative'>
                                     <div className='relative flex justify-end items-center p-4'>
                                         {importHistory &&
@@ -192,6 +196,7 @@ const ListProduct = () => {
                                                                         ...prevPagination,
                                                                         pageNumber: 1
                                                                     }));
+                                                                    setFoodType('')
                                                                 }}
                                                             />
                                                         }

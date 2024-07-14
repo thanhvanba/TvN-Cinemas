@@ -133,6 +133,7 @@ const Header = () => {
   }, [pathname]);
   return (
     <header className="header">
+      {/* MobileHeader */}
       <Dialog as="div" className="lg:hidden z-10" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-[100] w-full overflow-y-auto bg-[#312b2b] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
@@ -171,16 +172,18 @@ const Header = () => {
                   </button>
                   {showMovieList && listMovieFound.length !== 0 &&
                     <div className='absolute left-0 bg-slate-100 w-[100%] mt-2 p-4 rounded-lg'>
-                      {listMovieFound.map(movie => (
-                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
-                          <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
-                            <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
-                            <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
-                          </div>
-                        </div>
-                      ))
-
-                      }
+                      <div className={`${listMovieFound.length > 4 ? 'h-[40vh]' : ''} modal-body overflow-y-auto`}>
+                        {
+                          listMovieFound.map(movie => (
+                            <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                              <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
+                                <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                                <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
                     </div>
                   }
                 </div>
@@ -242,6 +245,7 @@ const Header = () => {
           </div>
         </Dialog.Panel>
       </Dialog>
+
       <div className='top-menu'>
         <div className='mx-auto h-full flex max-w-5xl xl:max-w-7xl justify-between lg:px-4 top-menu-container'>
           <div className="flex lg:flex-auto">
@@ -306,16 +310,18 @@ const Header = () => {
               </button>
               {showMovieList && listMovieFound.length !== 0 &&
                 <div className='absolute -right-[50%] bg-slate-100 w-[200%] mt-2 p-4 rounded-lg cursor-pointer'>
-                  {listMovieFound.map(movie => (
-                    <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
-                      <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
-                        <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
-                        <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
-                      </div>
-                    </div>
-                  ))
-
-                  }
+                  <div className={`${listMovieFound.length > 8 ? 'h-[60vh]' : ''} modal-body overflow-y-auto`}>
+                    {
+                      listMovieFound.map(movie => (
+                        <div className='text-gray-900 hover:bg-slate-300 hover:rounded-md'>
+                          <div onClick={() => changeTab(`/movie/${movie.movieId}`)} className='flex p-2 items-end'>
+                            <img className="h-10 w-8 text-emerald-600" src={movie.poster} alt="" />
+                            <span className='text-lg font-semibold px-4 items-center'>{movie.title}</span>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
                 </div>
               }
             </div>

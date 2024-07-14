@@ -42,7 +42,7 @@ function InfoTicket() {
         if (resInfo && resInfo.data && resInfo.data.result) {
             setAccount(resInfo.data.result);
         }
-        handleSellTicketInfo()
+
         setLoading('create', false);
     }
 
