@@ -52,7 +52,7 @@ function ListPromotion() {
     const handleGetPromotionByCode = async (pageNumber) => {
         setLoading('promotionByCode', true)
 
-        let resPromotion = await getAllPromotionApi(pageNumber, 3)
+        let resPromotion = await getAllPromotionApi(pageNumber, 6)
         if (resPromotion && resPromotion.data && resPromotion.data.result) {
             setPromotionByCode(resPromotion.data.result.content)
             setPagination1(prevPagination => ({
@@ -67,7 +67,7 @@ function ListPromotion() {
     }
     const handleGetPromotion = async (pageNumber) => {
         setLoading('promotion', true)
-        let resPromotion = await getAllPromotionApi(pageNumber, 3, true)
+        let resPromotion = await getAllPromotionApi(pageNumber, 6, true)
         if (resPromotion && resPromotion.data && resPromotion.data.result) {
             setPromotion(resPromotion.data.result.content)
             setPagination(prevPagination => ({

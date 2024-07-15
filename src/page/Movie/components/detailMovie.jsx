@@ -11,6 +11,11 @@ import ReviewMovie from './reviewMovie';
 import Trailer from '../../../components/Trailer';
 
 const DetailMovie = ({ movie }) => {
+    const navigate = useNavigate()
+    const changeTab = (pathname) => {
+        navigate(pathname)
+    }
+
     const [showTrailer, setShowTrailer] = useState(false);
     const [toggleRV, setToggleRV] = useState(false)
     const openTrailer = () => {
@@ -73,7 +78,12 @@ const DetailMovie = ({ movie }) => {
                             {
                                 movie?.genres?.length !== 0 ?
                                     movie?.genres?.map((genres, index) => (
-                                        <span key={index}>{genres.name}{index < movie.genres.length - 1 ? ', ' : ''}</span>
+                                        <button
+                                            onClick={() => changeTab(`/tim-kiem/phim/the-loai/${genres?.id}`)}
+                                            className='border-[1px] rounded-md mx-1 px-3 py-1 hover:border-orange-600 hover:bg-opacity-25 hover:bg-black' key={index}
+                                        >
+                                            {genres.name}
+                                        </button>
                                     )) :
                                     <span>N/A</span>
                             }</span>

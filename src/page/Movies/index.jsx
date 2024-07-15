@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import MovieService from '../../service/MovieService'
 import UserService from '../../service/UserService';
 import TruncatedContent from '../../utils/TruncatedContent';
@@ -9,21 +9,31 @@ import { StarIcon } from '@heroicons/react/20/solid';
 import MovieSlider from '../../components/Slider2';
 
 function Movies() {
-    const { keyWord } = useParams()
+    const { keyWord, id } = useParams()
 
     const [nowPlayMovie, setNowPlayMovie] = useState([])
     const [comingSoonMovie, setComingSoonMovie] = useState([])
     const [specialMovie, setSpecialMovie] = useState([])
     const [listMovieFound, setListMovieFound] = useState([])
-    console.log("🚀 ~ Movies ~ listMovieFound:", listMovieFound)
+    const [listMovie, setListMovie] = useState([])
     const [loading, setLoading] = useState(false);
 
     const { GetAllMovieApi, ComingSoonMovieApi, SpecialMovieApi, NowPlayingMovieApi } = MovieService()
-    const { searchMovieApi } = UserService()
+    const { searchMovieApi, } = UserService()
 
+    const { pathname } = useLocation()
     const navigate = useNavigate()
     const changeTab = (pathname) => {
         navigate(pathname)
+    }
+
+    const hadleGetMovieByGenres = async () => {
+        setLoading(true)
+        let res = await GetAllMovieApi(1, 999, id)
+        if (res && res.data && res.data.result) {
+            setListMovieFound(res.data.result.content)
+        }
+        setLoading(false)
     }
     const handleGetItems = async () => {
         setLoading(true)
@@ -44,20 +54,27 @@ function Movies() {
     }
 
     const handleSearchMovie = async (keyWord) => {
+        setLoading(true)
         let resMovie = await searchMovieApi(keyWord)
         if (resMovie && resMovie.data && resMovie.data.result) {
             setListMovieFound(resMovie.data.result)
         }
+        setLoading(false)
     }
     useEffect(() => {
-        keyWord === undefined &&
+        keyWord === undefined && id === undefined &&
             handleGetItems()
-    }, []);
+    }, [pathname]);
 
     useEffect(() => {
         keyWord !== undefined &&
             handleSearchMovie(keyWord)
     }, [keyWord])
+
+    useEffect(() => {
+        id !== undefined &&
+            hadleGetMovieByGenres()
+    }, [id])
     return (
         <div>
             {
@@ -71,7 +88,7 @@ function Movies() {
                                 <div className='max-w-6xl mx-auto'>
                                     <div className={`${listMovieFound?.length !== 0 ? 'border-b' : ''}`}>
                                         <h2 className='text-center pt-4 text-5xl text-slate-200'>Tìm kiếm</h2>
-                                        <p className='text-center py-4 text-xl text-slate-200'>Theo từ khóa <span>'{keyWord}'</span></p>
+                                        {id ? <p className='text-center py-4 text-xl text-slate-200'>Theo thể loại <span>'{listMovieFound[0].genres.find(item => item.id === id).name}'</span></p> : <p className='text-center py-4 text-xl text-slate-200'>Theo từ khóa <span>'{keyWord}'</span></p>}
                                     </div>
                                     {
                                         listMovieFound?.length === 0 ? <p className='font-light text-center text-white'>Không tìm thấy phim phù hợp theo từ khóa</p> :
