@@ -48,6 +48,7 @@ const ListTicket = () => {
   }
 
   const handleGetItems = async (pageNumber) => {
+    setLoading('loading', true)
     let resTicketC = user.role === 'ADMIN' ? await getAllBookingApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null) : await getAllBookingStaffApi(pageNumber, 8, "CONFIRMED", localStorage.getItem("cinemaId") || null)
     if (resTicketC && resTicketC.data && resTicketC.data.result && resTicketC.data.result.content) {
       setAllTicketC(resTicketC.data.result.content)
@@ -66,14 +67,13 @@ const ListTicket = () => {
       : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
     setLoading('loadingU', false)
 
+    if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
+      setAllTicketU(resTicketU.data.result.content)
+    }
     let resTicketCa = user.role === 'ADMIN' ?
       await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
       : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
     setLoading('loadingCa', false)
-
-    if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
-      setAllTicketU(resTicketU.data.result.content)
-    }
 
     if (resTicketCa && resTicketCa.data && resTicketCa.data.result && resTicketCa.data.result.content) {
       setAllTicketCa(resTicketCa.data.result.content)
@@ -131,68 +131,67 @@ const ListTicket = () => {
             </button>
           }
         </div>
-        <div className='flex justify-center absolute mx-auto top-80 right-1/2 left-1/2 z-50'>
-          {loading['loading'] && <Loading />}
-        </div>
         {
-          !loading['loading'] &&
+
           <div className="ticket-list-container pb-8">
             {
-              listTicket.tickets.length === 0 && allTicketU.length === 0 && allTicketCa.length === 0 ?
+              !loading['loading'] && listTicket.tickets.length === 0 && allTicketU.length === 0 && allTicketCa.length === 0 ?
                 <p className='w-full text-center text-lg text-slate-400 font-light'>-- Chưa bán được vé nào --</p>
                 : <>
                   {/* Phần đã xác nhận */}
-
-                  <div className='pr-3 border-1 w-3/4'>
-                    {/* <div className='flex justify-end items-center py-4 pr-4'>
-                    <div className="border-2 rounded-xl ">
-                      <Search />
-                       </div>
-                       </div> */}
-                    {
-                      listTicket.tickets.length === 0 ?
-                        <p className='text-center text-lg text-slate-400 font-light'>--Chưa có vé được xác nhận--</p>
-                        : <>
-                          <table className='mt-6 w-full'>
-                            <thead className=''>
-                              <tr>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-10'>{listTicket.header.stt}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.movieName}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[196px]'>{listTicket.header.showtime}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[73px]'>{listTicket.header.ticketPrice}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[116px]'>{listTicket.header.createAt}</th>
-                                <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.user}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {
-                                listTicket.tickets.map((item, index) => (
-                                  <tr
-                                    onClick={() => {
-                                      handleOpenModal();
-                                      handleGetTicketDetail(item.bookingId);
-                                    }}
-                                    className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
-                                  >
-                                    <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
-                                    <td className='text-start font-bold px-2 py-4 text-emerald-800'>{item.movieName}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
-                                    <td className='text-center font-medium px-2 py-4 flex flex-col justify-center'>
-                                      <span className='text-orange-500'>{item.startTime}</span>
-                                      <span>Ngày {FormatDataTime(item.date).date}</span>
-                                    </td>
-                                    <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}<sup>đ</sup></td>
-                                    <td className='text-center font-medium px-2 py-4 text-sky-600'>{TimeAgo(item.createAt)}</td>
-                                    <td className='text-center font-medium px-2 py-4'>{item.userName ? item.userName : '-'}</td>
+                  <div className='pr-3 border-1 w-3/4 relative'>
+                    <div className='flex justify-center absolute mx-auto top-72 right-1/2 left-1/2 z-50'>
+                      {loading['loading'] && <Loading />}
+                    </div>
+                    {!loading['loading'] &&
+                      <>
+                        {
+                          listTicket.tickets.length === 0 ?
+                            <p className='text-center text-lg text-slate-400 font-light'>--Chưa có vé được xác nhận--</p>
+                            :
+                            <>
+                              <table className='mt-6 w-full'>
+                                <thead className=''>
+                                  <tr>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-10'>{listTicket.header.stt}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.movieName}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.cinemaName}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[196px]'>{listTicket.header.showtime}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[73px]'>{listTicket.header.ticketPrice}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase w-[116px]'>{listTicket.header.createAt}</th>
+                                    <th className='text-sm text-center font-light px-2 pb-4 uppercase'>{listTicket.header.user}</th>
                                   </tr>
-                                ))
-                              }
-                            </tbody>
+                                </thead>
+                                <tbody>
+                                  {
+                                    listTicket.tickets.map((item, index) => (
+                                      <tr
+                                        onClick={() => {
+                                          handleOpenModal();
+                                          handleGetTicketDetail(item.bookingId);
+                                        }}
+                                        className='border-b-2 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                                      >
+                                        <td className='text-center font-medium px-2 py-4'>{index + 1}</td>
+                                        <td className='text-start font-bold px-2 py-4 text-emerald-800'>{item.movieName}</td>
+                                        <td className='text-center font-medium px-2 py-4'>{item.cinemaName}</td>
+                                        <td className='text-center font-medium px-2 py-4 flex flex-col justify-center'>
+                                          <span className='text-orange-500'>{item.startTime}</span>
+                                          <span>Ngày {FormatDataTime(item.date).date}</span>
+                                        </td>
+                                        <td className='text-center font-medium px-2 py-4'>{ConvertStringFollowFormat(item.price)}<sup>đ</sup></td>
+                                        <td className='text-center font-medium px-2 py-4 text-sky-600'>{TimeAgo(item.createAt)}</td>
+                                        <td className='text-center font-medium px-2 py-4'>{item.userName ? item.userName : '-'}</td>
+                                      </tr>
+                                    ))
+                                  }
+                                </tbody>
 
-                          </table>
-                          <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
-                        </>
+                              </table>
+                              <Pagination pageNumber={pagination.pageNumber} pageSize={pagination.pageSize} totalElements={pagination.totalElements} totalPages={pagination.totalPages} getItemByPage={handleGetItems} />
+                            </>
+                        }
+                      </>
                     }
                   </div>
 

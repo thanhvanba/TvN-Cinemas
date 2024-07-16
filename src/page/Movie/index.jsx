@@ -19,6 +19,7 @@ import UserService from '../../service/UserService';
 import { LoginContext } from '../../context/LoginContext';
 import Cinema from '../../components/Cinema';
 import DetailMovie from './components/detailMovie';
+import Loading from '../../components/Loading';
 
 const Movie = () => {
     const { GetOneMovieApi } = MovieService()
@@ -27,6 +28,8 @@ const Movie = () => {
     const navigate = useNavigate()
 
     const [modalStates, setModalStates] = useState(false);
+    const [load, setLoad] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { user } = useContext(LoginContext)
 
     const { id } = useParams();
@@ -54,6 +57,7 @@ const Movie = () => {
         setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(sixDayList[0]).date });
     }
     const hadleGetItem = async (movieId) => {
+        setLoading(true)
         let resMovie = await GetOneMovieApi(movieId)
         if (resMovie && resMovie.data && resMovie.data.result) {
             setMovie(resMovie.data.result)
@@ -68,6 +72,7 @@ const Movie = () => {
         if (resShowtime && resShowtime.data && resShowtime.data.result) {
             setAllShowtime(resShowtime.data.result)
         }
+        setLoading(false)
     }
 
     const FoundShowtime = (cinemaId) => {
@@ -110,128 +115,149 @@ const Movie = () => {
         const selectedId = cinema.cinemaId
         localStorage.setItem('cinemaId', selectedId);
         FoundShowtime(selectedId)
+        setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(dateList[0]).date });
     };
-
+    const handleLoadTimeChange = () => {
+        setLoad(true); // Kích hoạt toggle thành true
+        // Định nghĩa biến timeoutId để lưu ID của setTimeout
+        setTimeout(() => {
+            setLoad(false);
+        }, 200);
+    };
     let hasShowtimes = false;
     return (
         <div className='pt-32 h-auto'>
-            <div className='max-w-6xl mx-auto pb-4'>
-                {/* chi tiết phim */}
-                <DetailMovie movie={movie} />
-                {/* ds lịch chiếu */}
-                <div className='py-8'>
-                    {/* Tiêu đề */}
-                    <h3 className='uppercase text-2xl text-slate-200 text-center'>
-                        Vui lòng chọn thông tin rạp + thời gian
-                    </h3>
-                    {/* ds */}
-                    <div >
-                        {/* chọn rạp */}
-                        <div className='flex justify-center'>
-                            <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
-                                <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Chọn rạp--------"} />
-                            </div>
-                        </div>
-                        {
-                            foundShowtime && foundShowtime.length === 0 ?
-                                <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p>
-                                :
-                                <div>
-                                    {/* ngày chiếu */}
-                                    <div className='grid grid-cols-6 px-4 cursor-default'>
-                                        {dateList.map((date, index) => (
-                                            <a
-                                                key={index}
-                                                className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
-                                                    }`}
-                                                onClick={() => setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })}
-                                            >
-                                                {FormatDataTime(date).day} <br />
-                                                <span>
-                                                    {FormatDataTime(date).dayOfWeek === 0
-                                                        ? 'CN'
-                                                        : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
-                                                </span>
-                                            </a>
-                                        ))}
-
+            {
+                loading ?
+                    <div className='h-screen'>
+                        <Loading />
+                    </div> :
+                    <div className='max-w-6xl mx-auto pb-4'>
+                        {/* chi tiết phim */}
+                        <DetailMovie movie={movie} />
+                        {/* ds lịch chiếu */}
+                        <div className='py-8'>
+                            {/* Tiêu đề */}
+                            <h3 className='uppercase text-2xl text-slate-200 text-center'>
+                                Vui lòng chọn thông tin rạp + thời gian
+                            </h3>
+                            {/* ds */}
+                            <div >
+                                {/* chọn rạp */}
+                                <div className='flex justify-center'>
+                                    <div className="relative h-10 w-96 px-4 pt-2 option-style2 inline-block m-2 rounded-t-full shadow-inner shadow-cyan-500 text-gray-200">
+                                        <SelectMenu onSelectChange={handleSelectChange} items={listNameCinema} content={"--------Chọn rạp--------"} />
                                     </div>
-                                    {/* ds các cụ thể thời gian chiếu */}
-                                    <div className='relative max-w-5xl mx-auto text-left pt-5'>
-                                        <div className='relative sm:pl-60 pb-4 mb-4 min-h-[200px] px-4'>
-                                            {/* vị trí */}
-                                            <div className='absolute hidden rounded-xl sm:block top-0 left-4 bg-slate-700 w-60'>
-                                                <Cinema cinemaName={foundShowtime[0]?.room.cinema.cinemaName} location={foundShowtime[0]?.room.cinema.location} urlLocation={foundShowtime[0]?.room.cinema.urlLocation} />
+                                </div>
+                                {
+                                    foundShowtime && foundShowtime.length === 0 ?
+                                        <p className='text-2xl text-slate-200 text-center pt-4'>-- Chưa có thông tin lịch chiếu cho bộ phim này !!! --</p>
+                                        :
+                                        <div>
+                                            {/* ngày chiếu */}
+                                            <div className='grid grid-cols-6 px-4 cursor-default'>
+                                                {dateList.map((date, index) => (
+                                                    <a
+                                                        key={index}
+                                                        className={`px-8 border border-slate-400 text-center text-slate-200 ${FormatDataTime(date).date === selectedDateTime.date ? 'selected' : ''
+                                                            }`}
+                                                        onClick={() => {
+                                                            setSelectedDateTime({ ...selectedDateTime, date: FormatDataTime(date).date })
+                                                            handleLoadTimeChange()
+                                                        }}
+                                                    >
+                                                        {FormatDataTime(date).day} <br />
+                                                        <span>
+                                                            {FormatDataTime(date).dayOfWeek === 0
+                                                                ? 'CN'
+                                                                : 'Th ' + (FormatDataTime(date).dayOfWeek + 1)}
+                                                        </span>
+                                                    </a>
+                                                ))}
+
                                             </div>
-                                            {/* thời gian */}
-                                            <div className='block relative'>
-                                                <div className='relative sm:pl-28 pt-4'>
-                                                    <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
-                                                        {listSchedule.map((schedule, index) => {
-                                                            const currentDateTime = new Date();
-                                                            const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
-                                                            if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
-                                                                const isTimeInFuture = isAfter(dateTime, currentDateTime);
-                                                                hasShowtimes = true;
-                                                                return (
-                                                                    <li key={index}
-                                                                        onClick={() => {
-                                                                            if (!user.auth) {
-                                                                                handleModalStates();
-                                                                            } else if (isTimeInFuture) {
-                                                                                setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
-                                                                                const updatedDateTime = {
-                                                                                    ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
-                                                                                };
-                                                                                navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
-                                                                            }
-                                                                        }}
-                                                                        className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
-                                                                    >
-                                                                        <a
-                                                                            className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
-                                                                            style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
-                                                                        >
+                                            {/* ds các cụ thể thời gian chiếu */}
+                                            <div className='relative max-w-5xl mx-auto text-left pt-5'>
+                                                <div className='relative sm:pl-60 pb-4 mb-4 min-h-[200px] px-4'>
+                                                    {/* vị trí */}
+                                                    <div className='absolute hidden rounded-xl sm:block top-0 left-4 bg-slate-700 w-60'>
+                                                        <Cinema cinemaName={foundShowtime[0]?.room.cinema.cinemaName} location={foundShowtime[0]?.room.cinema.location} urlLocation={foundShowtime[0]?.room.cinema.urlLocation} />
+                                                    </div>
+                                                    {/* thời gian */}
+                                                    {load ?
+                                                        <div className='flex justify-center absolute mx-auto top-10 right-1/2 left-1/2 z-50'>
+                                                            <Loading />
+                                                        </div>
+                                                        : <div className='block relative'>
+                                                            <div className='relative sm:pl-28 pt-4'>
+                                                                <ul className='grid grid-cols-5 sm:grid-cols-3 md:grid-cols-5 gap-4'>
+                                                                    {listSchedule.map((schedule, index) => {
+                                                                        const currentDateTime = new Date();
+                                                                        const dateTime = parse(`${selectedDateTime.date} ${schedule.startTime}`, 'dd/MM/yyyy HH:mm:ss', new Date());
+                                                                        if (FormatDataTime(schedule.date).date === selectedDateTime.date) {
+                                                                            const isTimeInFuture = isAfter(dateTime, currentDateTime);
+                                                                            hasShowtimes = true;
+                                                                            return (
+                                                                                <li key={index}
+                                                                                    onClick={() => {
+                                                                                        if (!user.auth) {
+                                                                                            handleModalStates();
+                                                                                        } else if (isTimeInFuture) {
+                                                                                            setSelectedDateTime((prevState) => ({ ...prevState, time: schedule.startTime, scheduleId: schedule.scheduleId }));
+                                                                                            const updatedDateTime = {
+                                                                                                ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
+                                                                                            };
+                                                                                            navigate(`/${schedule?.showTimeId}/order`, { state: { dateTime: updatedDateTime, cinemaId: cinemaId } });
+                                                                                        }
+                                                                                    }}
+                                                                                    className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
+                                                                                >
+                                                                                    <a
+                                                                                        className={`block leading-[46px] ${isTimeInFuture ? 'hover:text-white hover:bg-emerald-600' : 'text-gray-500 bg-gray-300'} bg-slate-900 text-center text-xl text-cyan-300`}
+                                                                                        style={{ cursor: isTimeInFuture ? 'pointer' : 'not-allowed' }}
+                                                                                    >
 
-                                                                            {format(
-                                                                                parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
-                                                                                "HH:mm"
-                                                                            )}
-                                                                        </a>
-                                                                    </li>
-                                                                )
-                                                            }
+                                                                                        {format(
+                                                                                            parse(`${schedule.startTime}`, 'HH:mm:ss', new Date()),
+                                                                                            "HH:mm"
+                                                                                        )}
+                                                                                    </a>
+                                                                                </li>
+                                                                            )
+                                                                        }
 
-                                                        })
-                                                        }
-                                                    </ul>
-                                                    {!hasShowtimes && (
-                                                        <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
-                                                    )}
+                                                                    })
+                                                                    }
+                                                                </ul>
+                                                                {!hasShowtimes && (
+                                                                    <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                </div>
-                        }
+                                        </div>
+                                }
+                            </div>
+                            <div>
+                                {modalStates && (
+                                    <ModalComponent
+                                        isOpen={modalStates}
+                                        onClose={() => handleModalStates()}
+                                        onConfirm={() => navigate("/signup")}
+                                        onCancel={() => handleModalStates()}
+                                        title='Đăng nhập để trải nghiệm chức năng đặt vé'
+                                        content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
+                                        buttonName='Chuyển đến trang đăng ký/ đăng nhập'
+                                        buttonCancel='Thoát'
+                                    />
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        {modalStates && (
-                            <ModalComponent
-                                isOpen={modalStates}
-                                onClose={() => handleModalStates()}
-                                onConfirm={() => navigate("/signup")}
-                                onCancel={() => handleModalStates()}
-                                title='Đăng nhập để trải nghiệm chức năng đặt vé'
-                                content='Vui lòng đăng ký nếu như bạn chưa có tài khoản. Hoặc đăng nhập nếu đã có tài khoản bạn nhé. Xin cảm ơn !!!'
-                                buttonName='Chuyển đến trang đăng ký/ đăng nhập'
-                                buttonCancel='Thoát'
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
+            }
         </div >
     )
 }
