@@ -46,7 +46,7 @@ function DetailNotification({ notification, setShowDetailNotification, setNotifi
                                 setShowDetailNotification(false)
                             }}
                         >
-                            OKi
+                            OK
                         </button>
                     </div>
                 </>

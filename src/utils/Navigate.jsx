@@ -67,29 +67,15 @@ const Navigate = () => {
                 {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
                 &nbsp;Lịch sử giao dịch
               </button>
-              {pathname === "/user/payment-success" ?
-                <button
-                  className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
-                  type='button'
-                  onClick={() => changeTab('/')}
-                  disabled={loading}
-                >
-                  {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                  &nbsp;Quay lại
-                </button>
-                : <button
-                  className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
-                  type='button'
-                  onClick={() => {
-                    handlePayment(localStorage.getItem('bookingId') && localStorage.getItem('bookingId'));
-                    localStorage.getItem('bookingId') && localStorage.removeItem('bookingId')
-                  }}
-                  disabled={loading}
-                >
-                  {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                  &nbsp;Thanh toán lại
-                </button>
-              }
+              <button
+                className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
+                type='button'
+                onClick={() => changeTab('/')}
+                disabled={loading}
+              >
+                {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                &nbsp;Quay lại
+              </button>
             </div>
           </div> :
           pathname === "/booking-timeout" ?

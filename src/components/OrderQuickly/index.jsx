@@ -213,7 +213,7 @@ function OrderQuickly({ allShowMovie }) {
                             })}
                         </ul>
                         {!hasShowtimes && (
-                            <p className='text-xl text-slate-200 text-center'>-- Chưa có lịch chiếu --</p>
+                            <p className='text-xl text-cyan-500 text-center'>-- Chưa có lịch chiếu --</p>
                         )}
                     </div>
                 }

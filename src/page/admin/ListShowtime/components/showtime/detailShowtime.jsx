@@ -146,6 +146,7 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
   const handleDeleteSchedule = async () => {
     setLoading('deleteSchedule', true);
     user.role === "ADMIN" ? await deleteScheduleAdminApi(dateTime.scheduleId) : await deleteScheduleManagerApi(dateTime.scheduleId)
+    hadleGetItem(showtimeId)
     setLoading('deleteSchedule', false);
   };
   const handleAddSchedule = async () => {
@@ -216,7 +217,9 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                                   const updatedDateTime = {
                                     ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                   };
-                                  navigate(`/admin/list-showtime/showtime/${oneShowtime.showTimeId}`, { state: { dateTime: updatedDateTime } });
+                                  user.role === 'ADMIN' ?
+                                    navigate(`/admin/list-showtime/showtime/${oneShowtime.showTimeId}`, { state: { dateTime: updatedDateTime } })
+                                    : navigate(`/manager/list-showtime/showtime/${oneShowtime.showTimeId}`, { state: { dateTime: updatedDateTime } });
                                 }}
                                 className={`inline-block relative ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                               >
@@ -279,7 +282,10 @@ const DetailShowtime = ({ showtimeId, dateTime }) => {
                     className="w-1/4 mb-4 mr-6 text-[18px] mt-4 rounded-xl hover:bg-sky-800 text-white bg-sky-600 py-2 transition-colors duration-300"
                     type='button'
                     disabled={loading['change']}
-                    onClick={() => navigate(-1)}
+                    onClick={() => {
+                      user.role === 'ADMIN' ? navigate(`/admin/cinema/${oneShowtime?.room?.cinema?.cinemaId}/list-showtime`, { state: { cinemaName: oneShowtime?.room?.cinema?.cinemaName } })
+                        : navigate(`/manager/list-showtime`)
+                    }}
                   >
                     {loading['change'] && <FontAwesomeIcon className='w-4 h-4 ' icon={faSpinner} spin />}
                     &nbsp;Thoát

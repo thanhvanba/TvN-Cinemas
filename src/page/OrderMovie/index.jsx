@@ -207,7 +207,6 @@ const OrderMovie = () => {
         const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking, code)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result)
-            !localStorage.getItem("bookingId") && localStorage.setItem("bookingId", resBookingInfo.data.result.bookingId)
         }
         navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
         setLoading('bookingInfo', false);

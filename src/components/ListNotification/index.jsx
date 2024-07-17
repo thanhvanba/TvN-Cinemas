@@ -13,6 +13,7 @@ import ManagerService from '../../service/ManagerService';
 import DetailNotification from '../DetailNotification';
 import { CheckCheck, ListChecks } from 'lucide-react';
 import Load from '../Load';
+import TimeAgo from '../TimeAgo';
 
 function ListNotification() {
   const { getNotificationsApi, getOneNotificationApi, readCountApi, readAllNotificationApi } = UserService()
@@ -353,9 +354,10 @@ function ListNotification() {
                     className='flex items-center gap-x-3'
                   >
                     <img className='h-16 w-16' src={bookingSC} alt="" />
-                    <div>
+                    <div className='relative pb-6'>
                       <h3 className='text-base font-bold items-center'>{notif.notification.title}</h3>
                       <p className='items-center'>{notif.notification.message}</p>
+                    <p className={`${!notif.read ? 'text-blue-500' : 'text-zinc-400'} absolute bottom-0 left-0`}>{notif.createdAt === null ? '-' : TimeAgo(notif.createdAt)}</p>
                     </div>
                     {notif.read === false && <div className='absolute right-1 h-3 w-3 bg-red-600 rounded-full'></div>}
                   </li>

@@ -315,13 +315,17 @@ const UserService = () => {
         }
     }
     const searchMovieApi = async (keyWord) => {
-        const params = { keyWord: keyWord }
-        return await axios.get(
-            `${process.env.REACT_APP_HOST_API_KEY}/movies/search`,
-            {
-                params: params
-            },
-        );
+        try {
+            const params = { keyWord: keyWord }
+            return await axios.get(
+                `${process.env.REACT_APP_HOST_API_KEY}/movies/search`,
+                {
+                    params: params
+                },
+            );
+        } catch (err) {
+            console.log(err.response.data.message, "error");
+        }
     }
     const reviewMovieApi = async (comment, rating, movieId) => {
         try {

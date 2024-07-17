@@ -31,6 +31,7 @@ const ReviewMovie = ({ movie, onToggle }) => {
         setLoading(true)
         await reviewMovieApi(comment, rating, movieId)
         setLoading(false)
+        window.location.reload();
         handleToggle()
     }
     return (

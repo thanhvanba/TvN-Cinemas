@@ -339,7 +339,7 @@ const ShowtimeByRoom = () => {
                                                           ...selectedDateTime, time: schedule.startTime, scheduleId: schedule.scheduleId
                                                         };
 
-                                                        navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } });
+                                                        { user.role === 'ADMIN' ? navigate(`/admin/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } }) : navigate(`/manager/list-showtime/showtime/${item.showTimeId}`, { state: { dateTime: updatedDateTime } }) }
                                                       }}
                                                       className={`inline-block ${isTimeInFuture ? 'clickable' : 'unclickable'}`}
                                                     >

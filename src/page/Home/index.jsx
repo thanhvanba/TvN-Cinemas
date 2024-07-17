@@ -13,6 +13,7 @@ import Loading from "../../components/Loading"
 import { StarIcon } from "@heroicons/react/20/solid"
 import HomeSlider from "../../components/Slider"
 import TruncatedContent from "../../utils/TruncatedContent"
+import Prommotion from "../Promotion"
 
 const IMAGES = [
   slider1, slider2, slider3
@@ -156,11 +157,16 @@ const Home = () => {
                         </div>
                       </div>
                       <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[10%] mb-2">
-                        <TruncatedContent content={movie.title} maxLength={23}/> 
+                        <TruncatedContent content={movie.title} maxLength={23} />
                       </div>
                     </div>
                   ))
                 }
+              </div>
+              <div className="bg-[#0d0e13] bg-opacity-90 rounded-t-[250px]">
+                <div className="-mt-28">
+                  <Prommotion />
+                </div>
               </div>
             </div>
         }

@@ -38,6 +38,7 @@ const Header = () => {
   const [currentTab, setCurrentTab] = useState('');
   const [inputSearch, setInputSearch] = useState("")
   const [listMovieFound, setListMovieFound] = useState([])
+  console.log("🚀 ~ Header ~ listMovieFound:", listMovieFound)
   const [showMovieList, setShowMovieList] = useState(false);
 
   const [loading, setLoading] = useState(false)
@@ -86,6 +87,7 @@ const Header = () => {
 
   const handleSearchMovie = async (value) => {
     let resMovie = await searchMovieApi(value)
+    console.log("🚀 ~ handleSearchMovie ~ resMovie:", resMovie)
     if (resMovie && resMovie.data && resMovie.data.result) {
       setListMovieFound(resMovie.data.result)
     }
