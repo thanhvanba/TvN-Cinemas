@@ -300,10 +300,20 @@ const UserService = () => {
         )
     }
     const getTicketDetailApi = async (bookingId) => {
-        return await axios.get(
-            `${process.env.REACT_APP_HOST_API_KEY}/viewer/ticket/detail/${bookingId}`
-        );
-    };
+        try {
+            console.log("🚀 ~ getTicketDetailApi ~ bookingId:", bookingId)
+            const response = await axios.get(
+                `${process.env.REACT_APP_HOST_API_KEY}/viewer/ticket/detail/${bookingId}`
+            );
+            console.log("🚀 ~ getTicketDetailApi ~ response:", response)
+
+            if (response.data.success) {
+                return response
+            }
+        } catch (err) {
+            toastNotify(err.response.data.message, "error");
+        }
+    }
     const searchMovieApi = async (keyWord) => {
         const params = { keyWord: keyWord }
         return await axios.get(

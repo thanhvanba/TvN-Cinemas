@@ -517,6 +517,22 @@ const ManagerService = () => {
             toastNotify(err.response.data.message, "error")
         }
     };
+    const getAllUserByRoleMApi = async (pageIndex, pageSize, role) => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/manager/users`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+                params: {
+                    index: pageIndex,
+                    size: pageSize,
+                    role: role
+                },
+            }
+        );
+    };
     return {
         // addManagerApi,
         // addCinemaApi,
@@ -557,7 +573,8 @@ const ManagerService = () => {
         getDetailFinanceManagerApi,
         checkScheduleManagerApi,
         getStockEntriesApi,
-        sendNotificationApi
+        sendNotificationApi,
+        getAllUserByRoleMApi
     }
 }
 

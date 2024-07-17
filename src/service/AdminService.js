@@ -550,6 +550,17 @@ const AdminService = () => {
             },
         );
     };
+    const getTopCinemaApi = async () => {
+        let bearerToken = `Bearer ${localStorage.getItem("token")}`
+        return await axiosInstance.get(
+            `${process.env.REACT_APP_HOST_API_KEY}/admin/stats/top-cinemas`,
+            {
+                headers: {
+                    "Authorization": bearerToken,
+                },
+            },
+        );
+    };
     const totalRevenueOfYearApi = async (year) => {
         let bearerToken = `Bearer ${localStorage.getItem("token")}`
         return await axiosInstance.get(
@@ -1018,7 +1029,8 @@ const AdminService = () => {
         deleteGenresApi,
         getListGenresApi,
         getStockEntriesADApi,
-        sendNotificationADApi
+        sendNotificationADApi,
+        getTopCinemaApi
     }
 }
 

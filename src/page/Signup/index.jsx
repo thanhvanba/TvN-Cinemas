@@ -223,11 +223,11 @@ const Signup = () => {
                                             Password
                                         </label>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex gap-2 items-center text-white">
+                                    <div className="flex justify-end items-center">
+                                        {/* <div className="flex gap-2 items-center text-white">
                                             <input type="checkbox" name='' id='' />
                                             <label htmlFor="Remember Me">Remember Me</label>
-                                        </div>
+                                        </div> */}
                                         <div className='text-white hover:text-blue-500 cursor-pointer' onClick={handleToggle}>Quên mật khẩu</div>
                                     </div>
                                     <button

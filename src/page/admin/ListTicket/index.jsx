@@ -19,6 +19,7 @@ import ConvertStringFollowFormat from '../../../utils/ConvertStringFollowFormat'
 import { LoginContext } from '../../../context/LoginContext';
 import StaffService from '../../../service/StaffService';
 import { TicketIcon } from '@heroicons/react/24/solid';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 
 
 const ListTicket = () => {
@@ -31,6 +32,7 @@ const ListTicket = () => {
   const [allTicketU, setAllTicketU] = useState([])
   const [allTicketCa, setAllTicketCa] = useState([])
   const { loading, setLoading } = useLoadingState(false)
+  const [bookingSearch, setBookingSearch] = useState('')
   const [toggle, setToggle] = useState(false);
   const [ticketDetail, setTicketDetail] = useState({});
   const [pagination, setPagination] = useState(
@@ -61,7 +63,10 @@ const ListTicket = () => {
       }));
     }
     setLoading('loading', false)
+  }
 
+  const handleGetItems1 = async () => {
+    setLoading('loadingU', true)
     let resTicketU = user.role === 'ADMIN' ?
       await getAllBookingApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
       : await getAllBookingStaffApi(null, null, "UNCONFIRMED", localStorage.getItem("cinemaId") || null)
@@ -70,6 +75,10 @@ const ListTicket = () => {
     if (resTicketU && resTicketU.data && resTicketU.data.result && resTicketU.data.result.content) {
       setAllTicketU(resTicketU.data.result.content)
     }
+  }
+
+  const handleGetItems2 = async () => {
+    setLoading('loadingCa', true)
     let resTicketCa = user.role === 'ADMIN' ?
       await getAllBookingApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
       : await getAllBookingStaffApi(null, null, "CANCELLED", localStorage.getItem("cinemaId") || null)
@@ -89,6 +98,7 @@ const ListTicket = () => {
     setLoading('ticket', true)
     let resTicket = await getTicketDetailApi(bookingId)
     if (resTicket && resTicket.data && resTicket.data.result) {
+      resTicket && !toggle && setToggle(true);
       setTicketDetail(resTicket.data.result)
     }
     setLoading('ticket', false)
@@ -98,6 +108,7 @@ const ListTicket = () => {
     setLoading('confirm', true)
     await confirmTicketApi(bookingId)
     setLoading('confirm', false)
+    handleGetItems1()
     handleOpenModal()
   }
 
@@ -106,9 +117,8 @@ const ListTicket = () => {
   }
 
   useEffect(() => {
-    setLoading('loading', true)
-    setLoading('loadingU', true)
-    setLoading('loadingCa', true)
+    handleGetItems1()
+    handleGetItems2()
     handleGetItems(pagination.pageNumber)
   }, [])
   return (
@@ -142,6 +152,24 @@ const ListTicket = () => {
                   <div className='pr-3 border-1 w-3/4 relative'>
                     <div className='flex justify-center absolute mx-auto top-72 right-1/2 left-1/2 z-50'>
                       {loading['loading'] && <Loading />}
+                    </div>
+                    <div className='relative w-1/3'>
+                      <input
+                        onChange={e => {
+                          setBookingSearch(e.target.value)
+                        }}
+                        type="text"
+                        className="block w-full px-4 py-1 text-lg text-black focus:outline-none rounded-md border-2 focus:border-blue-600"
+                        placeholder="Nhập mã đặt vé"
+                      />
+                      <button
+                        className='absolute right-0 top-0 m-2'>
+                        <MagnifyingGlassIcon
+                          onClick={() => {
+                            handleGetTicketDetail(bookingSearch);
+                          }}
+                          className="h-5 w-5 text-gray-400" />
+                      </button>
                     </div>
                     {!loading['loading'] &&
                       <>

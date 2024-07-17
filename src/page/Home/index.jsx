@@ -12,6 +12,7 @@ import OrderQuickly from "../../components/OrderQuickly"
 import Loading from "../../components/Loading"
 import { StarIcon } from "@heroicons/react/20/solid"
 import HomeSlider from "../../components/Slider"
+import TruncatedContent from "../../utils/TruncatedContent"
 
 const IMAGES = [
   slider1, slider2, slider3
@@ -109,7 +110,7 @@ const Home = () => {
     <div className="w-full">
       {/* slider */}
       <div className="px-8">
-        {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...movieOrderQuickly, ...comingSoonMovie]} />}
+        {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <HomeSlider movies={[...comingSoonMovie, ...movieOrderQuickly]} />}
       </div>
       {/* mua vé nhanh */}
       {[...comingSoonMovie, ...movieOrderQuickly].length > 0 && <div className="absolute hidden md:block w-[45%] md:h-[264px] lg:h-auto md:w-[50%] right-16 lg:top-72 md:top-36 bg-[#FFFFFFB2] rounded-md bg-cover">
@@ -141,7 +142,7 @@ const Home = () => {
                   allMovie && allMovie.length > 0 &&
                   allMovie.map((movie, index) => (
                     <div key={`movie-${index}-${movie.movieId}`} onClick={() => changeTab(`/movie/${movie.movieId}`)} className="mb-4 h-full">
-                      <div className="relative product-item table h-[92%] w-full border-[0.5px] border-slate-700 rounded-xl">
+                      <div className="relative product-item table h-[90%] w-full border-[0.5px] border-slate-700 rounded-xl">
                         <img
                           src={movie.poster}
                           alt=""
@@ -154,8 +155,8 @@ const Home = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[8%] mb-2">
-                        {movie.title}
+                      <div className="relative text-slate-200 mt-2 text-left uppercase font-bold h-[10%] mb-2">
+                        <TruncatedContent content={movie.title} maxLength={23}/> 
                       </div>
                     </div>
                   ))

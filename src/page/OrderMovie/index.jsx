@@ -140,7 +140,6 @@ const OrderMovie = () => {
     const seatData = CreateSeat(showtime.room.rowSeat, showtime.room.colSeat, listSeatBooked);
 
     const navigate = useNavigate()
-
     const handleCheckPathname = (pathname) => {
         switch (pathname) {
             case `/${showtimeId}/order/chonghe`:
@@ -208,6 +207,7 @@ const OrderMovie = () => {
         const resBookingInfo = await bookingInfoApi(listSeatBooking, listFoodBooking, code)
         if (resBookingInfo && resBookingInfo.data && resBookingInfo.data.result) {
             setBookingInfo(resBookingInfo.data.result)
+            !localStorage.getItem("bookingId") && localStorage.setItem("bookingId", resBookingInfo.data.result.bookingId)
         }
         navigate(`/${showtimeId}/order/xacnhan`, { state: { dateTime: dateTime } })
         setLoading('bookingInfo', false);
@@ -217,9 +217,9 @@ const OrderMovie = () => {
         setLoading('payment', true);
         let resPayment = await createPaymentApi(bookingId)
         if (resPayment && resPayment.data && resPayment.data.result) {
-            window.open(resPayment.data.result, '_blank')
+            window.open(resPayment.data.result, '_parent')
         }
-        setLoading('payment', true);
+        setLoading('payment', false);
     }
 
     const handleSelectSeat = async (seatId, type) => {

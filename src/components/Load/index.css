@@ -1,8 +1,8 @@
 .loaderButton {
-    width: 25px;
-    height: 25px;
-    border: 3px solid #d6f5d750;
-    border-top-color: #ffffff;
+    width: 22px;
+    height: 22px;
+    border: 3px solid #abb8ac50;
+    border-top-color: #949494;
     animation: spin013151 1s linear infinite;
     border-radius: 100%;
   }

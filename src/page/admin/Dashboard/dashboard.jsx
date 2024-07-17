@@ -29,10 +29,9 @@ import RevenueCinema from './RevenueCinema/revenueCinema';
 
 import { ListDayOfMonth } from '../../../utils/ListDayOfMonth';
 import { Squares2X2Icon } from '@heroicons/react/20/solid';
+import TopCinemaChart from './components/topCinemaChart';
 
 const Dashboard = () => {
-  ;
-
   const { pathname } = useLocation()
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState('TOP 5');
@@ -41,7 +40,7 @@ const Dashboard = () => {
 
   const { GetAllMovieApi } = MovieService()
   const { getAllCinemaApi } = CinemaService()
-  const { getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi, getFinanceAllCinemaApi, getDetailFinanceApi } = AdminService()
+  const { getAllShowtimeApi, getTotalRevenueApi, totalRevenueOfYearApi, totalRevenueOfCinema, totalTicketByCinemaApi, getStatisticsOverviewApi, getTopUsersApi, getTopMovieRatingApi, getFinanceAllCinemaApi, getDetailFinanceApi, getTopCinemaApi } = AdminService()
   const { getAllShowtimeByManagerApi, getTotalRevenueOfManagerApi, getRevenueYearApi, getTopUsersManagerApi } = ManagerService()
 
   const [allMovie, setAllMovie] = useState([])
@@ -73,6 +72,8 @@ const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState()
   const [topUsers, setTopUsers] = useState()
   const [topMovies, setTopMovies] = useState()
+  const [topCinema, setTopCinema] = useState()
+  console.log("🚀 ~ Dashboard ~ topCinema:", topCinema)
   // //Test
 
   const getTotalByName = (name) => {
@@ -169,9 +170,16 @@ const Dashboard = () => {
     }
   }
 
+  const handleStatisticTopCinema = async () => {
+    let resTopMovies = await getTopCinemaApi()
+    if (resTopMovies && resTopMovies.data && resTopMovies.data.result) {
+      setTopCinema(resTopMovies.data.result)
+    }
+  }
 
   useEffect(() => {
     user.role === 'ADMIN' && handleGetAllItem()
+    user.role === 'ADMIN' && handleStatisticTopCinema()
   }, []);
 
   useEffect(() => {
@@ -246,6 +254,22 @@ const Dashboard = () => {
                               }
                             </div>
                           </div>
+                        </div>
+
+
+                        <div className='p-4 border-2 mx-3 mt-6'>
+                          <h2 className='font-semibold text-3xl text-center uppercase pt-3'>
+                            Top doanh thu theo rạp
+                          </h2>
+                          <TopCinemaChart
+                            seriesArr={[
+                              {
+                                name: 'Tổng tiền (VNĐ)',
+                                data: topCinema?.revenue
+                              }
+                            ]}
+                            categoriesArr={topCinema?.cinemaNames}
+                          />
                         </div>
 
                         <div className='p-4 border-2 mx-3 mt-6'>

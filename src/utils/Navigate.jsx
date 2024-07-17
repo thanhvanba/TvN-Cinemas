@@ -8,11 +8,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import bg from '../images/bg-cinema-10.png'
 import UserService from '../service/UserService';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import VnPayService from '../service/VnPayService';
 
 const Navigate = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { resetPasswordApi } = UserService()
+  const { createPaymentApi } = VnPayService()
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -36,6 +38,14 @@ const Navigate = () => {
     setLoading(false)
   }
 
+  const handlePayment = async (bookingId) => {
+    setLoading(true);
+    let resPayment = await createPaymentApi(bookingId)
+    if (resPayment && resPayment.data && resPayment.data.result) {
+      window.open(resPayment.data.result, '_parent')
+    }
+    setLoading(false);
+  }
   return (
     <div className='pt-48 pb-96  h-full' style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>
       <div className='max-w-4xl mx-auto'>
@@ -57,15 +67,29 @@ const Navigate = () => {
                 {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
                 &nbsp;Lịch sử giao dịch
               </button>
-              <button
-                className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
-                type='button'
-                onClick={() => changeTab('/')}
-                disabled={loading}
-              >
-                {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
-                &nbsp;Quay lại
-              </button>
+              {pathname === "/user/payment-success" ?
+                <button
+                  className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
+                  type='button'
+                  onClick={() => changeTab('/')}
+                  disabled={loading}
+                >
+                  {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                  &nbsp;Quay lại
+                </button>
+                : <button
+                  className="px-4 py-2 mt-4 text-xl font-semibold w-2/5 rounded-xl hover:bg-neutral-300 bg-slate-200 transition-colors duration-300"
+                  type='button'
+                  onClick={() => {
+                    handlePayment(localStorage.getItem('bookingId') && localStorage.getItem('bookingId'));
+                    localStorage.getItem('bookingId') && localStorage.removeItem('bookingId')
+                  }}
+                  disabled={loading}
+                >
+                  {loading && <FontAwesomeIcon className='w-4 h-4' icon={faSpinner} spin />}
+                  &nbsp;Thanh toán lại
+                </button>
+              }
             </div>
           </div> :
           pathname === "/booking-timeout" ?
@@ -159,7 +183,7 @@ const Navigate = () => {
 
 
       </div>
-    </div>
+    </div >
   )
 }
 

@@ -17,7 +17,7 @@ import Load from '../Load';
 function ListNotification() {
   const { getNotificationsApi, getOneNotificationApi, readCountApi, readAllNotificationApi } = UserService()
   const { sendNotificationADApi, getAllUserByRoleApi } = AdminService()
-  const { sendNotificationApi } = ManagerService()
+  const { sendNotificationApi, getAllUserByRoleMApi } = ManagerService()
 
   const { user } = useContext(LoginContext)
 
@@ -26,7 +26,8 @@ function ListNotification() {
 
   const [loading, setLoading] = useState(true);
   const [loadingNoti, setLoadingNoti] = useState(true);
-  const [loadingSend, setLoadingSend] = useState(true);
+  const [loadingSend, setLoadingSend] = useState(false);
+  const [loadingDetail, setLoadingDetail] = useState(true);
   const [readAll, setReadAll] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -86,20 +87,22 @@ function ListNotification() {
   }
 
   const handleGetOneNotification = async (notificationId) => {
+    setLoadingDetail(true)
     let resNotification = await getOneNotificationApi(notificationId)
     if (resNotification && resNotification.data && resNotification.data.result) {
       setNotification(resNotification.data.result)
     }
+    setLoadingDetail(false)
   }
   const handleGetUsersByRole = async (role) => {
-    let resUsersByRole = await getAllUserByRoleApi(1, 100, role)
+    let resUsersByRole = user.role === 'ADMIN' ? await getAllUserByRoleApi(1, 100, role) : await getAllUserByRoleMApi(1, 100, role)
     if (resUsersByRole && resUsersByRole.data && resUsersByRole.data.result) {
       setUsersByRole(resUsersByRole.data.result.content)
     }
   }
   const handleSendNotification = async () => {
-    let data = dataNotification
     setLoadingSend(true)
+    let data = dataNotification
     let resNotification = user.role === 'ADMIN' ? await sendNotificationADApi(data) : await sendNotificationApi(data)
     if (resNotification && resNotification.data && resNotification.data.result) {
       setNotifications(resNotification.data.result.content)
@@ -185,7 +188,8 @@ function ListNotification() {
           title={
             <div className='text-2xl font-bold flex items-center justify-between -mx-3'>
               Gửi thông báo
-              <div onClick={() => handleSendNotification()}><PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />
+              <div onClick={() => handleSendNotification()}>
+                {loadingSend ? <Load /> : <PaperAirplaneIcon className='h-6 w-6 text-blue-600 hover:text-blue-800' />}
               </div>
             </div>
           }
@@ -343,7 +347,6 @@ function ListNotification() {
                       handleGetOneNotification(notif?.notificationUserId)
                       setShowDetailNotification(true)
                       setOpen(false)
-                      setNotifications([]);
                       setHasMore(true)
                       setPage(1)
                     }}
@@ -368,7 +371,7 @@ function ListNotification() {
       </Drawer>
       {showDetailNotification &&
         <div className='flex justify-center items-center bg-black bg-opacity-30 w-full h-screen right-0 bottom-0 fixed z-50'>
-          <DetailNotification notification={notification} setShowDetailNotification={setShowDetailNotification} />
+          <DetailNotification notification={notification} setShowDetailNotification={setShowDetailNotification} setNotification={setNotification} loadingDetail={loadingDetail} />
         </div>
       }
     </div >

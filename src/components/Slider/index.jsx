@@ -66,8 +66,9 @@ const HomeSlider = ({ movies }) => {
         infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
+        autoplay: true,
         speed: 800,
-        autoplaySpeed: 1,
+        autoplaySpeed: 5000,
         cssEase: "linear",
         prevArrow: <SamplePrevArrow />,
         nextArrow: <SampleNextArrow />,
@@ -140,7 +141,7 @@ const HomeSlider = ({ movies }) => {
                                     <div className="hidden lg:block">
                                         <div className="flex absolute top-28 right-14 left-14 bottom-0 z-50 ">
                                             <div className="w-[42%] text-gray-50">
-                                                {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-5xl font-bold pt-14 uppercase text-emerald-500">{movie?.title}</h2>}
+                                                {movie?.title && <h2 data-aos="fade-down-right" data-aos-duration="2500" className="text-5xl font-bold pt-14 uppercase text-emerald-500"><TruncatedContent content={movie?.title} maxLength={44} /></h2>}
                                                 <div data-aos="zoom-in-left" data-aos-duration="2000" className="py-4 flex items-center">
                                                     <StarIcon className="h-6 w-6 text-yellow-400" />
                                                     {movie?.rating && <div className="font-bold pl-4 text-orange-300 w-1/2">{movie?.rating}/5</div>}
