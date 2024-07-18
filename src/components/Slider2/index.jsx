@@ -93,7 +93,7 @@ const MovieSlider = ({ movies }) => {
                                 </div>
                             </div>
                         </div>
-                        <h3 className='text-yellow-50 uppercase font-bold text-center'>{movie.title}</h3>
+                        <h3 className='text-yellow-50 uppercase font-bold text-center'><TruncatedContent content={movie.title} maxLength={18} /></h3>
                     </div>
                 ))) : (
                     <Slider {...settings}>
@@ -104,7 +104,7 @@ const MovieSlider = ({ movies }) => {
                                         : navigate(`/movie/${movie.movieId}`)
                                 }}
                                 className='px-2 cursor-pointer outline-none'
-                                key={movie.id} 
+                                key={movie.id}
                             >
                                 <div className='relative border-[0.5px] border-slate-700 rounded-xl product-item'>
                                     <img className='product-over h-96 w-full' src={movie.poster} alt={movie.title} />
