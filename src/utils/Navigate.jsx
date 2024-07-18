@@ -14,7 +14,6 @@ const Navigate = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { resetPasswordApi } = UserService()
-  const { createPaymentApi } = VnPayService()
   const changeTab = (pathname) => {
     navigate(pathname)
   }
@@ -36,15 +35,6 @@ const Navigate = () => {
     const check = await resetPasswordApi(token, resetPassword)
     check && changeTab("/signup")
     setLoading(false)
-  }
-
-  const handlePayment = async (bookingId) => {
-    setLoading(true);
-    let resPayment = await createPaymentApi(bookingId)
-    if (resPayment && resPayment.data && resPayment.data.result) {
-      window.open(resPayment.data.result, '_parent')
-    }
-    setLoading(false);
   }
   return (
     <div className='pt-48 pb-96  h-full' style={{ background: `url(${bg})`, backgroundAttachment: "fixed" }}>

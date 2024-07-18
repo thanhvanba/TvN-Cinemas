@@ -39,6 +39,7 @@ function ListNotification() {
   const [showDetailNotification, setShowDetailNotification] = useState(false)
 
   const [notifications, setNotifications] = useState([])
+  console.log("🚀 ~ ListNotification ~ notifications:", notifications)
   const [notification, setNotification] = useState([])
   const [dataNotification, setDataNotification] = useState({})
   const [usersByRole, setUsersByRole] = useState([])
@@ -55,7 +56,18 @@ function ListNotification() {
   const handleSelectType = (selectedValue) => {
     setDataNotification({ ...dataNotification, type: selectedValue })
   };
-
+  // Get API
+  const handleGetNotification = async (page) => {
+    setLoadingNoti(true)
+    let resNotification = await getNotificationsApi(page, 8)
+    if (resNotification?.data?.result?.content?.length < 8 || resNotification?.data?.result?.pageNumber === resNotification?.data?.result?.pageSize) setHasMore(false);
+    if (resNotification && resNotification?.data?.result?.content?.length > 0) {
+      setNotifications(prevNotifications => [...prevNotifications, ...resNotification.data.result.content])
+    } else {
+      setHasMore(false);
+    }
+    setLoadingNoti(false)
+  }
   // Xử lý cho Drawer
   const showLoading = () => {
     handleGetNotification(1)
@@ -74,18 +86,6 @@ function ListNotification() {
     setChildrenDrawer(false);
   };
 
-  // Get API
-  const handleGetNotification = async (page) => {
-    setLoadingNoti(true)
-    let resNotification = await getNotificationsApi(page, 8)
-    if (resNotification?.data?.result?.content?.length < 8 || resNotification?.data?.result?.pageNumber === resNotification?.data?.result?.pageSize) setHasMore(false);
-    if (resNotification && resNotification?.data?.result?.content?.length > 0) {
-      setNotifications(prevNotifications => [...prevNotifications, ...resNotification.data.result.content])
-    } else {
-      setHasMore(false);
-    }
-    setLoadingNoti(false)
-  }
 
   const handleGetOneNotification = async (notificationId) => {
     setLoadingDetail(true)
@@ -148,6 +148,15 @@ function ListNotification() {
   useEffect(() => {
     handleGetReadCount()
   }, [])
+
+  useEffect(() => {
+    handleGetReadCount(); // Gọi API ngay khi component được mount
+    const intervalId = setInterval(() => {
+      handleGetReadCount();
+    }, 10000); // 10000ms = 10s
+
+    return () => clearInterval(intervalId); // Xóa interval khi component bị unmount để tránh rò rỉ bộ nhớ
+  }, []);
 
   // Sử lý phân trang
   useEffect(() => {
@@ -346,6 +355,7 @@ function ListNotification() {
                     onClick={() => {
                       if (notif?.read === false) { setReadCount(pre => pre - 1); handleGetReadCount(); }
                       handleGetOneNotification(notif?.notificationUserId)
+                      setNotifications([])
                       setShowDetailNotification(true)
                       setOpen(false)
                       setHasMore(true)
@@ -357,7 +367,7 @@ function ListNotification() {
                     <div className='relative pb-6'>
                       <h3 className='text-base font-bold items-center'>{notif.notification.title}</h3>
                       <p className='items-center'>{notif.notification.message}</p>
-                    <p className={`${!notif.read ? 'text-blue-500' : 'text-zinc-400'} absolute bottom-0 left-0`}>{notif.createdAt === null ? '-' : TimeAgo(notif.createdAt)}</p>
+                      <p className={`${!notif.read ? 'text-blue-500' : 'text-zinc-400'} absolute bottom-0 left-0`}>{notif.createdAt === null ? '-' : TimeAgo(notif.createdAt)}</p>
                     </div>
                     {notif.read === false && <div className='absolute right-1 h-3 w-3 bg-red-600 rounded-full'></div>}
                   </li>

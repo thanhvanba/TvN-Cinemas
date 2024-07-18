@@ -134,6 +134,9 @@ const ListUser = () => {
             setLoading('add', false);
         }
     };
+    const handleClickIconSearch = () => {
+
+    }
     const handleGetItem = async () => {
         let res = await getCinemasUnmanagedApi()
 
@@ -405,7 +408,7 @@ const ListUser = () => {
                             <div className=''>
                                 <div className='flex justify-end items-center py-4 pr-4'>
                                     <div className="relative border-2 rounded-xl ">
-                                        <Search searchFunction={handleSearchFc} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
+                                        <Search searchFunction={handleSearchFc}  handleClickIconSearch={handleClickIconSearch} setShowListSearch={setShowListSearch} inputSearch={inputSearch} setInputSearch={setInputSearch} />
                                     </div>
                                 </div>
                                 {allUser.length === 0 ?

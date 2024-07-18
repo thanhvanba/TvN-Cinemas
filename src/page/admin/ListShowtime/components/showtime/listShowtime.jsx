@@ -38,6 +38,7 @@ const ShowtimeByRoom = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState('');
+  console.log("🚀 ~ ShowtimeByRoom ~ selectedMovie:", selectedMovie)
   const [selectedDateTime, setSelectedDateTime] = useState({ date: FormatDataTime(currentDateTime.toISOString()).date, time: "" });
   const [movieArr, setMovieArr] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(1);
@@ -131,7 +132,6 @@ const ShowtimeByRoom = () => {
       handleGetAllShowtime(pagination.pageNumber)
       : handleGetShowtimeByRoom(pagination.pageNumber)
     setSelectedDateTime({ ...selectedDateTime, date: dateTime });
-    setSelectedMovie(null);
   }, [selectedDateTime.date])
 
   useEffect(() => {
