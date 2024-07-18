@@ -93,7 +93,7 @@ const MovieSlider = ({ movies }) => {
                                 </div>
                             </div>
                         </div>
-                        <h3 className='text-yellow-50 uppercase font-bold text-center'><TruncatedContent content={movie.title} maxLength={18} /></h3>
+                        <h3 className='text-yellow-50 uppercase font-bold flex justify-center'><TruncatedContent content={movie.title} maxLength={18} /></h3>
                     </div>
                 ))) : (
                     <Slider {...settings}>
