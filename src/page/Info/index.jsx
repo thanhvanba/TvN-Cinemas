@@ -163,6 +163,8 @@ const Info = () => {
         setLoading('cancel', true);
         await cancelTicketApi(bookingId)
         setLoading('cancel', false);
+        setModalStates((prevStates) => ({ ...prevStates, [bookingId]: false }));
+        handleGetItems()
     }
     const handleUpdateUserInfo = async (e) => {
         e.preventDefault();
